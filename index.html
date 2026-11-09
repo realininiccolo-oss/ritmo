@@ -1225,7 +1225,11 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden) { if
 
 loadState(); loadCachedData(); rebuildEvents();
 if (lsGet(LS.pass) === null) showWelcome(); else { showMain(); refresh(true); }
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+if ('serviceWorker' in navigator) {
+  const hadCtrl = !!navigator.serviceWorker.controller; let reloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (hadCtrl && !reloaded && $('#sheet').hidden) { reloaded = true; location.reload(); } });
+  navigator.serviceWorker.register('sw.js').then((r) => r.update()).catch(() => {});
+}
 })();
 </script>
 </body>
