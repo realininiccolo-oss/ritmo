@@ -12,20 +12,18 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Atkinson+Hyperlegible+Next:wght@400;600&display=swap">
 <link rel="stylesheet" href="ornrarv.css">
 <style>
-/* Ritmo × ORNRARV, versione sobria: in alto il paesaggio del mese settale con il codice del giorno; sotto, carta chiara,
+/* Ritmo × ORNRARV, versione semplice: un solo carattere (quello di sistema dell'iPhone), quattro misure, orari grandi e senza zeri iniziali.
+   Prima versione sobria: in alto il paesaggio del mese settale con il codice del giorno; sotto, carta chiara,
    liste con righe sottili e un solo colore per area (spento), usato solo come barretta o puntino. Inchiostro per le azioni. */
 :root{
   --bg:#F6F4EF; --card:#FFFFFF; --ink:#1E2024; --muted:#6C6F76; --line:#E5E2DA; --soft:#F0EDE6;
   --go:#1E2024; --go-ink:#FFFFFF;
   --ner:#3F7A5A; --stu:#44609A; --cor:#B06A40; --soc:#965172; --imp:#6D6394; --pau:#BDB6A7; --via:#8D9AA2;
   --pau-t:#F3EFE4; --bad:#B04A3C; --warn:#9A6B1F;
-  --f-disp:"Fraunces","Iowan Old Style",Georgia,serif;
-  --f-body:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",-apple-system,system-ui,sans-serif;
+  --f-disp:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif;
+  --f-body:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif;
   --r:14px; color-scheme:light;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
@@ -37,13 +35,13 @@
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;font-weight:400;line-height:1.45;-webkit-text-size-adjust:100%;font-variant-numeric:tabular-nums;overscroll-behavior-y:none}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;font-weight:400;line-height:1.4;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;font-variant-numeric:tabular-nums;overscroll-behavior-y:none}
 [hidden]{display:none!important}
 button,input,select,textarea{font:inherit;color:inherit}
 button{touch-action:manipulation}
 :focus-visible{outline:2px solid var(--stu);outline-offset:2px}
-h1,h2,h3{font-family:var(--f-disp);margin:0;line-height:1.12;text-wrap:balance;font-weight:600;letter-spacing:-.01em}
-h1{font-size:1.9rem} h2{font-size:1.3rem} h3{font-size:1.06rem}
+h1,h2,h3{font-family:var(--f-disp);margin:0;line-height:1.15;text-wrap:balance;font-weight:700;letter-spacing:-.02em}
+h1{font-size:1.75rem} h2{font-size:1.25rem} h3{font-size:1.06rem;letter-spacing:-.01em}
 p{margin:0}
 a{color:inherit}
 .muted{color:var(--muted)} .small{font-size:.86rem}
@@ -69,18 +67,18 @@ a{color:inherit}
 .hero::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,var(--h-bg) 0%,color-mix(in srgb,var(--h-bg) 88%,transparent) 38%,color-mix(in srgb,var(--h-bg) 25%,transparent) 64%,transparent 80%)}
 .hero .season-fx{position:absolute;inset:0;pointer-events:none;z-index:1}
 .hero-text{position:relative;z-index:2;padding:calc(18px + env(safe-area-inset-top,0px)) 20px 20px;display:flex;flex-direction:column;gap:6px}
-.kick{font-size:.84rem;opacity:.8;padding-right:140px}
-.hero h1{font-size:2rem;line-height:1.04}
+.kick{font-size:.9rem;opacity:.85;padding-right:140px}
+.hero h1{font-size:1.85rem;line-height:1.08}
 .code-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .code{display:inline-flex;gap:3px;align-items:center}
-.code b{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:600 .86rem var(--f-disp);background:var(--lc);color:var(--lfg)}
+.code b{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:700 .8rem var(--f-disp);background:var(--lc);color:var(--lfg)}
 .code i{font-style:normal;opacity:.4}
 .code.sm b{width:19px;height:19px;font-size:.72rem}
-.fict{font:500 .98rem var(--f-disp);opacity:.9}
+.fict{font-size:.95rem;font-weight:500;opacity:.9}
 .emblem{display:inline-flex;align-items:center;gap:8px;margin-top:2px;align-self:flex-start}
 .em-icon{width:38px;height:38px;flex:none;border-radius:10px;padding:3px;background:color-mix(in srgb,#FBF9F3 90%,var(--lc))}
 .em-text{display:flex;flex-direction:column;line-height:1.2}
-.em-text span{font-size:.7rem;opacity:.7}
+.em-text span{display:none}
 .em-text b{font-size:.92rem;font-weight:600}
 .em-text small{display:none}
 
@@ -91,13 +89,13 @@ a{color:inherit}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0}
 .card.tint{background:var(--card)}
 .row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-.lbl{font-weight:600;overflow-wrap:anywhere}
+.lbl{font-size:1.02rem;font-weight:500;overflow-wrap:anywhere}
 .sub{font-size:.86rem;color:var(--muted);overflow-wrap:anywhere}
-.eyebrow{font-size:.74rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.eyebrow{font-size:.84rem;font-weight:600;color:var(--muted)}
 .eyebrow[data-cat]{color:var(--c)}
 .status{font-size:.95rem}
-.prog{height:4px;border-radius:9px;background:var(--line);overflow:hidden}
-.prog i{display:block;height:100%;background:var(--ink);border-radius:9px;transition:width .4s}
+.prog{height:6px;border-radius:9px;background:var(--line);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--acc,var(--ner));border-radius:9px;transition:width .4s}
 .late-box{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:.92rem;color:var(--warn)}
 .sec.warn h3{color:var(--bad)}
 .rows{list-style:none;margin:0;padding:0;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
@@ -111,7 +109,8 @@ a{color:inherit}
 
 /* adesso */
 .now{display:flex;flex-direction:column;gap:6px;padding:16px 16px 16px 18px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);border-left:4px solid var(--c,var(--ink))}
-.now .big{font-family:var(--f-disp);font-size:1.6rem;font-weight:600;line-height:1.12;overflow-wrap:anywhere}
+.now .big{font-size:1.5rem;font-weight:700;letter-spacing:-.02em;line-height:1.15;overflow-wrap:anywhere}
+.now .when{font-size:1.05rem;font-weight:600;font-variant-numeric:tabular-nums}
 .now .btns{margin-top:6px}
 
 /* bottoni */
@@ -141,11 +140,11 @@ a{color:inherit}
 /* giornata */
 .tl{list-style:none;margin:0;padding:0;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 .tl > li + li{border-top:1px solid var(--line)}
-.tl-item{display:grid;grid-template-columns:3.1rem 3px minmax(0,1fr) auto;gap:12px;align-items:center;background:none;border:0;padding:12px 12px 12px 14px;cursor:pointer;text-align:left;width:100%}
-.tl-item .time{display:flex;flex-direction:column;line-height:1.25;font-size:.88rem}
-.tl-item .time b{font-weight:600}
-.tl-item .time span{color:var(--muted);font-size:.8rem}
-.tl-item .bar{align-self:stretch;border-radius:3px;background:var(--c)}
+.tl-item{display:grid;grid-template-columns:3.3rem 3px minmax(0,1fr) auto;gap:12px;align-items:center;background:none;border:0;padding:14px 12px 14px 14px;cursor:pointer;text-align:left;width:100%}
+.tl-item .time{display:flex;flex-direction:column;line-height:1.2;font-variant-numeric:tabular-nums}
+.tl-item .time b{font-size:1.06rem;font-weight:600;letter-spacing:-.01em}
+.tl-item .time span{color:var(--muted);font-size:.8rem;margin-top:1px}
+.tl-item .bar{align-self:stretch;border-radius:3px;background:var(--c);min-height:22px}
 .tl-item .txt{display:flex;flex-direction:column;gap:1px;min-width:0}
 .tl-item.done .lbl{text-decoration:line-through;color:var(--muted)}
 .tl-item.done .bar{opacity:.35}
@@ -157,9 +156,9 @@ a{color:inherit}
 .chk svg{width:16px;height:16px;opacity:0;color:var(--bg)}
 .chk[aria-pressed="true"]{background:var(--ink);border-color:var(--ink)}
 .chk[aria-pressed="true"] svg{opacity:1}
-.tl-mini{display:flex;gap:12px;align-items:center;font-size:.82rem;color:var(--muted);padding:7px 14px;background:color-mix(in srgb,var(--bg) 60%,var(--card))}
-.tl-mini .t{width:3.1rem;flex:none}
-.tl-mini.free{font-style:italic}
+.tl-mini{display:flex;gap:12px;align-items:center;font-size:.86rem;color:var(--muted);padding:8px 14px;font-variant-numeric:tabular-nums;background:color-mix(in srgb,var(--bg) 60%,var(--card))}
+.tl-mini .t{width:3.3rem;flex:none}
+.tl-mini.free{color:color-mix(in srgb,var(--muted) 80%,var(--bg))}
 .tl.compact .tl-item{cursor:default}
 .tags{display:flex;flex-wrap:wrap;gap:4px 12px}
 .tag{display:inline-flex;align-items:center;gap:6px;font-size:.84rem;color:var(--muted)}
@@ -185,10 +184,11 @@ a{color:inherit}
 .wlist{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 .wlist > .wrow + .wrow{border-top:1px solid var(--line)}
 .wrow-h{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}
-.wrow-h .day{font-weight:600}
+.wrow-h .day{font-weight:600;white-space:nowrap}
+.wrow-h .lvl{white-space:nowrap;font-size:.84rem}
 .wrow-h .nn{font-size:.84rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lvl{font-size:.8rem;color:var(--muted);white-space:nowrap}
-.lvl[data-l="4"]{color:var(--warn)} .lvl[data-l="5"]{color:var(--bad);font-weight:600}
+.lvl[data-l="4"],.lvl[data-l="5"]{color:var(--warn)}
 .strip{position:relative;height:6px;border-radius:99px;background:var(--line);overflow:hidden}
 .strip i{position:absolute;top:0;bottom:0;background:var(--c)}
 .strip i[data-cat="pausa"],.strip i[data-cat="viaggio"]{opacity:.5}
@@ -208,12 +208,12 @@ a{color:inherit}
 .og{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--card)}
 .og-head,.og-row{display:grid;grid-template-columns:34px repeat(7,minmax(0,1fr))}
 .og-head{border-bottom:1px solid var(--line)}
-.og-head span{padding:8px 0 6px;text-align:center;font:600 .95rem var(--f-disp);color:var(--lc,var(--muted))}
+.og-head span{padding:8px 0 6px;text-align:center;font-weight:700;font-size:.95rem;color:var(--lc,var(--muted))}
 .og-head span small{display:block;font:400 .6rem var(--f-body);color:var(--muted)}
 .og-wl{display:grid;place-items:center;border-top:1px solid var(--line)}
 .og-wl b{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:600 .82rem var(--f-disp);color:var(--wc);border:1.5px solid var(--wc)}
 .og-c{position:relative;min-height:60px;border:0;border-top:1px solid var(--line);border-left:1px solid var(--line);background:none;padding:6px 5px 12px;display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;gap:1px;cursor:pointer;text-align:left;color:var(--ink)}
-.og-c .n{font:600 1.02rem/1 var(--f-disp)}
+.og-c .n{font-size:1rem;font-weight:600;line-height:1}
 .og-c .dt{font-size:.6rem;color:var(--muted)}
 .og-c.past{opacity:.4}
 .og-c.today{box-shadow:inset 0 0 0 2px var(--ink)}
@@ -250,7 +250,7 @@ a{color:inherit}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{border:1px solid var(--line);background:var(--card);border-radius:9px;padding:7px 12px;font-weight:600;font-size:.88rem;cursor:pointer;min-height:38px}
 .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
-.big-ok{font-family:var(--f-disp);font-size:2.4rem;font-weight:600;line-height:1}
+.big-ok{font-size:2.2rem;font-weight:700;letter-spacing:-.03em;line-height:1}
 .toast{position:fixed;left:50%;transform:translateX(-50%) translateY(8px);bottom:calc(140px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:9px 15px;border-radius:10px;font-size:.88rem;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:40;max-width:90vw;text-align:center}
 .toast.on{opacity:1;transform:translateX(-50%)}
 .lil.still .dr{stroke-dashoffset:0}.lil.still .pp,.lil.still .fi{opacity:1;transform:none}.lil.still .n-spin{opacity:1;transform:rotate(40deg)}.lil.still .r2-raise,.lil.still .r3-peri{transform:none}
@@ -259,6 +259,9 @@ a{color:inherit}
 .welcome{min-height:100%;display:flex;flex-direction:column;justify-content:center;gap:18px;padding:calc(30px + env(safe-area-inset-top,0px)) 24px calc(30px + env(safe-area-inset-bottom,0px));max-width:480px;margin:0 auto}
 .logo{width:72px;height:72px;border-radius:18px}
 .welcome h1{font-size:2.1rem}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.18s}
+.chk.pop{animation:pop .3s ease}
+@keyframes pop{40%{transform:scale(1.18)}100%{transform:scale(1)}}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -342,7 +345,8 @@ const dowOf = (s) => parseISO(s).getDay();
 const dayDiff = (a, b) => Math.round((parseISO(b) - parseISO(a)) / 86400000);
 const mondayOf = (s) => addDays(s, -((dowOf(s) + 6) % 7));
 const toMin = (t, after) => { if (!t) return null; const [hh, mm] = String(t).split(':').map(Number); let v = hh * 60 + (mm || 0); if (after != null && v < after) v += 1440; return v; };
-const fmt = (m) => { m = ((Math.round(m) % 1440) + 1440) % 1440; return pad(Math.floor(m / 60)) + ':' + pad(m % 60); };
+const fmt = (m) => { m = ((Math.round(m) % 1440) + 1440) % 1440; return Math.floor(m / 60) + ':' + pad(m % 60); };
+const hm = (m) => { m = ((Math.round(m) % 1440) + 1440) % 1440; return pad(Math.floor(m / 60)) + ':' + pad(m % 60); };
 const dur = (m) => { m = Math.round(m); const hh = Math.floor(m / 60), r = m % 60; return hh ? (r ? `${hh}h${pad(r)}` : `${hh}h`) : `${r} min`; };
 const hrs = (x) => { const v = Math.round(x * 2) / 2; return (Number.isInteger(v) ? v : v.toFixed(1).replace('.', ',')) + 'h'; };
 const cap = (s) => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
@@ -538,7 +542,7 @@ function plan(date) {
   return { date, items, free, unplaced, fatti, st, tasks, skipped, notes, bib, wk, D0, D1, finish, load: { mente: mente / 60, corpo: corpo / 60, sociale } };
 }
 const loadLevel = (x) => x < 3 ? 1 : x < 6.5 ? 2 : x <= 9 ? 3 : x <= 10.5 ? 4 : 5;
-const loadWord = (x) => ['', 'leggera', 'tranquilla', 'impegnativa', 'piena', 'oltre il limite'][loadLevel(x)];
+const loadWord = (x) => ['', 'leggera', 'tranquilla', 'impegnativa', 'piena', 'molto piena'][loadLevel(x)];
 
 if (typeof document === 'undefined') { globalThis.__ritmo = { S, plan, weekPlan, rebuildEvents, fmt }; return; }
 
@@ -620,7 +624,7 @@ function remainingMin(p, base) { return p.tasks.filter((t) => (t.base || t.key) 
 /* Sposta un blocco in un altro giorno e, se si vuole, a un'ora precisa (at in minuti, null = dove c'è spazio). */
 function moveItem(date, item, target, at, minOverride) {
   if (item.ev) { const e = item.ev, L2 = evLen(e); const obj = { ...e, data: target }; delete obj.id; delete obj.src;
-    if (at != null) { obj.inizio = fmt(at); obj.fine = fmt(at + L2); delete obj.flessibile; delete obj.dopo; } saveEvent(e, obj, true); toast(`${item.label} → ${dayShort(target)}${at != null ? ' ' + fmt(at) : ''}`); return; }
+    if (at != null) { obj.inizio = hm(at); obj.fine = hm(at + L2); delete obj.flessibile; delete obj.dopo; } saveEvent(e, obj, true); toast(`${item.label} → ${dayShort(target)}${at != null ? ' ' + fmt(at) : ''}`); return; }
   const base = item.base || item.key, p = plan(date);
   const chunk = item.key !== base && /\.\d+$/.test(item.key);
   const min = minOverride || (chunk ? item.end - item.start : remainingMin(p, base)) || item.min || 60;
@@ -629,7 +633,7 @@ function moveItem(date, item, target, at, minOverride) {
   if (chunk) { const mn = { ...(st.meno || {}) }; mn[base] = [...(mn[base] || []), { min, a: target, x: xkey }]; S.giorni[date] = { ...st, meno: mn }; }
   else S.giorni[date] = { ...st, skip: { ...(st.skip || {}), [base]: { a: target, x: xkey } } };
   const tg = S.giorni[target] || {};
-  S.giorni[target] = { ...tg, extra: [...(tg.extra || []), { key: xkey, label: item.label, min, cat: item.cat, da: date, at: at != null ? fmt(at) : null }] };
+  S.giorni[target] = { ...tg, extra: [...(tg.extra || []), { key: xkey, label: item.label, min, cat: item.cat, da: date, at: at != null ? hm(at) : null }] };
   saveState(); render();
   toast(`${item.label} → ${target === date ? 'oggi' : dayShort(target)}${at != null ? ' alle ' + fmt(at) : ''}`);
 }
@@ -675,7 +679,7 @@ function openMove(d, it, back) {
   const go = (t, at) => { moveItem(d, it, t, at, it.ev ? null : min); if (back) back(); else closeSheet(); };
   const L = nowLogical();
   const dIn = h('input', { id: 'mv-d', type: 'date', value: sug[0] ? sug[0].d : L.date });
-  const tIn = h('input', { id: 'mv-t', type: 'time', value: sug[0] ? fmt(sug[0].at) : '' , step: 300 });
+  const tIn = h('input', { id: 'mv-t', type: 'time', value: sug[0] ? hm(sug[0].at) : '', step: 300 });
   openSheet([xBtn(), h('h2', { text: 'Sposta ' + it.label }), h('p', { class: 'muted small', text: `${dur(min)} da sistemare` }),
     sug.length ? h('button', { class: 'slot rec', type: 'button', onclick: () => go(sug[0].d, sug[0].at) },
       h('span', { class: 'eyebrow', text: 'Consigliato' }), h('b', { text: slotLabel(sug[0]) }), h('span', { class: 'sub', text: `fino alle ${fmt(sug[0].at + min)}${sug[0].d !== L.date ? ' · oggi non c\'è uno spazio adatto' : ''}` })) : h('p', { class: 'muted', text: 'Nei prossimi giorni non c\'è uno spazio libero abbastanza lungo: scegli tu l\'orario.' }),
@@ -730,8 +734,9 @@ function tlItem(p, it, o) {
   const isNow = o.now != null && it.start <= o.now && o.now < it.end;
   const late = o.now != null && it.end <= o.now && it.task && !done;
   const cls = 'tl-item' + (done ? ' done' : '') + (isNow ? ' now' : '') + (late ? ' late' : '');
-  const chk = it.task && o.check ? h('button', { class: 'chk', type: 'button', 'aria-pressed': String(done), 'aria-label': (done ? 'Segna da fare: ' : 'Segna fatto: ') + it.label, html: CHECK, onclick: (e) => { e.stopPropagation(); const v = toggleDone(p.date, it.key); if (v) cheer(p.date); } }) : h('span');
-  const body = h('span', { class: 'txt' }, h('span', { class: 'lbl', text: it.label }), it.sub ? h('span', { class: 'sub', text: it.sub }) : null,
+  const chk = it.task && o.check ? h('button', { class: 'chk', type: 'button', 'aria-pressed': String(done), 'aria-label': (done ? 'Segna da fare: ' : 'Segna fatto: ') + it.label, html: CHECK, onclick: (e) => { e.stopPropagation(); const v = toggleDone(p.date, it.key); if (v) { cheer(p.date); requestAnimationFrame(() => { const nb = document.querySelector(`[data-k="${CSS.escape(p.date + it.key)}"] .chk`); if (nb) nb.classList.add('pop'); }); } } }) : h('span');
+  const showSub = it.sub && (it.moved || it.bib || it.flex || it.ev || /^Recupero/.test(it.sub));
+  const body = h('span', { class: 'txt' }, h('span', { class: 'lbl', text: it.label }), showSub ? h('span', { class: 'sub', text: it.sub }) : null,
     late && o.check && it.key !== 'uscita' ? h('span', { class: 'late-act' }, 'Non fatto · ', h('button', { class: 'link', type: 'button', text: 'Sposta', onclick: (e) => { e.stopPropagation(); openMove(p.date, it); } })) : null);
   const row = h(o.compact ? 'div' : 'button', { class: cls, 'data-cat': it.cat, type: o.compact ? null : 'button', onclick: o.compact ? null : () => openItem(p.date, it) },
     h('span', { class: 'time' }, h('b', { text: fmt(it.start) }), h('span', { text: fmt(it.end) })), h('span', { class: 'bar' }), body, chk);
@@ -741,8 +746,9 @@ function timeline(p, o = {}) {
   const all = [...p.items, ...(o.free === false ? [] : p.free)].sort((a, b) => a.start - b.start);
   return h('ol', { class: 'tl' + (o.compact ? ' compact' : '') }, all.map((it) => tlItem(p, it, o)));
 }
-function nerinaCard(d) {
+function nerinaCard(d, compact) {
   const n = S.nerina[d]; if (!n) return null;
+  if (compact) return h('a', { class: 'card ner-card', href: cfg().cruscotto, target: '_blank', rel: 'noopener', style: 'flex-direction:row;align-items:center;justify-content:space-between' }, h('span', {}, h('span', { class: 'eyebrow', text: 'Nerina oggi' }), h('br'), h('b', { text: n.titolo })), h('span', { class: 'muted', text: '›', style: 'font-size:1.6rem' }));
   return h('a', { class: 'card ner-card', href: cfg().cruscotto, target: '_blank', rel: 'noopener', 'data-cat': 'nerina' },
     h('span', { class: 'eyebrow', text: 'Nerina oggi · ' + (n.tipo || 'Lavoro') }),
     h('span', { class: 't', text: n.titolo }),
@@ -781,8 +787,8 @@ function prepare(p) {
 }
 function unplacedBox(p) {
   if (!p.unplaced.length) return null;
-  return h('section', { class: 'sec warn' },
-    h('div', { class: 'sec-h' }, h('h3', { text: 'Non ci sta in questa giornata' })),
+  return h('section', { class: 'sec' },
+    h('div', { class: 'sec-h' }, h('h3', { text: 'Da sistemare' }), h('span', { class: 'muted small', text: 'non c\'è spazio oggi' })),
     h('ul', { class: 'rows' }, p.unplaced.map((u) => h('li', { class: 'r', 'data-cat': u.cat },
       h('span', { class: 'dot' }), h('span', { class: 'grow' }, h('b', { text: u.label }), h('span', { class: 'muted', text: ' · ' + dur(u.min) })),
       h('button', { class: 'btn small', type: 'button', text: 'Sposta', onclick: () => openMove(p.date, u) }),
@@ -880,7 +886,7 @@ function setHero(key, build, fx) {
   const { el, th, mi } = build();
   $('#hero-slot').replaceChildren(el);
   const root = document.documentElement.style;
-  root.setProperty('--h-bg', th.bg); root.setProperty('--h-ink', th.ink);
+  root.setProperty('--h-bg', th.bg); root.setProperty('--h-ink', th.ink); root.setProperty('--acc', th.accent);
   if (ORN && mi != null) document.body.style.setProperty('--pat', ORN.patternURI(mi, th.accent, .1));
   const tc = document.querySelector('meta[name="theme-color"]'); if (tc) tc.setAttribute('content', th.bg);
   if (!ORN) return;
@@ -893,13 +899,13 @@ function setHero(key, build, fx) {
   });
 }
 const RITO = {
-  O: ['Osserva', 'Raccogli prima di correre: com\'è andata la settimana scorsa e cosa ti chiede il piano.'],
-  R1: ['Rema', 'Lavoro osservativo: produci partendo da ciò che hai visto lunedì.'],
-  N: ['Scegli la rotta', 'A metà settimana decidi cosa conta di più fino a domenica.'],
-  R2: ['Rema', 'Lavoro orientato: vai dritto nella direzione scelta mercoledì.'],
-  A: ['Automatizza', 'Cosa puoi far fare a Claude Code stanotte, o a una skill, invece che a mano?'],
-  R3: ['Rema', 'Lavoro automatizzato: usa i processi che hai preparato venerdì.'],
-  V: ['Valida', 'Guarda cosa hai fatto questa settimana, segna cosa funziona e goditelo.']
+  O: ['Osserva', 'Guarda com\'è andata e cosa ti chiede il piano.'],
+  R1: ['Rema', 'Fai i blocchi, uno alla volta.'],
+  N: ['Scegli la rotta', 'Decidi cosa conta di più fino a domenica.'],
+  R2: ['Rema', 'Vai dritto nella direzione scelta.'],
+  A: ['Automatizza', 'Cosa puoi far fare a Claude stanotte?'],
+  R3: ['Rema', 'Lascia lavorare i processi che hai preparato.'],
+  V: ['Valida', 'Guarda la settimana e goditela.']
 };
 function ritoCard(date, preview) {
   const o = ornOf(date); if (!o) return null;
@@ -955,8 +961,9 @@ function viewOggi() {
 
   const focus = cur || nxt;
   if (focus) out.push(h('section', { class: 'now', 'data-cat': focus.cat },
-    h('span', { class: 'eyebrow', text: cur ? `Adesso · fino alle ${fmt(cur.end)}` : `Tra ${dur(nxt.start - L.min)} · alle ${fmt(nxt.start)}` }),
-    h('span', { class: 'big', text: focus.label }), focus.sub ? h('span', { class: 'sub', text: focus.sub }) : null,
+    h('span', { class: 'eyebrow', text: cur ? 'Adesso' : `Tra ${dur(nxt.start - L.min)}` }),
+    h('span', { class: 'big', text: focus.label }),
+    h('span', { class: 'when', text: cur ? `fino alle ${fmt(cur.end)}` : `${fmt(nxt.start)} - ${fmt(nxt.end)}` }),
     cur ? h('div', { class: 'btns' }, h('button', { class: 'btn go', type: 'button', text: 'Fatto', onclick: () => { toggleDone(d, cur.key, true); cheer(d); } }),
       !cur.ev && cur.key !== 'uscita' ? h('button', { class: 'btn', type: 'button', text: 'Sposta', onclick: () => openMove(d, cur) }) : null) : null));
   else if (!p.tasks.length || !open.length) out.push(h('section', { class: 'now' }, h('span', { class: 'eyebrow', text: 'Oggi' }), h('span', { class: 'big', text: open.length ? 'Giornata libera' : 'Hai finito per oggi' })));
@@ -964,10 +971,9 @@ function viewOggi() {
   const tot = p.tasks.reduce((a, t) => a + t.end - t.start, 0), done = p.tasks.filter((t) => p.fatti[t.key]).reduce((a, t) => a + t.end - t.start, 0);
   const remMin = open.reduce((a, t) => a + t.end - t.start, 0);
   if (p.tasks.length) out.push(h('section', { class: 'sec' },
-    h('div', { class: 'sec-h' }, h('h3', { text: 'Cosa manca' }), h('span', { class: 'muted small', text: `${Math.round(100 * done / (tot || 1))}% fatto` })),
-    h('p', { class: 'status' }, open.length ? `${open.length} ${open.length === 1 ? 'blocco' : 'blocchi'} · ${dur(remMin)} · fine verso le ${fmt(p.finish || L.min)}` : 'Tutto fatto.'),
+    h('div', { class: 'sec-h' }, h('h3', { text: open.length ? `Ancora ${open.length} ${open.length === 1 ? 'blocco' : 'blocchi'}` : 'Tutto fatto' }), h('span', { class: 'muted small', text: open.length && p.finish ? `fine verso le ${fmt(p.finish)}` : '' })),
     h('div', { class: 'prog' }, h('i', { style: `width:${tot ? (100 * done / tot).toFixed(1) : 0}%` })),
-    late.length ? h('div', { class: 'late-box' }, h('span', { text: `${late.length} ${late.length === 1 ? 'blocco è rimasto' : 'blocchi sono rimasti'} indietro.` }),
+    late.length ? h('div', { class: 'late-box' }, h('span', { text: `${late.length} da recuperare` }),
       h('button', { class: 'btn small', type: 'button', text: 'Riorganizza da adesso', onclick: () => reflow(d) })) : null));
 
   if (!p.st.energia && !evening && p.tasks.length) out.push(energyCard(d));
@@ -977,7 +983,7 @@ function viewOggi() {
   out.push(timeline(p, { check: true, now: L.min }));
   const sk = skippedLine(p); if (sk) out.push(sk);
   const rc = ritoCard(d); if (rc) out.push(rc);
-  const nr = nerinaCard(d); if (nr) out.push(nr);
+  const nr = nerinaCard(d, true); if (nr) out.push(nr);
   return out;
 }
 function energyCard(d) {
@@ -986,7 +992,7 @@ function energyCard(d) {
     const btns = [1, 2, 3, 4, 5].map((n) => h('button', { type: 'button', 'aria-pressed': 'false', 'aria-label': `${label} ${n} su 5`, text: String(n), onclick: () => { val[k] = n; btns.forEach((b2, i) => b2.setAttribute('aria-pressed', String(i + 1 === n))); if (val.mente && val.corpo) setTimeout(() => patchDay(d, { energia: { ...val } }), 250); } }));
     return h('div', { class: 'erow' }, h('span', { text: label }), h('div', { class: 'scale' }, btns));
   };
-  return h('section', { class: 'sec' }, h('div', { class: 'sec-h' }, h('h3', { text: 'Come stai?' }), h('span', { class: 'muted small', text: '1 = a terra · 5 = al massimo' })), mk('mente', 'Testa'), mk('corpo', 'Corpo'));
+  return h('section', { class: 'sec' }, h('div', { class: 'sec-h' }, h('h3', { text: 'Come stai?' }), h('span', { class: 'muted small', text: 'da 1 a 5' })), mk('mente', 'Testa'), mk('corpo', 'Corpo'));
 }
 function energyHints(p, L) {
   const e = p.st.energia || {}; const open = p.tasks.filter((t) => !p.fatti[t.key] && t.start >= L.min - 30);
@@ -1006,7 +1012,7 @@ function viewDomani() {
   setHero('domani:' + d, () => dayHero(d, 'Domani', true));
   const prep = prepare(p);
   return [
-    h('div', { class: 'card' }, h('p', { style: 'font-size:1.08rem;font-weight:700', text: describe(p) }), meters(p), h('span', { class: 'small muted', text: `La lineetta su Testa è la tua soglia: ${cfg().soglia.mente} ore di concentrazione al giorno.` })),
+    h('div', { class: 'card' }, h('p', { style: 'font-size:1.05rem', text: describe(p) }), meters(p)),
     prep.length ? h('div', { class: 'card tint', 'data-cat': 'pausa' }, h('h3', { text: 'Prepara stasera' }), h('div', { class: 'tags' }, prep.map(([c, t]) => h('span', { class: 'tag', style: 'background:var(--card)', 'data-cat': c, text: t })))) : null,
     ritoCard(d, true), unplacedBox(p), noteChips(p), nerinaCard(d),
     h('h3', { text: 'La giornata' }), timeline(p, { check: false }), skippedLine(p)
@@ -1030,7 +1036,6 @@ function dayTags(p) {
   if (p.bib) t.push(['sociale', 'Biblioteca a Brescia']);
   if (p.items.some((i) => i.key === 'uscita')) t.push(['sociale', 'Serata fuori']);
   for (const it of p.items) if (it.ev) t.push([it.cat, it.label + (it.flex ? '' : ' ' + fmt(it.start))]);
-  for (const e of p.notes) if (e.tipo === 'scadenza' || e.tipo === 'festa') t.push([e.tipo, e.titolo]);
   return t;
 }
 function viewSettimana() {
@@ -1053,28 +1058,22 @@ function viewSettimana() {
   const sportTxt = (wp2) => `Palestra ${[...wp2.gym].sort().map(dayShort).join(', ') || '—'} · Karate ${wp2.kar ? dayShort(wp2.kar) : '—'}`;
   return [
     h('div', { class: 'card' },
-      h('h2', { text: 'Equilibrio' }),
-      h('span', { class: 'small muted', text: `Ore e volte previste. Obiettivi a settimana: palestra ${c.palestra.volte}, karate 1, momenti di relazioni ${c.sociale.obiettivo}.` }),
+      h('h3', { text: 'Equilibrio' }),
       h('div', { class: 'bal' },
         bal('Lavoro', 'nerina', ner, nerTarget, `${hrs(ner)} su ${hrs(nerTarget)}`), bal('Scuola', 'studio', stu, studyTarget, `${hrs(stu)} su ${hrs(studyTarget)}`),
         bal('Palestra', 'corpo', gymN, c.palestra.volte, volte(gymN)), bal('Karate', 'corpo', karN, 1, volte(karN)),
         bal('Relazioni', 'sociale', soc, c.sociale.obiettivo, volte(soc))),
-      h('div', { class: 'tags' }, Object.entries(subj).map(([k, v]) => h('span', { class: 'tag', 'data-cat': 'studio', text: `${k} ${hrs(v)}` }))),
-      over || unpl ? h('p', { class: 'small', style: 'color:var(--cor)', text: [over ? `${over} ${over === 1 ? 'giorno supera' : 'giorni superano'} le ${c.soglia.mente} ore di testa` : '', unpl ? `${unpl} ${unpl === 1 ? 'blocco non ci sta' : 'blocchi non ci stanno'}` : ''].filter(Boolean).join(' · ') + '.' }) : h('p', { class: 'small muted', text: 'Tutto ci sta e nessun giorno supera la soglia.' })),
+      unpl ? h('p', { class: 'small muted', text: `${unpl} ${unpl === 1 ? 'blocco da sistemare' : 'blocchi da sistemare'}: li trovi nel giorno.` }) : null),
     S.rotte[mondayOf(days[0])] ? h('div', { class: 'card tint', 'data-cat': 'pausa' }, h('span', { class: 'eyebrow', style: 'color:#B08400', text: 'N · La rotta della settimana' }), h('p', { text: S.rotte[mondayOf(days[0])] })) : null,
-    h('div', { class: 'card tint', 'data-cat': 'corpo' },
-      h('div', { class: 'row' }, h('h3', { text: 'Sport' }), h('button', { class: 'btn small', style: 'background:var(--card)', type: 'button', text: 'Cambia giorni', onclick: openSport })),
-      h('span', { class: 'small', text: sportTxt(wp) + (wp.auto ? ' · scelti dove c\'è più spazio' : ' · scelti da te') }),
-      mondayOf(days[6]) !== wkMon ? h('span', { class: 'small muted', text: 'Settimana dopo: ' + sportTxt(weekPlan(mondayOf(days[6]))) }) : null),
-    legend(),
-    h('div', { class: 'axis' }, ['8:30', '12', '16', '20', '00:30'].map((t) => h('span', { text: t }))),
+    h('div', { class: 'card' },
+      h('div', { class: 'row' }, h('h3', { text: 'Sport' }), h('button', { class: 'link', type: 'button', text: 'Cambia', onclick: openSport })),
+      h('span', { class: 'small muted', text: `Palestra ${plans.filter((p) => p.items.some((i) => i.key === 'palestra')).map((p) => dayShort(p.date)).join(', ') || '—'} · Karate ${plans.filter((p) => p.items.some((i) => i.key === 'karate')).map((p) => dayShort(p.date)).join(', ') || '—'}` })),
     h('div', { class: 'wlist' }, plans.map((p) => {
       const n = S.nerina[p.date]; const tags = dayTags(p);
       return h('button', { class: 'wrow', type: 'button', onclick: () => openDay(p.date) },
-        h('div', { class: 'wrow-h' }, h('span', { class: 'day', style: 'display:flex;gap:8px;align-items:center' }, dayShort(p.date), ornOf(p.date) ? codeEl(ornOf(p.date), true) : null), h('span', { class: 'nn', text: n ? n.titolo : '' }), h('span', { class: 'lvl', 'data-l': String(loadLevel(p.load.mente)), text: 'Testa ' + hrs(p.load.mente) })),
+        h('div', { class: 'wrow-h' }, h('span', { class: 'day', style: 'display:flex;gap:8px;align-items:center' }, cap(WD[dowOf(p.date)]) + ' ' + parseISO(p.date).getDate(), ornOf(p.date) ? codeEl(ornOf(p.date), true) : null), h('span'), h('span', { class: 'lvl', 'data-l': String(loadLevel(p.load.mente)), text: loadWord(p.load.mente) })),
         strip(p),
-        tags.length ? h('div', { class: 'tags' }, tags.map(([c2, t]) => h('span', { class: 'tag', 'data-cat': c2, text: t }))) : null,
-        p.unplaced.length ? h('span', { class: 'small', style: 'color:var(--bad)', text: 'Non ci sta: ' + p.unplaced.map((u) => `${u.label} ${dur(u.min)}`).join(', ') }) : null);
+        tags.length ? h('div', { class: 'tags' }, tags.slice(0, 3).map(([c2, t]) => h('span', { class: 'tag', 'data-cat': c2, text: t }))) : null);
     }))
   ];
 }
@@ -1177,7 +1176,7 @@ function openEvent(ev) {
     const tipo = f.querySelector('#ev-k').value, ini = f.querySelector('#ev-i').value, L2 = Number(ls.value);
     const obj = { titolo: f.querySelector('#ev-t').value.trim(), tipo, data: f.querySelector('#ev-d').value, dove: f.querySelector('#ev-w').value.trim(), durata: L2 };
     if (!obj.titolo || !obj.data) return;
-    if (tipo !== 'promemoria') { if (ini) { obj.inizio = ini; obj.fine = fmt(toMin(ini) + L2); } else { obj.flessibile = true; obj.dopo = tipo === 'ripetizione' ? '15:00' : '09:00'; } }
+    if (tipo !== 'promemoria') { if (ini) { obj.inizio = ini; obj.fine = hm(toMin(ini) + L2); } else { obj.flessibile = true; obj.dopo = tipo === 'ripetizione' ? '15:00' : '09:00'; } }
     saveEvent(ev, obj); closeSheet();
   });
   openSheet([xBtn(), h('h2', { text: isNew ? 'Nuovo impegno' : 'Modifica' }), f]);
@@ -1258,9 +1257,8 @@ function openSettings() {
 /* ---------- navigazione ---------- */
 const TABS = ['oggi', 'domani', 'settimana', 'mese'];
 function select(t) {
-  tab = TABS.includes(t) ? t : 'oggi';
-  TABS.forEach((x) => $('#t-' + x).setAttribute('aria-selected', String(x === tab)));
-  render(); window.scrollTo(0, 0);
+  const go = () => { tab = TABS.includes(t) ? t : 'oggi'; TABS.forEach((x) => $('#t-' + x).setAttribute('aria-selected', String(x === tab))); render(); window.scrollTo(0, 0); };
+  if (document.startViewTransition && !$('#main').hidden && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.startViewTransition(go); else go();
 }
 TABS.forEach((t) => $('#t-' + t).addEventListener('click', () => { if (t === 'mese') monthSel = null; select(t); }));
 $('#fab').addEventListener('click', () => openEvent(null));

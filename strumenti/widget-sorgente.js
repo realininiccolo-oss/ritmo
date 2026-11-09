@@ -80,94 +80,137 @@ async function loadData(key) {
   }
 }
 
-/* ---------- ORNRARV: codice del giorno ---------- */
+/* ---------- ORNRARV: codice del giorno e tema del mese ---------- */
 const SEQ = 'ORNRARV', MESI = ['Foliaio', 'Brumale', 'Ianuario', 'Germinale', 'Floreale', 'Messidoro', 'Estiario'];
+const FASI = { O: 'Osservare', R1: 'Remare', N: 'Navigare', R2: 'Remare', A: 'Automatizzare', R3: 'Remare', V: 'Validare' };
 const LCOL = { O: '#3D6FB4', R1: '#E0745A', N: '#D9B23C', R2: '#B23A2E', A: '#8A8F94', R3: '#7A1F1F', V: '#4B8F5A' };
+const LCOL_DARK = { O: '#7EA6E6', R1: '#F08E76', N: '#E8C55A', R2: '#E06A5C', A: '#B4B8BD', R3: '#D07070', V: '#7CC48E' };
+const THEMES = [['#F2E4D5', '#3B2418'], ['#232B3B', '#E7E9F2'], ['#EEF3F5', '#233238'], ['#EAF3E7', '#2A3B29'], ['#F1F8EC', '#2E3B22'], ['#FBF2D9', '#3B3012'], ['#F7E9CE', '#3A2E14']];
 const lkey = (l, i) => l === 'R' ? (i === 3 ? 'R2' : i === 5 ? 'R3' : 'R1') : l;
-function ornCode(date) {
+function ornOf(date) {
   const n = dayDiff('2026-09-21', date); if (n < 0 || n >= 343) return null;
-  const mi = Math.floor(n / 49), r = n % 49, wi = Math.floor(r / 7), di = r % 7;
-  return { letters: [[SEQ[mi], LCOL[lkey(SEQ[mi], mi)]], [SEQ[wi], LCOL[lkey(SEQ[wi], wi)]], [SEQ[di], LCOL[lkey(SEQ[di], di)]]], fict: `${r + 1} ${MESI[mi]}` };
+  const mi = Math.floor(n / 49), r = n % 49, wi = Math.floor(r / 7), di = r % 7, dark = mi === 1, P = dark ? LCOL_DARK : LCOL;
+  return { mi, wi, dark, letters: [[SEQ[mi], P[lkey(SEQ[mi], mi)]], [SEQ[wi], P[lkey(SEQ[wi], wi)]], [SEQ[di], P[lkey(SEQ[di], di)]]],
+    fict: `${r + 1} ${MESI[mi]}`, fase: FASI[lkey(SEQ[di], di)], bg: THEMES[mi][0], ink: THEMES[mi][1] };
 }
 
 /* ---------- disegno ---------- */
 const CC = { nerina: '#3F7A5A', studio: '#44609A', corpo: '#B06A40', sociale: '#965172', impegno: '#6D6394', ripetizione: '#6D6394' };
-const dyn = (a, b) => Color.dynamic(new Color(a), new Color(b));
-const INK = dyn('#1E2024', '#ECEBE7'), MUTED = dyn('#6C6F76', '#A09F9A'), BG = dyn('#F6F4EF', '#141518');
-function txt(stack, s2, size, color, weight) {
-  const t = stack.addText(s2); t.textColor = color || INK; t.lineLimit = 1; t.minimumScaleFactor = .7;
-  t.font = weight === 'b' ? Font.semiboldSystemFont(size) : weight === 'd' ? Font.semiboldRoundedSystemFont(size) : Font.systemFont(size);
+const CC_DARK = { nerina: '#7CC79C', studio: '#93ACE6', corpo: '#E59E70', sociale: '#E096BA', impegno: '#B3A9E0', ripetizione: '#B3A9E0' };
+async function background(o, fam) {
+  if (!o) return null;
+  const f = fam === 'large' ? 'l' : fam === 'small' ? 's' : 'm', name = `${o.mi}-${o.wi}-${f}.jpg`;
+  const path = fm.joinPath(fm.documentsDirectory(), 'ritmo-img-' + name);
+  if (fm.fileExists(path)) return fm.readImage(path);
+  try { const img = await new Request(BASE + 'widget-img/' + name).loadImage(); fm.writeImage(path, img); return img; } catch (e) { return null; }
+}
+let SHADOW = null;
+function T(stack, s2, size, color, weight, lines) {
+  const t = stack.addText(s2); t.textColor = color; t.lineLimit = lines || 1; t.minimumScaleFactor = .75;
+  if (SHADOW) { t.shadowColor = SHADOW; t.shadowRadius = 3; t.shadowOffset = new Point(0, 0); }
+  t.font = weight === 'h' ? Font.boldSystemFont(size) : weight === 'b' ? Font.semiboldSystemFont(size) : weight === 'm' ? Font.mediumSystemFont(size) : Font.systemFont(size);
   return t;
 }
-function codeRow(w, o, size) {
-  const s2 = w.addStack(); s2.centerAlignContent();
-  if (o) { o.letters.forEach(([l, c], i) => { if (i) txt(s2, '.', size, MUTED); txt(s2, l, size, new Color(c), 'b'); }); s2.addSpacer(6); txt(s2, o.fict, size - 1, MUTED); }
-  return s2;
+function codeRow(st, o, size, sub) {
+  const r = st.addStack(); r.centerAlignContent(); r.spacing = 1;
+  o.letters.forEach(([l, c], i) => { if (i) T(r, '·', size, sub); T(r, l, size, new Color(c), 'h'); });
+  r.addSpacer(7); T(r, o.fict, size, sub, 'm');
+  return r;
 }
-function whenDate(date, min) { const d = parseISO(date); d.setMinutes(min); return d; }
+function taskRow(st, t, ink, sub, P, isNow, size) {
+  const r = st.addStack(); r.centerAlignContent(); r.spacing = 8;
+  const tc = r.addStack(); tc.size = new Size(size > 13 ? 44 : 38, 0); T(tc, fmt(t.start), size, isNow ? ink : sub, 'b'); tc.addSpacer();
+  const bar = r.addStack(); bar.size = new Size(3, size + 4); bar.cornerRadius = 1.5; bar.backgroundColor = new Color(P[t.cat] || '#8D9AA2');
+  T(r, t.label, size, ink, isNow ? 'b' : 'm');
+  r.addSpacer();
+}
+const whenDate = (date, min) => { const d = parseISO(date); d.setMinutes(min); return d; };
 
 async function main() {
-  const fam = config.widgetFamily || 'medium';
+  const fam = config.widgetFamily || 'large';
   const w = new ListWidget();
-  w.backgroundColor = BG;
   const key = await getKey();
-  if (!key) { w.setPadding(12, 14, 12, 14); txt(w, 'Ritmo', 15, INK, 'b'); w.addSpacer(4); const t = w.addText('Apri lo script in Scriptable per inserire la chiave.'); t.font = Font.systemFont(12); t.textColor = MUTED; return w; }
+  if (!key) { w.backgroundColor = new Color('#232B3B'); const t = w.addText('Ritmo'); t.font = Font.boldSystemFont(16); t.textColor = Color.white(); w.addSpacer(4); const m = w.addText('Apri lo script in Scriptable e incolla la chiave.'); m.font = Font.systemFont(12); m.textColor = new Color('#E7E9F2', .8); return w; }
   const data = await loadData(key);
   S.cfg = data.cfg || null; S.nerina = data.nerina || {}; S.file = data.eventi || []; rebuildEvents();
-  const L = nowLogical(), p = plan(L.date), o = ornCode(L.date);
+  const L = nowLogical(), p = plan(L.date), o = ornOf(L.date);
   const rest = p.tasks.filter((t) => t.end > L.min);
-  const now = rest.find((t) => t.start <= L.min);
-  const nextT = rest.find((t) => t.start > L.min);
-  w.refreshAfterDate = nextT ? whenDate(L.date, nextT.start) : new Date(Date.now() + 30 * 60e3);
+  const now = rest.find((t) => t.start <= L.min), nextT = rest.find((t) => t.start > L.min), focus = now || nextT;
+  w.refreshAfterDate = focus ? whenDate(L.date, now ? now.end : nextT.start) : new Date(Date.now() + 30 * 60e3);
 
-  if (fam === 'accessoryInline') { const f = now || nextT; w.addText(`${o ? o.letters.map((x) => x[0]).join('.') + ' · ' : ''}${f ? fmt(f.start) + ' ' + f.label : 'giornata libera'}`); return w; }
-  if (fam === 'accessoryCircular') { const t = w.addText(o ? o.letters[2][0] : '·'); t.font = Font.semiboldRoundedSystemFont(30); t.centerAlignText(); return w; }
+  if (fam === 'accessoryInline') { w.addText(`${o ? o.letters.map((x) => x[0]).join('.') + ' · ' : ''}${focus ? (now ? 'ora ' : fmt(focus.start) + ' ') + focus.label : 'giornata libera'}`); return w; }
+  if (fam === 'accessoryCircular') { const t = w.addText(o ? o.letters[2][0] : '·'); t.font = Font.boldRoundedSystemFont(28); t.centerAlignText(); return w; }
   if (fam === 'accessoryRectangular') {
-    const f = now || nextT;
-    txt(w, `${o ? o.letters.map((x) => x[0]).join('.') + ' · ' : ''}${now ? 'adesso' : f ? 'alle ' + fmt(f.start) : 'oggi'}`, 12, null);
-    txt(w, f ? f.label : 'Giornata libera', 15, null, 'b');
-    if (f) txt(w, `fino alle ${fmt(f.end)}`, 12, null);
+    T(w, `${o ? o.letters.map((x) => x[0]).join('.') + '  ' : ''}${now ? 'adesso' : focus ? 'alle ' + fmt(focus.start) : 'oggi'}`, 12, Color.white(), 'm');
+    T(w, focus ? focus.label : 'Giornata libera', 15, Color.white(), 'b');
+    if (focus) T(w, `fino alle ${fmt(focus.end)}`, 12, Color.white());
     return w;
   }
 
-  w.setPadding(14, 16, 12, 16);
-  const head = w.addStack(); head.centerAlignContent();
-  const cs = head.addStack(); codeRow(cs, o, 13); head.addSpacer();
-  txt(head, 'Testa ' + hrs(p.load.mente), 12, p.load.mente > cfg().soglia.mente ? new Color('#B04A3C') : MUTED);
-  w.addSpacer(fam === 'small' ? 6 : 4);
+  const ink = new Color(o ? o.ink : '#1E2024'), sub = new Color(o ? o.ink : '#1E2024', .72), P = o && o.dark ? CC_DARK : CC;
+  w.backgroundColor = new Color(o ? o.bg : '#F6F4EF');
+  if (o) SHADOW = new Color(o.bg, .9);
+  const bg = await background(o, fam); if (bg) w.backgroundImage = bg;
+  const after = focus ? rest.slice(rest.indexOf(focus) + 1) : [];
+  const head = (size) => { const hs = w.addStack(); hs.centerAlignContent(); if (o) codeRow(hs, o, size, sub); hs.addSpacer(); if (o && fam !== 'small') T(hs, o.fase, size, sub, 'm'); };
+
   if (fam === 'small') {
-    const f = now || nextT;
-    txt(w, f ? (now ? 'Adesso' : 'Alle ' + fmt(f.start)) : 'Oggi', 12, MUTED);
-    const t = w.addText(f ? f.label : 'Giornata libera'); t.font = Font.semiboldSystemFont(17); t.textColor = INK; t.lineLimit = 2; t.minimumScaleFactor = .7;
-    if (f) txt(w, `fino alle ${fmt(f.end)}`, 12, MUTED);
-    w.addSpacer();
-    const n2 = rest[rest.indexOf(f) + 1]; if (n2) txt(w, `poi ${fmt(n2.start)} ${n2.label}`, 11, MUTED);
+    w.setPadding(14, 14, 14, 14);
+    head(12); w.addSpacer();
+    T(w, focus ? (now ? 'Adesso' : 'Alle ' + fmt(focus.start)) : 'Oggi', 12, sub, 'm');
+    T(w, focus ? focus.label : 'Giornata libera', 18, ink, 'h', 3);
+    if (focus) T(w, `fino alle ${fmt(focus.end)}`, 13, sub, 'm');
     return w;
   }
-  txt(w, dayLong(L.date), 15, INK, 'd');
-  w.addSpacer(6);
-  const list = rest.slice(0, fam === 'large' ? 9 : 3);
-  if (!list.length) txt(w, 'Niente altro in programma. Goditi la serata.', 13, MUTED);
-  for (const t of list) {
-    const r = w.addStack(); r.centerAlignContent(); r.spacing = 8;
-    const tm = r.addText(fmt(t.start)); tm.font = Font.mediumMonospacedSystemFont(12); tm.textColor = t === now ? INK : MUTED;
-    const bar = r.addStack(); bar.size = new Size(3, 14); bar.cornerRadius = 1.5; bar.backgroundColor = new Color(CC[t.cat] || '#8D9AA2');
-    const lb = r.addText(t.label); lb.font = t === now ? Font.semiboldSystemFont(13) : Font.systemFont(13); lb.textColor = INK; lb.lineLimit = 1;
-    w.addSpacer(4);
+
+  if (fam === 'medium') {
+    w.setPadding(14, 16, 14, 16);
+    head(12); w.addSpacer(8);
+    const cols = w.addStack(); cols.spacing = 14;
+    const left = cols.addStack(); left.layoutVertically(); left.size = new Size(140, 0);
+    T(left, focus ? (now ? 'Adesso' : 'Alle ' + fmt(focus.start)) : 'Oggi', 12, sub, 'm');
+    T(left, focus ? focus.label : 'Giornata libera', 18, ink, 'h', 2);
+    if (focus) T(left, `fino alle ${fmt(focus.end)}`, 13, sub, 'm');
+    left.addSpacer();
+    const right = cols.addStack(); right.layoutVertically(); right.spacing = 6;
+    T(right, after.length ? 'Poi' : 'Dopo', 12, sub, 'm');
+    if (!after.length) T(right, 'Niente altro oggi', 13, ink, 'm');
+    for (const t of after.slice(0, 3)) taskRow(right, t, ink, sub, P, false, 13);
+    right.addSpacer();
+    return w;
+  }
+
+  // grande: panoramica della giornata
+  w.setPadding(16, 18, 16, 18);
+  head(13); w.addSpacer(4);
+  T(w, dayLong(L.date), 22, ink, 'h');
+  w.addSpacer(14);
+  if (focus) {
+    T(w, now ? 'Adesso' : `Tra ${dur(nextT.start - L.min)}`, 13, sub, 'm');
+    T(w, focus.label, 24, ink, 'h', 2);
+    T(w, now ? `fino alle ${fmt(focus.end)}` : `${fmt(focus.start)} - ${fmt(focus.end)}`, 15, ink, 'b');
+  } else {
+    T(w, 'Per oggi hai finito', 22, ink, 'h');
+    const tp = plan(addDays(L.date, 1)), f2 = tp.tasks[0];
+    if (f2) T(w, `Domani si parte alle ${fmt(f2.start)} con ${f2.label}`, 14, sub, 'm', 2);
+  }
+  w.addSpacer(14);
+  if (after.length) {
+    T(w, `Poi · fine verso le ${fmt(p.finish)}`, 13, sub, 'm'); w.addSpacer(6);
+    for (const t of after.slice(0, 4)) { taskRow(w, t, ink, sub, P, false, 15); w.addSpacer(7); }
+    if (after.length > 4) T(w, `e altri ${after.length - 4}`, 12, sub, 'm');
   }
   w.addSpacer();
-  const left = p.tasks.filter((t) => t.end > L.min).length;
-  txt(w, `${left} ${left === 1 ? 'blocco' : 'blocchi'} da qui a fine giornata · piano base`, 10, MUTED);
   return w;
 }
 
 try {
   const widget = await main();
-  if (config.runsInWidget) Script.setWidget(widget); else await widget.presentMedium();
+  if (config.runsInWidget) Script.setWidget(widget); else await widget.presentLarge();
 } catch (e) {
-  const w = new ListWidget(); w.backgroundColor = BG;
+  const w = new ListWidget(); w.backgroundColor = new Color('#232B3B');
   const t = w.addText(e.message === 'chiave' ? 'Chiave sbagliata: riapri lo script e incollala di nuovo.' : 'Ritmo non riesce a caricare il piano. ' + e.message);
-  t.font = Font.systemFont(12); t.textColor = INK;
-  if (config.runsInWidget) Script.setWidget(w); else await w.presentMedium();
+  t.font = Font.systemFont(12); t.textColor = new Color('#E7E9F2');
+  if (config.runsInWidget) Script.setWidget(w); else await w.presentLarge();
 }
 Script.complete();
