@@ -53,7 +53,18 @@ await new AF(fm.readString(p))();</pre>
       <li>Tocca il widget appena messo (mentre trema) e in <b>Script</b> scegli <b>Ritmo</b>. In <b>When Interacting</b> lascia <b>Open App</b>.</li>
       <li>Per la schermata bloccata: tieni premuto sul blocco schermo → <b>Personalizza</b> → riquadro dei widget → Scriptable, poi scegli Ritmo come sopra.</li>
     </ol>
-    <p class="small muted">Consiglio: metti il widget accanto all'icona di Ritmo. Il widget mostra il piano del giorno calcolato con le stesse regole dell'app; le spunte e gli spostamenti che fai nell'app restano lì e nel widget non si vedono. iOS lo aggiorna più volte all'ora, non al minuto.</p>
+    <p class="small muted">Consiglio: metti il widget grande accanto all'icona di Ritmo. iOS lo aggiorna più volte all'ora, non al minuto.</p>
+  </div>
+  <div class="card">
+    <h2>4 · Andamento nel widget (facoltativo)</h2>
+    <p>Così il widget vede le spunte, gli spostamenti e gli impegni che metti nell'app, e mostra l'anello con quanto hai fatto.</p>
+    <ol>
+      <li>In Ritmo apri <b>Impostazioni</b> (i tre puntini in alto) → <b>Andamento nel widget</b>.</li>
+      <li>Tocca <b>Crea il permesso su GitHub</b>: si apre GitHub con già scelto solo «gist». Scorri in fondo, tocca <b>Generate token</b> e copia il codice che inizia con <b>ghp_</b>.</li>
+      <li>Torna in Ritmo, incollalo e tocca <b>Collega</b>. Ritmo ti mostra il <b>codice dell'andamento</b>: copialo.</li>
+      <li>Apri Scriptable, tocca lo script <b>Ritmo</b> → <b>Collega l'andamento</b> e incolla il codice.</li>
+    </ol>
+    <p class="small muted">Le spunte viaggiano cifrate con la chiave del widget in un gist privato del tuo account: GitHub vede solo testo illeggibile. Il permesso serve solo a scrivere i gist.</p>
   </div>
 </main>
 <script>

@@ -430,6 +430,119 @@ button:active{transform:scale(.97)}
 .bal .v{font-size:.95rem;font-weight:700;color:var(--ink)}
 .meter{height:10px}
 .strip{height:10px}
+
+/* ===== icone ===== */
+.ic{width:1.25em;height:1.25em;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-.25em}
+.ic.flip{transform:scaleX(-1)}
+.ici{display:inline-flex;align-items:center;color:var(--c,inherit)}
+.ih{display:flex;align-items:center;gap:8px}
+.node .em{display:grid;place-items:center;color:var(--c)}
+.node .em .ic{width:22px;height:22px;stroke-width:2}
+.node .ck .ic{width:24px;height:24px;stroke-width:2.8}
+.tl-item.done .node .ck{color:#fff}
+.node.sm .ic{width:17px;height:17px;color:var(--muted)}
+.tl-mini.sonno{color:var(--muted)}
+.tl-mini.sonno .node.sm{background:color-mix(in srgb,var(--stu) 12%,var(--card))}
+.tl-mini.sonno .node.sm .ic{color:var(--stu)}
+.tl-mini .chev .ic{width:17px;height:17px}
+.now-e{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:color-mix(in srgb,var(--c,var(--ink)) 16%,var(--card));color:var(--c,var(--ink))}
+.now-e .ic{width:28px;height:28px;stroke-width:2}
+.now-e .lvlb{width:30px;height:20px}
+.banner .be{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:var(--soft)}
+.banner .be .ic{width:24px;height:24px;stroke-width:2.1}
+.banner.warn .be{background:color-mix(in srgb,var(--warn) 16%,var(--card));color:var(--warn)}
+.banner.ok .be{background:color-mix(in srgb,var(--ok) 16%,var(--card));color:var(--ok)}
+.banner .chev{display:inline-flex;align-items:center;gap:4px}
+.pillc i{display:inline-flex;color:var(--c,var(--muted))}
+.pillc i .ic{width:17px;height:17px;stroke-width:2.1}
+.hero .pillc i{color:var(--h-ink)}
+.ring .re .ic{width:34px;height:34px;stroke-width:2;color:var(--mc,#46C27A)}
+.party .pe{color:#E2A63B}
+.party .pe .ic{width:96px;height:96px;stroke-width:1.6}
+.toast .ici .ic{width:20px;height:20px;stroke-width:2.2;color:#7EE0A6}
+.toast{display:flex;align-items:center;gap:8px}
+.tiles button span{display:grid;place-items:center}
+.tiles button span .ic{width:28px;height:28px;stroke-width:1.9}
+.tiles button[aria-pressed="true"] span{color:var(--ok)}
+.btn .ic{width:20px;height:20px;stroke-width:2.3}
+.btn.small .ic{width:17px;height:17px}
+.sub.ok{color:var(--ok);display:flex;align-items:center;gap:4px;font-weight:600}
+.sub.ok .ic{width:15px;height:15px}
+.eic{display:grid;place-items:center;color:var(--muted)}
+.eic .ic{width:24px;height:24px}
+.lvlb{width:26px;height:16px;flex:none}
+.lvlb rect{fill:var(--line)}
+.lvlb rect.on{fill:var(--ok)}
+.lvlb.warn rect.on{fill:var(--warn)}
+.scale.faces button{display:grid;place-items:center}
+.scale.faces button .lvlb{width:30px;height:20px}
+.lvl{display:inline-flex;align-items:center;gap:6px}
+.bl{display:inline-flex;align-items:center;gap:7px}
+.bl .ic{color:var(--c);width:19px;height:19px}
+.ih .ici .ic{width:20px;height:20px}
+.acard .ae{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--c) 16%,var(--card));color:var(--c)}
+.acard .ae .ic{width:22px;height:22px}
+.x.btn .ic{width:18px;height:18px}
+.pill .ici .ic{width:17px;height:17px;color:#F2B14C}
+/* ===== calendario ===== */
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--soft);border-radius:14px;padding:4px;gap:4px}
+.seg button{border:0;background:none;border-radius:11px;padding:9px 0;font-weight:700;font-size:1rem;color:var(--muted);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgb(0 0 0 / .08)}
+.mtitle{font-size:1.3rem;font-weight:800}
+.iconbtn2{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--card);display:grid;place-items:center;cursor:pointer}
+.iconbtn2 .ic{width:20px;height:20px;stroke-width:2.4}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cal .cw{text-align:center;font-size:.85rem;font-weight:700;color:var(--muted);padding-bottom:2px}
+.cd{aspect-ratio:1/1.05;border:0;border-radius:14px;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;padding:0;transition:transform .12s,background .15s}
+.cd .n{font-size:1.08rem;font-weight:700;font-variant-numeric:tabular-nums}
+.cd.out{background:none;opacity:.45}
+.cd.past .n{color:var(--muted)}
+.cd.today{box-shadow:inset 0 0 0 2px var(--ink)}
+.cd.sel{background:var(--ok);color:#fff}
+.cd.sel .n{color:#fff}
+.cd.sel .cdots i{background:#fff!important}
+.cdots{display:flex;gap:3px;height:6px}
+.cdots i{width:6px;height:6px;border-radius:50%;background:var(--c,var(--muted))}
+.dpanel{gap:12px;animation:rise .3s cubic-bezier(.2,.9,.3,1)}
+.dp-h{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.dp-h h3{font-size:1.3rem}
+.dp-free{font-weight:700;color:var(--ok);font-size:1.05rem}
+.dp-lab{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.fxlist{display:flex;flex-direction:column;gap:2px;padding:0}
+.fxlist.card{padding:6px}
+.fxrow{display:grid;grid-template-columns:34px auto minmax(0,1fr);gap:10px;align-items:center;border:0;background:none;text-align:left;padding:7px 6px;border-radius:12px;cursor:pointer;font-size:1.02rem;width:100%}
+.fxrow:active{background:var(--soft)}
+.fxrow .fxi{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:color-mix(in srgb,var(--c) 15%,var(--card));color:var(--c)}
+.fxrow .fxi .ic{width:19px;height:19px}
+.fxrow .t{font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip.free{border-color:color-mix(in srgb,var(--ok) 40%,var(--line));color:var(--ok)}
+.chip.free[aria-pressed="true"]{color:#fff}
+.chip.soft{font-weight:600;background:var(--soft);border-color:transparent}
+.dstrip-w{display:flex;flex-direction:column;gap:3px}
+.dstrip{position:relative;height:30px;border-radius:10px;background:color-mix(in srgb,var(--ok) 9%,var(--card));border:1.5px solid var(--line);overflow:hidden}
+.dstrip.pick{cursor:crosshair;height:40px}
+.dstrip i{position:absolute;top:0;bottom:0}
+.dstrip i.sl{background:repeating-linear-gradient(135deg,var(--soft) 0 4px,var(--line) 4px 6px)}
+.dstrip i.fx{background:var(--c);top:3px;bottom:3px;border-radius:5px}
+.dstrip i.fl{background:color-mix(in srgb,var(--c) 30%,var(--card));top:8px;bottom:8px;border-radius:4px}
+.dstrip i.ml{background:var(--pau);top:10px;bottom:10px;border-radius:3px}
+.dstrip i.nw{background:var(--ok);top:1px;bottom:1px;border-radius:6px;box-shadow:0 0 0 2px var(--card);z-index:2;animation:popn .3s}
+.dstrip i.nw.bad{background:var(--bad)}
+.dticks{position:relative;height:14px}
+.dticks span{position:absolute;transform:translateX(-50%);font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.daypick{display:flex;gap:6px;overflow-x:auto;scroll-snap-type:x proximity;margin:0 -18px;padding:2px 18px 6px;scrollbar-width:none}
+.daypick::-webkit-scrollbar{display:none}
+.daypick button{flex:0 0 54px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 7px;border-radius:14px;border:2px solid var(--line);background:var(--card);cursor:pointer}
+.daypick small{font-size:.8rem;font-weight:700;color:var(--muted)}
+.daypick b{font-size:1.2rem;font-variant-numeric:tabular-nums}
+.daypick button[aria-pressed="true"]{background:var(--ok);border-color:var(--ok);color:#fff}
+.daypick button[aria-pressed="true"] small{color:#fff}
+.daypick button[aria-pressed="true"] .cdots i{background:#fff}
+.evprev{display:flex;flex-direction:column;gap:10px;background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px}
+.warnline{color:var(--bad);font-weight:700;font-size:.98rem}
+.okline{color:var(--ok);font-weight:600;font-size:.98rem}
+.code-box{display:block;font:600 .95rem ui-monospace,Menlo,monospace;background:var(--soft);border-radius:10px;padding:10px 12px;word-break:break-all;user-select:all;-webkit-user-select:all}
+.btn.go.warn{background:var(--warn);border-color:var(--warn);box-shadow:0 4px 0 color-mix(in srgb,var(--warn) 60%,#000)}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -460,7 +573,7 @@ button:active{transform:scale(.97)}
   <button role="tab" id="t-oggi" type="button" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg>Oggi</button>
   <button role="tab" id="t-domani" type="button" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h18M6.5 17a5.5 5.5 0 0 1 11 0M12 4v3M4.5 9.5l2 1.5M19.5 9.5l-2 1.5"/></svg>Domani</button>
   <button role="tab" id="t-settimana" type="button" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 18V10M8 18V6M12 18v-7M16 18V5M20 18v-5"/></svg>Settimana</button>
-  <button role="tab" id="t-mese" type="button" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="4"/><path d="M3 9.5h18M8 3v3M16 3v3"/><path d="M7.5 13.5h.01M12 13.5h.01M16.5 13.5h.01M7.5 17h.01M12 17h.01" stroke-linecap="round" stroke-width="2.8"/></svg>Mese</button>
+  <button role="tab" id="t-mese" type="button" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="4"/><path d="M3 9.5h18M8 3v3M16 3v3"/><path d="M7.5 13.5h.01M12 13.5h.01M16.5 13.5h.01M7.5 17h.01M12 17h.01" stroke-linecap="round" stroke-width="2.8"/></svg>Calendario</button>
 </div></nav>
 </div>
 <div class="sheet-wrap" id="sheet" hidden><div class="scrim" id="scrim"></div><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title"><div class="grab"></div><div id="sheet-body" style="display:flex;flex-direction:column;gap:12px"></div></div></div>
@@ -473,7 +586,11 @@ button:active{transform:scale(.97)}
 /* Regole della settimana tipo. Il file dei dati (data.enc.json) può sovrascriverle. */
 const DEF = {
   giorno: { inizio: '09:00', inizioDomenica: '10:00', fineLavoro: '23:30' },
-  pasti: { pranzo: { da: '13:00', a: '13:45' }, cena: { da: '20:00', a: '20:45' }, cenaKarate: { da: '19:10', a: '19:50' } },
+  /* Sonno: 8h30 a notte; a letto di base a mezzanotte, più tardi se la sera finisce tardi, prima se la mattina dopo si parte presto. */
+  sonno: { ore: 510, letto: '00:00', sera: 45, mattina: 30, primaImpegno: 45 },
+  /* Pasti da 15 minuti, messi ogni giorno nel posto migliore della loro fascia; allenamenti almeno 1h30 dopo un pasto. */
+  pasti: { min: 15, pranzo: { ideale: '13:00', da: '12:00', a: '14:30' }, cena: { ideale: '20:00', da: '19:00', a: '21:30' }, merenda: { dopoPranzo: 120, primaCena: 90 } },
+  allenamento: { dopoPasto: 90 },
   nerina: { durata: 120, feriale: 3, sabato: 3, domenica: 1, b3Feriale: '16:00', b3Weekend: '13:45' },
   studio: {
     '1': [{ m: 'KRR', min: 180 }, { m: 'Fisica', min: 60 }],
@@ -545,9 +662,10 @@ function estLoad(d) {
 /* Minuti liberi che restano dopo pasti, impegni, Nerina, studio e (se è quel giorno) karate. */
 function slack(d, kar) {
   const c = cfg(), dow = dowOf(d), st = S.giorni[d] || {};
-  const D0 = toMin(dow === 0 ? c.giorno.inizioDomenica : c.giorno.inizio), D1 = toMin(c.giorno.fineLavoro, 300);
-  const isK = kar === d, cena = isK ? c.pasti.cenaKarate : c.pasti.cena;
-  let free = D1 - D0 - (toMin(c.pasti.pranzo.a) - toMin(c.pasti.pranzo.da)) - (toMin(cena.a) - toMin(cena.da));
+  const z = c.sonno || DEF.sonno, wake = toMin(z.letto, 600) + z.ore - 1440;
+  const D0 = Math.max(wake + z.mattina, dow === 0 ? toMin(c.giorno.inizioDomenica) : 0), D1 = toMin(z.letto, 600) - z.sera;
+  const isK = kar === d;
+  let free = D1 - D0 - 3 * ((c.pasti && c.pasti.min) || 15);
   if (isK) free -= toMin(c.karate.fine) - toMin(c.karate.inizio);
   for (const e of eventsOn(d)) {
     if (!TASK_TIPI.includes(e.tipo)) continue;
@@ -590,13 +708,35 @@ function weekPlan(mon) {
   return { kar, gym: new Set(gym), auto: !ov };
 }
 
+/* Primo inizio e ultima fine degli impegni fissi di un giorno (impegni con orario, blocchi fissati, karate, uscita). */
+function fixedSpan(d) {
+  const c = cfg(), st = S.giorni[d] || {}, skip = st.skip || {}; let first = null, last = null;
+  const take = (a, b) => { if (first == null || a < first) first = a; if (last == null || b > last) last = b; };
+  for (const e of eventsOn(d)) if (e.inizio && !e.flessibile && TASK_TIPI.includes(e.tipo)) { const s = toMin(e.inizio); take(s, s + evLen(e)); }
+  for (const x of (st.extra || [])) if (x.at && !skip[x.key]) { const s = toMin(x.at, 240); take(s, s + x.min); }
+  if (weekPlan(mondayOf(d)).kar === d && !skip.karate) take(toMin(c.karate.inizio), toMin(c.karate.fine));
+  if (dowOf(d) === c.sociale.uscitaGiorno && !skip.uscita) { const s = toMin(c.sociale.uscitaInizio); take(s, toMin(c.sociale.uscitaFine, s)); }
+  return { first, last };
+}
+/* La notte dopo il giorno d: ora di letto (minuti di d, anche oltre le 24) e sveglia (minuti del giorno dopo). */
+function night(d) {
+  const z = cfg().sonno || DEF.sonno;
+  let bed = toMin(z.letto, 600);
+  const a = fixedSpan(d), b = fixedSpan(addDays(d, 1));
+  if (a.last != null && a.last + 30 > bed) bed = a.last + 30;
+  let wake = bed + z.ore - 1440;
+  if (b.first != null && wake > b.first - z.primaImpegno) { wake = b.first - z.primaImpegno; bed = wake + 1440 - z.ore; }
+  return { bed, wake };
+}
+
 /* ---------- il pianificatore della giornata ---------- */
 function plan(date) {
   const c = cfg(), dow = dowOf(date), st = S.giorni[date] || {}, skip = st.skip || {}, fatti = st.fatti || {};
   const wk = weekPlan(mondayOf(date));
   const weekend = dow === 0 || dow === 6;
-  const D0 = toMin(dow === 0 ? c.giorno.inizioDomenica : c.giorno.inizio);
-  const D1 = toMin(c.giorno.fineLavoro, 300);
+  const z = c.sonno || DEF.sonno, wake = night(addDays(date, -1)).wake, bedT = night(date).bed;
+  const D0 = Math.max(wake + z.mattina, dow === 0 ? toMin(c.giorno.inizioDomenica) : 0);
+  const D1 = bedT - z.sera;
   const items = [], unplaced = [], busy = [];
   const occupy = (a, b) => busy.push([a, b]);
   const add = (it) => { items.push(it); occupy(it.start, it.end); };
@@ -623,31 +763,44 @@ function plan(date) {
   for (const x of (st.extra || [])) {
     if (skip[x.key] || !x.at) continue;
     const s = toMin(x.at, 240);
-    add({ key: x.key, base: x.key, cat: x.cat, label: x.label, sub: x.da === date ? 'Spostato qui' : 'Spostato dal ' + dateShort(x.da), start: s, end: s + x.min, task: true, moved: true });
+    add({ key: x.key, base: x.key, cat: x.cat, label: x.label, sub: x.da === date ? 'Spostato qui' : 'Spostato dal ' + dateShort(x.da), start: s, end: s + x.min, task: true, moved: true, pinned: true });
   }
-  /* Pasti: orario del giorno (st.pasti) > orario scelto per sempre (S.pasti) > regole. */
-  const meal = (key, label, m) => {
-    const own = (st.pasti || {})[key], mine = karate && key === 'cena' ? null : (S.pasti || {})[key];
-    if (own && own.no) return;
-    const pick = own || mine;
-    let s = pick ? toMin(pick.da) : toMin(m.da), e = pick ? s + pick.min : toMin(m.a); const len = e - s;
-    if (own) { add({ key, cat: 'pausa', label, start: s, end: e, own: true }); return; }
-    if (overlaps(s, e)) {
-      const ov = busy.filter(([x, y]) => s < y && x < e).sort((p, q) => p[0] - q[0]);
-      const before = ov[0][0] - len;
-      if (!overlaps(before, before + len) && before >= D0) s = before; else s = Math.max(...ov.map((o) => o[1]));
-      e = s + len;
+  items.push({ key: 'sveglia', cat: 'sonno', label: 'Sveglia', start: wake, end: wake });
+  items.push({ key: 'letto', cat: 'sonno', label: 'A letto', sub: `${dur(z.ore)} di sonno`, start: bedT, end: bedT });
+  /* Pasti da 15 minuti. Orario del giorno (st.pasti) > orario preferito (S.pasti, fa da ideale) > fascia delle regole.
+     Ogni pasto va nel punto libero più vicino all'ideale, mai nell'ora e mezza prima di un allenamento. */
+  const ML = (c.pasti && c.pasti.min) || 15, GAP = (c.allenamento || DEF.allenamento).dopoPasto;
+  const PW = (k) => { const m = (c.pasti || {})[k]; return m && m.ideale ? m : DEF.pasti[k]; };
+  const trains = () => items.filter((i) => i.key === 'karate' || i.key === 'palestra');
+  const nearTrain = (a, b) => trains().some((t) => b > t.start - GAP && a < t.end);
+  const findSlot = (ideal, lo, hi, len, rule) => {
+    let best = null;
+    for (let x = Math.ceil(lo / 5) * 5; x + len <= hi; x += 5) {
+      if (overlaps(x, x + len) || (rule && nearTrain(x, x + len))) continue;
+      if (best == null || Math.abs(x - ideal) < Math.abs(best - ideal)) best = x;
     }
-    add({ key, cat: 'pausa', label, start: s, end: e, mine: !!mine });
+    return best;
   };
-  meal('pranzo', 'Pranzo', c.pasti.pranzo);
-  meal('cena', 'Cena', karate ? c.pasti.cenaKarate : c.pasti.cena);
+  const LABELS = { colazione: 'Colazione', pranzo: 'Pranzo', merenda: 'Merenda', cena: 'Cena' };
+  const meal = (key, ideal, lo, hi) => {
+    const own = (st.pasti || {})[key], mine = (S.pasti || {})[key];
+    if (own && own.no) return null;
+    if (own) { const x = toMin(own.da, 240); const it = { key, cat: 'pausa', label: LABELS[key], start: x, end: x + (own.min || ML), meal: true, own: true }; add(it); return it; }
+    const len = (mine && mine.min) || ML; if (mine) ideal = toMin(mine.da, 240);
+    let x = findSlot(ideal, lo, hi, len, true);
+    if (x == null) x = findSlot(ideal, Math.max(wake, lo - 150), Math.min(bedT, hi + 120), len, true);
+    if (x == null) x = findSlot(ideal, Math.max(wake, lo - 150), Math.min(bedT, hi + 120), len, false);
+    if (x == null) return null;
+    const it = { key, cat: 'pausa', label: LABELS[key], start: x, end: x + len, meal: true, mine: !!mine }; add(it); return it;
+  };
+  const colazione = meal('colazione', wake, wake, wake + 60);
+  const pw = PW('pranzo'), pranzo = meal('pranzo', toMin(pw.ideale), toMin(pw.da), toMin(pw.a));
 
   for (const e of evs) {
     if (!e.flessibile || !TASK_TIPI.includes(e.tipo)) continue;
     const len = evLen(e);
     let s = earliest(len, toMin(e.dopo || '15:00')); if (s == null) s = earliest(len, D0);
-    if (s != null) add({ key: 'e:' + e.id, cat: evCat(e), label: e.titolo, sub: '🕐 da fissare', start: s, end: s + len, task: true, ev: e, flex: true });
+    if (s != null) add({ key: 'e:' + e.id, cat: evCat(e), label: e.titolo, sub: 'da fissare', start: s, end: s + len, task: true, ev: e, flex: true });
     else unplaced.push({ key: 'e:' + e.id, label: e.titolo, min: len, cat: evCat(e) });
   }
 
@@ -666,12 +819,17 @@ function plan(date) {
     }
   }
   if (wk.gym.has(date) && !skip.palestra) {
-    const len = c.palestra.durata;
-    let s = latest(len, toMin(c.palestra.dopo), toMin(c.palestra.fineIdeale));
-    if (s == null) s = earliest(len, toMin(c.palestra.dopo));
+    const len = c.palestra.durata, lo = toMin(c.palestra.dopo), hiI = toMin(c.palestra.fineIdeale);
+    const mealOk = (x) => !items.some((m) => m.meal && m.end > x - GAP && m.start < x + len);
+    const ok = (x) => !overlaps(x, x + len) && mealOk(x);
+    let s = null;
+    for (let x = Math.floor((hiI - len) / 5) * 5; x >= lo; x -= 5) if (ok(x)) { s = x; break; }
+    if (s == null) for (let x = Math.ceil(lo / 5) * 5; x + len <= D1; x += 5) if (ok(x)) { s = x; break; }
+    if (s == null) s = latest(len, lo, hiI); if (s == null) s = earliest(len, lo);
     if (s != null) add({ key: 'palestra', cat: 'corpo', label: 'Palestra', sub: '2h30, viaggio compreso', start: s, end: s + len, task: true });
     else unplaced.push({ key: 'palestra', label: 'Palestra', min: len, cat: 'corpo' });
   }
+  const cw = PW('cena'), cena = meal('cena', toMin(cw.ideale), toMin(cw.da), toMin(cw.a));
   const nN = Math.min(3, nerinaCount(c, dow));
   let after = D0;
   for (let i = 0; i < nN; i++) {
@@ -695,6 +853,52 @@ function plan(date) {
   };
   if (!bib) for (const x of study) split(x.key, x.label, x.min, 'studio', '');
   for (const x of (st.extra || [])) { if (skip[x.key] || x.at || x.min - less(x.key) <= 0) continue; split(x.key, x.label, x.min - less(x.key), x.cat, 'Recupero dal ' + dateShort(x.da)); }
+  /* Merenda per ultima, attaccata a un altro blocco così non spezza il pomeriggio; se non c'è spazio, accorcia di 15 minuti lo studio. */
+  (() => {
+    const mr = (c.pasti || {}).merenda || DEF.pasti.merenda, own = (st.pasti || {}).merenda, mine = (S.pasti || {}).merenda;
+    if (own) { meal('merenda', 0, 0, 0); return; }
+    if (!pranzo || !cena) return;
+    const len = (mine && mine.min) || ML, lo = pranzo.end + mr.dopoPranzo, hi = cena.start - mr.primaCena;
+    const ideal = mine ? toMin(mine.da, 240) : Math.round((pranzo.end + cena.start) / 2 / 5) * 5;
+    const put = (x) => add({ key: 'merenda', cat: 'pausa', label: 'Merenda', start: x, end: x + len, meal: true, mine: !!mine });
+    const edgeIn = (a2, b2) => { let best = null;
+      for (const [ga, gb] of gaps(a2, b2)) { if (gb - ga < len) continue; for (const x of [ga, gb - len]) if (!nearTrain(x, x + len) && (best == null || Math.abs(x - ideal) < Math.abs(best - ideal))) best = x; }
+      return best; };
+    let x = hi - lo >= len ? edgeIn(lo, hi) : null;
+    const rebusy = () => { busy.length = 0; for (const i of items) if (i.end > i.start) busy.push([i.start, i.end]); };
+    const flexW = (i) => i.task && !i.ev && !i.pinned && !i.bib && (i.cat === 'studio' || i.cat === 'nerina');
+    if (x == null) { /* dentro un blocco di studio: lo divide in due */
+      let bestX = null, bestI = null;
+      for (const it of items) { if (it.cat !== 'studio' || it.bib || !it.task || it.pinned) continue;
+        for (let y = Math.max(lo, it.start); y + len <= Math.min(hi + len, it.end); y += 5) {
+          const p1 = y - it.start, p2 = it.end - y - len; if ((p1 && p1 < 30) || (p2 && p2 < 30) || nearTrain(y, y + len)) continue;
+          if (bestX == null || Math.abs(y - ideal) < Math.abs(bestX - ideal)) { bestX = y; bestI = it; } } }
+      if (bestI) {
+        const it = bestI, end0 = it.end, ext = !overlaps(end0, end0 + len) && end0 + len <= D1;
+        if (bestX > it.start) { it.end = bestX; const rest = end0 - bestX - len + (ext ? len : 0); if (rest > 0) items.push({ ...it, key: (it.base || it.key) + '.' + (bestX + len), start: bestX + len, end: bestX + len + rest }); }
+        else { it.start = bestX + len; if (ext) it.end = end0 + len; }
+        if (!ext) it.sub = [it.sub, `${len} min in meno`].filter(Boolean).join(' · ');
+        rebusy(); x = bestX;
+      }
+    }
+    if (x == null) { /* tra due blocchi: sposta di 15 minuti quelli attaccati dopo */
+      const srt = items.filter((i) => i.end > i.start).sort((a2, b2) => a2.start - b2.start);
+      const cands = srt.filter((i) => flexW(i) && i.end >= lo && i.end <= hi && !nearTrain(i.end, i.end + len)).sort((a2, b2) => Math.abs(a2.end - ideal) - Math.abs(b2.end - ideal));
+      for (const it of cands) {
+        const chain = []; let e2 = it.end, k = srt.indexOf(it) + 1, ok = true;
+        while (k < srt.length && srt[k].start === e2) { if (!flexW(srt[k])) { ok = false; break; } chain.push(srt[k]); e2 = srt[k].end; k++; }
+        if (!ok && !chain.length) continue;
+        const limit = k < srt.length ? srt[k].start : D1, over = e2 + len - limit;
+        const last = chain[chain.length - 1];
+        if (over > 0 && !(last && last.cat === 'studio' && last.end - last.start - over >= 30)) continue;
+        for (const c2 of chain) { c2.start += len; c2.end += len; }
+        if (over > 0) { last.end -= over; last.sub = [last.sub, `${over} min in meno`].filter(Boolean).join(' · '); }
+        rebusy(); x = it.end; break;
+      }
+    }
+    if (x == null) x = edgeIn(Math.max(D0, lo - 60), Math.min(D1, hi + 60));
+    if (x != null) put(x);
+  })();
 
   items.sort((a, b) => a.start - b.start || a.end - b.end);
   /* Blocchi fatti con l'orario vero: restano dove li hai fatti. Se hai finito prima, o hai fatto in anticipo un blocco
@@ -774,15 +978,54 @@ const CHECK = SVG('<path d="M5 12.5l4.5 4.5L19 7.5"/>', 3.2);
 const SUN = SVG('<circle cx="12" cy="12" r="4.5" fill="currentColor"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>');
 const badge = (cat, sm) => h('span', { class: 'badge' + (sm ? ' sm' : ''), 'data-cat': cat, html: ICON[cat] || ICON.impegno });
 let toastT;
-function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2300); }
+function toast(m0) { const t = $('#toast'), [i, m] = lead(String(m0)); t.replaceChildren(); if (i) t.append(icEl(i)); t.append(m); t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2300); }
 
 /* ---------- memoria sul telefono e file dei dati ---------- */
 const LS = { pass: 'ritmo:pass', dati: 'ritmo:dati', stato: 'ritmo:stato' };
 const lsGet = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
 const lsSet = (k, v) => { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } };
-function saveState() { lsSet(LS.stato, JSON.stringify({ giorni: S.giorni, settimane: S.settimane, rotte: S.rotte, miei: S.miei, nascosti: S.nascosti, pasti: S.pasti })); }
+function saveState() { lsSet(LS.stato, JSON.stringify({ giorni: S.giorni, settimane: S.settimane, rotte: S.rotte, miei: S.miei, nascosti: S.nascosti, pasti: S.pasti })); scheduleSync(); }
+/* ---------- andamento nel widget: stato cifrato con la chiave del widget in un gist privato ---------- */
+const SYNC = 'ritmo:sync';
+const syncCfg = () => { try { return JSON.parse(lsGet(SYNC) || 'null'); } catch (e) { return null; } };
+const b64e = (u) => { let x = ''; for (let i = 0; i < u.length; i += 0x8000) x += String.fromCharCode(...u.subarray(i, i + 0x8000)); return btoa(x); };
+async function wEncrypt(txt, keyHex) {
+  const K = Uint8Array.from(keyHex.match(/../g).map((x) => parseInt(x, 16))), n = crypto.getRandomValues(new Uint8Array(16)), pt = new TextEncoder().encode(txt), c = new Uint8Array(pt.length);
+  for (let i = 0; i * 32 < pt.length; i++) {
+    const blk = new Uint8Array(K.length + 20); blk.set(K); blk.set(n, K.length); new DataView(blk.buffer).setUint32(K.length + 16, i);
+    const ks = new Uint8Array(await crypto.subtle.digest('SHA-256', blk));
+    for (let j = 0; j < 32 && i * 32 + j < pt.length; j++) c[i * 32 + j] = pt[i * 32 + j] ^ ks[j];
+  }
+  const hk = await crypto.subtle.importKey('raw', K, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const msg = new Uint8Array(16 + c.length); msg.set(n); msg.set(c, 16);
+  const t = new Uint8Array(await crypto.subtle.sign('HMAC', hk, msg));
+  return { v: 1, n: b64e(n), c: b64e(c), t: b64e(t) };
+}
+function statePayload() {
+  const L = nowLogical(), a = addDays(L.date, -2), b = addDays(L.date, 21), g = {};
+  for (const d of Object.keys(S.giorni)) if (d >= a && d <= b) g[d] = S.giorni[d];
+  return JSON.stringify({ t: Date.now(), giorni: g, settimane: S.settimane, miei: S.miei.filter((e) => e.data >= a), nascosti: S.nascosti, pasti: S.pasti });
+}
+async function gistFile() { return { files: { 'ritmo-stato.json': { content: JSON.stringify(await wEncrypt(statePayload(), S.wk)) } } }; }
+let syncT = null;
+function scheduleSync(now) { const c = syncCfg(); if (!c || !S.wk) return; clearTimeout(syncT); syncT = setTimeout(pushSync, now ? 0 : 2500); }
+async function pushSync() {
+  const c = syncCfg(); if (!c || !S.wk) return;
+  try {
+    const body = JSON.stringify(await gistFile());
+    const r = await fetch('https://api.github.com/gists/' + c.id, { method: 'PATCH', headers: { Authorization: 'Bearer ' + c.tok, Accept: 'application/vnd.github+json' }, body, keepalive: body.length < 60000 });
+    if (r.ok) lsSet('ritmo:sync-t', String(Date.now())); else if (r.status === 401 || r.status === 404) lsSet('ritmo:sync-err', String(r.status));
+  } catch (e) { /* senza rete: riprovo alla prossima modifica */ }
+}
+async function connectSync(tok) {
+  const r = await fetch('https://api.github.com/gists', { method: 'POST', headers: { Authorization: 'Bearer ' + tok, Accept: 'application/vnd.github+json' }, body: JSON.stringify({ description: 'Ritmo · andamento (cifrato)', public: false, ...(await gistFile()) }) });
+  if (!r.ok) throw new Error(r.status === 401 ? 'Codice di GitHub non valido' : 'GitHub ha risposto ' + r.status);
+  const j = await r.json(); lsSet(SYNC, JSON.stringify({ tok, id: j.id })); try { localStorage.removeItem('ritmo:sync-err'); } catch (e) { /* niente */ }
+  lsSet('ritmo:sync-t', String(Date.now())); return j.id;
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') scheduleSync(true); });
 function loadState() { try { const x = JSON.parse(lsGet(LS.stato) || 'null'); if (x) { S.giorni = x.giorni || {}; S.settimane = x.settimane || {}; S.miei = x.miei || []; S.nascosti = x.nascosti || []; S.rotte = x.rotte || {}; S.pasti = x.pasti || {}; } } catch (e) { /* stato nuovo */ } }
-function applyData(d) { S.cfg = d.cfg || null; S.nerina = d.nerina || {}; S.file = d.eventi || []; S.versione = d.versione || null; rebuildEvents(); }
+function applyData(d) { S.wk = d.wk || null; S.cfg = d.cfg || null; S.nerina = d.nerina || {}; S.file = d.eventi || []; S.versione = d.versione || null; rebuildEvents(); }
 function loadCachedData() { try { const d = JSON.parse(lsGet(LS.dati) || 'null'); if (d) applyData(d); return !!d; } catch (e) { return false; } }
 const b64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
 async function decrypt(pkg, pass) {
@@ -850,17 +1093,18 @@ function doneAhead(src, it) {
   else S.giorni[src] = { ...st, skip: { ...(st.skip || {}), [base]: { a: L.date, x, fatto: true } } };
   const tg = S.giorni[L.date] || {};
   S.giorni[L.date] = { ...tg, anticipati: [...(tg.anticipati || []), { key: x, label: it.label, cat: it.cat, min, da: src }] };
-  saveState(); render(); burst(false); toast('⚡ Fatto in anticipo!');
+  saveState(); render(); burst(false); toast('⚡ Fatto in anticipo');
 }
 function doNow(src, it) { moveItem(src, it, nowLogical().date, nowR()); }
 /* Pasti: orario e durata per oggi o per sempre. */
+const MEAL_N = { colazione: 'Colazione', pranzo: 'Pranzo', merenda: 'Merenda', cena: 'Cena' };
 function openMeal(d, key) {
-  const p = plan(d), it = p.items.find((i) => i.key === key), st = S.giorni[d] || {}, label = key === 'pranzo' ? 'Pranzo' : 'Cena';
-  const c = cfg(), def = key === 'pranzo' ? c.pasti.pranzo : c.pasti.cena;
-  const curDa = it ? hm(it.start) : ((S.pasti || {})[key] || {}).da || def.da;
-  let min = it ? it.end - it.start : ((S.pasti || {})[key] || {}).min || (toMin(def.a) - toMin(def.da));
+  const p = plan(d), it = p.items.find((i) => i.key === key), st = S.giorni[d] || {}, label = MEAL_N[key];
+  const mine0 = (S.pasti || {})[key] || {};
+  const curDa = it ? hm(it.start) : mine0.da || '13:00';
+  let min = it ? it.end - it.start : mine0.min || 15;
   const tIn = h('input', { id: 'ml-t', type: 'time', value: curDa, step: 300 });
-  const opts = [20, 30, 45, 60, 90];
+  const opts = [10, 15, 20, 30, 45];
   const chips = opts.map((m) => h('button', { class: 'chip', type: 'button', 'aria-pressed': String(m === min), text: dur(m), onclick: () => { min = m; chips.forEach((b, i) => b.setAttribute('aria-pressed', String(opts[i] === m))); } }));
   const val = () => tIn.value ? { da: tIn.value, min } : null;
   const done = () => { saveState(); render(); closeSheet(); };
@@ -872,9 +1116,9 @@ function openMeal(d, key) {
     h('div', { class: 'btns' },
       h('button', { class: 'btn go', type: 'button', text: d === nowLogical().date ? 'Solo oggi' : 'Solo questo giorno', onclick: () => { const v = val(); if (!v) return; setDay(v); done(); toast(`${key === 'pranzo' ? '🍝' : '🍽️'} ${fmt(toMin(v.da))} · oggi`); } }),
       h('button', { class: 'btn', type: 'button', text: 'Sempre così', onclick: () => { const v = val(); if (!v) return; S.pasti = { ...(S.pasti || {}), [key]: v }; setDay(null); done(); toast(`${key === 'pranzo' ? '🍝' : '🍽️'} ${fmt(toMin(v.da))} · sempre`); } })),
-    key === 'cena' ? h('p', { class: 'small muted', text: 'Nei giorni di karate la cena resta prima dell\'allenamento, se non la cambi per quel giorno.' }) : null,
+    h('p', { class: 'small muted', text: 'In automatico lo metto nel posto migliore, mai nell\'ora e mezza prima di un allenamento.' }),
     h('button', { class: 'btn ghost', type: 'button', text: `Niente ${label.toLowerCase()} ${d === nowLogical().date ? 'oggi' : 'quel giorno'}`, onclick: () => { setDay({ no: true }); done(); } }),
-    hasOwn || hasMine ? h('button', { class: 'btn ghost', type: 'button', text: hasOwn ? 'Torna all\'orario di sempre' : `Torna all'orario base (${def.da})`, onclick: () => { if (hasOwn) setDay(null); else { const m2 = { ...(S.pasti || {}) }; delete m2[key]; S.pasti = m2; } done(); } }) : null]);
+    hasOwn || hasMine ? h('button', { class: 'btn ghost', type: 'button', text: hasOwn ? 'Torna all\'orario di sempre' : 'Torna in automatico', onclick: () => { if (hasOwn) setDay(null); else { const m2 = { ...(S.pasti || {}) }; delete m2[key]; S.pasti = m2; } done(); } }) : null]);
 }
 function remainingMin(p, base) { return p.tasks.filter((t) => (t.base || t.key) === base && !p.fatti[t.key]).reduce((a, t) => a + t.end - t.start, 0); }
 /* Sposta un blocco in un altro giorno e, se si vuole, a un'ora precisa (at in minuti, null = dove c'è spazio). */
@@ -985,25 +1229,85 @@ function streak() {
   return n;
 }
 
+/* ---------- icone (linee, nel colore dell'area) ---------- */
+const IP = {
+  nerina: '<rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M8.5 7V5.5A1.5 1.5 0 0 1 10 4h4a1.5 1.5 0 0 1 1.5 1.5V7M3 12.5h18"/>',
+  libro: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20v3H6.5"/>',
+  rete: '<circle cx="6" cy="6.5" r="2.3"/><circle cx="18" cy="6" r="2.3"/><circle cx="12" cy="18" r="2.3"/><path d="M8.3 6.4l7.4-.3M7.1 8.6l3.8 7.3M16.9 8.2l-3.8 7.6"/>',
+  atomo: '<circle cx="12" cy="12" r="1.4"/><ellipse cx="12" cy="12" rx="9.5" ry="3.8"/><ellipse cx="12" cy="12" rx="9.5" ry="3.8" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9.5" ry="3.8" transform="rotate(120 12 12)"/>',
+  codice: '<path d="M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 4.5l-3 15"/>',
+  funzione: '<path d="M15.5 4.5c-1.6-1.1-3.7-.5-4.2 1.5L8.7 18c-.5 2-2.6 2.6-4.2 1.5M7.5 10.5h7.5"/><path d="M15 14l5 5M20 14l-5 5"/>',
+  logica: '<path d="M4 6h6.5a6 6 0 0 1 0 12H4z"/><path d="M1.5 9.5H4M1.5 14.5H4M16.5 12H22"/>',
+  pesi: '<path d="M6.5 6.5v11M3.5 9v6M17.5 6.5v11M20.5 9v6M6.5 12h11"/>',
+  karate: '<path d="M3 10.5h18M3 14h18"/><rect x="9.5" y="9" width="5" height="6.5" rx="1.2"/><path d="M10.5 15.5L8 21M13.5 15.5L16 21"/>',
+  posate: '<path d="M7 3v8M4.5 3v5a2.5 2.5 0 0 0 5 0V3M7 11v10M18 3c-2.2 1.2-3.5 4-3.5 8h3.5v10"/>',
+  tazza: '<path d="M4 9h12v4.5A5.5 5.5 0 0 1 10.5 19h-1A5.5 5.5 0 0 1 4 13.5z"/><path d="M16 10.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5c-.7.8-.7 1.7 0 2.5M12 3.5c-.7.8-.7 1.7 0 2.5"/>',
+  mela: '<path d="M12 7.5c-1.8-1.3-6.5-1.5-6.5 4 0 4.5 2.8 9.4 6.5 8.4 3.7 1 6.5-3.9 6.5-8.4 0-5.5-4.7-5.3-6.5-4z"/><path d="M12 7.5c0-2 .8-3.6 2.8-4.5"/>',
+  bus: '<rect x="5" y="3" width="14" height="15" rx="3"/><path d="M5 11h14M8 21v-3M16 21v-3M8.5 14.5h.01M15.5 14.5h.01"/>',
+  pausa: '<circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/>',
+  impegno: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M9 15.5l2 2 4-4"/>',
+  insegna: '<circle cx="8" cy="7" r="3"/><path d="M2.5 20c0-3.2 2.4-5.8 5.5-5.8s5.5 2.6 5.5 5.8M13 4h8.5v8.5H16"/>',
+  persone: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 4.6a3.2 3.2 0 0 1 0 6.3M18.5 14.3c1.8.8 2.8 3 2.8 5.7"/>',
+  campana: '<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
+  luna: '<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/>',
+  sole: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',
+  alba: '<path d="M3 18h18M6.5 18a5.5 5.5 0 0 1 11 0M12 4v6M9 7l3-3 3 3M4 13l1.5.8M20 13l-1.5.8"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  fulmine: '<path d="M13 2.5L4.5 13.5H11l-1 8 8.5-11H12z"/>',
+  fiamma: '<path d="M12 21.5c4 0 7-2.7 7-6.8 0-3.7-2.4-6-4-9-1 2.3-2.3 3.4-3.8 3.9.4-2.6-.6-5-3-7.1.1 4-5.2 6.4-5.2 12.2 0 4.1 3 6.8 9 6.8z"/>',
+  coppa: '<path d="M8 4h8v5.5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3.2 4M16 6h3a3 3 0 0 1-3.2 4M12 13.5V17M8.5 21h7M10 17h4v4h-4z"/>',
+  cronometro: '<circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2.5 2M9.5 2.5h5M19 6l1.5-1.5"/>',
+  bersaglio: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>',
+  foglia: '<path d="M5 19.5C5 10.5 10.5 5 20 4.5c0 9.5-5.5 15-14.5 15"/><path d="M5 19.5l8-8"/>',
+  sale: '<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>',
+  stelle: '<path d="M11 3l1.8 4.7 4.7 1.8-4.7 1.8L11 16l-1.8-4.7L4.5 9.5l4.7-1.8z"/><path d="M18.5 14.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>',
+  play: '<path d="M7.5 4.8v14.4L19 12z"/>',
+  piu: '<path d="M12 5v14M5 12h14"/>',
+  calendario: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  orologio: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/>',
+  clessidra: '<path d="M6 3h12M6 21h12M7 3c0 5.5 10 4.5 10 9s-10 3.5-10 9M17 3c0 5.5-10 4.5-10 9s10 3.5 10 9"/>',
+  luogo: '<path d="M12 21s-7-6.2-7-11.2a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.5"/>',
+  ripeti: '<path d="M17 2.5l3 3-3 3M4 11.5v-2a4 4 0 0 1 4-4h12M7 21.5l-3-3 3-3M20 12.5v2a4 4 0 0 1-4 4H4"/>',
+  cestino: '<path d="M4 7h16M9.5 7V4.5h5V7M6 7l1 13.5h10L18 7"/>',
+  zaino: '<path d="M6 9.5a6 6 0 0 1 12 0V21H6z"/><path d="M9.5 4.5V3h5v1.5M9 14h6v3.5H9z"/>',
+  avviso: '<path d="M12 3.5L21.5 20h-19z"/><path d="M12 10v4.5M12 17.3h.01"/>',
+  matita: '<path d="M4 20h4L19.5 8.5l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
+  x: '<path d="M6 6l12 12M18 6L6 18"/>',
+  lampadina: '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.4c.8.8 1 1.6 1 2.6h6c0-1 .2-1.8 1-2.6A6 6 0 0 0 12 3z"/>',
+  battito: '<path d="M3 12h4l2.5-6 4.5 12 2.5-6H21"/>',
+  freccia: '<path d="M9 5l7 7-7 7"/>',
+  bussola: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+  festa: '<path d="M4 20l4.5-12 7.5 7.5z"/><path d="M14 4.5c.5 1.5 0 3-1.5 3.5M19 9.5c-1.5-.3-3 .4-3.5 2M17 3v2M21 6.5h-2"/>'
+};
+const ic = (n, cls) => `<svg class="ic${cls ? ' ' + cls : ''}" viewBox="0 0 24 24" aria-hidden="true">${IP[n] || IP.impegno}</svg>`;
+const icEl = (n, cls) => h('span', { class: 'ici' + (cls ? ' ' + cls : ''), html: ic(n) });
+/* Le vecchie emoji nei messaggi brevi diventano icone. */
+const EI = { '📅': 'calendario', '🗑️': 'cestino', '⏱️': 'orologio', '✨': 'stelle', '👌': 'check', '📌': 'impegno', '✅': 'check', '🧭': 'bussola', '🏋️': 'pesi', '🍝': 'posate', '🍽️': 'posate', '⚡': 'fulmine', '🎉': 'check', '💪': 'sale', '🔥': 'fiamma', '👏': 'check', '🏆': 'coppa' };
+const lead = (m) => { for (const k of Object.keys(EI)) if (m.startsWith(k + ' ')) return [EI[k], m.slice(k.length + 1)]; return [null, m]; };
+/* Livello da 1 a 5 come barrette. */
+const lvlBars = (n, warn) => `<svg class="lvlb${warn ? ' warn' : ''}" viewBox="0 0 26 16" aria-hidden="true">${[0, 1, 2, 3, 4].map((i) => `<rect x="${i * 5.4}" y="${12 - i * 2.6}" width="3.6" height="${4 + i * 2.6}" rx="1.2" class="${i < n ? 'on' : ''}"/>`).join('')}</svg>`;
+
 /* ---------- emoji, umore della giornata, festa ---------- */
-const SUBJ = { 'KRR': '🧠', 'Fisica': '⚛️', 'Computer Programming': '💻', 'Analisi': '📐', 'Computational Logic': '🔣' };
+const SUBJ = { 'KRR': 'rete', 'Fisica': 'atomo', 'Computer Programming': 'codice', 'Analisi': 'funzione', 'Computational Logic': 'logica' };
 function emo(it) {
   const k = it.key || '';
-  if (k === 'palestra') return '🏋️'; if (k === 'karate') return '🥋'; if (k === 'uscita') return '🎉';
-  if (k === 'pranzo') return '🍝'; if (k === 'cena') return '🍽️'; if (k === 'via1' || k === 'via2' || it.cat === 'viaggio') return '🚌';
-  if (it.cat === 'libero') return '☕'; if (it.cat === 'studio') return SUBJ[it.label] || '📚';
-  return { nerina: '💼', sociale: '🎉', impegno: '📌', ripetizione: '🧑‍🏫', corpo: '🏃', promemoria: '🔔' }[it.cat] || '📌';
+  if (k === 'palestra') return 'pesi'; if (k === 'karate') return 'karate'; if (k === 'uscita') return 'festa';
+  if (k === 'colazione') return 'tazza'; if (k === 'merenda') return 'mela'; if (k === 'pranzo' || k === 'cena') return 'posate';
+  if (k === 'sveglia') return 'alba'; if (k === 'letto') return 'luna';
+  if (k === 'via1' || k === 'via2' || it.cat === 'viaggio') return 'bus';
+  if (it.cat === 'libero') return 'pausa'; if (it.cat === 'studio') return SUBJ[it.label] || 'libro';
+  return { nerina: 'nerina', sociale: 'persone', impegno: 'impegno', ripetizione: 'insegna', corpo: 'pesi', promemoria: 'campana' }[it.cat] || 'impegno';
 }
-const LOAD_EMO = ['', '🌤️', '🙂', '💪', '🔥', '🌋'];
+
 /* Quello che resta (o c'è) in una giornata, in pillole con emoji. */
 function dayChips(p, onlyOpen) {
   const ts = p.tasks.filter((t) => !onlyOpen || !p.fatti[t.key]), out = [];
-  const ner = ts.filter((t) => t.cat === 'nerina').length; if (ner) out.push(['nerina', '💼', String(ner)]);
-  const stu = ts.filter((t) => t.cat === 'studio').reduce((a, t) => a + t.end - t.start, 0); if (stu) out.push(['studio', '📚', dur(stu)]);
+  const ner = ts.filter((t) => t.cat === 'nerina').length; if (ner) out.push(['nerina', 'nerina', String(ner)]);
+  const stu = ts.filter((t) => t.cat === 'studio').reduce((a, t) => a + t.end - t.start, 0); if (stu) out.push(['studio', 'libro', dur(stu)]);
   for (const t of ts) if (t.key === 'palestra' || t.key === 'karate' || t.key === 'uscita' || t.ev) out.push([t.cat, emo(t), t.ev && t.flex ? 'da fissare' : fmt(t.start)]);
   return out;
 }
-const chipsEl = (list) => h('div', { class: 'pills' }, list.map(([c, e, t]) => h('span', { class: 'pillc', 'data-cat': c }, h('i', { text: e }), t)));
+const chipsEl = (list) => h('div', { class: 'pills' }, list.map(([c, e, t]) => h('span', { class: 'pillc', 'data-cat': c }, h('i', { html: ic(IP[e] ? e : EI[e] || 'check') }), t)));
 function mood(p, L) {
   const anti = p.st.anticipati || [], open = p.tasks.filter((t) => !p.fatti[t.key]);
   const all = p.tasks.length + anti.length, done = all - open.length;
@@ -1011,15 +1315,15 @@ function mood(p, L) {
   const ahead = anti.length > 0 || p.items.some((i) => i.prima);
   const line = all ? `${done}/${all}${open.length && p.finish ? ' · fine ' + fmt(p.finish) : ''}` : '';
   const pct = all ? done / all : 0;
-  if (!all) return { e: '🌴', t: 'Giornata libera', line, pct: 1 };
-  if (!open.length) return { e: '🏆', t: 'Tutto fatto!', line, pct };
-  if (!done && L.min < p.tasks[0].start) return { e: '☀️', t: `Si parte alle ${fmt(p.tasks[0].start)}`, line, pct };
-  if (late >= 2) return { e: '😅', t: 'Un po\' indietro', line, pct, late };
-  if (late === 1) return { e: '🙂', t: 'Quasi in pari', line, pct, late };
-  if (ahead) return { e: '⚡', t: 'In anticipo!', line, pct };
-  if (pct >= .5) return { e: '🔥', t: 'Che ritmo!', line, pct };
-  if (done) return { e: '💪', t: 'In pari', line, pct };
-  return { e: '🎯', t: 'Si comincia', line, pct };
+  if (!all) return { e: 'foglia', col: '#4E9A6A', t: 'Giornata libera', line, pct: 1 };
+  if (!open.length) return { e: 'coppa', col: '#E2A63B', t: 'Tutto fatto', line, pct };
+  if (!done && L.min < p.tasks[0].start) return { e: 'sole', col: '#E2A63B', t: `Si parte alle ${fmt(p.tasks[0].start)}`, line, pct };
+  if (late >= 2) return { e: 'cronometro', col: '#D98A3D', t: 'Un po\' indietro', line, pct, late };
+  if (late === 1) return { e: 'orologio', col: '#D9B23C', t: 'Quasi in pari', line, pct, late };
+  if (ahead) return { e: 'fulmine', col: '#46C27A', t: 'In anticipo', line, pct };
+  if (pct >= .5) return { e: 'fiamma', col: '#EE8A4C', t: 'Che ritmo', line, pct };
+  if (done) return { e: 'sale', col: '#46C27A', t: 'In pari', line, pct };
+  return { e: 'bersaglio', col: '#8FA0D6', t: 'Si comincia', line, pct };
 }
 let lastTap = null;
 document.addEventListener('pointerdown', (e) => { lastTap = [e.clientX, e.clientY]; }, true);
@@ -1038,7 +1342,7 @@ function burst(big) {
   }
 }
 function celebrate(e, t, sub) {
-  const ov = h('div', { class: 'party', role: 'status' }, h('div', { class: 'party-in' }, h('span', { class: 'pe', text: e }), h('b', { text: t }), sub ? h('span', { text: sub }) : null));
+  const ov = h('div', { class: 'party', role: 'status' }, h('div', { class: 'party-in' }, h('span', { class: 'pe', html: ic(e) }), h('b', { text: t }), sub ? h('span', { text: sub }) : null));
   const close = () => { ov.classList.add('out'); setTimeout(() => ov.remove(), 250); };
   ov.addEventListener('click', close); document.body.append(ov);
   lastTap = [innerWidth / 2, innerHeight / 2.4]; burst(true); setTimeout(close, 1900);
@@ -1046,18 +1350,20 @@ function celebrate(e, t, sub) {
 
 /* ---------- pezzi di interfaccia ---------- */
 function tlItem(p, it, o) {
+  const MEALK = ['colazione', 'pranzo', 'merenda', 'cena'];
+  if (it.cat === 'sonno') return h('li', { class: 'mini' }, h('div', { class: 'tl-mini sonno', 'data-cat': 'sonno' }, h('span', { class: 'time' }, h('b', { text: fmt(it.start) })), h('span', { class: 'node sm', html: ic(emo(it)) }), h('span', { class: 'grow', text: it.key === 'letto' ? `A letto · ${it.sub}` : 'Sveglia' })));
   const T = (x) => h('span', { class: 'time' }, h('b', { text: fmt(x.start) }), x.cat === 'pausa' || x.cat === 'viaggio' || x.cat === 'libero' ? null : h('span', { text: fmt(x.end) }));
-  if (it.cat === 'pausa' && !o.compact && (it.key === 'pranzo' || it.key === 'cena')) return h('li', { class: 'mini' }, h('button', { class: 'tl-mini meal', type: 'button', 'data-cat': it.cat, onclick: () => openMeal(p.date, it.key) }, T(it), h('span', { class: 'node sm', text: emo(it) }), h('span', { class: 'grow', text: `${it.label} · ${dur(it.end - it.start)}` }), h('span', { class: 'chev', text: '✏️' })));
-  if (it.cat === 'pausa' || it.cat === 'viaggio' || it.cat === 'libero') return h('li', { class: 'mini' + (it.cat === 'libero' ? ' free' : '') }, h('div', { class: 'tl-mini', 'data-cat': it.cat }, T(it), h('span', { class: 'node sm', text: emo(it) }), h('span', { class: 'grow', text: it.cat === 'libero' ? `Libero · ${dur(it.end - it.start)}` : `${it.label} · ${dur(it.end - it.start)}` })));
+  if (it.cat === 'pausa' && !o.compact && MEALK.includes(it.key)) return h('li', { class: 'mini' }, h('button', { class: 'tl-mini meal', type: 'button', 'data-cat': it.cat, onclick: () => openMeal(p.date, it.key) }, T(it), h('span', { class: 'node sm', html: ic(emo(it)) }), h('span', { class: 'grow', text: it.label }), h('span', { class: 'chev', html: ic('matita') })));
+  if (it.cat === 'pausa' || it.cat === 'viaggio' || it.cat === 'libero') return h('li', { class: 'mini' + (it.cat === 'libero' ? ' free' : '') }, h('div', { class: 'tl-mini', 'data-cat': it.cat }, T(it), h('span', { class: 'node sm', html: ic(emo(it)) }), h('span', { class: 'grow', text: it.cat === 'libero' ? `Libero · ${dur(it.end - it.start)}` : `${it.label} · ${dur(it.end - it.start)}` })));
   const done = !!p.fatti[it.key];
   const isNow = o.now != null && it.start <= o.now && o.now < it.end && !done;
   const late = o.now != null && it.end <= o.now && it.task && !done && !it.ev && !FIXED_KEYS.includes(it.key);
   const cls = 'tl-item' + (done ? ' done' : '') + (isNow ? ' now' : '') + (late ? ' late' : '') + (S.flash === it.key ? ' flash' : '');
-  const inner = [h('span', { class: 'em', text: emo(it) }), h('span', { class: 'ck', html: CHECK })];
+  const inner = [h('span', { class: 'em', html: ic(emo(it)) }), h('span', { class: 'ck', html: ic('check') })];
   const node = it.task && o.check ? h('button', { class: 'node', type: 'button', 'aria-pressed': String(done), 'aria-label': (done ? 'Segna da fare: ' : 'Segna fatto: ') + it.label, onclick: (e) => { e.stopPropagation(); toggleDone(p.date, it.key, undefined, it); } }, ...inner) : h('span', { class: 'node' }, ...inner);
   const showSub = it.sub && (it.moved || it.bib || it.flex || /^Recupero/.test(it.sub));
-  const note = !done && it.prima ? `⚡ ${dur(it.prima)} prima` : showSub ? it.sub : null;
-  const body = h('span', { class: 'txt' }, h('span', { class: 'lbl', text: it.label }), note ? h('span', { class: 'sub', text: note }) : null,
+  const note = !done && it.prima ? h('span', { class: 'sub ok' }, icEl('fulmine'), `${dur(it.prima)} prima`) : showSub ? h('span', { class: 'sub', text: it.sub }) : null;
+  const body = h('span', { class: 'txt' }, h('span', { class: 'lbl', text: it.label }), note,
     null);
   const row = h(o.compact ? 'div' : 'button', { class: cls, 'data-cat': it.cat, type: o.compact ? null : 'button', onclick: o.compact ? null : () => openItem(p.date, it) }, T(it), node, body);
   return h('li', { 'data-k': p.date + it.key, class: done ? 'ok' : '' }, row);
@@ -1129,12 +1435,12 @@ function labelOf(key) {
   return 'Blocco spostato';
 }
 const CHEERS = ['Fatto.'];
-const YAY = ['🎉 Fatto!', '✅ Fatto!', '💪 Grande!', '🔥 Vai così!', '👏 Ottimo!'];
+const YAY = ['✅ Fatto', '✅ Ottimo', '💪 Bene così', '🔥 Vai così', '✅ Avanti così'];
 function cheer(date, msg) {
   const p = plan(date); const left = p.tasks.filter((t) => !p.fatti[t.key]).length;
-  if (!left && p.tasks.length) { celebrate('🏆', 'Giornata completa!', `${p.tasks.length} su ${p.tasks.length}`); return; }
+  if (!left && p.tasks.length) { celebrate('coppa', 'Giornata completa', `${p.tasks.length} su ${p.tasks.length}`); return; }
   burst(false);
-  const m = msg === 'Fatto in anticipo' ? '⚡ In anticipo!' : msg ? `⚡ ${msg.replace('Finito ', '')}!` : YAY[Math.floor(Math.random() * YAY.length)];
+  const m = msg === 'Fatto in anticipo' ? '⚡ In anticipo' : msg ? `⚡ ${msg.replace('Finito ', '')}` : YAY[Math.floor(Math.random() * YAY.length)];
   toast(`${m}  ·  ancora ${left}`);
 }
 
@@ -1143,7 +1449,7 @@ let tab = 'oggi';
 function greeting() { const hh = new Date().getHours(); return hh < 4 ? 'Buonanotte, Niccolò' : hh < 13 ? 'Buongiorno, Niccolò' : hh < 18 ? 'Buon pomeriggio, Niccolò' : 'Buonasera, Niccolò'; }
 function renderStreak() {
   const n = streak();
-  $('#streak').textContent = n ? `🔥 ${n}` : '🌙 Chiudi';
+  $('#streak').replaceChildren(icEl(n ? 'fiamma' : 'luna'), n ? String(n) : 'Chiudi');
 }
 
 /* ---------- ORNRARV: codice del giorno, lettere, paesaggi ---------- */
@@ -1279,7 +1585,7 @@ function heroStatus(p, L) {
     h('div', { class: 'ring', html: `<svg viewBox="0 0 72 72"><circle cx="36" cy="36" r="30" class="r0"/><circle cx="36" cy="36" r="30" class="r1" stroke-dasharray="${C}" stroke-dashoffset="${C}"/></svg><span class="re"></span>` }),
     h('div', { class: 'hs-t' }, h('b'), h('span')), h('div', { class: 'hs-c' }));
   const e = box.querySelector('.re');
-  if (e.textContent !== m.e) { e.textContent = m.e; e.classList.remove('bump'); void e.offsetWidth; e.classList.add('bump'); }
+  if (e.dataset.i !== m.e) { e.dataset.i = m.e; e.innerHTML = ic(m.e); e.style.setProperty('--mc', m.col); e.classList.remove('bump'); void e.offsetWidth; e.classList.add('bump'); }
   requestAnimationFrame(() => box.querySelector('.r1').setAttribute('stroke-dashoffset', String(C * (1 - m.pct))));
   box.querySelector('.hs-t b').textContent = m.t;
   box.querySelector('.hs-t span').textContent = m.line;
@@ -1298,38 +1604,38 @@ function viewOggi() {
   const nxt = open.find((t) => t.start > L.min);
   const late = open.filter((t) => t.end <= L.min && !t.ev && !FIXED_KEYS.includes(t.key));
 
-  if (closed) out.push(h('button', { class: 'banner ok', type: 'button', onclick: () => select('domani') }, h('span', { class: 'be', text: '✅' }), h('b', { text: 'Giornata chiusa' }), h('span', { class: 'chev', text: 'Domani ›' })));
-  else if (evening) out.push(h('button', { class: 'banner', type: 'button', onclick: openClose }, h('span', { class: 'be', text: '🌙' }), h('b', { text: 'Chiudi la giornata' }), h('span', { class: 'chev', text: '1 min ›' })));
+  if (closed) out.push(h('button', { class: 'banner ok', type: 'button', onclick: () => select('domani') }, h('span', { class: 'be', html: ic('check') }), h('b', { text: 'Giornata chiusa' }), h('span', { class: 'chev', text: 'Domani ›' })));
+  else if (evening) out.push(h('button', { class: 'banner', type: 'button', onclick: openClose }, h('span', { class: 'be', html: ic('luna') }), h('b', { text: 'Chiudi la giornata' }), h('span', { class: 'chev', text: '1 min ›' })));
 
   const focus = cur || nxt;
   if (focus) {
     const pr = cur ? Math.min(100, 100 * (L.min - cur.start) / (cur.end - cur.start)) : 0;
     out.push(h('section', { class: 'now', 'data-cat': focus.cat },
-      h('div', { class: 'now-h' }, h('span', { class: 'now-e', text: emo(focus) }), h('span', { class: 'eyebrow', text: cur ? 'Adesso' : `Tra ${dur(nxt.start - L.min)}` })),
+      h('div', { class: 'now-h' }, h('span', { class: 'now-e', html: ic(emo(focus)) }), h('span', { class: 'eyebrow', text: cur ? 'Adesso' : `Tra ${dur(nxt.start - L.min)}` })),
       h('span', { class: 'big', text: focus.label }),
       h('span', { class: 'when', text: cur ? `fino alle ${fmt(cur.end)} · ancora ${dur(cur.end - L.min)}` : `${fmt(nxt.start)} → ${fmt(nxt.end)}` }),
       cur ? h('div', { class: 'tbar' }, h('i', { style: `width:${pr.toFixed(1)}%` })) : null,
-      cur ? h('div', { class: 'btns' }, h('button', { class: 'btn go big3', type: 'button', html: `${CHECK}<span>Fatto</span>`, onclick: () => toggleDone(d, cur.key, true, cur) }),
+      cur ? h('div', { class: 'btns' }, h('button', { class: 'btn go big3', type: 'button', html: `${ic('check')}<span>Fatto</span>`, onclick: () => toggleDone(d, cur.key, true, cur) }),
         !cur.ev && cur.key !== 'uscita' ? h('button', { class: 'btn big3', type: 'button', text: 'Sposta', onclick: () => openMove(d, cur) }) : null)
-        : canAhead(nxt) && nxt.start - L.min >= 10 ? h('div', { class: 'btns' }, h('button', { class: 'btn go big3', type: 'button', text: '▶ Inizia ora', onclick: () => doNow(d, nxt) }),
-          h('button', { class: 'btn big3', type: 'button', text: '✓ Già fatto', onclick: () => toggleDone(d, nxt.key, true, nxt) })) : null));
-  } else if (!p.tasks.length) out.push(h('section', { class: 'now empty' }, h('span', { class: 'now-e', text: '🌴' }), h('span', { class: 'big', text: 'Giornata libera' }), h('button', { class: 'btn go big3', type: 'button', text: '＋ Aggiungi un impegno', onclick: () => openEvent(null) })));
+        : canAhead(nxt) && nxt.start - L.min >= 10 ? h('div', { class: 'btns' }, h('button', { class: 'btn go big3', type: 'button', html: `${ic('play')}<span>Inizia ora</span>`, onclick: () => doNow(d, nxt) }),
+          h('button', { class: 'btn big3', type: 'button', html: `${ic('check')}<span>Già fatto</span>`, onclick: () => toggleDone(d, nxt.key, true, nxt) })) : null));
+  } else if (!p.tasks.length) out.push(h('section', { class: 'now empty' }, h('span', { class: 'now-e', html: ic('foglia') }), h('span', { class: 'big', text: 'Giornata libera' }), h('button', { class: 'btn go big3', type: 'button', html: `${ic('piu')}<span>Aggiungi un impegno</span>`, onclick: () => openEvent(null) })));
 
-  if (late.length) out.push(h('button', { class: 'banner warn', type: 'button', onclick: () => reflow(d) }, h('span', { class: 'be', text: '😅' }), h('b', { text: `${late.length} indietro` }), h('span', { class: 'chev', text: '✨ Riorganizza' })));
+  if (late.length) out.push(h('button', { class: 'banner warn', type: 'button', onclick: () => reflow(d) }, h('span', { class: 'be', html: ic('cronometro') }), h('b', { text: `${late.length} indietro` }), h('span', { class: 'chev' }, icEl('stelle'), 'Riorganizza')));
 
   const freeNow = !cur && (!nxt || nxt.start - L.min >= 45) && L.min < p.D1 - 45 && !closed;
   if (freeNow) {
     const tp = plan(addDays(d, 1)), work = (t) => t.cat === 'studio' || t.cat === 'nerina';
     const cand = [...open.filter((t) => work(t) && t !== nxt && t.start > L.min).map((t) => ({ t, src: d })), ...tp.tasks.filter((t) => work(t) && !tp.fatti[t.key]).map((t) => ({ t, src: tp.date }))].slice(0, 3);
     const room = nxt ? nxt.start - L.min : p.D1 - L.min;
-    if (cand.length) out.push(h('section', { class: 'sec' }, h('h3', { text: `⚡ ${dur(room)} libere: anticipa` }),
+    if (cand.length) out.push(h('section', { class: 'sec' }, h('h3', { class: 'ih' }, icEl('fulmine'), `${dur(room)} libere: anticipa`),
       h('div', { class: 'cards-x' }, cand.map(({ t, src }) => h('div', { class: 'acard', 'data-cat': t.cat },
-        h('span', { class: 'ae', text: emo(t) }), h('b', { text: t.label }), h('span', { class: 'sub', text: `${dur(t.end - t.start)} · ${src === d ? fmt(t.start) : 'domani'}` }),
-        h('div', { class: 'btns' }, h('button', { class: 'btn small go', type: 'button', text: '▶ Ora', onclick: () => doNow(src, t) }),
-          h('button', { class: 'btn small', type: 'button', text: '✓', 'aria-label': 'Già fatto', onclick: () => src === d ? toggleDone(d, t.key, true, t) : doneAhead(src, t) })))))));
+        h('span', { class: 'ae', html: ic(emo(t)) }), h('b', { text: t.label }), h('span', { class: 'sub', text: `${dur(t.end - t.start)} · ${src === d ? fmt(t.start) : 'domani'}` }),
+        h('div', { class: 'btns' }, h('button', { class: 'btn small go', type: 'button', html: `${ic('play')}<span>Ora</span>`, onclick: () => doNow(src, t) }),
+          h('button', { class: 'btn small', type: 'button', html: ic('check'), 'aria-label': 'Già fatto', onclick: () => src === d ? toggleDone(d, t.key, true, t) : doneAhead(src, t) })))))));
   }
   const anti = p.st.anticipati || [];
-  if (anti.length) out.push(chipsEl(anti.map((x) => [x.cat, '⚡', x.label])));
+  if (anti.length) out.push(chipsEl(anti.map((x) => [x.cat, 'fulmine', x.label])));
   if (!p.st.energia && !evening && p.tasks.length) out.push(energyCard(d));
   else if (p.st.energia) { const s2 = energyHints(p, L); if (s2) out.push(s2); }
   const ub = unplacedBox(p); if (ub) out.push(ub);
@@ -1364,10 +1670,10 @@ function daySummary(p, L) {
 }
 function energyCard(d) {
   const val = { mente: 0, corpo: 0 };
-  const FACES = ['😫', '😕', '😐', '🙂', '😄'];
+
   const mk = (k, label) => {
-    const btns = [1, 2, 3, 4, 5].map((n) => h('button', { type: 'button', 'aria-pressed': 'false', 'aria-label': `${label} ${n} su 5`, text: FACES[n - 1], onclick: () => { val[k] = n; btns.forEach((b2, i) => b2.setAttribute('aria-pressed', String(i + 1 === n))); if (val.mente && val.corpo) setTimeout(() => patchDay(d, { energia: { ...val } }), 250); } }));
-    return h('div', { class: 'erow' }, h('span', { class: 'eic', 'aria-label': label, text: k === 'mente' ? '🧠' : '💪' }), h('div', { class: 'scale faces' }, btns));
+    const btns = [1, 2, 3, 4, 5].map((n) => h('button', { type: 'button', 'aria-pressed': 'false', 'aria-label': `${label} ${n} su 5`, html: lvlBars(n), onclick: () => { val[k] = n; btns.forEach((b2, i) => b2.setAttribute('aria-pressed', String(i + 1 === n))); if (val.mente && val.corpo) setTimeout(() => patchDay(d, { energia: { ...val } }), 250); } }));
+    return h('div', { class: 'erow' }, h('span', { class: 'eic', 'aria-label': label, html: ic(k === 'mente' ? 'lampadina' : 'battito') }), h('div', { class: 'scale faces' }, btns));
   };
   return h('section', { class: 'card' }, h('h3', { text: 'Come stai?' }), mk('mente', 'Testa'), mk('corpo', 'Corpo'));
 }
@@ -1376,11 +1682,11 @@ function energyHints(p, L) {
   const parts = [];
   if (e.mente && e.mente <= 2) {
     const cand = [...open].reverse().find((t) => t.cat === 'studio') || open.find((t) => t.key === 'n2');
-    if (cand) parts.push(h('div', { class: 'hint' }, h('span', { text: `🧠 Testa scarica: alleggerisci. ${cand.label} alle ${fmt(cand.start)}?` }), h('div', { class: 'btns' }, h('button', { class: 'btn small', type: 'button', text: 'Sposta', onclick: () => openMove(p.date, cand) }))));
+    if (cand) parts.push(h('div', { class: 'hint' }, h('span', {}, icEl('lampadina'), `Testa scarica: alleggerisci ${cand.label} alle ${fmt(cand.start)}?`), h('div', { class: 'btns' }, h('button', { class: 'btn small', type: 'button', text: 'Sposta', onclick: () => openMove(p.date, cand) }))));
   }
   const gym = open.find((t) => t.key === 'palestra' || t.key === 'karate');
-  if (e.corpo && e.corpo <= 2 && gym) parts.push(h('div', { class: 'hint' }, h('span', { text: `💪 Corpo stanco: ${gym.label.toLowerCase()} leggero, o saltalo.` }), h('div', { class: 'btns' }, h('button', { class: 'btn small ghost', type: 'button', text: 'Salta oggi', onclick: () => skipToday(p.date, gym) }))));
-  if (!parts.length && e.mente >= 4) return h('div', { class: 'hint' }, h('span', { text: '⚡ Energia alta: parti dal blocco più duro.' }));
+  if (e.corpo && e.corpo <= 2 && gym) parts.push(h('div', { class: 'hint' }, h('span', {}, icEl('battito'), `Corpo stanco: ${gym.label.toLowerCase()} leggero, o saltalo.`), h('div', { class: 'btns' }, h('button', { class: 'btn small ghost', type: 'button', text: 'Salta oggi', onclick: () => skipToday(p.date, gym) }))));
+  if (!parts.length && e.mente >= 4) return h('div', { class: 'hint' }, h('span', {}, icEl('fulmine'), 'Energia alta: parti dal blocco più duro.'));
   return parts.length ? h('div', { style: 'display:flex;flex-direction:column;gap:8px' }, parts) : null;
 }
 
@@ -1390,11 +1696,11 @@ function viewDomani() {
   const prep = prepare(p), lv = loadLevel(p.load.mente);
   return [
     h('section', { class: 'now', 'data-cat': 'studio' },
-      h('div', { class: 'now-h' }, h('span', { class: 'now-e', text: p.tasks.length ? LOAD_EMO[lv] : '🌴' }), h('span', { class: 'eyebrow', text: p.tasks[0] ? `Si parte alle ${fmt(p.tasks[0].start)}` : 'Domani' })),
+      h('div', { class: 'now-h' }, h('span', { class: 'now-e', html: p.tasks.length ? lvlBars(lv, lv >= 4) : ic('foglia') }), h('span', { class: 'eyebrow', text: p.tasks[0] ? `Si parte alle ${fmt(p.tasks[0].start)}` : 'Domani' })),
       h('span', { class: 'big', text: p.tasks.length ? `Giornata ${loadWord(p.load.mente)}` : 'Giornata libera' }),
       p.finish ? h('span', { class: 'when', text: `fine verso le ${fmt(p.finish)}` }) : null,
       chipsEl(dayChips(p))),
-    prep.length ? h('section', { class: 'sec' }, h('h3', { text: '🎒 Prepara stasera' }), chipsEl(prep.map(([c, t]) => [c, '✔︎', t]))) : null,
+    prep.length ? h('section', { class: 'sec' }, h('h3', { class: 'ih' }, icEl('zaino'), 'Prepara stasera'), chipsEl(prep.map(([c, t]) => [c, 'check', t]))) : null,
     ritoCard(d, true), unplacedBox(p), noteChips(p), nerinaCard(d, true),
     h('h3', { text: 'Il percorso di domani' }), timeline(p, { check: false }), skippedLine(p)
   ].filter(Boolean);
@@ -1431,7 +1737,7 @@ function viewSettimana() {
   const over = plans.filter((p) => p.load.mente > c.soglia.mente).length;
   const unpl = plans.reduce((a, p) => a + p.unplaced.length, 0);
   const subj = {}; plans.forEach((p) => p.items.filter((i) => i.cat === 'studio').forEach((i) => { subj[i.label] = (subj[i.label] || 0) + (i.end - i.start) / 60; }));
-  const bal = (label, cat, v, target, txt) => [h('span', { text: label }), h('span', { class: 'meter', 'data-cat': cat }, h('i', { style: `width:${Math.min(100, 100 * v / Math.max(target, 0.01)).toFixed(1)}%` })), h('span', { class: 'v', text: txt })];
+  const bal = (label, cat, v, target, txt) => [h('span', { class: 'bl', 'data-cat': cat, html: ic(label.split(' ')[0]) + '<span>' + label.split(' ').slice(1).join(' ') + '</span>' }), h('span', { class: 'meter', 'data-cat': cat }, h('i', { style: `width:${Math.min(100, 100 * v / Math.max(target, 0.01)).toFixed(1)}%` })), h('span', { class: 'v', text: txt })];
   const studyTarget = days.reduce((a, d) => a + (c.studio[String(dowOf(d))] || []).reduce((x, s) => x + s.min, 0), 0) / 60;
   const nerTarget = days.reduce((a, d) => a + nerinaCount(c, dowOf(d)) * c.nerina.durata, 0) / 60;
   const volte = (v) => `${v} ${v === 1 ? 'volta' : 'volte'}`;
@@ -1441,18 +1747,18 @@ function viewSettimana() {
     h('div', { class: 'card' },
       h('h3', { text: 'Equilibrio' }),
       h('div', { class: 'bal' },
-        bal('💼 Lavoro', 'nerina', ner, nerTarget, `${hrs(ner)}/${hrs(nerTarget)}`), bal('📚 Scuola', 'studio', stu, studyTarget, `${hrs(stu)}/${hrs(studyTarget)}`),
-        bal('🏋️ Palestra', 'corpo', gymN, c.palestra.volte, `${gymN}×`), bal('🥋 Karate', 'corpo', karN, 1, `${karN}×`),
-        bal('🎉 Persone', 'sociale', soc, c.sociale.obiettivo, `${soc}×`)),
-      unpl ? h('p', { class: 'small muted', text: `⚠️ ${unpl} da sistemare` }) : null),
+        bal('nerina Lavoro', 'nerina', ner, nerTarget, `${hrs(ner)}/${hrs(nerTarget)}`), bal('libro Scuola', 'studio', stu, studyTarget, `${hrs(stu)}/${hrs(studyTarget)}`),
+        bal('pesi Palestra', 'corpo', gymN, c.palestra.volte, `${gymN}×`), bal('karate Karate', 'corpo', karN, 1, `${karN}×`),
+        bal('persone Persone', 'sociale', soc, c.sociale.obiettivo, `${soc}×`)),
+      unpl ? h('p', { class: 'small muted ih' }, icEl('avviso'), `${unpl} da sistemare`) : null),
     S.rotte[mondayOf(days[0])] ? h('div', { class: 'card tint', 'data-cat': 'pausa' }, h('span', { class: 'eyebrow', style: 'color:#B08400', text: 'N · La rotta della settimana' }), h('p', { text: S.rotte[mondayOf(days[0])] })) : null,
     h('div', { class: 'card' },
       h('div', { class: 'row' }, h('h3', { text: 'Sport' }), h('button', { class: 'link', type: 'button', text: 'Cambia', onclick: openSport })),
-      chipsEl([...plans.filter((p) => p.items.some((i) => i.key === 'palestra')).map((p) => ['corpo', '🏋️', dayShort(p.date)]), ...plans.filter((p) => p.items.some((i) => i.key === 'karate')).map((p) => ['corpo', '🥋', dayShort(p.date)])])),
+      chipsEl([...plans.filter((p) => p.items.some((i) => i.key === 'palestra')).map((p) => ['corpo', 'pesi', dayShort(p.date)]), ...plans.filter((p) => p.items.some((i) => i.key === 'karate')).map((p) => ['corpo', 'karate', dayShort(p.date)])])),
     h('div', { class: 'wlist' }, plans.map((p) => {
       const n = S.nerina[p.date]; const tags = dayTags(p);
       return h('button', { class: 'wrow', type: 'button', onclick: () => openDay(p.date) },
-        h('div', { class: 'wrow-h' }, h('span', { class: 'day', style: 'display:flex;gap:8px;align-items:center' }, cap(WD[dowOf(p.date)]) + ' ' + parseISO(p.date).getDate(), ornOf(p.date) ? codeEl(ornOf(p.date), true) : null), h('span'), h('span', { class: 'lvl', 'data-l': String(loadLevel(p.load.mente)), text: LOAD_EMO[loadLevel(p.load.mente)] + ' ' + loadWord(p.load.mente) })),
+        h('div', { class: 'wrow-h' }, h('span', { class: 'day', style: 'display:flex;gap:8px;align-items:center' }, cap(WD[dowOf(p.date)]) + ' ' + parseISO(p.date).getDate(), ornOf(p.date) ? codeEl(ornOf(p.date), true) : null), h('span'), h('span', { class: 'lvl', 'data-l': String(loadLevel(p.load.mente)), html: lvlBars(loadLevel(p.load.mente), loadLevel(p.load.mente) >= 4) + '<span>' + loadWord(p.load.mente) + '</span>' })),
         strip(p),
         tags.length ? h('div', { class: 'tags' }, tags.slice(0, 3).map(([c2, t]) => h('span', { class: 'tag', 'data-cat': c2, text: t }))) : null);
     }))
@@ -1460,7 +1766,7 @@ function viewSettimana() {
 }
 
 let monthSel = null;
-function viewMese() {
+function viewMeseOrn() {
   const L = nowLogical(), cur = ornOf(L.date);
   if (!ORN) return [h('p', { class: 'muted', text: 'La grafica ORNRARV non si è caricata: riapri l\'app con la rete.' })];
   const mi = monthSel != null ? monthSel : (cur ? cur.mi : (L.date < '2026-09-21' ? 0 : 6));
@@ -1501,6 +1807,81 @@ function viewMese() {
   ];
 }
 
+/* ---------- calendario: vedere subito se un giorno è libero ---------- */
+const isFix = (i) => (i.ev && !i.flex) || ['karate', 'uscita', 'palestra'].includes(i.key) || i.pinned;
+/* Impegni fissi di un giorno, finestre libere (tolti impegni, pasti e sonno: studio e Nerina si spostano) e ore di lavoro. */
+function dayInfo(p) {
+  const fixed = p.items.filter((i) => isFix(i) || (i.ev && i.flex)).sort((a, b) => a.start - b.start);
+  const wake = (p.items.find((i) => i.key === 'sveglia') || { start: p.D0 }).start, bed = (p.items.find((i) => i.key === 'letto') || { start: p.D1 }).start;
+  const busy = p.items.filter((i) => (isFix(i) || i.meal) && i.end > i.start).map((i) => [i.start, i.end]).sort((a, b) => a[0] - b[0]);
+  const free = []; let cur = Math.max(p.D0, wake);
+  for (const [a, b] of busy) { if (a - cur >= 30) free.push([cur, Math.min(a, p.D1)]); cur = Math.max(cur, b); }
+  if (p.D1 - cur >= 30) free.push([cur, p.D1]);
+  const work = p.tasks.filter((t) => t.cat === 'nerina' || t.cat === 'studio').reduce((a, t) => a + t.end - t.start, 0);
+  return { fixed, free: free.filter(([a, b]) => b - a >= 30), work, wake, bed };
+}
+/* Barra della giornata: impegni pieni, studio e Nerina chiari, pasti, sonno; tocca per scegliere l'ora. */
+function dayStrip(p, o = {}) {
+  const inf = dayInfo(p), A = Math.min(inf.wake, 7 * 60), B = Math.max(inf.bed, 24 * 60), W = B - A;
+  const pos = (a, b) => `left:${(100 * (a - A) / W).toFixed(2)}%;width:${Math.max(.6, 100 * (b - a) / W).toFixed(2)}%`;
+  const el = h('div', { class: 'dstrip' + (o.pick ? ' pick' : '') },
+    h('i', { class: 'sl', style: pos(A, inf.wake) }), h('i', { class: 'sl', style: pos(inf.bed, B) }),
+    ...p.items.filter((i) => i.end > i.start && i.cat !== 'libero').map((i) => h('i', { class: isFix(i) ? 'fx' : i.meal ? 'ml' : 'fl', 'data-cat': i.cat, style: pos(i.start, i.end) })),
+    o.mark ? h('i', { class: 'nw' + (o.clash ? ' bad' : ''), style: pos(o.mark[0], o.mark[1]) }) : null);
+  if (o.pick) el.addEventListener('click', (e) => { const r = el.getBoundingClientRect(); const m = A + (e.clientX - r.left) / r.width * W; o.pick(Math.max(A, Math.round(m / 15) * 15)); });
+  const ticks = h('div', { class: 'dticks' }, [9, 12, 15, 18, 21, 24].filter((x) => x * 60 > A && x * 60 < B).map((x) => h('span', { style: `left:${(100 * (x * 60 - A) / W).toFixed(2)}%`, text: String(x % 24) })));
+  return h('div', { class: 'dstrip-w' }, el, ticks);
+}
+function fixedRow(d, it) {
+  return h('button', { class: 'fxrow', type: 'button', 'data-cat': it.cat, onclick: () => it.ev ? openEvent(it.ev) : openItem(d, it) },
+    h('span', { class: 'fxi', html: ic(emo(it)) }), h('b', { class: 't', text: it.flex ? 'da fissare' : `${fmt(it.start)}–${fmt(it.end)}` }), h('span', { class: 'grow', text: it.label }));
+}
+function dayPanel(d, o = {}) {
+  const p = plan(d), inf = dayInfo(p), lv = loadLevel(p.load.mente), on = ornOf(d), L = nowLogical();
+  const head = h('div', { class: 'dp-h' }, h('div', {}, h('h3', { text: d === L.date ? 'Oggi' : d === addDays(L.date, 1) ? 'Domani' : dayLong(d) }), h('span', { class: 'small muted', text: (d === L.date || d === addDays(L.date, 1) ? dayLong(d) + ' · ' : '') + (on ? on.d.code : '') })),
+    h('span', { class: 'lvl', html: lvlBars(lv, lv >= 4) + `<span>${loadWord(p.load.mente)}</span>` }));
+  const deadlines = p.notes.filter((e) => e.tipo === 'scadenza' || e.tipo === 'festa' || e.tipo === 'promemoria');
+  return h('div', { class: 'card dpanel' }, head,
+    inf.fixed.length ? h('div', { class: 'fxlist' }, inf.fixed.map((it) => fixedRow(d, it))) : h('div', { class: 'dp-free ih' }, icEl('check'), 'Nessun impegno fisso'),
+    deadlines.length ? chipsEl(deadlines.map((e) => [e.tipo === 'scadenza' ? 'scadenza' : 'festa', e.tipo === 'promemoria' ? 'campana' : e.tipo === 'scadenza' ? 'avviso' : 'festa', e.titolo])) : null,
+    h('div', { class: 'dp-lab' }, h('b', { text: 'Libero' }), h('span', { class: 'small muted', text: inf.work ? `studio e Nerina (${dur(inf.work)}) si adattano` : '' })),
+    inf.free.length ? h('div', { class: 'chips' }, inf.free.map(([a, b]) => h('button', { class: 'chip free', type: 'button', text: `${fmt(a)}–${fmt(b)}`, onclick: () => (o.onFree ? o.onFree(a, b) : openEvent(null, { data: d, inizio: hm(a) })) }))) : h('span', { class: 'small muted', text: 'Nessuno spazio libero' }),
+    o.strip !== false ? dayStrip(p) : null,
+    o.actions !== false ? h('div', { class: 'btns' }, h('button', { class: 'btn go', type: 'button', html: `${ic('piu')}<span>Impegno qui</span>`, onclick: () => openEvent(null, { data: d }) }), h('button', { class: 'btn', type: 'button', text: 'Apri il giorno', onclick: () => openDay(d) })) : null);
+}
+let calMode = 'cal', calMonth = null, calDay = null;
+function viewMese() {
+  const seg = h('div', { class: 'seg' }, [['cal', 'Calendario'], ['orn', 'Mese settale']].map(([k, t]) => h('button', { type: 'button', 'aria-pressed': String(calMode === k), text: t, onclick: () => { calMode = k; render(); } })));
+  if (calMode === 'orn') return [seg, ...viewMeseOrn()];
+  const L = nowLogical();
+  if (!calDay) calDay = L.date;
+  if (!calMonth) calMonth = calDay.slice(0, 8) + '01';
+  const o = ornOf(calDay);
+  if (ORN && o) setHero('cal:' + o.mi, () => monthHero(o.mi)); else setHero('cal', () => dayHero(calDay, 'Calendario', true));
+  const m0 = parseISO(calMonth), y = m0.getFullYear(), mo = m0.getMonth();
+  const start = addDays(calMonth, -((dowOf(calMonth) + 6) % 7)), days = [...Array(42)].map((_, i) => addDays(start, i));
+  const weeks = days.slice(35).some((d) => parseISO(d).getMonth() === mo) ? 6 : 5;
+  const go = (n) => { const d = new Date(y, mo + n, 1); calMonth = iso(d); render(); };
+  const grid = h('div', { class: 'cal' }, ['L', 'M', 'M', 'G', 'V', 'S', 'D'].map((x) => h('span', { class: 'cw', text: x })),
+    ...days.slice(0, weeks * 7).map((d) => {
+      const dd = parseISO(d), inM = dd.getMonth() === mo, p = plan(d), fx = dayInfo(p).fixed;
+      const dots = fx.slice(0, 3).map((i) => h('i', { 'data-cat': i.cat }));
+      if (p.notes.some((e) => e.tipo === 'scadenza')) dots.push(h('i', { 'data-cat': 'scadenza' }));
+      return h('button', { class: 'cd' + (inM ? '' : ' out') + (d < L.date ? ' past' : '') + (d === L.date ? ' today' : '') + (d === calDay ? ' sel' : ''), type: 'button', 'aria-label': `${dayLong(d)}: ${fx.length ? fx.length + ' impegni' : 'nessun impegno'}`, onclick: () => { calDay = d; if (!inM) calMonth = d.slice(0, 8) + '01'; render(); } },
+        h('span', { class: 'n', text: String(dd.getDate()) }), h('span', { class: 'cdots' }, dots));
+    }));
+  const upcoming = [];
+  for (let i = 0; i < 21 && upcoming.length < 8; i++) { const d = addDays(L.date, i), p = plan(d); for (const it of dayInfo(p).fixed) if (it.ev) upcoming.push([d, it]); }
+  return [seg,
+    h('div', { class: 'mnav' }, h('button', { class: 'iconbtn2', type: 'button', 'aria-label': 'Mese prima', html: ic('freccia', 'flip'), onclick: () => go(-1) }),
+      h('b', { class: 'mtitle', text: cap(MO[mo]) + ' ' + y }),
+      h('button', { class: 'iconbtn2', type: 'button', 'aria-label': 'Mese dopo', html: ic('freccia'), onclick: () => go(1) })),
+    calDay !== L.date || calMonth.slice(0, 7) !== L.date.slice(0, 7) ? h('button', { class: 'btn small ghost', type: 'button', text: 'Torna a oggi', onclick: () => { calDay = L.date; calMonth = L.date.slice(0, 8) + '01'; render(); } }) : null,
+    grid, dayPanel(calDay),
+    upcoming.length ? h('section', { class: 'sec' }, h('h3', { text: 'Prossimi impegni' }), h('div', { class: 'fxlist card' }, upcoming.map(([d, it]) => h('button', { class: 'fxrow', type: 'button', 'data-cat': it.cat, onclick: () => { calDay = d; calMonth = d.slice(0, 8) + '01'; render(); window.scrollTo({ top: 0 }); } },
+      h('span', { class: 'fxi', html: ic(emo(it)) }), h('b', { class: 't', text: `${dayShort(d)}${it.flex ? '' : ' · ' + fmt(it.start)}` }), h('span', { class: 'grow', text: it.label }))))) : null];
+}
+
 /* ---------- fogli ---------- */
 function openSheet(nodes) { $('#sheet-body').replaceChildren(...nodes.filter(Boolean)); $('#sheet').hidden = false; document.body.style.overflow = 'hidden'; const f = $('#sheet-body').querySelector('h2'); if (f) f.id = 'sheet-title'; }
 /* Il + si stringe quando scorri, per non coprire la giornata. */
@@ -1515,7 +1896,7 @@ let scT = 0; addEventListener('scroll', () => { if (scT) return; scT = requestAn
 function closeSheet() { $('#sheet').hidden = true; document.body.style.overflow = ''; }
 $('#scrim').addEventListener('click', closeSheet);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#sheet').hidden) closeSheet(); });
-const xBtn = () => h('button', { class: 'btn small x', style: 'background:var(--card)', type: 'button', text: '✕', 'aria-label': 'Chiudi', onclick: closeSheet });
+const xBtn = () => h('button', { class: 'btn small x', style: 'background:var(--card)', type: 'button', html: ic('x'), 'aria-label': 'Chiudi', onclick: closeSheet });
 
 function openDay(d) {
   const p = plan(d), c = cfg(), dow = dowOf(d);
@@ -1556,38 +1937,77 @@ function openItem(d, it) {
   if (more.childNodes.length) nodes.push(more);
   openSheet(nodes);
 }
-function openEvent(ev) {
-  const L = nowLogical(); const isNew = !ev;
-  const e = ev || { titolo: '', tipo: 'impegno', data: L.date, inizio: '', durata: 60 };
-  let tipo = e.tipo, data = e.data, ini = e.flessibile ? '' : (e.inizio || ''), len = ev ? evLen(ev) : 60;
-  const TIPI = [['impegno', '📌', 'Impegno'], ['ripetizione', '🧑‍🏫', 'Ripetizione'], ['sociale', '🎉', 'Persone'], ['promemoria', '🔔', 'Promemoria']];
+function openEvent(ev, pre = {}) {
+  const L = nowLogical(), isNew = !ev;
+  const e = ev || { titolo: '', tipo: 'impegno', data: pre.data || L.date, inizio: pre.inizio || '', durata: 60 };
+  let tipo = e.tipo === 'scadenza' || e.tipo === 'festa' ? 'promemoria' : e.tipo, data = e.data, ini = e.flessibile ? '' : (e.inizio || ''), len = ev ? evLen(ev) : 60, rip = 1;
+  const TIPI = [['impegno', 'impegno', 'Impegno'], ['ripetizione', 'insegna', 'Ripetizione'], ['sociale', 'persone', 'Persone'], ['promemoria', 'campana', 'Promemoria']];
   const pick = (box, sel) => box.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === sel)));
-  const title = h('input', { id: 'ev-t', class: 'bigin', type: 'text', required: true, value: e.titolo, placeholder: 'Cosa devi fare?', autocomplete: 'off' });
-  const tiles = h('div', { class: 'tiles' }, TIPI.map(([v, em, t]) => h('button', { type: 'button', 'aria-pressed': String(v === tipo), onclick: (x) => { tipo = v; pick(tiles, x.currentTarget); upd(); } }, h('span', { text: em }), t)));
-  const days = [0, 1, 2, 3].map((i) => addDays(L.date, i));
-  const dIn = h('input', { type: 'date', value: data, class: 'mini-in', onchange: () => { data = dIn.value; pick(dayBox, null); } });
-  const dayBox = h('div', { class: 'chips' }, days.map((d, i) => h('button', { class: 'chip', type: 'button', 'aria-pressed': String(d === data), text: i === 0 ? 'Oggi' : i === 1 ? 'Domani' : dayShort(d), onclick: (x) => { data = d; dIn.value = d; pick(dayBox, x.currentTarget); } })), dIn);
-  const tIn = h('input', { type: 'time', value: ini, class: 'mini-in', step: 300, onchange: () => { ini = tIn.value; pick(timeBox, null); } });
-  const TIMES = [['', '✨ Scegli tu'], ['09:00', '9:00'], ['11:00', '11:00'], ['15:00', '15:00'], ['18:00', '18:00'], ['21:00', '21:00']];
-  const timeBox = h('div', { class: 'chips' }, TIMES.map(([v, t]) => h('button', { class: 'chip', type: 'button', 'aria-pressed': String(v === ini), text: t, onclick: (x) => { ini = v; tIn.value = v; pick(timeBox, x.currentTarget); } })), tIn);
-  const LENS = [30, 60, 90, 120, 180];
-  const lenBox = h('div', { class: 'chips' }, LENS.map((m) => h('button', { class: 'chip', type: 'button', 'aria-pressed': String(m === len), text: dur(m), onclick: (x) => { len = m; pick(lenBox, x.currentTarget); } })));
-  const where = h('input', { type: 'text', class: 'mini-in wide', value: e.dove || '', placeholder: '📍 Dove (se serve)' });
-  const whenWrap = h('div', { class: 'ev-when' }, h('b', { class: 'lab', text: '🕐 Ora' }), timeBox, h('b', { class: 'lab', text: '⏳ Durata' }), lenBox);
-  const upd = () => { whenWrap.hidden = tipo === 'promemoria'; };
+  const title = h('input', { id: 'ev-t', class: 'bigin', type: 'text', value: e.titolo, placeholder: 'Cosa devi fare?', autocomplete: 'off' });
+  const recent = [...new Map([...S.miei].reverse().map((x) => [x.titolo.toLowerCase(), x])).values()].slice(0, 5);
+  const recentBox = isNew && recent.length ? h('div', { class: 'chips' }, recent.map((x) => h('button', { class: 'chip soft', type: 'button', text: x.titolo, onclick: () => { title.value = x.titolo; tipo = x.tipo; len = evLen(x); if (x.dove) where.value = x.dove; pick(tiles, tiles.querySelector(`[data-t="${tipo}"]`)); pick(lenBox, lenBox.querySelector(`[data-m="${len}"]`)); upd(); } }))) : null;
+  const tiles = h('div', { class: 'tiles' }, TIPI.map(([v, i, t]) => h('button', { type: 'button', 'data-t': v, 'aria-pressed': String(v === tipo), onclick: (x) => { tipo = v; pick(tiles, x.currentTarget); upd(); } }, h('span', { html: ic(i) }), t)));
+  /* giorni: striscia che scorre, con i pallini degli impegni */
+  const strip = h('div', { class: 'daypick' }, [...Array(35)].map((_, i) => { const d = addDays(L.date, i), n = dayInfo(plan(d)).fixed.length, dd = parseISO(d);
+    return h('button', { type: 'button', 'data-d': d, 'aria-pressed': String(d === data), onclick: (x) => { data = d; dIn.value = d; pick(strip, x.currentTarget); upd(); } },
+      h('small', { text: i === 0 ? 'Oggi' : i === 1 ? 'Dom' : WDS[dd.getDay()] }), h('b', { text: String(dd.getDate()) }), h('span', { class: 'cdots' }, [...Array(Math.min(n, 3))].map(() => h('i')))); }));
+  const dIn = h('input', { type: 'date', value: data, class: 'mini-in', style: 'align-self:flex-start', 'aria-label': 'Altra data', onchange: () => { if (!dIn.value) return; data = dIn.value; pick(strip, strip.querySelector(`[data-d="${data}"]`)); upd(); } });
+  const preview = h('div', { class: 'evprev' });
+  const tIn = h('input', { type: 'time', value: ini, class: 'mini-in', step: 300, 'aria-label': 'Ora precisa', onchange: () => { ini = tIn.value; upd(); } });
+  const timeBox = h('div', { class: 'chips' });
+  const LENS = [15, 30, 45, 60, 90, 120, 180];
+  const lenBox = h('div', { class: 'chips' }, LENS.map((m) => h('button', { class: 'chip', type: 'button', 'data-m': m, 'aria-pressed': String(m === len), text: dur(m), onclick: (x) => { len = m; pick(lenBox, x.currentTarget); upd(); } })));
+  const ripBox = isNew ? h('div', { class: 'chips' }, [[1, 'No'], [4, '4 settimane'], [8, '8 settimane'], [12, '12 settimane']].map(([n, t]) => h('button', { class: 'chip', type: 'button', 'aria-pressed': String(n === rip), text: t, onclick: (x) => { rip = n; pick(ripBox, x.currentTarget); } }))) : null;
+  const where = h('input', { type: 'text', class: 'mini-in wide', value: e.dove || '', placeholder: 'Dove (se serve)' });
+  const save = h('button', { class: 'btn go wide big3', type: 'button', onclick: () => submit() });
+  const whenWrap = h('div', { class: 'ev-when' });
+  const lab = (i, t) => h('b', { class: 'lab ih' }, icEl(i), t);
+  /* anteprima: com'è quel giorno e cosa succede mettendo l'impegno lì */
+  function upd() {
+    whenWrap.hidden = tipo === 'promemoria';
+    const p0 = (() => { const keep = S.eventi; if (ev) S.eventi = S.eventi.filter((x) => x !== ev); const r = plan(data); S.eventi = keep; return r; })();
+    const inf = dayInfo(p0), s0 = ini ? toMin(ini) : null, mark = s0 != null && tipo !== 'promemoria' ? [s0, s0 + len] : null;
+    const clash = mark ? inf.fixed.filter((i) => !i.flex && i.start < mark[1] && mark[0] < i.end) : [];
+    const moves = mark && !clash.length ? p0.tasks.filter((t) => !isFix(t) && !t.ev && t.start < mark[1] && mark[0] < t.end) : [];
+    const mealHit = mark ? p0.items.filter((i) => i.meal && i.start < mark[1] && mark[0] < i.end) : [];
+    preview.replaceChildren(...[
+      h('div', { class: 'dp-h' }, h('b', { text: dayLong(data) }), h('span', { class: 'lvl', html: lvlBars(loadLevel(p0.load.mente), loadLevel(p0.load.mente) >= 4) + `<span>${loadWord(p0.load.mente)}</span>` })),
+      inf.fixed.length ? h('div', { class: 'fxlist' }, inf.fixed.map((it) => h('div', { class: 'fxrow', 'data-cat': it.cat }, h('span', { class: 'fxi', html: ic(emo(it)) }), h('b', { class: 't', text: it.flex ? 'da fissare' : `${fmt(it.start)}–${fmt(it.end)}` }), h('span', { class: 'grow', text: it.label })))) : h('div', { class: 'dp-free ih' }, icEl('check'), 'Nessun impegno fisso'),
+      tipo !== 'promemoria' ? dayStrip(p0, { mark, clash: clash.length > 0, pick: (m) => { ini = hm(m); tIn.value = ini; upd(); } }) : null,
+      clash.length ? h('div', { class: 'warnline ih' }, icEl('avviso'), `Si sovrappone a ${clash.map((c2) => `${c2.label} (${fmt(c2.start)}–${fmt(c2.end)})`).join(', ')}`) : null,
+      !clash.length && (moves.length || mealHit.length) ? h('div', { class: 'okline ih' }, icEl('stelle'), [moves.length ? (() => { const u = [...new Set(moves.map((t) => t.label))]; return `${u.join(', ')} ${u.length === 1 ? 'si sposta da solo' : 'si spostano da soli'}`; })() : '', mealHit.length ? 'il pasto si sposta' : ''].filter(Boolean).join(' · ')) : null].filter(Boolean));
+    /* orari proposti: il primo orario utile in ogni finestra libera */
+    const sug = inf.free.filter(([a, b]) => b - a >= len).map(([a]) => a).filter((a) => data !== L.date || a > L.min).slice(0, 4);
+    const nowOk = data === L.date && inf.free.some(([a, b]) => a <= L.min + 5 && b >= L.min + 5 + len);
+    if (nowOk) sug.unshift(Math.ceil((L.min + 5) / 15) * 15);
+    timeBox.replaceChildren(
+      h('button', { class: 'chip', type: 'button', 'aria-pressed': String(!ini), text: 'Lo metto io', onclick: () => { ini = ''; tIn.value = ''; upd(); } }),
+      ...[...new Set(sug)].map((m) => h('button', { class: 'chip free', type: 'button', 'aria-pressed': String(ini === hm(m)), text: fmt(m), onclick: () => { ini = hm(m); tIn.value = ini; upd(); } })), tIn);
+    whenWrap.replaceChildren(lab('orologio', 'Ora'), timeBox, lab('clessidra', 'Durata'), lenBox);
+    const when = tipo === 'promemoria' ? '' : ini ? ` · ${fmt(toMin(ini))}` : '';
+    save.innerHTML = `${ic(isNew ? 'piu' : 'check')}<span>${isNew ? 'Aggiungi' : 'Salva'} · ${dayShort(data)}${when}</span>`;
+    save.classList.toggle('warn', clash.length > 0);
+  }
   const submit = () => {
-    const obj = { titolo: title.value.trim(), tipo, data: data || dIn.value, dove: where.value.trim(), durata: len };
+    const obj = { titolo: title.value.trim(), tipo, data, dove: where.value.trim(), durata: len };
     if (!obj.titolo) { title.focus(); title.classList.remove('shake'); void title.offsetWidth; title.classList.add('shake'); return; }
     if (tipo !== 'promemoria') { if (ini) { obj.inizio = ini; obj.fine = hm(toMin(ini) + len); } else { obj.flessibile = true; obj.dopo = tipo === 'ripetizione' ? '15:00' : '09:00'; } }
-    closeSheet(); saveEvent(ev, obj);
+    closeSheet();
+    if (isNew && rip > 1) {
+      const serie = 'r' + Date.now().toString(36);
+      for (let i = 0; i < rip; i++) S.miei.push({ ...obj, data: addDays(data, 7 * i), serie, id: 'm' + Date.now().toString(36) + i });
+      rebuildEvents(); saveState(); S.flash = 'e:' + S.miei[S.miei.length - rip].id; render(); S.flash = null; burst(false); toast(`📌 Aggiunto ${rip} volte · ${cap(WD[dowOf(data)])}`);
+    } else saveEvent(ev, obj);
   };
-  title.addEventListener('keydown', (x) => { if (x.key === 'Enter') { x.preventDefault(); submit(); } });
+  title.addEventListener('keydown', (x) => { if (x.key === 'Enter') { x.preventDefault(); title.blur(); } });
   upd();
-  openSheet([xBtn(), h('h2', { text: isNew ? 'Nuovo impegno' : 'Modifica' }), title, tiles,
-    h('b', { class: 'lab', text: '📅 Quando' }), dayBox, whenWrap, where,
-    h('button', { class: 'btn go wide big3', type: 'button', text: isNew ? '＋ Aggiungi' : '✓ Salva', onclick: submit }),
-    !isNew ? h('button', { class: 'btn ghost', type: 'button', text: '🗑️ Elimina', onclick: () => delEvent(ev) }) : null]);
-  if (isNew) setTimeout(() => title.focus(), 280);
+  openSheet([xBtn(), h('h2', { text: isNew ? 'Nuovo impegno' : 'Modifica' }), title, recentBox, tiles,
+    lab('calendario', 'Quando'), strip, dIn, preview, whenWrap,
+    isNew ? lab('ripeti', 'Ogni settimana') : null, ripBox, where, save,
+    !isNew ? h('button', { class: 'btn ghost ih', type: 'button', onclick: () => delEvent(ev) }, icEl('cestino'), 'Elimina') : null,
+    !isNew && ev.serie ? h('button', { class: 'btn ghost ih', type: 'button', onclick: () => { S.miei = S.miei.filter((x) => !(x.serie === ev.serie && x.data >= ev.data)); rebuildEvents(); saveState(); render(); closeSheet(); toast('🗑️ Eliminati anche i prossimi'); } }, icEl('ripeti'), 'Elimina anche i prossimi') : null]);
+  requestAnimationFrame(() => { const sel = strip.querySelector('[aria-pressed="true"]'); if (sel) strip.scrollLeft = sel.offsetLeft - 16; });
+  if (isNew && !pre.inizio) setTimeout(() => title.focus(), 280);
 }
 function saveEvent(ev, obj, quiet) {
   if (ev && ev.src === 'file') S.nascosti = [...S.nascosti, ev.id];
@@ -1648,6 +2068,25 @@ function openClose() {
       openSheet([xBtn(), h('span', { class: 'eyebrow', 'data-cat': 'nerina', text: 'Giornata chiusa' }), h('span', { class: 'big-ok', text: `${n} di fila` }), h('p', { class: 'muted', text: 'Conta le giornate chiuse, non quelle perfette.' }), h('div', { class: 'card' }, h('span', { class: 'eyebrow', text: 'Domani' }), h('p', { text: describe(tp) })), h('button', { class: 'btn go wide', type: 'button', text: 'Guarda domani', onclick: () => { closeSheet(); select('domani'); } })]);
     } })]);
 }
+function syncCard() {
+  const c = syncCfg(), t = Number(lsGet('ritmo:sync-t') || 0), err = lsGet('ritmo:sync-err');
+  if (!S.wk) return h('div', { class: 'card' }, h('b', { text: 'Andamento nel widget' }), h('span', { class: 'small muted', text: 'Serve la versione nuova dei dati: tocca «Aggiorna adesso» qui sopra.' }));
+  if (c) {
+    const code = h('code', { class: 'code-box', text: c.id });
+    return h('div', { class: 'card' }, h('b', { class: 'ih' }, icEl('check'), 'Andamento collegato'),
+      h('span', { class: 'small muted', text: err ? `Ultimo invio non riuscito (${err}): ricollega con un nuovo codice.` : t ? `Ultimo invio alle ${fmt(new Date(t).getHours() * 60 + new Date(t).getMinutes())}. Il widget si aggiorna da solo.` : 'Pronto.' }),
+      h('span', { class: 'small', text: 'Codice da mettere nel widget (Scriptable → Ritmo → Collega l\'andamento):' }), code,
+      h('div', { class: 'btns' }, h('button', { class: 'btn small', type: 'button', text: 'Copia il codice', onclick: async () => { try { await navigator.clipboard.writeText(c.id); toast('✅ Copiato'); } catch (e) { toast('Tieni premuto sul codice per copiarlo'); } } }),
+        h('button', { class: 'btn small', type: 'button', text: 'Invia adesso', onclick: async () => { await pushSync(); toast('✅ Inviato'); openSettings(); } }),
+        h('button', { class: 'btn small ghost', type: 'button', text: 'Scollega', onclick: () => { try { localStorage.removeItem(SYNC); } catch (e) { /* niente */ } openSettings(); } })));
+  }
+  const tk = h('input', { type: 'text', class: 'mini-in wide', placeholder: 'ghp_…', autocomplete: 'off', autocapitalize: 'none', spellcheck: 'false' });
+  return h('div', { class: 'card' }, h('b', { text: 'Andamento nel widget' }),
+    h('span', { class: 'small muted', text: 'Per far vedere al widget cosa hai fatto, Ritmo salva le spunte cifrate in un gist privato del tuo GitHub. Si fa una volta.' }),
+    h('a', { class: 'btn small', href: 'https://github.com/settings/tokens/new?scopes=gist&description=Ritmo%20widget', target: '_blank', rel: 'noopener', text: '1. Crea il permesso su GitHub (solo «gist»)' }),
+    h('span', { class: 'small', text: '2. Copia il codice che ti dà GitHub e incollalo qui:' }), tk,
+    h('button', { class: 'btn go small', type: 'button', text: '3. Collega', onclick: async (e) => { const v = tk.value.trim(); if (!v) return; e.currentTarget.disabled = true; try { await connectSync(v); toast('✅ Collegato'); openSettings(); } catch (x) { toast(x.message); e.currentTarget.disabled = false; } } }));
+}
 function openSettings() {
   const ver = S.versione ? `Dati del piano: versione ${S.versione}` : 'Nessun dato del piano caricato';
   const ta = h('textarea', { id: 'bk', rows: 3, placeholder: 'Incolla qui un backup per ripristinarlo' });
@@ -1658,9 +2097,10 @@ function openSettings() {
       h('button', { class: 'btn', type: 'button', text: 'Copia il backup', onclick: async () => { try { await navigator.clipboard.writeText(lsGet(LS.stato) || '{}'); toast('Backup copiato'); } catch (e) { ta.value = lsGet(LS.stato) || '{}'; ta.select(); toast('Copialo dal riquadro'); } } }),
       h('div', { class: 'field' }, h('label', { for: 'bk', text: 'Ripristina' }), ta),
       h('button', { class: 'btn ghost', type: 'button', text: 'Ripristina questo backup', onclick: () => { try { const x = JSON.parse(ta.value); if (!x || typeof x !== 'object' || !('giorni' in x)) throw 0; lsSet(LS.stato, ta.value); loadState(); rebuildEvents(); render(); closeSheet(); toast('Backup ripristinato'); } catch (e) { toast('Questo testo non è un backup di Ritmo'); } } })),
-    (() => { const c = cfg(), L = nowLogical(), m = S.pasti || {}, pr = m.pranzo || { da: c.pasti.pranzo.da, min: toMin(c.pasti.pranzo.a) - toMin(c.pasti.pranzo.da) }, ce = m.cena || { da: c.pasti.cena.da, min: toMin(c.pasti.cena.a) - toMin(c.pasti.cena.da) };
-      return h('div', { class: 'card' }, h('b', { text: 'Pasti' }), h('span', { class: 'small muted', text: `Pranzo alle ${fmt(toMin(pr.da))} per ${dur(pr.min)} · cena alle ${fmt(toMin(ce.da))} per ${dur(ce.min)}. Per un giorno solo tocca il pasto nella giornata.` }),
-        h('div', { class: 'btns' }, h('button', { class: 'btn small', type: 'button', text: 'Cambia il pranzo', onclick: () => openMeal(L.date, 'pranzo') }), h('button', { class: 'btn small', type: 'button', text: 'Cambia la cena', onclick: () => openMeal(L.date, 'cena') }))); })(),
+    (() => { const L = nowLogical(), p = plan(L.date), m = S.pasti || {};
+      return h('div', { class: 'card' }, h('b', { text: 'Pasti e sonno' }), h('span', { class: 'small muted', text: 'Pasti da 15 minuti messi ogni giorno nel posto migliore, allenamenti almeno 1h30 dopo. Sonno 8h30, adattato alla sera e alla mattina dopo.' }),
+        h('div', { class: 'chips' }, ['colazione', 'pranzo', 'merenda', 'cena'].map((k) => { const it = p.items.find((i) => i.key === k); return h('button', { class: 'chip', type: 'button', text: `${MEAL_N[k]} ${m[k] ? fmt(toMin(m[k].da)) : it ? fmt(it.start) : 'auto'}`, onclick: () => openMeal(L.date, k) }); }))); })(),
+    syncCard(),
     h('div', { class: 'card' }, h('b', { text: 'Widget per la Home e la schermata bloccata' }), h('span', { class: 'small muted', text: 'Con l\'app gratuita Scriptable: codice del giorno, cosa c\'è adesso e i prossimi blocchi.' }),
       h('a', { class: 'btn', href: 'widget.html', target: '_blank', rel: 'noopener', text: 'Come metterlo' })),
     h('a', { class: 'btn', href: ORNRARV_APP, target: '_blank', rel: 'noopener', text: 'Apri il Calendario ORNRARV' }),
@@ -1673,8 +2113,8 @@ function select(t) {
   const go = () => { enterAnim = true; tab = TABS.includes(t) ? t : 'oggi'; TABS.forEach((x) => $('#t-' + x).setAttribute('aria-selected', String(x === tab))); render(); window.scrollTo(0, 0); };
   if (document.startViewTransition && !$('#main').hidden && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.startViewTransition(go); else go();
 }
-TABS.forEach((t) => $('#t-' + t).addEventListener('click', () => { if (t === 'mese') monthSel = null; select(t); }));
-$('#fab').addEventListener('click', () => openEvent(null));
+TABS.forEach((t) => $('#t-' + t).addEventListener('click', () => { if (t === 'mese') { monthSel = null; if (tab === 'mese') { calDay = null; calMonth = null; } } select(t); }));
+$('#fab').addEventListener('click', () => openEvent(null, tab === 'mese' && calMode === 'cal' && calDay ? { data: calDay } : {}));
 $('#gear').addEventListener('click', openSettings);
 $('#streak').addEventListener('click', () => { const L = nowLogical(); if ((S.giorni[L.date] || {}).chiusa) select('domani'); else openClose(); });
 let enterAnim = false;
@@ -1695,7 +2135,7 @@ function startTab() {
   const L = nowLogical();
   select(L.min >= 21 * 60 + 30 && (S.giorni[L.date] || {}).chiusa ? 'domani' : 'oggi');
 }
-function showMain() { $('#welcome').hidden = true; $('#main').hidden = false; startTab(); }
+function showMain() { $('#welcome').hidden = true; $('#main').hidden = false; startTab(); setTimeout(() => scheduleSync(true), 1500); }
 function showWelcome() { $('#main').hidden = true; $('#welcome').hidden = false; $('#w-pass').value = ''; }
 $('#w-form').addEventListener('submit', async (e) => {
   e.preventDefault();

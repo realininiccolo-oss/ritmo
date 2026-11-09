@@ -10,7 +10,10 @@ here = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, here)
 from dati import build
 versione, out = sys.argv[1], sys.argv[2]
-plain = json.dumps(build(versione), ensure_ascii=False).encode()
+data = build(versione)
+wpath0 = os.path.join(here, 'widget-chiave.txt')
+if os.path.exists(wpath0): data['wk'] = open(wpath0).read().strip()  # l'app usa la chiave del widget per cifrare l'andamento
+plain = json.dumps(data, ensure_ascii=False).encode()
 b = lambda x: base64.b64encode(x).decode()
 
 passw = open(os.path.join(here, 'parola.txt')).read().strip().lower()

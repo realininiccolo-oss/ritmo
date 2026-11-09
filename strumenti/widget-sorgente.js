@@ -5,6 +5,7 @@ const BASE = 'https://realininiccolo-oss.github.io/ritmo/';
 const KEYNAME = 'ritmo-widget-chiave';
 const fm = FileManager.local();
 const cacheP = fm.joinPath(fm.documentsDirectory(), 'ritmo-widget-dati.json');
+const STATO = 'ritmo-widget-stato', statoP = fm.joinPath(fm.documentsDirectory(), 'ritmo-widget-stato.json');
 
 /*PIANIFICATORE*/
 
@@ -80,6 +81,47 @@ async function loadData(key) {
   }
 }
 
+/* Andamento: spunte, spostamenti e impegni dell'app, salvati cifrati in un gist privato. */
+async function loadStato(key) {
+  if (!Keychain.contains(STATO)) return null;
+  try {
+    const j = await new Request('https://api.github.com/gists/' + Keychain.get(STATO) + '?t=' + Date.now()).loadJSON();
+    const f = j.files && j.files['ritmo-stato.json']; if (!f) throw new Error('vuoto');
+    const txt = decryptPkg(JSON.parse(f.content), key); fm.writeString(statoP, txt); return JSON.parse(txt);
+  } catch (e) { return fm.fileExists(statoP) ? JSON.parse(fm.readString(statoP)) : null; }
+}
+async function menu() {
+  const a = new Alert(); a.title = 'Ritmo'; a.addAction('Anteprima grande'); a.addAction('Anteprima media'); a.addAction(Keychain.contains(STATO) ? 'Cambia il codice dell\'andamento' : 'Collega l\'andamento'); a.addAction('Cambia la chiave'); a.addCancelAction('Chiudi');
+  const r = await a.presentSheet();
+  if (r === 2) { const b = new Alert(); b.title = 'Codice dell\'andamento'; b.message = 'Lo trovi in Ritmo, Impostazioni, Andamento nel widget.'; b.addTextField('codice'); b.addAction('Salva'); b.addCancelAction('Annulla'); if (await b.presentAlert() === 0) { const c = b.textFieldValue(0).trim(); if (/^[0-9a-f]{20,}$/i.test(c)) Keychain.set(STATO, c); } }
+  if (r === 3 && Keychain.contains(KEYNAME)) Keychain.remove(KEYNAME);
+  return r;
+}
+const SYM = (n, size, color) => { const s2 = SFSymbol.named(n) || SFSymbol.named('circle'); s2.applyFont(Font.semiboldSystemFont(size)); const im = s2.image; return { im, color }; };
+function addSym(st, n, size, color) { const x = SYM(n, size, color); const i = st.addImage(x.im); i.imageSize = new Size(size + 2, size + 2); i.tintColor = color; return i; }
+function symFor(t) {
+  if (t.key === 'palestra') return 'dumbbell'; if (t.key === 'karate') return 'figure.martial.arts'; if (t.key === 'uscita') return 'party.popper';
+  if (t.cat === 'studio') return { 'KRR': 'point.3.connected.trianglepath.dotted', 'Fisica': 'atom', 'Computer Programming': 'chevron.left.forwardslash.chevron.right', 'Analisi': 'function', 'Computational Logic': 'gearshape.2' }[t.label] || 'book';
+  return { nerina: 'briefcase', sociale: 'person.2', impegno: 'calendar', ripetizione: 'person.crop.rectangle', corpo: 'figure.run' }[t.cat] || 'calendar';
+}
+/* Anello di avanzamento disegnato. */
+function ringImg(pct, col, track, size) {
+  const d = new DrawContext(); d.size = new Size(size * 3, size * 3); d.opaque = false; d.respectScreenScale = false;
+  const r = size * 1.5 - 9, cx = size * 1.5, cy = size * 1.5;
+  d.setStrokeColor(track); d.setLineWidth(12); d.strokeEllipse(new Rect(cx - r, cy - r, 2 * r, 2 * r));
+  if (pct > 0) { const pth = new Path(), n = Math.max(2, Math.round(80 * pct)); for (let i = 0; i <= n; i++) { const a = -Math.PI / 2 + 2 * Math.PI * pct * i / n, pt = new Point(cx + r * Math.cos(a), cy + r * Math.sin(a)); if (i) pth.addLine(pt); else pth.move(pt); }
+    d.addPath(pth); d.setStrokeColor(col); d.setLineWidth(12); d.strokePath(); }
+  return d.getImage();
+}
+function moodOf(p, L) {
+  const open = p.tasks.filter((t) => !p.fatti[t.key]), anti = (p.st.anticipati || []).length, all = p.tasks.length + anti, done = all - open.length;
+  const late = open.filter((t) => t.end <= L.min && !t.ev && t.key !== 'karate' && t.key !== 'uscita').length, pct = all ? done / all : 1;
+  const m = !all ? ['leaf', 'Libera', '#4E9A6A'] : !open.length ? ['trophy', 'Tutto fatto', '#E2A63B'] : !done && L.min < p.tasks[0].start ? ['sun.max', 'Si parte', '#E2A63B']
+    : late >= 2 ? ['timer', 'Un po\' indietro', '#D98A3D'] : late ? ['clock', 'Quasi in pari', '#D9B23C'] : anti || p.items.some((i) => i.prima) ? ['bolt', 'In anticipo', '#46C27A']
+    : pct >= .5 ? ['flame', 'Che ritmo', '#EE8A4C'] : done ? ['chart.line.uptrend.xyaxis', 'In pari', '#46C27A'] : ['target', 'Si comincia', '#8FA0D6'];
+  return { sym: m[0], t: m[1], col: m[2], done, all, pct, late };
+}
+
 /* ---------- ORNRARV: codice del giorno e tema del mese ---------- */
 const SEQ = 'ORNRARV', MESI = ['Foliaio', 'Brumale', 'Ianuario', 'Germinale', 'Floreale', 'Messidoro', 'Estiario'];
 const FASI = { O: 'Osservare', R1: 'Remare', N: 'Navigare', R2: 'Remare', A: 'Automatizzare', R3: 'Remare', V: 'Validare' };
@@ -117,31 +159,42 @@ function codeRow(st, o, size, sub) {
   r.addSpacer(7); T(r, o.fict, size, sub, 'm');
   return r;
 }
-function taskRow(st, t, ink, sub, P, isNow, size) {
-  const r = st.addStack(); r.centerAlignContent(); r.spacing = 8;
+function taskRow(st, t, ink, sub, P, isNow, size, done) {
+  const r = st.addStack(); r.centerAlignContent(); r.spacing = 7;
   const tc = r.addStack(); tc.size = new Size(size > 13 ? 44 : 38, 0); T(tc, fmt(t.start), size, isNow ? ink : sub, 'b'); tc.addSpacer();
-  const bar = r.addStack(); bar.size = new Size(3, size + 4); bar.cornerRadius = 1.5; bar.backgroundColor = new Color(P[t.cat] || '#8D9AA2');
-  T(r, t.label, size, ink, isNow ? 'b' : 'm');
+  addSym(r, done ? 'checkmark.circle.fill' : symFor(t), size - 1, done ? new Color('#46C27A') : new Color(P[t.cat] || '#8D9AA2'));
+  T(r, t.label, size, done ? sub : ink, isNow ? 'b' : 'm');
   r.addSpacer();
+}
+function progRow(st, md, ink, sub, size, track) {
+  const r = st.addStack(); r.centerAlignContent(); r.spacing = 8;
+  const ri = r.addImage(ringImg(md.pct, new Color('#46C27A'), track, size)); ri.imageSize = new Size(size, size);
+  const tx = r.addStack(); tx.layoutVertically();
+  const l1 = tx.addStack(); l1.centerAlignContent(); l1.spacing = 4; addSym(l1, md.sym, size * .36, new Color(md.col)); T(l1, md.t, size * .4, ink, 'h');
+  T(tx, `${md.done}/${md.all} fatti${md.late ? ` · ${md.late} indietro` : ''}`, size * .32, sub, 'm');
+  return r;
 }
 const whenDate = (date, min) => { const d = parseISO(date); d.setMinutes(min); return d; };
 
+let FAM = 'large';
 async function main() {
-  const fam = config.widgetFamily || 'large';
+  const fam = config.widgetFamily || FAM;
   const w = new ListWidget();
   const key = await getKey();
   if (!key) { w.backgroundColor = new Color('#232B3B'); const t = w.addText('Ritmo'); t.font = Font.boldSystemFont(16); t.textColor = Color.white(); w.addSpacer(4); const m = w.addText('Apri lo script in Scriptable e incolla la chiave.'); m.font = Font.systemFont(12); m.textColor = new Color('#E7E9F2', .8); return w; }
-  const data = await loadData(key);
-  S.cfg = data.cfg || null; S.nerina = data.nerina || {}; S.file = data.eventi || []; rebuildEvents();
-  const L = nowLogical(), p = plan(L.date), o = ornOf(L.date);
-  const rest = p.tasks.filter((t) => t.end > L.min);
+  const data = await loadData(key), st0 = await loadStato(key);
+  S.cfg = data.cfg || null; S.nerina = data.nerina || {}; S.file = data.eventi || [];
+  if (st0) { S.giorni = st0.giorni || {}; S.settimane = st0.settimane || {}; S.miei = st0.miei || []; S.nascosti = st0.nascosti || []; S.pasti = st0.pasti || {}; }
+  rebuildEvents();
+  const L = nowLogical(), p = plan(L.date), o = ornOf(L.date), md = st0 ? moodOf(p, L) : null;
+  const rest = p.tasks.filter((t) => t.end > L.min && !p.fatti[t.key]);
   const now = rest.find((t) => t.start <= L.min), nextT = rest.find((t) => t.start > L.min), focus = now || nextT;
   w.refreshAfterDate = focus ? whenDate(L.date, now ? now.end : nextT.start) : new Date(Date.now() + 30 * 60e3);
 
   if (fam === 'accessoryInline') { w.addText(`${o ? o.letters.map((x) => x[0]).join('.') + ' · ' : ''}${focus ? (now ? 'ora ' : fmt(focus.start) + ' ') + focus.label : 'giornata libera'}`); return w; }
-  if (fam === 'accessoryCircular') { const t = w.addText(o ? o.letters[2][0] : '·'); t.font = Font.boldRoundedSystemFont(28); t.centerAlignText(); return w; }
+  if (fam === 'accessoryCircular') { if (md) { const ri = w.addImage(ringImg(md.pct, Color.white(), new Color('#ffffff', .25), 60)); ri.imageSize = new Size(56, 56); ri.centerAlignImage(); return w; } const t = w.addText(o ? o.letters[2][0] : '·'); t.font = Font.boldRoundedSystemFont(28); t.centerAlignText(); return w; }
   if (fam === 'accessoryRectangular') {
-    T(w, `${o ? o.letters.map((x) => x[0]).join('.') + '  ' : ''}${now ? 'adesso' : focus ? 'alle ' + fmt(focus.start) : 'oggi'}`, 12, Color.white(), 'm');
+    T(w, `${md ? md.done + '/' + md.all + '  ' : o ? o.letters.map((x) => x[0]).join('.') + '  ' : ''}${now ? 'adesso' : focus ? 'alle ' + fmt(focus.start) : 'oggi'}`, 12, Color.white(), 'm');
     T(w, focus ? focus.label : 'Giornata libera', 15, Color.white(), 'b');
     if (focus) T(w, `fino alle ${fmt(focus.end)}`, 12, Color.white());
     return w;
@@ -152,13 +205,15 @@ async function main() {
   if (o) SHADOW = new Color(o.bg, .9);
   const bg = await background(o, fam); if (bg) w.backgroundImage = bg;
   const after = focus ? rest.slice(rest.indexOf(focus) + 1) : [];
+  const track = new Color(o ? o.ink : '#1E2024', .18);
   const head = (size) => { const hs = w.addStack(); hs.centerAlignContent(); if (o) codeRow(hs, o, size, sub); hs.addSpacer(); if (o && fam !== 'small') T(hs, o.fase, size, sub, 'm'); };
 
   if (fam === 'small') {
     w.setPadding(14, 14, 14, 14);
-    head(12); w.addSpacer();
+    if (md) progRow(w, md, ink, sub, 38, track); else head(12);
+    w.addSpacer();
     T(w, focus ? (now ? 'Adesso' : 'Alle ' + fmt(focus.start)) : 'Oggi', 12, sub, 'm');
-    T(w, focus ? focus.label : 'Giornata libera', 18, ink, 'h', 3);
+    T(w, focus ? focus.label : 'Giornata libera', 18, ink, 'h', md ? 2 : 3);
     if (focus) T(w, `fino alle ${fmt(focus.end)}`, 13, sub, 'm');
     return w;
   }
@@ -168,9 +223,10 @@ async function main() {
     head(12); w.addSpacer(8);
     const cols = w.addStack(); cols.spacing = 14;
     const left = cols.addStack(); left.layoutVertically(); left.size = new Size(140, 0);
+    if (md) { progRow(left, md, ink, sub, 40, track); left.addSpacer(8); }
     T(left, focus ? (now ? 'Adesso' : 'Alle ' + fmt(focus.start)) : 'Oggi', 12, sub, 'm');
-    T(left, focus ? focus.label : 'Giornata libera', 18, ink, 'h', 2);
-    if (focus) T(left, `fino alle ${fmt(focus.end)}`, 13, sub, 'm');
+    T(left, focus ? focus.label : 'Giornata libera', md ? 16 : 18, ink, 'h', 2);
+    if (focus && !md) T(left, `fino alle ${fmt(focus.end)}`, 13, sub, 'm');
     left.addSpacer();
     const right = cols.addStack(); right.layoutVertically(); right.spacing = 6;
     T(right, after.length ? 'Poi' : 'Dopo', 12, sub, 'm');
@@ -184,7 +240,8 @@ async function main() {
   w.setPadding(16, 18, 16, 18);
   head(13); w.addSpacer(4);
   T(w, dayLong(L.date), 22, ink, 'h');
-  w.addSpacer(14);
+  w.addSpacer(md ? 10 : 14);
+  if (md) { progRow(w, md, ink, sub, 50, track); w.addSpacer(12); }
   if (focus) {
     T(w, now ? 'Adesso' : `Tra ${dur(nextT.start - L.min)}`, 13, sub, 'm');
     T(w, focus.label, 24, ink, 'h', 2);
@@ -197,7 +254,7 @@ async function main() {
   w.addSpacer(14);
   if (after.length) {
     T(w, `Poi · fine verso le ${fmt(p.finish)}`, 13, sub, 'm'); w.addSpacer(6);
-    for (const t of after.slice(0, 4)) { taskRow(w, t, ink, sub, P, false, 15); w.addSpacer(7); }
+    for (const t of after.slice(0, md ? 3 : 4)) { taskRow(w, t, ink, sub, P, false, 15); w.addSpacer(7); }
     if (after.length > 4) T(w, `e altri ${after.length - 4}`, 12, sub, 'm');
   }
   w.addSpacer();
@@ -205,8 +262,12 @@ async function main() {
 }
 
 try {
+  let r = 0;
+  if (!config.runsInWidget && !config.runsInAccessoryWidget && Keychain.contains(KEYNAME)) r = await menu();
+  if (r === -1) { Script.complete(); return; }
+  if (r === 1) FAM = 'medium';
   const widget = await main();
-  if (config.runsInWidget) Script.setWidget(widget); else await widget.presentLarge();
+  if (config.runsInWidget) Script.setWidget(widget); else if (FAM === 'medium') await widget.presentMedium(); else await widget.presentLarge();
 } catch (e) {
   const w = new ListWidget(); w.backgroundColor = new Color('#232B3B');
   const t = w.addText(e.message === 'chiave' ? 'Chiave sbagliata: riapri lo script e incollala di nuovo.' : 'Ritmo non riesce a caricare il piano. ' + e.message);

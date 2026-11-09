@@ -5,11 +5,16 @@ const BASE = 'https://realininiccolo-oss.github.io/ritmo/';
 const KEYNAME = 'ritmo-widget-chiave';
 const fm = FileManager.local();
 const cacheP = fm.joinPath(fm.documentsDirectory(), 'ritmo-widget-dati.json');
+const STATO = 'ritmo-widget-stato', statoP = fm.joinPath(fm.documentsDirectory(), 'ritmo-widget-stato.json');
 
 /* Regole della settimana tipo. Il file dei dati (data.enc.json) può sovrascriverle. */
 const DEF = {
   giorno: { inizio: '09:00', inizioDomenica: '10:00', fineLavoro: '23:30' },
-  pasti: { pranzo: { da: '13:00', a: '13:45' }, cena: { da: '20:00', a: '20:45' }, cenaKarate: { da: '19:10', a: '19:50' } },
+  /* Sonno: 8h30 a notte; a letto di base a mezzanotte, più tardi se la sera finisce tardi, prima se la mattina dopo si parte presto. */
+  sonno: { ore: 510, letto: '00:00', sera: 45, mattina: 30, primaImpegno: 45 },
+  /* Pasti da 15 minuti, messi ogni giorno nel posto migliore della loro fascia; allenamenti almeno 1h30 dopo un pasto. */
+  pasti: { min: 15, pranzo: { ideale: '13:00', da: '12:00', a: '14:30' }, cena: { ideale: '20:00', da: '19:00', a: '21:30' }, merenda: { dopoPranzo: 120, primaCena: 90 } },
+  allenamento: { dopoPasto: 90 },
   nerina: { durata: 120, feriale: 3, sabato: 3, domenica: 1, b3Feriale: '16:00', b3Weekend: '13:45' },
   studio: {
     '1': [{ m: 'KRR', min: 180 }, { m: 'Fisica', min: 60 }],
@@ -81,9 +86,10 @@ function estLoad(d) {
 /* Minuti liberi che restano dopo pasti, impegni, Nerina, studio e (se è quel giorno) karate. */
 function slack(d, kar) {
   const c = cfg(), dow = dowOf(d), st = S.giorni[d] || {};
-  const D0 = toMin(dow === 0 ? c.giorno.inizioDomenica : c.giorno.inizio), D1 = toMin(c.giorno.fineLavoro, 300);
-  const isK = kar === d, cena = isK ? c.pasti.cenaKarate : c.pasti.cena;
-  let free = D1 - D0 - (toMin(c.pasti.pranzo.a) - toMin(c.pasti.pranzo.da)) - (toMin(cena.a) - toMin(cena.da));
+  const z = c.sonno || DEF.sonno, wake = toMin(z.letto, 600) + z.ore - 1440;
+  const D0 = Math.max(wake + z.mattina, dow === 0 ? toMin(c.giorno.inizioDomenica) : 0), D1 = toMin(z.letto, 600) - z.sera;
+  const isK = kar === d;
+  let free = D1 - D0 - 3 * ((c.pasti && c.pasti.min) || 15);
   if (isK) free -= toMin(c.karate.fine) - toMin(c.karate.inizio);
   for (const e of eventsOn(d)) {
     if (!TASK_TIPI.includes(e.tipo)) continue;
@@ -126,13 +132,35 @@ function weekPlan(mon) {
   return { kar, gym: new Set(gym), auto: !ov };
 }
 
+/* Primo inizio e ultima fine degli impegni fissi di un giorno (impegni con orario, blocchi fissati, karate, uscita). */
+function fixedSpan(d) {
+  const c = cfg(), st = S.giorni[d] || {}, skip = st.skip || {}; let first = null, last = null;
+  const take = (a, b) => { if (first == null || a < first) first = a; if (last == null || b > last) last = b; };
+  for (const e of eventsOn(d)) if (e.inizio && !e.flessibile && TASK_TIPI.includes(e.tipo)) { const s = toMin(e.inizio); take(s, s + evLen(e)); }
+  for (const x of (st.extra || [])) if (x.at && !skip[x.key]) { const s = toMin(x.at, 240); take(s, s + x.min); }
+  if (weekPlan(mondayOf(d)).kar === d && !skip.karate) take(toMin(c.karate.inizio), toMin(c.karate.fine));
+  if (dowOf(d) === c.sociale.uscitaGiorno && !skip.uscita) { const s = toMin(c.sociale.uscitaInizio); take(s, toMin(c.sociale.uscitaFine, s)); }
+  return { first, last };
+}
+/* La notte dopo il giorno d: ora di letto (minuti di d, anche oltre le 24) e sveglia (minuti del giorno dopo). */
+function night(d) {
+  const z = cfg().sonno || DEF.sonno;
+  let bed = toMin(z.letto, 600);
+  const a = fixedSpan(d), b = fixedSpan(addDays(d, 1));
+  if (a.last != null && a.last + 30 > bed) bed = a.last + 30;
+  let wake = bed + z.ore - 1440;
+  if (b.first != null && wake > b.first - z.primaImpegno) { wake = b.first - z.primaImpegno; bed = wake + 1440 - z.ore; }
+  return { bed, wake };
+}
+
 /* ---------- il pianificatore della giornata ---------- */
 function plan(date) {
   const c = cfg(), dow = dowOf(date), st = S.giorni[date] || {}, skip = st.skip || {}, fatti = st.fatti || {};
   const wk = weekPlan(mondayOf(date));
   const weekend = dow === 0 || dow === 6;
-  const D0 = toMin(dow === 0 ? c.giorno.inizioDomenica : c.giorno.inizio);
-  const D1 = toMin(c.giorno.fineLavoro, 300);
+  const z = c.sonno || DEF.sonno, wake = night(addDays(date, -1)).wake, bedT = night(date).bed;
+  const D0 = Math.max(wake + z.mattina, dow === 0 ? toMin(c.giorno.inizioDomenica) : 0);
+  const D1 = bedT - z.sera;
   const items = [], unplaced = [], busy = [];
   const occupy = (a, b) => busy.push([a, b]);
   const add = (it) => { items.push(it); occupy(it.start, it.end); };
@@ -159,31 +187,44 @@ function plan(date) {
   for (const x of (st.extra || [])) {
     if (skip[x.key] || !x.at) continue;
     const s = toMin(x.at, 240);
-    add({ key: x.key, base: x.key, cat: x.cat, label: x.label, sub: x.da === date ? 'Spostato qui' : 'Spostato dal ' + dateShort(x.da), start: s, end: s + x.min, task: true, moved: true });
+    add({ key: x.key, base: x.key, cat: x.cat, label: x.label, sub: x.da === date ? 'Spostato qui' : 'Spostato dal ' + dateShort(x.da), start: s, end: s + x.min, task: true, moved: true, pinned: true });
   }
-  /* Pasti: orario del giorno (st.pasti) > orario scelto per sempre (S.pasti) > regole. */
-  const meal = (key, label, m) => {
-    const own = (st.pasti || {})[key], mine = karate && key === 'cena' ? null : (S.pasti || {})[key];
-    if (own && own.no) return;
-    const pick = own || mine;
-    let s = pick ? toMin(pick.da) : toMin(m.da), e = pick ? s + pick.min : toMin(m.a); const len = e - s;
-    if (own) { add({ key, cat: 'pausa', label, start: s, end: e, own: true }); return; }
-    if (overlaps(s, e)) {
-      const ov = busy.filter(([x, y]) => s < y && x < e).sort((p, q) => p[0] - q[0]);
-      const before = ov[0][0] - len;
-      if (!overlaps(before, before + len) && before >= D0) s = before; else s = Math.max(...ov.map((o) => o[1]));
-      e = s + len;
+  items.push({ key: 'sveglia', cat: 'sonno', label: 'Sveglia', start: wake, end: wake });
+  items.push({ key: 'letto', cat: 'sonno', label: 'A letto', sub: `${dur(z.ore)} di sonno`, start: bedT, end: bedT });
+  /* Pasti da 15 minuti. Orario del giorno (st.pasti) > orario preferito (S.pasti, fa da ideale) > fascia delle regole.
+     Ogni pasto va nel punto libero più vicino all'ideale, mai nell'ora e mezza prima di un allenamento. */
+  const ML = (c.pasti && c.pasti.min) || 15, GAP = (c.allenamento || DEF.allenamento).dopoPasto;
+  const PW = (k) => { const m = (c.pasti || {})[k]; return m && m.ideale ? m : DEF.pasti[k]; };
+  const trains = () => items.filter((i) => i.key === 'karate' || i.key === 'palestra');
+  const nearTrain = (a, b) => trains().some((t) => b > t.start - GAP && a < t.end);
+  const findSlot = (ideal, lo, hi, len, rule) => {
+    let best = null;
+    for (let x = Math.ceil(lo / 5) * 5; x + len <= hi; x += 5) {
+      if (overlaps(x, x + len) || (rule && nearTrain(x, x + len))) continue;
+      if (best == null || Math.abs(x - ideal) < Math.abs(best - ideal)) best = x;
     }
-    add({ key, cat: 'pausa', label, start: s, end: e, mine: !!mine });
+    return best;
   };
-  meal('pranzo', 'Pranzo', c.pasti.pranzo);
-  meal('cena', 'Cena', karate ? c.pasti.cenaKarate : c.pasti.cena);
+  const LABELS = { colazione: 'Colazione', pranzo: 'Pranzo', merenda: 'Merenda', cena: 'Cena' };
+  const meal = (key, ideal, lo, hi) => {
+    const own = (st.pasti || {})[key], mine = (S.pasti || {})[key];
+    if (own && own.no) return null;
+    if (own) { const x = toMin(own.da, 240); const it = { key, cat: 'pausa', label: LABELS[key], start: x, end: x + (own.min || ML), meal: true, own: true }; add(it); return it; }
+    const len = (mine && mine.min) || ML; if (mine) ideal = toMin(mine.da, 240);
+    let x = findSlot(ideal, lo, hi, len, true);
+    if (x == null) x = findSlot(ideal, Math.max(wake, lo - 150), Math.min(bedT, hi + 120), len, true);
+    if (x == null) x = findSlot(ideal, Math.max(wake, lo - 150), Math.min(bedT, hi + 120), len, false);
+    if (x == null) return null;
+    const it = { key, cat: 'pausa', label: LABELS[key], start: x, end: x + len, meal: true, mine: !!mine }; add(it); return it;
+  };
+  const colazione = meal('colazione', wake, wake, wake + 60);
+  const pw = PW('pranzo'), pranzo = meal('pranzo', toMin(pw.ideale), toMin(pw.da), toMin(pw.a));
 
   for (const e of evs) {
     if (!e.flessibile || !TASK_TIPI.includes(e.tipo)) continue;
     const len = evLen(e);
     let s = earliest(len, toMin(e.dopo || '15:00')); if (s == null) s = earliest(len, D0);
-    if (s != null) add({ key: 'e:' + e.id, cat: evCat(e), label: e.titolo, sub: '🕐 da fissare', start: s, end: s + len, task: true, ev: e, flex: true });
+    if (s != null) add({ key: 'e:' + e.id, cat: evCat(e), label: e.titolo, sub: 'da fissare', start: s, end: s + len, task: true, ev: e, flex: true });
     else unplaced.push({ key: 'e:' + e.id, label: e.titolo, min: len, cat: evCat(e) });
   }
 
@@ -202,12 +243,17 @@ function plan(date) {
     }
   }
   if (wk.gym.has(date) && !skip.palestra) {
-    const len = c.palestra.durata;
-    let s = latest(len, toMin(c.palestra.dopo), toMin(c.palestra.fineIdeale));
-    if (s == null) s = earliest(len, toMin(c.palestra.dopo));
+    const len = c.palestra.durata, lo = toMin(c.palestra.dopo), hiI = toMin(c.palestra.fineIdeale);
+    const mealOk = (x) => !items.some((m) => m.meal && m.end > x - GAP && m.start < x + len);
+    const ok = (x) => !overlaps(x, x + len) && mealOk(x);
+    let s = null;
+    for (let x = Math.floor((hiI - len) / 5) * 5; x >= lo; x -= 5) if (ok(x)) { s = x; break; }
+    if (s == null) for (let x = Math.ceil(lo / 5) * 5; x + len <= D1; x += 5) if (ok(x)) { s = x; break; }
+    if (s == null) s = latest(len, lo, hiI); if (s == null) s = earliest(len, lo);
     if (s != null) add({ key: 'palestra', cat: 'corpo', label: 'Palestra', sub: '2h30, viaggio compreso', start: s, end: s + len, task: true });
     else unplaced.push({ key: 'palestra', label: 'Palestra', min: len, cat: 'corpo' });
   }
+  const cw = PW('cena'), cena = meal('cena', toMin(cw.ideale), toMin(cw.da), toMin(cw.a));
   const nN = Math.min(3, nerinaCount(c, dow));
   let after = D0;
   for (let i = 0; i < nN; i++) {
@@ -231,6 +277,52 @@ function plan(date) {
   };
   if (!bib) for (const x of study) split(x.key, x.label, x.min, 'studio', '');
   for (const x of (st.extra || [])) { if (skip[x.key] || x.at || x.min - less(x.key) <= 0) continue; split(x.key, x.label, x.min - less(x.key), x.cat, 'Recupero dal ' + dateShort(x.da)); }
+  /* Merenda per ultima, attaccata a un altro blocco così non spezza il pomeriggio; se non c'è spazio, accorcia di 15 minuti lo studio. */
+  (() => {
+    const mr = (c.pasti || {}).merenda || DEF.pasti.merenda, own = (st.pasti || {}).merenda, mine = (S.pasti || {}).merenda;
+    if (own) { meal('merenda', 0, 0, 0); return; }
+    if (!pranzo || !cena) return;
+    const len = (mine && mine.min) || ML, lo = pranzo.end + mr.dopoPranzo, hi = cena.start - mr.primaCena;
+    const ideal = mine ? toMin(mine.da, 240) : Math.round((pranzo.end + cena.start) / 2 / 5) * 5;
+    const put = (x) => add({ key: 'merenda', cat: 'pausa', label: 'Merenda', start: x, end: x + len, meal: true, mine: !!mine });
+    const edgeIn = (a2, b2) => { let best = null;
+      for (const [ga, gb] of gaps(a2, b2)) { if (gb - ga < len) continue; for (const x of [ga, gb - len]) if (!nearTrain(x, x + len) && (best == null || Math.abs(x - ideal) < Math.abs(best - ideal))) best = x; }
+      return best; };
+    let x = hi - lo >= len ? edgeIn(lo, hi) : null;
+    const rebusy = () => { busy.length = 0; for (const i of items) if (i.end > i.start) busy.push([i.start, i.end]); };
+    const flexW = (i) => i.task && !i.ev && !i.pinned && !i.bib && (i.cat === 'studio' || i.cat === 'nerina');
+    if (x == null) { /* dentro un blocco di studio: lo divide in due */
+      let bestX = null, bestI = null;
+      for (const it of items) { if (it.cat !== 'studio' || it.bib || !it.task || it.pinned) continue;
+        for (let y = Math.max(lo, it.start); y + len <= Math.min(hi + len, it.end); y += 5) {
+          const p1 = y - it.start, p2 = it.end - y - len; if ((p1 && p1 < 30) || (p2 && p2 < 30) || nearTrain(y, y + len)) continue;
+          if (bestX == null || Math.abs(y - ideal) < Math.abs(bestX - ideal)) { bestX = y; bestI = it; } } }
+      if (bestI) {
+        const it = bestI, end0 = it.end, ext = !overlaps(end0, end0 + len) && end0 + len <= D1;
+        if (bestX > it.start) { it.end = bestX; const rest = end0 - bestX - len + (ext ? len : 0); if (rest > 0) items.push({ ...it, key: (it.base || it.key) + '.' + (bestX + len), start: bestX + len, end: bestX + len + rest }); }
+        else { it.start = bestX + len; if (ext) it.end = end0 + len; }
+        if (!ext) it.sub = [it.sub, `${len} min in meno`].filter(Boolean).join(' · ');
+        rebusy(); x = bestX;
+      }
+    }
+    if (x == null) { /* tra due blocchi: sposta di 15 minuti quelli attaccati dopo */
+      const srt = items.filter((i) => i.end > i.start).sort((a2, b2) => a2.start - b2.start);
+      const cands = srt.filter((i) => flexW(i) && i.end >= lo && i.end <= hi && !nearTrain(i.end, i.end + len)).sort((a2, b2) => Math.abs(a2.end - ideal) - Math.abs(b2.end - ideal));
+      for (const it of cands) {
+        const chain = []; let e2 = it.end, k = srt.indexOf(it) + 1, ok = true;
+        while (k < srt.length && srt[k].start === e2) { if (!flexW(srt[k])) { ok = false; break; } chain.push(srt[k]); e2 = srt[k].end; k++; }
+        if (!ok && !chain.length) continue;
+        const limit = k < srt.length ? srt[k].start : D1, over = e2 + len - limit;
+        const last = chain[chain.length - 1];
+        if (over > 0 && !(last && last.cat === 'studio' && last.end - last.start - over >= 30)) continue;
+        for (const c2 of chain) { c2.start += len; c2.end += len; }
+        if (over > 0) { last.end -= over; last.sub = [last.sub, `${over} min in meno`].filter(Boolean).join(' · '); }
+        rebusy(); x = it.end; break;
+      }
+    }
+    if (x == null) x = edgeIn(Math.max(D0, lo - 60), Math.min(D1, hi + 60));
+    if (x != null) put(x);
+  })();
 
   items.sort((a, b) => a.start - b.start || a.end - b.end);
   /* Blocchi fatti con l'orario vero: restano dove li hai fatti. Se hai finito prima, o hai fatto in anticipo un blocco
@@ -349,6 +441,47 @@ async function loadData(key) {
   }
 }
 
+/* Andamento: spunte, spostamenti e impegni dell'app, salvati cifrati in un gist privato. */
+async function loadStato(key) {
+  if (!Keychain.contains(STATO)) return null;
+  try {
+    const j = await new Request('https://api.github.com/gists/' + Keychain.get(STATO) + '?t=' + Date.now()).loadJSON();
+    const f = j.files && j.files['ritmo-stato.json']; if (!f) throw new Error('vuoto');
+    const txt = decryptPkg(JSON.parse(f.content), key); fm.writeString(statoP, txt); return JSON.parse(txt);
+  } catch (e) { return fm.fileExists(statoP) ? JSON.parse(fm.readString(statoP)) : null; }
+}
+async function menu() {
+  const a = new Alert(); a.title = 'Ritmo'; a.addAction('Anteprima grande'); a.addAction('Anteprima media'); a.addAction(Keychain.contains(STATO) ? 'Cambia il codice dell\'andamento' : 'Collega l\'andamento'); a.addAction('Cambia la chiave'); a.addCancelAction('Chiudi');
+  const r = await a.presentSheet();
+  if (r === 2) { const b = new Alert(); b.title = 'Codice dell\'andamento'; b.message = 'Lo trovi in Ritmo, Impostazioni, Andamento nel widget.'; b.addTextField('codice'); b.addAction('Salva'); b.addCancelAction('Annulla'); if (await b.presentAlert() === 0) { const c = b.textFieldValue(0).trim(); if (/^[0-9a-f]{20,}$/i.test(c)) Keychain.set(STATO, c); } }
+  if (r === 3 && Keychain.contains(KEYNAME)) Keychain.remove(KEYNAME);
+  return r;
+}
+const SYM = (n, size, color) => { const s2 = SFSymbol.named(n) || SFSymbol.named('circle'); s2.applyFont(Font.semiboldSystemFont(size)); const im = s2.image; return { im, color }; };
+function addSym(st, n, size, color) { const x = SYM(n, size, color); const i = st.addImage(x.im); i.imageSize = new Size(size + 2, size + 2); i.tintColor = color; return i; }
+function symFor(t) {
+  if (t.key === 'palestra') return 'dumbbell'; if (t.key === 'karate') return 'figure.martial.arts'; if (t.key === 'uscita') return 'party.popper';
+  if (t.cat === 'studio') return { 'KRR': 'point.3.connected.trianglepath.dotted', 'Fisica': 'atom', 'Computer Programming': 'chevron.left.forwardslash.chevron.right', 'Analisi': 'function', 'Computational Logic': 'gearshape.2' }[t.label] || 'book';
+  return { nerina: 'briefcase', sociale: 'person.2', impegno: 'calendar', ripetizione: 'person.crop.rectangle', corpo: 'figure.run' }[t.cat] || 'calendar';
+}
+/* Anello di avanzamento disegnato. */
+function ringImg(pct, col, track, size) {
+  const d = new DrawContext(); d.size = new Size(size * 3, size * 3); d.opaque = false; d.respectScreenScale = false;
+  const r = size * 1.5 - 9, cx = size * 1.5, cy = size * 1.5;
+  d.setStrokeColor(track); d.setLineWidth(12); d.strokeEllipse(new Rect(cx - r, cy - r, 2 * r, 2 * r));
+  if (pct > 0) { const pth = new Path(), n = Math.max(2, Math.round(80 * pct)); for (let i = 0; i <= n; i++) { const a = -Math.PI / 2 + 2 * Math.PI * pct * i / n, pt = new Point(cx + r * Math.cos(a), cy + r * Math.sin(a)); if (i) pth.addLine(pt); else pth.move(pt); }
+    d.addPath(pth); d.setStrokeColor(col); d.setLineWidth(12); d.strokePath(); }
+  return d.getImage();
+}
+function moodOf(p, L) {
+  const open = p.tasks.filter((t) => !p.fatti[t.key]), anti = (p.st.anticipati || []).length, all = p.tasks.length + anti, done = all - open.length;
+  const late = open.filter((t) => t.end <= L.min && !t.ev && t.key !== 'karate' && t.key !== 'uscita').length, pct = all ? done / all : 1;
+  const m = !all ? ['leaf', 'Libera', '#4E9A6A'] : !open.length ? ['trophy', 'Tutto fatto', '#E2A63B'] : !done && L.min < p.tasks[0].start ? ['sun.max', 'Si parte', '#E2A63B']
+    : late >= 2 ? ['timer', 'Un po\' indietro', '#D98A3D'] : late ? ['clock', 'Quasi in pari', '#D9B23C'] : anti || p.items.some((i) => i.prima) ? ['bolt', 'In anticipo', '#46C27A']
+    : pct >= .5 ? ['flame', 'Che ritmo', '#EE8A4C'] : done ? ['chart.line.uptrend.xyaxis', 'In pari', '#46C27A'] : ['target', 'Si comincia', '#8FA0D6'];
+  return { sym: m[0], t: m[1], col: m[2], done, all, pct, late };
+}
+
 /* ---------- ORNRARV: codice del giorno e tema del mese ---------- */
 const SEQ = 'ORNRARV', MESI = ['Foliaio', 'Brumale', 'Ianuario', 'Germinale', 'Floreale', 'Messidoro', 'Estiario'];
 const FASI = { O: 'Osservare', R1: 'Remare', N: 'Navigare', R2: 'Remare', A: 'Automatizzare', R3: 'Remare', V: 'Validare' };
@@ -386,31 +519,42 @@ function codeRow(st, o, size, sub) {
   r.addSpacer(7); T(r, o.fict, size, sub, 'm');
   return r;
 }
-function taskRow(st, t, ink, sub, P, isNow, size) {
-  const r = st.addStack(); r.centerAlignContent(); r.spacing = 8;
+function taskRow(st, t, ink, sub, P, isNow, size, done) {
+  const r = st.addStack(); r.centerAlignContent(); r.spacing = 7;
   const tc = r.addStack(); tc.size = new Size(size > 13 ? 44 : 38, 0); T(tc, fmt(t.start), size, isNow ? ink : sub, 'b'); tc.addSpacer();
-  const bar = r.addStack(); bar.size = new Size(3, size + 4); bar.cornerRadius = 1.5; bar.backgroundColor = new Color(P[t.cat] || '#8D9AA2');
-  T(r, t.label, size, ink, isNow ? 'b' : 'm');
+  addSym(r, done ? 'checkmark.circle.fill' : symFor(t), size - 1, done ? new Color('#46C27A') : new Color(P[t.cat] || '#8D9AA2'));
+  T(r, t.label, size, done ? sub : ink, isNow ? 'b' : 'm');
   r.addSpacer();
+}
+function progRow(st, md, ink, sub, size, track) {
+  const r = st.addStack(); r.centerAlignContent(); r.spacing = 8;
+  const ri = r.addImage(ringImg(md.pct, new Color('#46C27A'), track, size)); ri.imageSize = new Size(size, size);
+  const tx = r.addStack(); tx.layoutVertically();
+  const l1 = tx.addStack(); l1.centerAlignContent(); l1.spacing = 4; addSym(l1, md.sym, size * .36, new Color(md.col)); T(l1, md.t, size * .4, ink, 'h');
+  T(tx, `${md.done}/${md.all} fatti${md.late ? ` · ${md.late} indietro` : ''}`, size * .32, sub, 'm');
+  return r;
 }
 const whenDate = (date, min) => { const d = parseISO(date); d.setMinutes(min); return d; };
 
+let FAM = 'large';
 async function main() {
-  const fam = config.widgetFamily || 'large';
+  const fam = config.widgetFamily || FAM;
   const w = new ListWidget();
   const key = await getKey();
   if (!key) { w.backgroundColor = new Color('#232B3B'); const t = w.addText('Ritmo'); t.font = Font.boldSystemFont(16); t.textColor = Color.white(); w.addSpacer(4); const m = w.addText('Apri lo script in Scriptable e incolla la chiave.'); m.font = Font.systemFont(12); m.textColor = new Color('#E7E9F2', .8); return w; }
-  const data = await loadData(key);
-  S.cfg = data.cfg || null; S.nerina = data.nerina || {}; S.file = data.eventi || []; rebuildEvents();
-  const L = nowLogical(), p = plan(L.date), o = ornOf(L.date);
-  const rest = p.tasks.filter((t) => t.end > L.min);
+  const data = await loadData(key), st0 = await loadStato(key);
+  S.cfg = data.cfg || null; S.nerina = data.nerina || {}; S.file = data.eventi || [];
+  if (st0) { S.giorni = st0.giorni || {}; S.settimane = st0.settimane || {}; S.miei = st0.miei || []; S.nascosti = st0.nascosti || []; S.pasti = st0.pasti || {}; }
+  rebuildEvents();
+  const L = nowLogical(), p = plan(L.date), o = ornOf(L.date), md = st0 ? moodOf(p, L) : null;
+  const rest = p.tasks.filter((t) => t.end > L.min && !p.fatti[t.key]);
   const now = rest.find((t) => t.start <= L.min), nextT = rest.find((t) => t.start > L.min), focus = now || nextT;
   w.refreshAfterDate = focus ? whenDate(L.date, now ? now.end : nextT.start) : new Date(Date.now() + 30 * 60e3);
 
   if (fam === 'accessoryInline') { w.addText(`${o ? o.letters.map((x) => x[0]).join('.') + ' · ' : ''}${focus ? (now ? 'ora ' : fmt(focus.start) + ' ') + focus.label : 'giornata libera'}`); return w; }
-  if (fam === 'accessoryCircular') { const t = w.addText(o ? o.letters[2][0] : '·'); t.font = Font.boldRoundedSystemFont(28); t.centerAlignText(); return w; }
+  if (fam === 'accessoryCircular') { if (md) { const ri = w.addImage(ringImg(md.pct, Color.white(), new Color('#ffffff', .25), 60)); ri.imageSize = new Size(56, 56); ri.centerAlignImage(); return w; } const t = w.addText(o ? o.letters[2][0] : '·'); t.font = Font.boldRoundedSystemFont(28); t.centerAlignText(); return w; }
   if (fam === 'accessoryRectangular') {
-    T(w, `${o ? o.letters.map((x) => x[0]).join('.') + '  ' : ''}${now ? 'adesso' : focus ? 'alle ' + fmt(focus.start) : 'oggi'}`, 12, Color.white(), 'm');
+    T(w, `${md ? md.done + '/' + md.all + '  ' : o ? o.letters.map((x) => x[0]).join('.') + '  ' : ''}${now ? 'adesso' : focus ? 'alle ' + fmt(focus.start) : 'oggi'}`, 12, Color.white(), 'm');
     T(w, focus ? focus.label : 'Giornata libera', 15, Color.white(), 'b');
     if (focus) T(w, `fino alle ${fmt(focus.end)}`, 12, Color.white());
     return w;
@@ -421,13 +565,15 @@ async function main() {
   if (o) SHADOW = new Color(o.bg, .9);
   const bg = await background(o, fam); if (bg) w.backgroundImage = bg;
   const after = focus ? rest.slice(rest.indexOf(focus) + 1) : [];
+  const track = new Color(o ? o.ink : '#1E2024', .18);
   const head = (size) => { const hs = w.addStack(); hs.centerAlignContent(); if (o) codeRow(hs, o, size, sub); hs.addSpacer(); if (o && fam !== 'small') T(hs, o.fase, size, sub, 'm'); };
 
   if (fam === 'small') {
     w.setPadding(14, 14, 14, 14);
-    head(12); w.addSpacer();
+    if (md) progRow(w, md, ink, sub, 38, track); else head(12);
+    w.addSpacer();
     T(w, focus ? (now ? 'Adesso' : 'Alle ' + fmt(focus.start)) : 'Oggi', 12, sub, 'm');
-    T(w, focus ? focus.label : 'Giornata libera', 18, ink, 'h', 3);
+    T(w, focus ? focus.label : 'Giornata libera', 18, ink, 'h', md ? 2 : 3);
     if (focus) T(w, `fino alle ${fmt(focus.end)}`, 13, sub, 'm');
     return w;
   }
@@ -437,9 +583,10 @@ async function main() {
     head(12); w.addSpacer(8);
     const cols = w.addStack(); cols.spacing = 14;
     const left = cols.addStack(); left.layoutVertically(); left.size = new Size(140, 0);
+    if (md) { progRow(left, md, ink, sub, 40, track); left.addSpacer(8); }
     T(left, focus ? (now ? 'Adesso' : 'Alle ' + fmt(focus.start)) : 'Oggi', 12, sub, 'm');
-    T(left, focus ? focus.label : 'Giornata libera', 18, ink, 'h', 2);
-    if (focus) T(left, `fino alle ${fmt(focus.end)}`, 13, sub, 'm');
+    T(left, focus ? focus.label : 'Giornata libera', md ? 16 : 18, ink, 'h', 2);
+    if (focus && !md) T(left, `fino alle ${fmt(focus.end)}`, 13, sub, 'm');
     left.addSpacer();
     const right = cols.addStack(); right.layoutVertically(); right.spacing = 6;
     T(right, after.length ? 'Poi' : 'Dopo', 12, sub, 'm');
@@ -453,7 +600,8 @@ async function main() {
   w.setPadding(16, 18, 16, 18);
   head(13); w.addSpacer(4);
   T(w, dayLong(L.date), 22, ink, 'h');
-  w.addSpacer(14);
+  w.addSpacer(md ? 10 : 14);
+  if (md) { progRow(w, md, ink, sub, 50, track); w.addSpacer(12); }
   if (focus) {
     T(w, now ? 'Adesso' : `Tra ${dur(nextT.start - L.min)}`, 13, sub, 'm');
     T(w, focus.label, 24, ink, 'h', 2);
@@ -466,7 +614,7 @@ async function main() {
   w.addSpacer(14);
   if (after.length) {
     T(w, `Poi · fine verso le ${fmt(p.finish)}`, 13, sub, 'm'); w.addSpacer(6);
-    for (const t of after.slice(0, 4)) { taskRow(w, t, ink, sub, P, false, 15); w.addSpacer(7); }
+    for (const t of after.slice(0, md ? 3 : 4)) { taskRow(w, t, ink, sub, P, false, 15); w.addSpacer(7); }
     if (after.length > 4) T(w, `e altri ${after.length - 4}`, 12, sub, 'm');
   }
   w.addSpacer();
@@ -474,8 +622,12 @@ async function main() {
 }
 
 try {
+  let r = 0;
+  if (!config.runsInWidget && !config.runsInAccessoryWidget && Keychain.contains(KEYNAME)) r = await menu();
+  if (r === -1) { Script.complete(); return; }
+  if (r === 1) FAM = 'medium';
   const widget = await main();
-  if (config.runsInWidget) Script.setWidget(widget); else await widget.presentLarge();
+  if (config.runsInWidget) Script.setWidget(widget); else if (FAM === 'medium') await widget.presentMedium(); else await widget.presentLarge();
 } catch (e) {
   const w = new ListWidget(); w.backgroundColor = new Color('#232B3B');
   const t = w.addText(e.message === 'chiave' ? 'Chiave sbagliata: riapri lo script e incollala di nuovo.' : 'Ritmo non riesce a caricare il piano. ' + e.message);
