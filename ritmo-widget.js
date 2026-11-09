@@ -183,7 +183,7 @@ function plan(date) {
     if (!e.flessibile || !TASK_TIPI.includes(e.tipo)) continue;
     const len = evLen(e);
     let s = earliest(len, toMin(e.dopo || '15:00')); if (s == null) s = earliest(len, D0);
-    if (s != null) add({ key: 'e:' + e.id, cat: evCat(e), label: e.titolo, sub: 'Orario da fissare: tocca per sceglierlo', start: s, end: s + len, task: true, ev: e, flex: true });
+    if (s != null) add({ key: 'e:' + e.id, cat: evCat(e), label: e.titolo, sub: '🕐 da fissare', start: s, end: s + len, task: true, ev: e, flex: true });
     else unplaced.push({ key: 'e:' + e.id, label: e.titolo, min: len, cat: evCat(e) });
   }
 
