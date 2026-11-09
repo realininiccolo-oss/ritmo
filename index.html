@@ -158,6 +158,10 @@ a{color:inherit}
 .chk[aria-pressed="true"] svg{opacity:1}
 .tl-mini{display:flex;gap:12px;align-items:center;font-size:.86rem;color:var(--muted);padding:8px 14px;font-variant-numeric:tabular-nums;background:color-mix(in srgb,var(--bg) 60%,var(--card))}
 .tl-mini .t{width:3.3rem;flex:none}
+.tl-mini.meal{width:100%;border:0;font:inherit;text-align:left;cursor:pointer}
+.tl-mini.meal .grow{flex:1}
+.tl-mini.meal .chev{font-size:.8rem;color:var(--muted);opacity:.8}
+.hero-sum{font-size:1rem;line-height:1.42;margin-top:8px;max-width:34ch;text-shadow:0 0 8px var(--h-bg),0 0 2px var(--h-bg)}
 .tl-mini.free{color:color-mix(in srgb,var(--muted) 80%,var(--bg))}
 .tl.compact .tl-item{cursor:default}
 .tags{display:flex;flex-wrap:wrap;gap:4px 12px}
@@ -333,7 +337,7 @@ const MO = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'lugli
 const MOS = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
 
 /* S.file = dati dal file cifrato; S.miei, S.nascosti, S.giorni, S.settimane = stato sul telefono */
-const S = { cfg: null, nerina: {}, file: [], miei: [], nascosti: [], giorni: {}, settimane: {}, rotte: {}, eventi: [], versione: null };
+const S = { cfg: null, nerina: {}, file: [], miei: [], nascosti: [], giorni: {}, settimane: {}, rotte: {}, pasti: {}, eventi: [], versione: null };
 const rebuildEvents = () => { const hid = new Set(S.nascosti); S.eventi = [...S.file.filter((e) => !hid.has(e.id)).map((e) => ({ ...e, src: 'file' })), ...S.miei]; };
 
 /* ---------- tempo ---------- */
@@ -457,15 +461,20 @@ function plan(date) {
     const s = toMin(x.at, 240);
     add({ key: x.key, base: x.key, cat: x.cat, label: x.label, sub: x.da === date ? 'Spostato qui' : 'Spostato dal ' + dateShort(x.da), start: s, end: s + x.min, task: true, moved: true });
   }
+  /* Pasti: orario del giorno (st.pasti) > orario scelto per sempre (S.pasti) > regole. */
   const meal = (key, label, m) => {
-    let s = toMin(m.da), e = toMin(m.a); const len = e - s;
+    const own = (st.pasti || {})[key], mine = karate && key === 'cena' ? null : (S.pasti || {})[key];
+    if (own && own.no) return;
+    const pick = own || mine;
+    let s = pick ? toMin(pick.da) : toMin(m.da), e = pick ? s + pick.min : toMin(m.a); const len = e - s;
+    if (own) { add({ key, cat: 'pausa', label, start: s, end: e, own: true }); return; }
     if (overlaps(s, e)) {
       const ov = busy.filter(([x, y]) => s < y && x < e).sort((p, q) => p[0] - q[0]);
       const before = ov[0][0] - len;
       if (!overlaps(before, before + len) && before >= D0) s = before; else s = Math.max(...ov.map((o) => o[1]));
       e = s + len;
     }
-    add({ key, cat: 'pausa', label, start: s, end: e });
+    add({ key, cat: 'pausa', label, start: s, end: e, mine: !!mine });
   };
   meal('pranzo', 'Pranzo', c.pasti.pranzo);
   meal('cena', 'Cena', karate ? c.pasti.cenaKarate : c.pasti.cena);
@@ -523,8 +532,31 @@ function plan(date) {
   if (!bib) for (const x of study) split(x.key, x.label, x.min, 'studio', '');
   for (const x of (st.extra || [])) { if (skip[x.key] || x.at || x.min - less(x.key) <= 0) continue; split(x.key, x.label, x.min - less(x.key), x.cat, 'Recupero dal ' + dateShort(x.da)); }
 
-  const free = gaps(D0, D1).filter(([a, b]) => b - a >= 60).map(([a, b]) => ({ key: 'free' + a, cat: 'libero', label: 'Libero', start: a, end: b }));
   items.sort((a, b) => a.start - b.start || a.end - b.end);
+  /* Blocchi fatti con l'orario vero: restano dove li hai fatti. Se hai finito prima, o hai fatto in anticipo un blocco
+     che veniva dopo, i blocchi attaccati che seguono partono prima (mai prima del momento in cui l'hai segnato). */
+  const SHIFT_NO = ['karate', 'uscita', 'palestra'];
+  const canShift = (i) => i.task && !i.ev && !i.moved && !SHIFT_NO.includes(i.key) && !fatti[i.key];
+  const ruleFrom = (i) => i.key === 'n3' ? toMin(weekend ? c.nerina.b3Weekend : c.nerina.b3Feriale) : 0;
+  const recs = items.filter((i) => i.task && fatti[i.key] && typeof fatti[i.key] === 'object');
+  for (const d of recs) {
+    const r = fatti[d.key], s0 = d.start, e0 = d.end;
+    const hole = r.b < s0 ? s0 : r.b < e0 ? r.b : null;
+    d.start = r.a; d.end = r.b; d.real = true;
+    if (hole == null) continue;
+    let cursor = hole, prevEnd = e0;
+    const snap = items.map((i) => [i, i.start, i.end]).sort((x, y) => x[1] - y[1]);
+    for (const [i, a, b] of snap) {
+      if (i === d || a < prevEnd) continue;
+      if (a > prevEnd + 2 || !canShift(i) || a < r.t) break;
+      const ns = Math.max(cursor, r.t, ruleFrom(i));
+      if (ns < a) { i.start = ns; i.end = ns + (b - a); i.prima = a - ns; }
+      cursor = i.end; prevEnd = b;
+    }
+  }
+  if (recs.length) items.sort((a, b) => a.start - b.start || a.end - b.end);
+  const busy2 = items.filter((i) => !i.real || i.start >= D0).map((i) => [i.start, i.end]).sort((a, b) => a[0] - b[0]);
+  const free = []; { let cur = D0; for (const [x, y] of busy2) { if (x - cur >= 60) free.push({ key: 'free' + cur, cat: 'libero', label: 'Libero', start: cur, end: Math.min(x, D1) }); cur = Math.max(cur, y); } if (D1 - cur >= 60) free.push({ key: 'free' + cur, cat: 'libero', label: 'Libero', start: cur, end: D1 }); }
   let mente = 0, corpo = 0;
   for (const it of items) {
     const L = it.end - it.start;
@@ -537,7 +569,7 @@ function plan(date) {
   const tasks = items.filter((i) => i.task);
   const work = tasks.filter((t) => t.cat !== 'sociale');
   const finish = work.length ? Math.max(...work.map((t) => t.end)) : null;
-  const skipped = [...Object.keys(skip).map((k) => ({ key: k, info: skip[k] })), ...Object.entries(meno).flatMap(([k, arr]) => arr.map((m) => ({ key: k, info: { a: m.a, x: m.x }, part: m.min })))];
+  const skipped = [...Object.keys(skip).map((k) => ({ key: k, info: skip[k] })), ...Object.entries(meno).flatMap(([k, arr]) => arr.map((m) => ({ key: k, info: { a: m.a, x: m.x, fatto: m.fatto }, part: m.min })))];
   const notes = evs.filter((e) => !TASK_TIPI.includes(e.tipo));
   return { date, items, free, unplaced, fatti, st, tasks, skipped, notes, bib, wk, D0, D1, finish, load: { mente: mente / 60, corpo: corpo / 60, sociale } };
 }
@@ -584,8 +616,8 @@ function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('o
 const LS = { pass: 'ritmo:pass', dati: 'ritmo:dati', stato: 'ritmo:stato' };
 const lsGet = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
 const lsSet = (k, v) => { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } };
-function saveState() { lsSet(LS.stato, JSON.stringify({ giorni: S.giorni, settimane: S.settimane, rotte: S.rotte, miei: S.miei, nascosti: S.nascosti })); }
-function loadState() { try { const x = JSON.parse(lsGet(LS.stato) || 'null'); if (x) { S.giorni = x.giorni || {}; S.settimane = x.settimane || {}; S.miei = x.miei || []; S.nascosti = x.nascosti || []; S.rotte = x.rotte || {}; } } catch (e) { /* stato nuovo */ } }
+function saveState() { lsSet(LS.stato, JSON.stringify({ giorni: S.giorni, settimane: S.settimane, rotte: S.rotte, miei: S.miei, nascosti: S.nascosti, pasti: S.pasti })); }
+function loadState() { try { const x = JSON.parse(lsGet(LS.stato) || 'null'); if (x) { S.giorni = x.giorni || {}; S.settimane = x.settimane || {}; S.miei = x.miei || []; S.nascosti = x.nascosti || []; S.rotte = x.rotte || {}; S.pasti = x.pasti || {}; } } catch (e) { /* stato nuovo */ } }
 function applyData(d) { S.cfg = d.cfg || null; S.nerina = d.nerina || {}; S.file = d.eventi || []; S.versione = d.versione || null; rebuildEvents(); }
 function loadCachedData() { try { const d = JSON.parse(lsGet(LS.dati) || 'null'); if (d) applyData(d); return !!d; } catch (e) { return false; } }
 const b64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
@@ -613,12 +645,72 @@ async function refresh(quiet) {
 }
 
 function patchDay(date, patch) { S.giorni[date] = { ...(S.giorni[date] || {}), ...patch }; saveState(); render(); }
-function toggleDone(date, key, val) {
+/* Fatto: per oggi salva anche quando (a-b, in minuti) e il momento in cui l'hai segnato (t). */
+const FIXED_KEYS = ['karate', 'uscita'];
+const canAhead = (it) => it && it.task && !it.ev && !FIXED_KEYS.includes(it.key);
+const nowR = () => Math.ceil(nowLogical().min / 5) * 5;
+function doneRec(date, it) {
+  const L = nowLogical();
+  if (!it || date !== L.date || !canAhead(it)) return true;
+  const now = L.min, len = it.end - it.start;
+  if (now >= it.end) return { a: it.start, b: it.end, t: now };
+  if (now >= it.start) return { a: it.start, b: Math.max(now, it.start + 5), t: now };
+  return { a: Math.max(now - len, toMin(cfg().giorno.inizio)), b: now, t: now };
+}
+function toggleDone(date, key, val, it) {
   const f = { ...((S.giorni[date] || {}).fatti || {}) };
   const v = val === undefined ? !f[key] : val;
-  if (v) f[key] = true; else delete f[key];
+  let msg = null;
+  if (v) {
+    const r = doneRec(date, it); f[key] = r;
+    if (typeof r === 'object' && it) { if (r.b < it.start) msg = 'Fatto in anticipo'; else if (r.b < it.end - 4) msg = `Finito ${dur(it.end - r.b)} prima`; }
+  } else delete f[key];
   patchDay(date, { fatti: f });
+  if (v) cheer(date, msg);
   return v;
+}
+/* Quanto ci hai messo davvero: accorcia il blocco fatto e fa partire prima quelli dopo. */
+function setDoneLen(date, it, min) {
+  const L = nowLogical(), f = { ...((S.giorni[date] || {}).fatti || {}) }, r = f[it.key];
+  const a = r && typeof r === 'object' ? r.a : it.start;
+  f[it.key] = { a, b: a + min, t: Math.max(L.min, r && r.t ? r.t : 0) };
+  patchDay(date, { fatti: f }); toast(`${it.label}: ${dur(min)}`);
+}
+/* Fatto in anticipo un blocco di un altro giorno: sparisce da quel giorno e resta tra i fatti di oggi. */
+function doneAhead(src, it) {
+  const L = nowLogical(), base = it.base || it.key, p = plan(src);
+  const chunk = it.key !== base && /\.\d+$/.test(it.key);
+  const min = chunk ? it.end - it.start : (remainingMin(p, base) || it.end - it.start);
+  const x = 'a' + Date.now().toString(36), st = S.giorni[src] || {};
+  if (chunk) { const mn = { ...(st.meno || {}) }; mn[base] = [...(mn[base] || []), { min, a: L.date, x, fatto: true }]; S.giorni[src] = { ...st, meno: mn }; }
+  else S.giorni[src] = { ...st, skip: { ...(st.skip || {}), [base]: { a: L.date, x, fatto: true } } };
+  const tg = S.giorni[L.date] || {};
+  S.giorni[L.date] = { ...tg, anticipati: [...(tg.anticipati || []), { key: x, label: it.label, cat: it.cat, min, da: src }] };
+  saveState(); render(); toast(`${it.label}: fatto, tolto da ${dayShort(src)}`);
+}
+function doNow(src, it) { moveItem(src, it, nowLogical().date, nowR()); }
+/* Pasti: orario e durata per oggi o per sempre. */
+function openMeal(d, key) {
+  const p = plan(d), it = p.items.find((i) => i.key === key), st = S.giorni[d] || {}, label = key === 'pranzo' ? 'Pranzo' : 'Cena';
+  const c = cfg(), def = key === 'pranzo' ? c.pasti.pranzo : c.pasti.cena;
+  const curDa = it ? hm(it.start) : ((S.pasti || {})[key] || {}).da || def.da;
+  let min = it ? it.end - it.start : ((S.pasti || {})[key] || {}).min || (toMin(def.a) - toMin(def.da));
+  const tIn = h('input', { id: 'ml-t', type: 'time', value: curDa, step: 300 });
+  const opts = [20, 30, 45, 60, 90];
+  const chips = opts.map((m) => h('button', { class: 'chip', type: 'button', 'aria-pressed': String(m === min), text: dur(m), onclick: () => { min = m; chips.forEach((b, i) => b.setAttribute('aria-pressed', String(opts[i] === m))); } }));
+  const val = () => tIn.value ? { da: tIn.value, min } : null;
+  const done = () => { saveState(); render(); closeSheet(); };
+  const setDay = (v) => { const pa = { ...(st.pasti || {}) }; if (v) pa[key] = v; else delete pa[key]; S.giorni[d] = { ...st, pasti: pa }; };
+  const hasOwn = !!(st.pasti || {})[key], hasMine = !!(S.pasti || {})[key];
+  openSheet([xBtn(), h('h2', { text: label }),
+    h('div', { class: 'field' }, h('label', { for: 'ml-t', text: 'Inizio' }), tIn),
+    h('div', { class: 'field' }, h('label', { text: 'Durata' }), h('div', { class: 'chips' }, chips)),
+    h('div', { class: 'btns' },
+      h('button', { class: 'btn go', type: 'button', text: d === nowLogical().date ? 'Solo oggi' : 'Solo questo giorno', onclick: () => { const v = val(); if (!v) return; setDay(v); done(); toast(`${label} alle ${fmt(toMin(v.da))}`); } }),
+      h('button', { class: 'btn', type: 'button', text: 'Sempre così', onclick: () => { const v = val(); if (!v) return; S.pasti = { ...(S.pasti || {}), [key]: v }; setDay(null); done(); toast(`${label}: ogni giorno alle ${fmt(toMin(v.da))}`); } })),
+    key === 'cena' ? h('p', { class: 'small muted', text: 'Nei giorni di karate la cena resta prima dell\'allenamento, se non la cambi per quel giorno.' }) : null,
+    h('button', { class: 'btn ghost', type: 'button', text: `Niente ${label.toLowerCase()} ${d === nowLogical().date ? 'oggi' : 'quel giorno'}`, onclick: () => { setDay({ no: true }); done(); } }),
+    hasOwn || hasMine ? h('button', { class: 'btn ghost', type: 'button', text: hasOwn ? 'Torna all\'orario di sempre' : `Torna all'orario base (${def.da})`, onclick: () => { if (hasOwn) setDay(null); else { const m2 = { ...(S.pasti || {}) }; delete m2[key]; S.pasti = m2; } done(); } }) : null]);
 }
 function remainingMin(p, base) { return p.tasks.filter((t) => (t.base || t.key) === base && !p.fatti[t.key]).reduce((a, t) => a + t.end - t.start, 0); }
 /* Sposta un blocco in un altro giorno e, se si vuole, a un'ora precisa (at in minuti, null = dove c'è spazio). */
@@ -680,7 +772,10 @@ function openMove(d, it, back) {
   const L = nowLogical();
   const dIn = h('input', { id: 'mv-d', type: 'date', value: sug[0] ? sug[0].d : L.date });
   const tIn = h('input', { id: 'mv-t', type: 'time', value: sug[0] ? hm(sug[0].at) : '', step: 300 });
-  openSheet([xBtn(), h('h2', { text: 'Sposta ' + it.label }), h('p', { class: 'muted small', text: `${dur(min)} da sistemare` }),
+  const quick = d === L.date && !it.ev ? h('div', { class: 'chips' },
+    [[30, 'Tra 30 min'], [60, 'Tra 1 ora'], [120, 'Tra 2 ore']].filter(([m]) => nowR() + m + min <= p.D1).map(([m, t]) => h('button', { class: 'chip', type: 'button', text: t, onclick: () => go(d, nowR() + m) })),
+    h('button', { class: 'chip', type: 'button', text: 'Domani', onclick: () => go(addDays(d, 1), null) })) : null;
+  openSheet([xBtn(), h('h2', { text: 'Sposta ' + it.label }), h('p', { class: 'muted small', text: `${dur(min)} da sistemare` }), quick,
     sug.length ? h('button', { class: 'slot rec', type: 'button', onclick: () => go(sug[0].d, sug[0].at) },
       h('span', { class: 'eyebrow', text: 'Consigliato' }), h('b', { text: slotLabel(sug[0]) }), h('span', { class: 'sub', text: `fino alle ${fmt(sug[0].at + min)}${sug[0].d !== L.date ? ' · oggi non c\'è uno spazio adatto' : ''}` })) : h('p', { class: 'muted', text: 'Nei prossimi giorni non c\'è uno spazio libero abbastanza lungo: scegli tu l\'orario.' }),
     sug.length > 1 ? h('div', { class: 'slots' }, sug.slice(1).map((o) => h('button', { class: 'slot', type: 'button', onclick: () => go(o.d, o.at) }, h('b', { text: slotLabel(o) }), o.why ? h('span', { class: 'sub', text: o.why }) : null))) : null,
@@ -716,7 +811,7 @@ function restore(date, key, x) {
   let info = (st.skip || {})[key];
   if (x && (st.meno || {})[key]) { const mn = { ...st.meno }; info = mn[key].find((m) => m.x === x); mn[key] = mn[key].filter((m) => m.x !== x); if (!mn[key].length) delete mn[key]; S.giorni[date] = { ...st, meno: mn }; }
   else { const sk = { ...(st.skip || {}) }; delete sk[key]; S.giorni[date] = { ...st, skip: sk }; }
-  if (info && info.a && info.x) { const tg = S.giorni[info.a] || {}; S.giorni[info.a] = { ...tg, extra: (tg.extra || []).filter((x) => x.key !== info.x) }; }
+  if (info && info.a && info.x) { const tg = S.giorni[info.a] || {}; S.giorni[info.a] = { ...tg, extra: (tg.extra || []).filter((x) => x.key !== info.x), anticipati: (tg.anticipati || []).filter((x) => x.key !== info.x) }; }
   saveState(); render();
 }
 function streak() {
@@ -728,15 +823,17 @@ function streak() {
 
 /* ---------- pezzi di interfaccia ---------- */
 function tlItem(p, it, o) {
+  if (it.cat === 'pausa' && !o.compact && (it.key === 'pranzo' || it.key === 'cena')) return h('li', {}, h('button', { class: 'tl-mini meal', type: 'button', 'data-cat': it.cat, onclick: () => openMeal(p.date, it.key) }, h('span', { class: 't', text: fmt(it.start) }), h('span', { class: 'grow', text: `${it.label} · ${dur(it.end - it.start)}` }), h('span', { class: 'chev', text: 'Cambia' })));
   if (it.cat === 'pausa' || it.cat === 'viaggio') return h('li', { class: 'tl-mini', 'data-cat': it.cat }, h('span', { class: 't', text: fmt(it.start) }), h('span', { text: `${it.label} · ${dur(it.end - it.start)}` }));
   if (it.cat === 'libero') return h('li', { class: 'tl-mini free' }, h('span', { class: 't', text: fmt(it.start) }), h('span', { text: `Libero fino alle ${fmt(it.end)} · ${dur(it.end - it.start)}` }));
   const done = !!p.fatti[it.key];
   const isNow = o.now != null && it.start <= o.now && o.now < it.end;
   const late = o.now != null && it.end <= o.now && it.task && !done;
   const cls = 'tl-item' + (done ? ' done' : '') + (isNow ? ' now' : '') + (late ? ' late' : '');
-  const chk = it.task && o.check ? h('button', { class: 'chk', type: 'button', 'aria-pressed': String(done), 'aria-label': (done ? 'Segna da fare: ' : 'Segna fatto: ') + it.label, html: CHECK, onclick: (e) => { e.stopPropagation(); const v = toggleDone(p.date, it.key); if (v) { cheer(p.date); requestAnimationFrame(() => { const nb = document.querySelector(`[data-k="${CSS.escape(p.date + it.key)}"] .chk`); if (nb) nb.classList.add('pop'); }); } } }) : h('span');
+  const chk = it.task && o.check ? h('button', { class: 'chk', type: 'button', 'aria-pressed': String(done), 'aria-label': (done ? 'Segna da fare: ' : 'Segna fatto: ') + it.label, html: CHECK, onclick: (e) => { e.stopPropagation(); const v = toggleDone(p.date, it.key, undefined, it); if (v) { requestAnimationFrame(() => { const nb = document.querySelector(`[data-k="${CSS.escape(p.date + it.key)}"] .chk`); if (nb) nb.classList.add('pop'); }); } } }) : h('span');
   const showSub = it.sub && (it.moved || it.bib || it.flex || it.ev || /^Recupero/.test(it.sub));
-  const body = h('span', { class: 'txt' }, h('span', { class: 'lbl', text: it.label }), showSub ? h('span', { class: 'sub', text: it.sub }) : null,
+  const note = !done && it.prima ? `anticipato di ${dur(it.prima)}` : null;
+  const body = h('span', { class: 'txt' }, h('span', { class: 'lbl', text: it.label }), showSub ? h('span', { class: 'sub', text: it.sub }) : null, note ? h('span', { class: 'sub', text: note }) : null,
     late && o.check && it.key !== 'uscita' ? h('span', { class: 'late-act' }, 'Non fatto · ', h('button', { class: 'link', type: 'button', text: 'Sposta', onclick: (e) => { e.stopPropagation(); openMove(p.date, it); } })) : null);
   const row = h(o.compact ? 'div' : 'button', { class: cls, 'data-cat': it.cat, type: o.compact ? null : 'button', onclick: o.compact ? null : () => openItem(p.date, it) },
     h('span', { class: 'time' }, h('b', { text: fmt(it.start) }), h('span', { text: fmt(it.end) })), h('span', { class: 'bar' }), body, chk);
@@ -797,7 +894,7 @@ function unplacedBox(p) {
 function skippedLine(p) {
   if (!p.skipped.length) return null;
   return h('div', { class: 'small muted', style: 'display:flex;flex-wrap:wrap;gap:6px;align-items:center' }, 'Tolti da qui:',
-    p.skipped.map((s) => h('button', { class: 'btn small ghost', type: 'button', text: `${labelOf(s.key)}${s.part ? ' ' + dur(s.part) : ''}${s.info && s.info.a ? ' → ' + dayShort(s.info.a) : ''} · rimetti`, onclick: () => restore(p.date, s.key, s.part ? s.info.x : null) })));
+    p.skipped.map((s) => h('button', { class: 'btn small ghost', type: 'button', text: `${labelOf(s.key)}${s.part ? ' ' + dur(s.part) : ''}${s.info && s.info.a ? (s.info.fatto ? ' · fatto ' + dayShort(s.info.a) : ' → ' + dayShort(s.info.a)) : ''} · rimetti`, onclick: () => restore(p.date, s.key, s.part ? s.info.x : null) })));
 }
 function labelOf(key) {
   const n = NB.find((b) => b.key === key); if (n) return n.label;
@@ -807,9 +904,9 @@ function labelOf(key) {
   return 'Blocco spostato';
 }
 const CHEERS = ['Fatto.'];
-function cheer(date) {
+function cheer(date, msg) {
   const p = plan(date); const left = p.tasks.filter((t) => !p.fatti[t.key]).length;
-  toast(left ? `Fatto · ne restano ${left}` : 'Giornata completata');
+  toast(left ? `${msg || 'Fatto'} · ne restano ${left}` : 'Giornata completata');
 }
 
 /* ---------- viste ---------- */
@@ -848,7 +945,7 @@ function heroBox(th, mi, p, short) {
   if (ORN && mi != null) el.insertAdjacentHTML('afterbegin', ORN.sceneSVG(mi, { p }));
   return el;
 }
-function dayHero(date, kicker, short) {
+function dayHero(date, kicker, short, sum) {
   const o = ornOf(date), th = o ? o.m.theme : FALLBACK_THEME;
   const el = heroBox(th, o ? o.mi : null, o ? o.wi / 6 : 0, short);
   const t = h('div', { class: 'hero-text' }, h('span', { class: 'kick', text: kicker }), h('h1', { text: dayLong(date) }));
@@ -856,6 +953,7 @@ function dayHero(date, kicker, short) {
     t.append(h('div', { class: 'code-row' }, codeEl(o), h('span', { class: 'fict', text: `${o.d.fictNum} ${o.m.name}` })));
     t.append(emblem(o.d.letter, o.dk, `Giorno ${o.d.letter} · settimana ${o.w.weekLetter}`));
   }
+  if (sum) t.append(h('p', { class: 'hero-sum' }));
   el.append(t);
   return { el, th, mi: o ? o.mi : null };
 }
@@ -946,7 +1044,8 @@ function openValida(mon) {
 function viewOggi() {
   const L = nowLogical(), d = L.date, p = plan(d);
   const fx = lsGet('ritmo:fx') !== d; if (fx) lsSet('ritmo:fx', d);
-  setHero('oggi:' + d, () => dayHero(d, greeting()), fx);
+  setHero('oggi:' + d, () => dayHero(d, greeting(), false, true), fx);
+  const hs = document.querySelector('#hero-slot .hero-sum'); if (hs) hs.textContent = daySummary(p, L);
   const out = [];
   const evening = L.min >= 21 * 60;
   const closed = !!p.st.chiusa;
@@ -964,8 +1063,10 @@ function viewOggi() {
     h('span', { class: 'eyebrow', text: cur ? 'Adesso' : `Tra ${dur(nxt.start - L.min)}` }),
     h('span', { class: 'big', text: focus.label }),
     h('span', { class: 'when', text: cur ? `fino alle ${fmt(cur.end)}` : `${fmt(nxt.start)} - ${fmt(nxt.end)}` }),
-    cur ? h('div', { class: 'btns' }, h('button', { class: 'btn go', type: 'button', text: 'Fatto', onclick: () => { toggleDone(d, cur.key, true); cheer(d); } }),
-      !cur.ev && cur.key !== 'uscita' ? h('button', { class: 'btn', type: 'button', text: 'Sposta', onclick: () => openMove(d, cur) }) : null) : null));
+    cur ? h('div', { class: 'btns' }, h('button', { class: 'btn go', type: 'button', text: 'Fatto', onclick: () => toggleDone(d, cur.key, true, cur) }),
+      !cur.ev && cur.key !== 'uscita' ? h('button', { class: 'btn', type: 'button', text: 'Sposta', onclick: () => openMove(d, cur) }) : null)
+      : canAhead(nxt) && nxt.start - L.min >= 10 ? h('div', { class: 'btns' }, h('button', { class: 'btn go', type: 'button', text: 'Inizia adesso', onclick: () => doNow(d, nxt) }),
+        h('button', { class: 'btn', type: 'button', text: 'L\'ho già fatto', onclick: () => toggleDone(d, nxt.key, true, nxt) })) : null));
   else if (!p.tasks.length || !open.length) out.push(h('section', { class: 'now' }, h('span', { class: 'eyebrow', text: 'Oggi' }), h('span', { class: 'big', text: open.length ? 'Giornata libera' : 'Hai finito per oggi' })));
 
   const tot = p.tasks.reduce((a, t) => a + t.end - t.start, 0), done = p.tasks.filter((t) => p.fatti[t.key]).reduce((a, t) => a + t.end - t.start, 0);
@@ -976,6 +1077,19 @@ function viewOggi() {
     late.length ? h('div', { class: 'late-box' }, h('span', { text: `${late.length} da recuperare` }),
       h('button', { class: 'btn small', type: 'button', text: 'Riorganizza da adesso', onclick: () => reflow(d) })) : null));
 
+  const freeNow = !cur && (!nxt || nxt.start - L.min >= 45) && L.min < p.D1 - 45 && !closed;
+  if (freeNow) {
+    const tp = plan(addDays(d, 1)), work = (t) => t.cat === 'studio' || t.cat === 'nerina';
+    const cand = [...open.filter((t) => work(t) && t !== nxt && t.start > L.min).map((t) => ({ t, src: d })), ...tp.tasks.filter((t) => work(t) && !tp.fatti[t.key]).map((t) => ({ t, src: tp.date }))].slice(0, 3);
+    const room = nxt ? nxt.start - L.min : p.D1 - L.min;
+    if (cand.length) out.push(h('section', { class: 'sec' }, h('div', { class: 'sec-h' }, h('h3', { text: 'Hai tempo libero' }), h('span', { class: 'muted small', text: nxt ? `${dur(room)} prima di ${nxt.label}` : 'fino a sera' })),
+      h('p', { class: 'muted small', text: 'Anticipa un blocco: dove era previsto non te lo ripropongo.' }),
+      h('ul', { class: 'rows' }, cand.map(({ t, src }) => h('li', { class: 'r', 'data-cat': t.cat }, h('span', { class: 'dot' }), h('span', { class: 'grow' }, h('b', { text: t.label }), h('span', { class: 'muted', text: ` · ${dur(t.end - t.start)} · ${src === d ? 'alle ' + fmt(t.start) : 'domani'}` })),
+        h('button', { class: 'btn small go', type: 'button', text: 'Fallo adesso', onclick: () => doNow(src, t) }),
+        h('button', { class: 'btn small', type: 'button', text: 'Già fatto', onclick: () => src === d ? toggleDone(d, t.key, true, t) : doneAhead(src, t) }))))));
+  }
+  const anti = p.st.anticipati || [];
+  if (anti.length) out.push(h('p', { class: 'small muted', text: 'Fatti in anticipo: ' + anti.map((x) => `${x.label} (da ${dayShort(x.da)})`).join(', ') }));
   if (!p.st.energia && !evening && p.tasks.length) out.push(energyCard(d));
   else if (p.st.energia) { const s2 = energyHints(p, L); if (s2) out.push(s2); }
   const ub = unplacedBox(p); if (ub) out.push(ub);
@@ -985,6 +1099,28 @@ function viewOggi() {
   const rc = ritoCard(d); if (rc) out.push(rc);
   const nr = nerinaCard(d, true); if (nr) out.push(nr);
   return out;
+}
+/* Il paragrafo nell'intestazione: com'è andata finora e cosa manca. */
+const andList = (a) => a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' e ' + a[a.length - 1];
+function daySummary(p, L) {
+  const anti = p.st.anticipati || [];
+  if (!p.tasks.length && !anti.length) return 'Oggi niente in programma: giornata libera.';
+  const done = p.tasks.filter((t) => p.fatti[t.key]), open = p.tasks.filter((t) => !p.fatti[t.key]);
+  const late = open.filter((t) => t.end <= L.min && !t.ev && !FIXED_KEYS.includes(t.key));
+  const head = (t) => t.cat === 'nerina' || t.cat === 'studio';
+  const doneMin = done.filter(head).reduce((a, t) => a + t.end - t.start, 0) + anti.reduce((a, x) => a + x.min, 0);
+  const nDone = done.length + anti.length, nAll = p.tasks.length + anti.length;
+  let s1;
+  if (!nDone) s1 = p.tasks[0] && L.min < p.tasks[0].start ? `Giornata ${loadWord(p.load.mente)}: ${hrs(p.load.mente)} tra studio e lavoro.` : (late.length ? `Ancora niente segnato come fatto: ${late.length} ${late.length === 1 ? 'blocco è rimasto' : 'blocchi sono rimasti'} indietro.` : 'Ancora niente segnato come fatto.');
+  else s1 = `Hai fatto ${nDone} ${nDone === 1 ? 'blocco' : 'blocchi'} su ${nAll}${doneMin ? `, ${dur(doneMin)} di studio e lavoro` : ''}${late.length ? `; ${late.length} ${late.length === 1 ? 'è rimasto' : 'sono rimasti'} indietro.` : open.length ? ', sei in pari.' : '.'}`;
+  if (!open.length) { const tp = plan(addDays(p.date, 1)), f = tp.tasks[0]; return `${s1} Hai finito per oggi.${f ? ` Domani si parte alle ${fmt(f.start)} con ${f.label}.` : ''}`; }
+  const parts = [], ner = open.filter((t) => t.cat === 'nerina').length;
+  if (ner) parts.push(ner === 1 ? '1 blocco di Nerina' : `${ner} blocchi di Nerina`);
+  const subj = {}; open.filter((t) => t.cat === 'studio').forEach((t) => { subj[t.label] = (subj[t.label] || 0) + t.end - t.start; });
+  Object.entries(subj).forEach(([k, m]) => parts.push(`${dur(m)} di ${k}`));
+  open.filter((t) => !head(t)).forEach((t) => parts.push(`${t.key === 'uscita' ? 'la serata fuori' : t.key === 'palestra' ? 'la palestra' : t.key === 'karate' ? 'karate' : t.label} alle ${fmt(t.start)}`));
+  const more = parts.length > 4 ? parts.length - 4 : 0;
+  return `${s1} Ti restano ${andList(parts.slice(0, 4))}${more ? ` e altro` : ''}${p.finish ? `. Finisci verso le ${fmt(p.finish)}` : ''}.`;
 }
 function energyCard(d) {
   const val = { mente: 0, corpo: 0 };
@@ -1138,16 +1274,29 @@ function openDay(d) {
     unplacedBox(p), noteChips(p), nerinaCard(d), timeline(p, { check: d <= L.date, now: d === L.date ? L.min : null }), skippedLine(p)]);
 }
 function openItem(d, it) {
-  const p = plan(d); const done = !!p.fatti[it.key];
+  const p = plan(d), L = nowLogical(), rec = p.fatti[it.key], done = !!rec, today = d === L.date, future = d > L.date;
   const nodes = [xBtn(), h('span', { class: 'eyebrow', 'data-cat': it.cat, text: CATN[it.cat] || '' }), h('h2', { text: it.label }),
     h('p', { class: 'muted', text: `${dayShort(d)} · ${fmt(it.start)} - ${fmt(it.end)} · ${dur(it.end - it.start)}` }), it.sub ? h('p', { class: 'small muted', text: it.sub }) : null];
-  if (it.task) nodes.push(h('button', { class: 'btn go wide', type: 'button', text: done ? 'Segna da fare' : 'Segna fatto', onclick: () => { const v = toggleDone(d, it.key); if (v) cheer(d); closeSheet(); } }));
-  if (it.task && it.key !== 'uscita') nodes.push(h('button', { class: 'btn wide', type: 'button', text: 'Sposta a un altro orario', onclick: () => openMove(d, it) }));
+  if (it.task && future && canAhead(it)) {
+    nodes.push(h('button', { class: 'btn go wide', type: 'button', text: 'L\'ho già fatto', onclick: () => { doneAhead(d, it); closeSheet(); } }));
+    nodes.push(h('button', { class: 'btn wide', type: 'button', text: 'Fallo adesso', onclick: () => { doNow(d, it); closeSheet(); } }));
+  } else if (it.task && !future) {
+    const lbl = done ? 'Segna da fare' : today && L.min < it.start ? 'Fatto in anticipo' : today && L.min < it.end ? 'Fatto, ho finito' : 'Segna fatto';
+    nodes.push(h('button', { class: 'btn go wide', type: 'button', text: lbl, onclick: () => { toggleDone(d, it.key, undefined, it); if (done) closeSheet(); else openItem(d, plan(d).tasks.find((t) => t.key === it.key) || it); } }));
+    if (today && !done && canAhead(it) && it.start > L.min + 5) nodes.push(h('button', { class: 'btn wide', type: 'button', text: 'Fallo adesso', onclick: () => { doNow(d, it); closeSheet(); } }));
+  }
+  if (it.task && today && done && canAhead(it)) {
+    const len = it.end - it.start;
+    const opts = [...new Set([15, 30, 45, 60, 90, 120, 150, 180].filter((m) => m < Math.max(len, 60) + 61))];
+    nodes.push(h('div', { class: 'card' }, h('b', { text: 'Quanto ci hai messo?' }), h('span', { class: 'small muted', text: 'Se hai finito prima, i blocchi attaccati dopo partono prima.' }),
+      h('div', { class: 'chips' }, opts.map((m) => h('button', { class: 'chip', type: 'button', 'aria-pressed': String(m === len), text: dur(m), onclick: () => { setDoneLen(d, it, m); closeSheet(); } })))));
+  }
+  if (it.task && it.key !== 'uscita' && !done) nodes.push(h('button', { class: 'btn wide', type: 'button', text: 'Sposta più tardi o un altro giorno', onclick: () => openMove(d, it) }));
   if (it.ev) nodes.push(h('button', { class: 'btn wide', type: 'button', text: it.flex ? 'Fissa l\'orario' : 'Modifica', onclick: () => openEvent(it.ev) }));
   const more = h('div', { class: 'btns' });
-  if (it.task && !it.ev && it.key !== 'uscita') more.append(h('button', { class: 'btn ghost', type: 'button', text: 'Togli da oggi', onclick: () => { skipToday(d, it); closeSheet(); } }));
+  if (it.task && !it.ev && it.key !== 'uscita' && !done) more.append(h('button', { class: 'btn ghost', type: 'button', text: future ? 'Togli da quel giorno' : 'Togli da oggi', onclick: () => { skipToday(d, it); closeSheet(); } }));
   if (it.key === 'uscita') more.append(h('button', { class: 'btn ghost', type: 'button', text: 'Stasera niente uscita', onclick: () => { skipToday(d, it); closeSheet(); } }));
-  if (it.cat === 'studio') more.append(h('button', { class: 'btn ghost', type: 'button', text: it.bib ? 'Studia a casa oggi' : 'Studia in biblioteca a Brescia', onclick: () => { patchDay(d, { biblioteca: !it.bib }); closeSheet(); } }));
+  if (it.cat === 'studio' && !done) more.append(h('button', { class: 'btn ghost', type: 'button', text: it.bib ? 'Studia a casa' : 'Studia in biblioteca a Brescia', onclick: () => { patchDay(d, { biblioteca: !it.bib }); closeSheet(); } }));
   if (it.cat === 'corpo') more.append(h('button', { class: 'btn ghost', type: 'button', text: 'Giorni di sport', onclick: openSport }));
   if (it.cat === 'nerina') more.append(h('a', { class: 'btn ghost', style: 'text-decoration:none', href: cfg().cruscotto, target: '_blank', rel: 'noopener', text: 'Apri il Cruscotto' }));
   if (more.childNodes.length) nodes.push(more);
@@ -1223,7 +1372,7 @@ function openClose() {
   const rows = rest.map((t) => {
     const r = h('li', { class: 'r', 'data-cat': t.cat },
       h('span', { class: 'dot' }), h('span', { class: 'grow' }, h('b', { text: t.label }), h('span', { class: 'muted small', text: ` ${fmt(t.start)}-${fmt(t.end)}` })),
-      h('button', { class: 'btn small go', type: 'button', text: 'Fatto', onclick: () => { toggleDone(d, t.key, true); r.classList.add('gone'); } }),
+      h('button', { class: 'btn small go', type: 'button', text: 'Fatto', onclick: () => { toggleDone(d, t.key, true, t); r.classList.add('gone'); } }),
       t.key !== 'uscita' ? h('button', { class: 'btn small', type: 'button', text: 'Sposta', onclick: () => openMove(d, t, openClose) }) : null,
       h('button', { class: 'btn small ghost', type: 'button', text: 'Lascia', onclick: () => r.classList.add('gone') }));
     return r;
@@ -1248,6 +1397,9 @@ function openSettings() {
       h('button', { class: 'btn', type: 'button', text: 'Copia il backup', onclick: async () => { try { await navigator.clipboard.writeText(lsGet(LS.stato) || '{}'); toast('Backup copiato'); } catch (e) { ta.value = lsGet(LS.stato) || '{}'; ta.select(); toast('Copialo dal riquadro'); } } }),
       h('div', { class: 'field' }, h('label', { for: 'bk', text: 'Ripristina' }), ta),
       h('button', { class: 'btn ghost', type: 'button', text: 'Ripristina questo backup', onclick: () => { try { const x = JSON.parse(ta.value); if (!x || typeof x !== 'object' || !('giorni' in x)) throw 0; lsSet(LS.stato, ta.value); loadState(); rebuildEvents(); render(); closeSheet(); toast('Backup ripristinato'); } catch (e) { toast('Questo testo non è un backup di Ritmo'); } } })),
+    (() => { const c = cfg(), L = nowLogical(), m = S.pasti || {}, pr = m.pranzo || { da: c.pasti.pranzo.da, min: toMin(c.pasti.pranzo.a) - toMin(c.pasti.pranzo.da) }, ce = m.cena || { da: c.pasti.cena.da, min: toMin(c.pasti.cena.a) - toMin(c.pasti.cena.da) };
+      return h('div', { class: 'card' }, h('b', { text: 'Pasti' }), h('span', { class: 'small muted', text: `Pranzo alle ${fmt(toMin(pr.da))} per ${dur(pr.min)} · cena alle ${fmt(toMin(ce.da))} per ${dur(ce.min)}. Per un giorno solo tocca il pasto nella giornata.` }),
+        h('div', { class: 'btns' }, h('button', { class: 'btn small', type: 'button', text: 'Cambia il pranzo', onclick: () => openMeal(L.date, 'pranzo') }), h('button', { class: 'btn small', type: 'button', text: 'Cambia la cena', onclick: () => openMeal(L.date, 'cena') }))); })(),
     h('div', { class: 'card' }, h('b', { text: 'Widget per la Home e la schermata bloccata' }), h('span', { class: 'small muted', text: 'Con l\'app gratuita Scriptable: codice del giorno, cosa c\'è adesso e i prossimi blocchi.' }),
       h('a', { class: 'btn', href: 'widget.html', target: '_blank', rel: 'noopener', text: 'Come metterlo' })),
     h('a', { class: 'btn', href: ORNRARV_APP, target: '_blank', rel: 'noopener', text: 'Apri il Calendario ORNRARV' }),

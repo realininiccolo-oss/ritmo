@@ -37,7 +37,7 @@ const MO = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'lugli
 const MOS = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
 
 /* S.file = dati dal file cifrato; S.miei, S.nascosti, S.giorni, S.settimane = stato sul telefono */
-const S = { cfg: null, nerina: {}, file: [], miei: [], nascosti: [], giorni: {}, settimane: {}, rotte: {}, eventi: [], versione: null };
+const S = { cfg: null, nerina: {}, file: [], miei: [], nascosti: [], giorni: {}, settimane: {}, rotte: {}, pasti: {}, eventi: [], versione: null };
 const rebuildEvents = () => { const hid = new Set(S.nascosti); S.eventi = [...S.file.filter((e) => !hid.has(e.id)).map((e) => ({ ...e, src: 'file' })), ...S.miei]; };
 
 /* ---------- tempo ---------- */
@@ -161,15 +161,20 @@ function plan(date) {
     const s = toMin(x.at, 240);
     add({ key: x.key, base: x.key, cat: x.cat, label: x.label, sub: x.da === date ? 'Spostato qui' : 'Spostato dal ' + dateShort(x.da), start: s, end: s + x.min, task: true, moved: true });
   }
+  /* Pasti: orario del giorno (st.pasti) > orario scelto per sempre (S.pasti) > regole. */
   const meal = (key, label, m) => {
-    let s = toMin(m.da), e = toMin(m.a); const len = e - s;
+    const own = (st.pasti || {})[key], mine = karate && key === 'cena' ? null : (S.pasti || {})[key];
+    if (own && own.no) return;
+    const pick = own || mine;
+    let s = pick ? toMin(pick.da) : toMin(m.da), e = pick ? s + pick.min : toMin(m.a); const len = e - s;
+    if (own) { add({ key, cat: 'pausa', label, start: s, end: e, own: true }); return; }
     if (overlaps(s, e)) {
       const ov = busy.filter(([x, y]) => s < y && x < e).sort((p, q) => p[0] - q[0]);
       const before = ov[0][0] - len;
       if (!overlaps(before, before + len) && before >= D0) s = before; else s = Math.max(...ov.map((o) => o[1]));
       e = s + len;
     }
-    add({ key, cat: 'pausa', label, start: s, end: e });
+    add({ key, cat: 'pausa', label, start: s, end: e, mine: !!mine });
   };
   meal('pranzo', 'Pranzo', c.pasti.pranzo);
   meal('cena', 'Cena', karate ? c.pasti.cenaKarate : c.pasti.cena);
@@ -227,8 +232,31 @@ function plan(date) {
   if (!bib) for (const x of study) split(x.key, x.label, x.min, 'studio', '');
   for (const x of (st.extra || [])) { if (skip[x.key] || x.at || x.min - less(x.key) <= 0) continue; split(x.key, x.label, x.min - less(x.key), x.cat, 'Recupero dal ' + dateShort(x.da)); }
 
-  const free = gaps(D0, D1).filter(([a, b]) => b - a >= 60).map(([a, b]) => ({ key: 'free' + a, cat: 'libero', label: 'Libero', start: a, end: b }));
   items.sort((a, b) => a.start - b.start || a.end - b.end);
+  /* Blocchi fatti con l'orario vero: restano dove li hai fatti. Se hai finito prima, o hai fatto in anticipo un blocco
+     che veniva dopo, i blocchi attaccati che seguono partono prima (mai prima del momento in cui l'hai segnato). */
+  const SHIFT_NO = ['karate', 'uscita', 'palestra'];
+  const canShift = (i) => i.task && !i.ev && !i.moved && !SHIFT_NO.includes(i.key) && !fatti[i.key];
+  const ruleFrom = (i) => i.key === 'n3' ? toMin(weekend ? c.nerina.b3Weekend : c.nerina.b3Feriale) : 0;
+  const recs = items.filter((i) => i.task && fatti[i.key] && typeof fatti[i.key] === 'object');
+  for (const d of recs) {
+    const r = fatti[d.key], s0 = d.start, e0 = d.end;
+    const hole = r.b < s0 ? s0 : r.b < e0 ? r.b : null;
+    d.start = r.a; d.end = r.b; d.real = true;
+    if (hole == null) continue;
+    let cursor = hole, prevEnd = e0;
+    const snap = items.map((i) => [i, i.start, i.end]).sort((x, y) => x[1] - y[1]);
+    for (const [i, a, b] of snap) {
+      if (i === d || a < prevEnd) continue;
+      if (a > prevEnd + 2 || !canShift(i) || a < r.t) break;
+      const ns = Math.max(cursor, r.t, ruleFrom(i));
+      if (ns < a) { i.start = ns; i.end = ns + (b - a); i.prima = a - ns; }
+      cursor = i.end; prevEnd = b;
+    }
+  }
+  if (recs.length) items.sort((a, b) => a.start - b.start || a.end - b.end);
+  const busy2 = items.filter((i) => !i.real || i.start >= D0).map((i) => [i.start, i.end]).sort((a, b) => a[0] - b[0]);
+  const free = []; { let cur = D0; for (const [x, y] of busy2) { if (x - cur >= 60) free.push({ key: 'free' + cur, cat: 'libero', label: 'Libero', start: cur, end: Math.min(x, D1) }); cur = Math.max(cur, y); } if (D1 - cur >= 60) free.push({ key: 'free' + cur, cat: 'libero', label: 'Libero', start: cur, end: D1 }); }
   let mente = 0, corpo = 0;
   for (const it of items) {
     const L = it.end - it.start;
@@ -241,7 +269,7 @@ function plan(date) {
   const tasks = items.filter((i) => i.task);
   const work = tasks.filter((t) => t.cat !== 'sociale');
   const finish = work.length ? Math.max(...work.map((t) => t.end)) : null;
-  const skipped = [...Object.keys(skip).map((k) => ({ key: k, info: skip[k] })), ...Object.entries(meno).flatMap(([k, arr]) => arr.map((m) => ({ key: k, info: { a: m.a, x: m.x }, part: m.min })))];
+  const skipped = [...Object.keys(skip).map((k) => ({ key: k, info: skip[k] })), ...Object.entries(meno).flatMap(([k, arr]) => arr.map((m) => ({ key: k, info: { a: m.a, x: m.x, fatto: m.fatto }, part: m.min })))];
   const notes = evs.filter((e) => !TASK_TIPI.includes(e.tipo));
   return { date, items, free, unplaced, fatti, st, tasks, skipped, notes, bib, wk, D0, D1, finish, load: { mente: mente / 60, corpo: corpo / 60, sociale } };
 }
