@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Ritmo</title>
-<meta name="theme-color" content="#232B3B">
+<meta name="theme-color" content="#F6F4EF">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -14,265 +14,251 @@
 <link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Nunito:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Atkinson+Hyperlegible+Next:wght@400;600&display=swap">
 <link rel="stylesheet" href="ornrarv.css">
 <style>
-/* Ritmo × ORNRARV: in alto il paesaggio del mese settale (Brumale, Ianuario...) con il codice del giorno e la sua lettera;
-   sotto, la giornata su carta chiara. Lettere con i colori ORNRARV; le 5 aree (Lavoro, Scuola, Allenamento, Relazioni, Impegni) con tinte vivaci. */
+/* Ritmo × ORNRARV, versione sobria: in alto il paesaggio del mese settale con il codice del giorno; sotto, carta chiara,
+   liste con righe sottili e un solo colore per area (spento), usato solo come barretta o puntino. Inchiostro per le azioni. */
 :root{
-  --bg:#F7F4EC; --card:#FFFFFF; --ink:#211D3B; --muted:#716C8C; --line:#ECE9F5; --soft:#F0EEF8;
-  --go:#FF5A5F; --go-ink:#FFFFFF;
-  --ner:#14B87F; --ner-t:#DDF8EC; --stu:#4C6EF5; --stu-t:#E3E9FF; --cor:#FF7A1A; --cor-t:#FFEBDA;
-  --soc:#F0408E; --soc-t:#FFE2EF; --imp:#8B5CF6; --imp-t:#EFE7FF; --pau:#F5B300; --pau-t:#FFF4CC; --via:#19A9C2; --via-t:#DAF5FA;
-  --warm1:#FFF4CC; --warm2:#FFE2A8; --warm3:#FFC98A; --warm4:#FF9E80;
-  --bad:#E5484D; --bad-t:#FFE5E5;
+  --bg:#F6F4EF; --card:#FFFFFF; --ink:#1E2024; --muted:#6C6F76; --line:#E5E2DA; --soft:#F0EDE6;
+  --go:#1E2024; --go-ink:#FFFFFF;
+  --ner:#3F7A5A; --stu:#44609A; --cor:#B06A40; --soc:#965172; --imp:#6D6394; --pau:#BDB6A7; --via:#8D9AA2;
+  --pau-t:#F3EFE4; --bad:#B04A3C; --warn:#9A6B1F;
   --f-disp:"Fraunces","Iowan Old Style",Georgia,serif;
-  --f-body:"Nunito","Avenir Next",-apple-system,system-ui,sans-serif;
-  --r:20px; color-scheme:light;
+  --f-body:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",-apple-system,system-ui,sans-serif;
+  --r:14px; color-scheme:light;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#15131F; --card:#1F1C2D; --ink:#F2F0FA; --muted:#A7A2C0; --line:#2D293F; --soft:#272338;
-  --go:#FF6B70; --go-ink:#1A0F12;
-  --ner:#3DDC9F; --ner-t:#163A2D; --stu:#7D97FF; --stu-t:#1D2547; --cor:#FF9A4D; --cor-t:#3D2614; --soc:#FF6BAA; --soc-t:#3E1A2B;
-  --imp:#AE8DFF; --imp-t:#2C2148; --pau:#FFCC40; --pau-t:#3A3010; --via:#4DD3EA; --via-t:#123540;
-  --warm1:#3A3010; --warm2:#4A3510; --warm3:#5A3418; --warm4:#6B2A22; --bad:#FF7A7E; --bad-t:#3F1A1C; color-scheme:dark}}
+  --bg:#141518; --card:#1C1D21; --ink:#ECEBE7; --muted:#A09F9A; --line:#2C2D32; --soft:#232428; --go:#ECEBE7; --go-ink:#141518;
+  --ner:#6FB58E; --stu:#8EA6DA; --cor:#D69468; --soc:#CE8AAA; --imp:#A99FD2; --pau:#5E5A52; --via:#7C8990; --pau-t:#24231F; --bad:#E07B6E; --warn:#D6A55A; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#15131F; --card:#1F1C2D; --ink:#F2F0FA; --muted:#A7A2C0; --line:#2D293F; --soft:#272338;
-  --go:#FF6B70; --go-ink:#1A0F12;
-  --ner:#3DDC9F; --ner-t:#163A2D; --stu:#7D97FF; --stu-t:#1D2547; --cor:#FF9A4D; --cor-t:#3D2614; --soc:#FF6BAA; --soc-t:#3E1A2B;
-  --imp:#AE8DFF; --imp-t:#2C2148; --pau:#FFCC40; --pau-t:#3A3010; --via:#4DD3EA; --via-t:#123540;
-  --warm1:#3A3010; --warm2:#4A3510; --warm3:#5A3418; --warm4:#6B2A22; --bad:#FF7A7E; --bad-t:#3F1A1C; color-scheme:dark}
+  --bg:#141518; --card:#1C1D21; --ink:#ECEBE7; --muted:#A09F9A; --line:#2C2D32; --soft:#232428; --go:#ECEBE7; --go-ink:#141518;
+  --ner:#6FB58E; --stu:#8EA6DA; --cor:#D69468; --soc:#CE8AAA; --imp:#A99FD2; --pau:#5E5A52; --via:#7C8990; --pau-t:#24231F; --bad:#E07B6E; --warn:#D6A55A; color-scheme:dark}
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
-body{margin:0;background:var(--bg) var(--pat,none);background-size:220px 220px;color:var(--ink);font-family:var(--f-body);font-size:16px;font-weight:600;line-height:1.45;-webkit-text-size-adjust:100%;font-variant-numeric:tabular-nums;overscroll-behavior-y:none}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;font-weight:400;line-height:1.45;-webkit-text-size-adjust:100%;font-variant-numeric:tabular-nums;overscroll-behavior-y:none}
 [hidden]{display:none!important}
 button,input,select,textarea{font:inherit;color:inherit}
 button{touch-action:manipulation}
-:focus-visible{outline:3px solid var(--stu);outline-offset:2px}
-h1,h2,h3{font-family:var(--f-disp);margin:0;line-height:1.1;text-wrap:balance;font-weight:600;letter-spacing:-.01em}
-h1{font-size:2rem} h2{font-size:1.3rem} h3{font-size:1.08rem}
+:focus-visible{outline:2px solid var(--stu);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-disp);margin:0;line-height:1.12;text-wrap:balance;font-weight:600;letter-spacing:-.01em}
+h1{font-size:1.9rem} h2{font-size:1.3rem} h3{font-size:1.06rem}
 p{margin:0}
 a{color:inherit}
-.muted{color:var(--muted)} .small{font-size:.88rem}
+.muted{color:var(--muted)} .small{font-size:.86rem}
 
-[data-cat="nerina"]{--c:var(--ner);--t:var(--ner-t)} [data-cat="studio"]{--c:var(--stu);--t:var(--stu-t)} [data-cat="corpo"]{--c:var(--cor);--t:var(--cor-t)}
-[data-cat="sociale"]{--c:var(--soc);--t:var(--soc-t)} [data-cat="impegno"],[data-cat="ripetizione"]{--c:var(--imp);--t:var(--imp-t)}
-[data-cat="pausa"]{--c:var(--pau);--t:var(--pau-t)} [data-cat="viaggio"]{--c:var(--via);--t:var(--via-t)}
-[data-cat="scadenza"]{--c:var(--bad);--t:var(--bad-t)} [data-cat="promemoria"],[data-cat="festa"]{--c:var(--muted);--t:var(--soft)}
+[data-cat="nerina"]{--c:var(--ner)} [data-cat="studio"]{--c:var(--stu)} [data-cat="corpo"]{--c:var(--cor)}
+[data-cat="sociale"]{--c:var(--soc)} [data-cat="impegno"],[data-cat="ripetizione"]{--c:var(--imp)}
+[data-cat="pausa"]{--c:var(--pau)} [data-cat="viaggio"]{--c:var(--via)} [data-cat="libero"]{--c:var(--line)}
+[data-cat="scadenza"]{--c:var(--bad)} [data-cat="promemoria"],[data-cat="festa"]{--c:var(--muted)}
 
-.app{max-width:560px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top,0px)) max(18px,env(safe-area-inset-right,0px)) calc(150px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
-.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-.hello{font-size:.95rem;color:var(--muted);font-weight:700}
-.top-r{display:flex;gap:8px;align-items:center}
-.pill{white-space:nowrap;display:inline-flex;align-items:center;gap:6px;border:0;background:var(--card);border-radius:999px;padding:8px 12px;font-weight:800;font-size:.88rem;cursor:pointer;box-shadow:0 1px 0 var(--line)}
-.pill svg{width:18px;height:18px;color:var(--pau)}
-.iconbtn{width:40px;height:40px;border-radius:50%;border:0;background:var(--card);display:grid;place-items:center;cursor:pointer;color:var(--muted)}
-.iconbtn svg{width:20px;height:20px}
-.week7{display:flex;gap:4px;margin-top:6px}
-.week7 i{width:10px;height:10px;border-radius:50%;background:var(--line)}
-.week7 i.on{background:var(--ner)}
+.app{position:relative;max-width:560px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top,0px)) max(18px,env(safe-area-inset-right,0px)) calc(120px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:18px}
+#view{display:flex;flex-direction:column;gap:18px}
 
-.card{background:var(--card);border-radius:var(--r);padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
-.card.tint{background:var(--t)}
+/* testata */
+.top-r{position:absolute;z-index:6;top:calc(14px + env(safe-area-inset-top,0px));right:max(14px,env(safe-area-inset-right,0px));display:flex;gap:6px;align-items:center}
+.pill,.iconbtn{border:0;cursor:pointer;color:var(--h-ink,#fff);background:color-mix(in srgb,var(--h-ink,#fff) 14%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.pill{white-space:nowrap;display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 11px;font-size:.82rem;font-weight:600}
+.pill svg{width:15px;height:15px;color:#F3C77A}
+.iconbtn{width:34px;height:34px;border-radius:50%;display:grid;place-items:center}
+.iconbtn svg{width:18px;height:18px}
+.hero{position:relative;overflow:hidden;isolation:isolate;margin:calc(-18px - env(safe-area-inset-top,0px)) calc(-1 * max(18px,env(safe-area-inset-right,0px))) 0 calc(-1 * max(18px,env(safe-area-inset-left,0px)));min-height:calc(232px + env(safe-area-inset-top,0px));background:var(--h-bg);color:var(--h-ink)}
+.hero.short{min-height:calc(200px + env(safe-area-inset-top,0px))}
+.hero > .scene{position:absolute;inset:0;width:100%;height:100%;z-index:-2}
+.hero::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,var(--h-bg) 0%,color-mix(in srgb,var(--h-bg) 88%,transparent) 38%,color-mix(in srgb,var(--h-bg) 25%,transparent) 64%,transparent 80%)}
+.hero .season-fx{position:absolute;inset:0;pointer-events:none;z-index:1}
+.hero-text{position:relative;z-index:2;padding:calc(18px + env(safe-area-inset-top,0px)) 20px 20px;display:flex;flex-direction:column;gap:6px}
+.kick{font-size:.84rem;opacity:.8;padding-right:140px}
+.hero h1{font-size:2rem;line-height:1.04}
+.code-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.code{display:inline-flex;gap:3px;align-items:center}
+.code b{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:600 .86rem var(--f-disp);background:var(--lc);color:var(--lfg)}
+.code i{font-style:normal;opacity:.4}
+.code.sm b{width:19px;height:19px;font-size:.72rem}
+.fict{font:500 .98rem var(--f-disp);opacity:.9}
+.emblem{display:inline-flex;align-items:center;gap:8px;margin-top:2px;align-self:flex-start}
+.em-icon{width:38px;height:38px;flex:none;border-radius:10px;padding:3px;background:color-mix(in srgb,#FBF9F3 90%,var(--lc))}
+.em-text{display:flex;flex-direction:column;line-height:1.2}
+.em-text span{font-size:.7rem;opacity:.7}
+.em-text b{font-size:.92rem;font-weight:600}
+.em-text small{display:none}
+
+/* sezioni e liste */
+.sec{display:flex;flex-direction:column;gap:10px}
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.list-h{margin-bottom:-8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card.tint{background:var(--card)}
 .row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-.lbl{font-weight:800;overflow-wrap:anywhere}
-.sub{font-size:.88rem;color:var(--muted);overflow-wrap:anywhere;font-weight:600}
-.eyebrow{font-size:.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--c,var(--muted))}
-
-.btn{border:0;background:var(--soft);border-radius:14px;padding:11px 16px;font-weight:800;cursor:pointer;min-height:46px;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:transform .12s}
-.btn:active,.tl-item:active,.chip:active,.mcell:active,.wrow:active,.pill:active{transform:scale(.97)}
-.btn.go{background:var(--go);color:var(--go-ink)}
-.btn.c{background:var(--c);color:#fff}
-.btn.small{min-height:38px;padding:7px 12px;font-size:.9rem;border-radius:12px}
-.btn.ghost{background:none;color:var(--muted)}
-.btn.wide{width:100%}
-.btns{display:flex;gap:8px;flex-wrap:wrap}
-
-.badge{width:40px;height:40px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;flex:none}
-.badge svg{width:21px;height:21px}
-.badge.sm{width:30px;height:30px} .badge.sm svg{width:16px;height:16px}
+.lbl{font-weight:600;overflow-wrap:anywhere}
+.sub{font-size:.86rem;color:var(--muted);overflow-wrap:anywhere}
+.eyebrow{font-size:.74rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.eyebrow[data-cat]{color:var(--c)}
+.status{font-size:.95rem}
+.prog{height:4px;border-radius:9px;background:var(--line);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--ink);border-radius:9px;transition:width .4s}
+.late-box{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:.92rem;color:var(--warn)}
+.sec.warn h3{color:var(--bad)}
+.rows{list-style:none;margin:0;padding:0;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.rows .r{display:flex;align-items:center;gap:10px;padding:10px 12px;flex-wrap:wrap}
+.rows .r + .r{border-top:1px solid var(--line)}
+.rows .r.gone{display:none}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--c,var(--muted));flex:none}
+.grow{flex:1 1 140px;min-width:0}
+.badge{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c);flex:none}
+.badge svg{display:none}
 
 /* adesso */
-.now-card{gap:8px}
-.now-head{display:flex;gap:12px;align-items:center}
-.now-card .big{font-family:var(--f-disp);font-size:1.7rem;font-weight:600;line-height:1.1;overflow-wrap:anywhere}
-.now-card .when{font-size:.95rem;color:var(--muted);font-weight:700}
-.prog{height:12px;border-radius:99px;background:var(--soft);overflow:hidden}
-.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--ner),#7BE0B5);border-radius:99px;transition:width .4s}
-.stat3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.stat3 div{background:var(--soft);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column}
-.stat3 b{font-family:var(--f-disp);font-size:1.45rem;font-weight:600}
-.stat3 span{font-size:.78rem;color:var(--muted)}
+.now{display:flex;flex-direction:column;gap:6px;padding:16px 16px 16px 18px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);border-left:4px solid var(--c,var(--ink))}
+.now .big{font-family:var(--f-disp);font-size:1.6rem;font-weight:600;line-height:1.12;overflow-wrap:anywhere}
+.now .btns{margin-top:6px}
+
+/* bottoni */
+.btn{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 16px;font-weight:600;cursor:pointer;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:background .15s,transform .1s;text-decoration:none}
+.btn:active{transform:scale(.98)}
+.btn.go,.btn.c{background:var(--go);border-color:var(--go);color:var(--go-ink)}
+.btn.small{min-height:36px;padding:6px 12px;font-size:.88rem;border-radius:9px}
+.btn.ghost{background:none;border-color:transparent;color:var(--muted)}
+.btn.wide{width:100%}
+.btn:disabled{opacity:.35;cursor:default}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.link{border:0;background:none;padding:0;color:var(--ink);font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 
 /* energia */
-.scale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
-.scale button{height:46px;border-radius:14px;border:0;background:var(--soft);font-family:var(--f-disp);font-size:1.15rem;font-weight:600;cursor:pointer;transition:transform .12s,background .2s}
-.scale button[aria-pressed="true"]{background:var(--c);color:#fff;transform:scale(1.05)}
-.scale-l{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted)}
+.erow{display:grid;grid-template-columns:4rem minmax(0,1fr);gap:10px;align-items:center}
+.erow > span{font-size:.92rem}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.scale button{height:38px;border-radius:9px;border:1px solid var(--line);background:var(--card);font-weight:600;cursor:pointer}
+.scale button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.scale-l{display:flex;justify-content:space-between;font-size:.76rem;color:var(--muted)}
 .meters{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px 12px;align-items:center;font-size:.9rem}
-.meter{height:12px;border-radius:99px;background:var(--soft);position:relative}
+.meter{height:6px;border-radius:99px;background:var(--line);position:relative}
 .meter i{display:block;height:100%;border-radius:99px;background:var(--c)}
-.meter u{position:absolute;top:-4px;bottom:-4px;width:3px;border-radius:2px;background:var(--ink);opacity:.35;text-decoration:none}
+.meter u{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink);opacity:.4;text-decoration:none}
+.hint{display:flex;flex-direction:column;gap:8px;font-size:.92rem;padding:12px 14px;border-radius:var(--r);background:var(--pau-t)}
 
 /* giornata */
-.tl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
-.tl-item{display:grid;grid-template-columns:3rem auto minmax(0,1fr) auto;gap:12px;align-items:center;background:var(--t);border:0;border-radius:18px;padding:12px 12px 12px 14px;cursor:pointer;text-align:left;width:100%;transition:transform .12s,opacity .2s}
-.tl-item .time{display:flex;flex-direction:column;line-height:1.25;font-size:.9rem}
-.tl-item .time b{font-weight:800}
+.tl{list-style:none;margin:0;padding:0;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.tl > li + li{border-top:1px solid var(--line)}
+.tl-item{display:grid;grid-template-columns:3.1rem 3px minmax(0,1fr) auto;gap:12px;align-items:center;background:none;border:0;padding:12px 12px 12px 14px;cursor:pointer;text-align:left;width:100%}
+.tl-item .time{display:flex;flex-direction:column;line-height:1.25;font-size:.88rem}
+.tl-item .time b{font-weight:600}
 .tl-item .time span{color:var(--muted);font-size:.8rem}
+.tl-item .bar{align-self:stretch;border-radius:3px;background:var(--c)}
 .tl-item .txt{display:flex;flex-direction:column;gap:1px;min-width:0}
-.tl-item.done{opacity:.5}
-.tl-item.done .lbl{text-decoration:line-through}
-.tl-item.now{box-shadow:0 0 0 3px var(--c)}
-.tl-item.late:not(.done){box-shadow:inset 0 0 0 2px var(--cor)}
-.tl-item.soft{background:none;border:2px dashed var(--line);cursor:default}
-.chk{width:40px;height:40px;border-radius:50%;border:3px solid var(--c);background:var(--card);display:grid;place-items:center;cursor:pointer;padding:0;transition:transform .15s,background .2s}
-.chk svg{width:20px;height:20px;opacity:0;color:#fff;transition:opacity .2s}
-.chk[aria-pressed="true"]{background:var(--c)}
+.tl-item.done .lbl{text-decoration:line-through;color:var(--muted)}
+.tl-item.done .bar{opacity:.35}
+.tl-item.now{background:var(--soft)}
+.tl-item.late .time b{color:var(--warn)}
+.late-act{font-size:.82rem;color:var(--warn);margin-top:2px}
+.late-act .link{color:var(--warn)}
+.chk{width:32px;height:32px;border-radius:50%;border:1.5px solid color-mix(in srgb,var(--ink) 30%,transparent);background:none;display:grid;place-items:center;cursor:pointer;padding:0;transition:background .2s,border-color .2s}
+.chk svg{width:16px;height:16px;opacity:0;color:var(--bg)}
+.chk[aria-pressed="true"]{background:var(--ink);border-color:var(--ink)}
 .chk[aria-pressed="true"] svg{opacity:1}
-.chk.pop{animation:pop .35s ease}
-@keyframes pop{40%{transform:scale(1.25)}100%{transform:scale(1)}}
-.tl-mini{display:flex;gap:10px;align-items:center;font-size:.86rem;color:var(--muted);padding:2px 6px}
-.tl-mini .dot{width:22px;height:22px;border-radius:50%;background:var(--t);color:var(--c);display:grid;place-items:center}
-.tl-mini .dot svg{width:13px;height:13px}
-.tl-mini b{width:3rem;color:var(--ink);font-weight:800}
-.tl.compact .tl-item{cursor:default;padding:10px 12px}
-.tag{display:inline-flex;align-items:center;gap:5px;font-size:.8rem;font-weight:800;padding:4px 10px;border-radius:999px;color:var(--c);background:var(--t);white-space:nowrap}
-.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tl-mini{display:flex;gap:12px;align-items:center;font-size:.82rem;color:var(--muted);padding:7px 14px;background:color-mix(in srgb,var(--bg) 60%,var(--card))}
+.tl-mini .t{width:3.1rem;flex:none}
+.tl-mini.free{font-style:italic}
+.tl.compact .tl-item{cursor:default}
+.tags{display:flex;flex-wrap:wrap;gap:4px 12px}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:.84rem;color:var(--muted)}
+.tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--c,var(--muted))}
 
-.ner-card{display:flex;flex-direction:column;gap:6px;text-decoration:none;background:var(--ner-t)}
-.ner-card .t{font-family:var(--f-disp);font-weight:600;font-size:1.2rem}
+.ner-card{text-decoration:none}
+.ner-card .t{font-family:var(--f-disp);font-weight:600;font-size:1.1rem}
 .ner-card ul{margin:0;padding-left:1.1em;font-size:.92rem;display:flex;flex-direction:column;gap:2px}
-.ner-card .go{font-size:.9rem;font-weight:800;color:var(--ner)}
-.warnbox{background:var(--bad-t);border-radius:18px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
-.warnbox .it{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
-.hint{background:var(--pau-t);border-radius:18px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-size:.95rem}
+.ner-card .go{font-size:.88rem;font-weight:600}
+.rito .rh{display:flex;gap:12px;align-items:center}
+.rito .ri{width:40px;height:40px;flex:none}
+.rito textarea{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 12px;font-size:16px;width:100%;min-height:60px;resize:vertical}
+
+/* sposta */
+.slot{display:flex;flex-direction:column;align-items:flex-start;gap:1px;width:100%;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:12px 14px;cursor:pointer}
+.slot b{font-weight:600;font-size:1.02rem}
+.slot.rec{border:1.5px solid var(--ink)}
+.slot.rec .eyebrow{color:var(--ner)}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
 
 /* settimana */
-.wrow{display:flex;flex-direction:column;gap:8px;background:var(--card);border:0;border-radius:18px;padding:12px 14px;cursor:pointer;text-align:left;width:100%;transition:transform .12s}
+.wrow{display:flex;flex-direction:column;gap:7px;background:none;border:0;padding:12px 14px;cursor:pointer;text-align:left;width:100%}
+.wlist{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.wlist > .wrow + .wrow{border-top:1px solid var(--line)}
 .wrow-h{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}
-.wrow-h .day{font-family:var(--f-disp);font-size:1.12rem;font-weight:600;min-width:3.6rem}
-.wrow-h .nn{font-size:.86rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lvl{font-size:.8rem;font-weight:800;padding:3px 10px;border-radius:999px;background:var(--soft);white-space:nowrap}
-.lvl[data-l="1"],.lvl[data-l="2"]{background:var(--ner-t);color:var(--ner)}
-.lvl[data-l="3"]{background:var(--pau-t)}
-.lvl[data-l="4"]{background:var(--cor-t);color:var(--cor)}
-.lvl[data-l="5"]{background:var(--bad-t);color:var(--bad)}
-.strip{position:relative;height:14px;border-radius:99px;background:var(--soft);overflow:hidden}
-.strip i{position:absolute;top:0;bottom:0;background:var(--c);border-radius:99px;border:1.5px solid var(--card)}
-.strip i[data-cat="pausa"],.strip i[data-cat="viaggio"]{opacity:.7}
-.axis{display:flex;justify-content:space-between;font-size:.74rem;color:var(--muted);padding:0 4px}
-.bal{display:grid;grid-template-columns:5.6rem minmax(0,1fr) auto;gap:8px 12px;align-items:center;font-size:.92rem}
+.wrow-h .day{font-weight:600}
+.wrow-h .nn{font-size:.84rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lvl{font-size:.8rem;color:var(--muted);white-space:nowrap}
+.lvl[data-l="4"]{color:var(--warn)} .lvl[data-l="5"]{color:var(--bad);font-weight:600}
+.strip{position:relative;height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.strip i{position:absolute;top:0;bottom:0;background:var(--c)}
+.strip i[data-cat="pausa"],.strip i[data-cat="viaggio"]{opacity:.5}
+.axis{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);padding:0 14px;margin-bottom:-10px}
+.bal{display:grid;grid-template-columns:5.6rem minmax(0,1fr) auto;gap:10px 12px;align-items:center;font-size:.92rem}
 .bal .v{text-align:right;font-size:.84rem;white-space:nowrap;color:var(--muted)}
 .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.8rem;color:var(--muted)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
-.legend i{width:11px;height:11px;border-radius:50%;background:var(--c);display:inline-block}
+.legend i{width:8px;height:8px;border-radius:50%;background:var(--c);display:inline-block}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.list li{display:grid;grid-template-columns:7.2rem minmax(0,1fr);gap:12px;align-items:baseline;padding:8px 0}
+.list li + li{border-top:1px solid var(--line)}
+.list .d{font-size:.84rem;color:var(--muted)}
 
-/* mese */
-.mhead,.mgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
-.mhead span{text-align:center;font-size:.76rem;font-weight:800;color:var(--muted)}
-.mcell{min-height:60px;border-radius:14px;background:var(--soft);border:0;padding:6px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;cursor:pointer;transition:transform .12s}
-.mcell .n{font-family:var(--f-disp);font-size:1rem;font-weight:600}
-.mcell .m{font-size:.62rem;color:var(--muted);font-weight:800;text-transform:uppercase}
-.mcell[data-l="2"]{background:var(--warm1)} .mcell[data-l="3"]{background:var(--warm2)} .mcell[data-l="4"]{background:var(--warm3)} .mcell[data-l="5"]{background:var(--warm4)}
-.mcell.past{opacity:.4}
-.mcell.today{box-shadow:0 0 0 3px var(--go)}
-.mdots{display:flex;gap:3px;flex-wrap:wrap;min-height:7px}
-.mdots i{width:7px;height:7px;border-radius:50%;background:var(--c)}
-.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
-.list li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center}
-.list .d{background:var(--t,var(--soft));color:var(--c,var(--ink));border-radius:12px;padding:6px 8px;font-size:.8rem;font-weight:800;min-width:4.4rem;text-align:center}
+/* mese settale */
+.mnav{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.og{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--card)}
+.og-head,.og-row{display:grid;grid-template-columns:34px repeat(7,minmax(0,1fr))}
+.og-head{border-bottom:1px solid var(--line)}
+.og-head span{padding:8px 0 6px;text-align:center;font:600 .95rem var(--f-disp);color:var(--lc,var(--muted))}
+.og-head span small{display:block;font:400 .6rem var(--f-body);color:var(--muted)}
+.og-wl{display:grid;place-items:center;border-top:1px solid var(--line)}
+.og-wl b{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:600 .82rem var(--f-disp);color:var(--wc);border:1.5px solid var(--wc)}
+.og-c{position:relative;min-height:60px;border:0;border-top:1px solid var(--line);border-left:1px solid var(--line);background:none;padding:6px 5px 12px;display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;gap:1px;cursor:pointer;text-align:left;color:var(--ink)}
+.og-c .n{font:600 1.02rem/1 var(--f-disp)}
+.og-c .dt{font-size:.6rem;color:var(--muted)}
+.og-c.past{opacity:.4}
+.og-c.today{box-shadow:inset 0 0 0 2px var(--ink)}
+.og-c .ld{position:absolute;left:5px;right:5px;bottom:5px;height:3px;border-radius:9px;background:var(--line);overflow:hidden}
+.og-c .ld i{display:block;height:100%;border-radius:9px;background:var(--muted)}
+.og-c .ld i[data-l="4"]{background:var(--warn)} .og-c .ld i[data-l="5"]{background:var(--bad)}
+.og-c .mdots{position:absolute;top:6px;right:4px;display:flex;flex-direction:column;gap:2px}
+.og-c .mdots i{width:5px;height:5px;border-radius:50%;background:var(--c)}
 
 /* barra in basso */
-.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:10;padding:0 max(14px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px));pointer-events:none}
-.tabbar .in{pointer-events:auto;max-width:440px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:color-mix(in srgb,var(--card) 92%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-radius:26px;padding:6px;box-shadow:0 8px 30px rgb(33 29 59 / .14)}
-.tabbar button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 0 6px;font-size:.74rem;font-weight:800;color:var(--muted);cursor:pointer;border-radius:20px;transition:background .2s,color .2s}
-.tabbar button svg{width:24px;height:24px}
-.tabbar button[aria-selected="true"]{color:var(--go);background:color-mix(in srgb,var(--go) 13%,transparent)}
-.fab{position:fixed;z-index:11;right:max(20px,env(safe-area-inset-right,0px));bottom:calc(96px + env(safe-area-inset-bottom,0px));width:60px;height:60px;border-radius:50%;border:0;background:var(--go);color:var(--go-ink);cursor:pointer;box-shadow:0 10px 24px color-mix(in srgb,var(--go) 45%,transparent);display:grid;place-items:center;transition:transform .12s}
-.fab:active{transform:scale(.92)}
-.fab svg{width:28px;height:28px}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:10;background:color-mix(in srgb,var(--card) 94%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:4px max(8px,env(safe-area-inset-right,0px)) calc(4px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+.tabbar .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.tabbar button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0 5px;font-size:.72rem;font-weight:600;color:var(--muted);cursor:pointer}
+.tabbar button svg{width:22px;height:22px}
+.tabbar button[aria-selected="true"]{color:var(--ink)}
+.fab{position:fixed;z-index:11;right:max(18px,env(safe-area-inset-right,0px));bottom:calc(76px + env(safe-area-inset-bottom,0px));width:52px;height:52px;border-radius:50%;border:0;background:var(--go);color:var(--go-ink);cursor:pointer;box-shadow:0 4px 14px rgb(0 0 0 / .18);display:grid;place-items:center}
+.fab:active{transform:scale(.94)}
+.fab svg{width:24px;height:24px}
 
 /* fogli */
 .sheet-wrap{position:fixed;inset:0;z-index:30}
-.scrim{position:absolute;inset:0;background:rgb(25 20 45 / .38);animation:fade .2s}
-.sheet{position:absolute;left:0;right:0;bottom:0;margin:0 auto;max-width:560px;max-height:90%;overflow:auto;-webkit-overflow-scrolling:touch;background:var(--bg);border-radius:28px 28px 0 0;padding:8px 18px calc(26px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px;animation:up .28s cubic-bezier(.2,.9,.3,1)}
-@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+.scrim{position:absolute;inset:0;background:rgb(20 20 24 / .4);animation:fade .2s}
+.sheet{position:absolute;left:0;right:0;bottom:0;margin:0 auto;max-width:560px;max-height:90%;overflow:auto;-webkit-overflow-scrolling:touch;background:var(--bg);border-radius:20px 20px 0 0;padding:8px 18px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px;animation:up .25s cubic-bezier(.2,.9,.3,1)}
+@keyframes up{from{transform:translateY(30px);opacity:.5}to{transform:none;opacity:1}}
 @keyframes fade{from{opacity:0}}
-.grab{width:44px;height:5px;border-radius:9px;background:var(--line);margin:4px auto 2px}
+.grab{width:40px;height:4px;border-radius:9px;background:var(--line);margin:4px auto 2px}
 .sheet .x{position:sticky;top:0;align-self:flex-end;margin-bottom:-44px;z-index:2}
 .field{display:flex;flex-direction:column;gap:5px}
-.field label{font-size:.82rem;font-weight:800;color:var(--muted)}
-.field input,.field select,.field textarea{border:2px solid var(--line);background:var(--card);border-radius:14px;padding:11px 13px;font-size:16px;width:100%;min-width:0}
+.field label{font-size:.8rem;color:var(--muted)}
+.field input,.field select,.field textarea{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 12px;font-size:16px;width:100%;min-width:0}
 .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
-.check{display:flex;gap:12px;align-items:center;font-size:.96rem;background:var(--card);border-radius:16px;padding:12px 14px}
-.check input{width:24px;height:24px;accent-color:var(--soc)}
+.check{display:flex;gap:12px;align-items:center;font-size:.95rem;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.check input{width:22px;height:22px;accent-color:var(--ink)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{border:0;background:var(--soft);border-radius:999px;padding:8px 14px;font-weight:800;font-size:.9rem;cursor:pointer;min-height:40px;transition:transform .12s}
-.chip[aria-pressed="true"]{background:var(--c,var(--go));color:#fff}
-.closerow{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;background:var(--t);border-radius:16px;padding:10px 12px}
-.closerow.gone{display:none}
-.big-ok{font-family:var(--f-disp);font-size:2.6rem;font-weight:700;line-height:1;color:var(--ner)}
-.toast{position:fixed;left:50%;transform:translateX(-50%) translateY(10px);bottom:calc(170px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:.9rem;font-weight:800;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:40;max-width:90vw;text-align:center}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:9px;padding:7px 12px;font-weight:600;font-size:.88rem;cursor:pointer;min-height:38px}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.big-ok{font-family:var(--f-disp);font-size:2.4rem;font-weight:600;line-height:1}
+.toast{position:fixed;left:50%;transform:translateX(-50%) translateY(8px);bottom:calc(140px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:9px 15px;border-radius:10px;font-size:.88rem;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:40;max-width:90vw;text-align:center}
 .toast.on{opacity:1;transform:translateX(-50%)}
-
-
-/* ---------- ORNRARV: testata con paesaggio ---------- */
-.app{position:relative}
-.top-r{position:absolute;z-index:6;top:calc(14px + env(safe-area-inset-top,0px));right:max(14px,env(safe-area-inset-right,0px));display:flex;gap:8px;align-items:center}
-.top-r .pill,.top-r .iconbtn{background:color-mix(in srgb,var(--h-bg,#232B3B) 55%,transparent);color:var(--h-ink,#fff);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:none}
-.top-r .pill svg{color:#F3C77A}
-.hero{position:relative;overflow:hidden;isolation:isolate;margin:calc(-18px - env(safe-area-inset-top,0px)) calc(-1 * max(18px,env(safe-area-inset-right,0px))) 0 calc(-1 * max(18px,env(safe-area-inset-left,0px)));min-height:calc(300px + env(safe-area-inset-top,0px));background:var(--h-bg);color:var(--h-ink);border-radius:0 0 30px 30px;display:flex;flex-direction:column;justify-content:flex-start}
-.hero.short{min-height:calc(240px + env(safe-area-inset-top,0px))}
-.hero > .scene{position:absolute;inset:0;width:100%;height:100%;z-index:-2}
-.hero::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,var(--h-bg) 0%,color-mix(in srgb,var(--h-bg) 86%,transparent) 34%,color-mix(in srgb,var(--h-bg) 30%,transparent) 58%,transparent 74%)}
-.hero .season-fx{position:absolute;inset:0;pointer-events:none;z-index:1}
-.hero-text{position:relative;z-index:2;padding:calc(18px + env(safe-area-inset-top,0px)) 22px 22px;display:flex;flex-direction:column;gap:6px;max-width:100%}
-.hero .kick{font-size:.86rem;font-weight:700;opacity:.85;padding-right:150px}
-.hero h1{font-size:2.15rem;line-height:1.02}
-.code-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:2px}
-.code{display:inline-flex;gap:4px;align-items:center}
-.code b{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font:700 1rem var(--f-disp);background:var(--lc);color:var(--lfg)}
-.code i{font-style:normal;opacity:.45;font-weight:800}
-.code.sm b{width:22px;height:22px;font-size:.78rem}
-.fict{font:600 1rem var(--f-disp);opacity:.9}
-.emblem{display:inline-flex;align-items:center;gap:10px;margin-top:8px;padding:6px 14px 6px 6px;border-radius:18px;align-self:flex-start;background:color-mix(in srgb,var(--h-bg) 62%,transparent);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1px solid color-mix(in srgb,var(--h-ink) 16%,transparent)}
-.em-icon{width:54px;height:54px;flex:none;border-radius:14px;padding:4px;background:radial-gradient(circle at 50% 40%,color-mix(in srgb,var(--lc) 7%,#FBF9F3),color-mix(in srgb,var(--lc) 22%,#EFEADC));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--lc) 30%,transparent)}
-.em-text{display:flex;flex-direction:column;line-height:1.2}
-.em-text span{font-size:.74rem;opacity:.75;font-weight:700}
-.em-text b{font-size:1rem;font-weight:800}
-.em-text small{font-family:var(--f-disp);font-style:italic;font-size:.86rem;opacity:.8}
-/* rito del giorno */
-.rito{border-left:6px solid var(--lc)}
-.rito .rh{display:flex;gap:12px;align-items:center}
-.rito .ri{width:48px;height:48px;flex:none}
-.rito textarea{border:2px solid var(--line);background:var(--card);border-radius:14px;padding:10px 12px;font-size:16px;width:100%;min-height:64px;resize:vertical}
-/* mese settale 7×7 */
-.mnav{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.og{border-radius:18px;overflow:hidden;background:var(--card)}
-.og-head,.og-row{display:grid;grid-template-columns:38px repeat(7,minmax(0,1fr))}
-.og-head{background:var(--m-ink)}
-.og-head span{padding:7px 0;text-align:center;color:var(--m-bg);font:700 1rem var(--f-disp)}
-.og-head span small{display:block;font:700 .56rem var(--f-body);opacity:.7}
-.og-wl{display:grid;place-items:center;background:color-mix(in srgb,var(--m-ink) 8%,var(--card));border-top:1px solid var(--line)}
-.og-wl b{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:700 .95rem var(--f-disp);background:var(--wt);color:var(--ink)}
-.og-c{position:relative;min-height:64px;border:0;border-top:1px solid color-mix(in srgb,var(--ink) 8%,transparent);border-left:1px solid color-mix(in srgb,var(--ink) 8%,transparent);background:var(--day-bg);padding:5px 4px 12px 5px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;cursor:pointer;text-align:left;color:var(--ink);transition:transform .12s}
-.og-c:active{transform:scale(.95)}
-.og-c .n{font:700 1.12rem/1 var(--f-disp)}
-.og-c .dt{font-size:.58rem;opacity:.7;font-weight:700}
-.og-c.past{opacity:.45}
-.og-c.today{box-shadow:inset 0 0 0 3px var(--go);z-index:1}
-.og-c .ld{position:absolute;left:5px;right:5px;bottom:4px;height:4px;border-radius:9px;background:color-mix(in srgb,var(--ink) 10%,transparent);overflow:hidden}
-.og-c .ld i{display:block;height:100%;border-radius:9px}
-.og-c .mdots{position:absolute;top:5px;right:4px;flex-direction:column;gap:2px;min-height:0}
-.og-c .mdots i{width:6px;height:6px}
-
 .lil.still .dr{stroke-dashoffset:0}.lil.still .pp,.lil.still .fi{opacity:1;transform:none}.lil.still .n-spin{opacity:1;transform:rotate(40deg)}.lil.still .r2-raise,.lil.still .r3-peri{transform:none}
+
 /* benvenuto */
 .welcome{min-height:100%;display:flex;flex-direction:column;justify-content:center;gap:18px;padding:calc(30px + env(safe-area-inset-top,0px)) 24px calc(30px + env(safe-area-inset-bottom,0px));max-width:480px;margin:0 auto}
-.logo{width:84px;height:84px;border-radius:24px}
-.welcome h1{font-size:2.3rem}
+.logo{width:72px;height:72px;border-radius:18px}
+.welcome h1{font-size:2.1rem}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -462,6 +448,11 @@ function plan(date) {
   }
   if (karate) add({ key: 'karate', cat: 'corpo', label: 'Karate', sub: 'Allenamento', start: toMin(c.karate.inizio), end: toMin(c.karate.fine), task: true });
   if (dow === c.sociale.uscitaGiorno && !skip.uscita) { const s = toMin(c.sociale.uscitaInizio); add({ key: 'uscita', cat: 'sociale', label: 'Serata fuori', sub: 'Amici, niente lavoro', start: s, end: toMin(c.sociale.uscitaFine, s), task: true }); }
+  for (const x of (st.extra || [])) {
+    if (skip[x.key] || !x.at) continue;
+    const s = toMin(x.at, 240);
+    add({ key: x.key, base: x.key, cat: x.cat, label: x.label, sub: x.da === date ? 'Spostato qui' : 'Spostato dal ' + dateShort(x.da), start: s, end: s + x.min, task: true, moved: true });
+  }
   const meal = (key, label, m) => {
     let s = toMin(m.da), e = toMin(m.a); const len = e - s;
     if (overlaps(s, e)) {
@@ -483,7 +474,8 @@ function plan(date) {
     else unplaced.push({ key: 'e:' + e.id, label: e.titolo, min: len, cat: evCat(e) });
   }
 
-  const study = ((c.studio[String(dow)]) || []).map((x, i) => ({ key: 's' + i, label: x.m, min: x.min })).filter((x) => !skip[x.key]);
+  const meno = st.meno || {}, less = (k) => (meno[k] || []).reduce((a, m) => a + m.min, 0);
+  const study = ((c.studio[String(dow)]) || []).map((x, i) => ({ key: 's' + i, label: x.m, min: x.min - less('s' + i) })).filter((x) => !skip[x.key] && x.min > 0);
   const wantBib = st.biblioteca !== undefined ? !!st.biblioteca : dow === c.sociale.biblioteca;
   let bib = false;
   if (wantBib && study.length) {
@@ -525,7 +517,7 @@ function plan(date) {
     if (rem > 15) unplaced.push({ key: base, label, min: rem, cat, partial: rem < min });
   };
   if (!bib) for (const x of study) split(x.key, x.label, x.min, 'studio', '');
-  for (const x of (st.extra || [])) { if (skip[x.key]) continue; split(x.key, x.label, x.min, x.cat, 'Recupero dal ' + dateShort(x.da)); }
+  for (const x of (st.extra || [])) { if (skip[x.key] || x.at || x.min - less(x.key) <= 0) continue; split(x.key, x.label, x.min - less(x.key), x.cat, 'Recupero dal ' + dateShort(x.da)); }
 
   const free = gaps(D0, D1).filter(([a, b]) => b - a >= 60).map(([a, b]) => ({ key: 'free' + a, cat: 'libero', label: 'Libero', start: a, end: b }));
   items.sort((a, b) => a.start - b.start || a.end - b.end);
@@ -541,7 +533,7 @@ function plan(date) {
   const tasks = items.filter((i) => i.task);
   const work = tasks.filter((t) => t.cat !== 'sociale');
   const finish = work.length ? Math.max(...work.map((t) => t.end)) : null;
-  const skipped = Object.keys(skip).map((k) => ({ key: k, info: skip[k] }));
+  const skipped = [...Object.keys(skip).map((k) => ({ key: k, info: skip[k] })), ...Object.entries(meno).flatMap(([k, arr]) => arr.map((m) => ({ key: k, info: { a: m.a, x: m.x }, part: m.min })))];
   const notes = evs.filter((e) => !TASK_TIPI.includes(e.tipo));
   return { date, items, free, unplaced, fatti, st, tasks, skipped, notes, bib, wk, D0, D1, finish, load: { mente: mente / 60, corpo: corpo / 60, sociale } };
 }
@@ -625,26 +617,101 @@ function toggleDone(date, key, val) {
   return v;
 }
 function remainingMin(p, base) { return p.tasks.filter((t) => (t.base || t.key) === base && !p.fatti[t.key]).reduce((a, t) => a + t.end - t.start, 0); }
-function moveToSunday(date, item, minOverride) {
-  const target = nextSunday(date), base = item.base || item.key, p = plan(date);
-  const min = minOverride || remainingMin(p, base) || item.min || 60;
+/* Sposta un blocco in un altro giorno e, se si vuole, a un'ora precisa (at in minuti, null = dove c'è spazio). */
+function moveItem(date, item, target, at, minOverride) {
+  if (item.ev) { const e = item.ev, L2 = evLen(e); const obj = { ...e, data: target }; delete obj.id; delete obj.src;
+    if (at != null) { obj.inizio = fmt(at); obj.fine = fmt(at + L2); delete obj.flessibile; delete obj.dopo; } saveEvent(e, obj, true); toast(`${item.label} → ${dayShort(target)}${at != null ? ' ' + fmt(at) : ''}`); return; }
+  const base = item.base || item.key, p = plan(date);
+  const chunk = item.key !== base && /\.\d+$/.test(item.key);
+  const min = minOverride || (chunk ? item.end - item.start : remainingMin(p, base)) || item.min || 60;
   const xkey = 'x' + Date.now().toString(36);
   const st = S.giorni[date] || {};
-  S.giorni[date] = { ...st, skip: { ...(st.skip || {}), [base]: { a: target, x: xkey } } };
+  if (chunk) { const mn = { ...(st.meno || {}) }; mn[base] = [...(mn[base] || []), { min, a: target, x: xkey }]; S.giorni[date] = { ...st, meno: mn }; }
+  else S.giorni[date] = { ...st, skip: { ...(st.skip || {}), [base]: { a: target, x: xkey } } };
   const tg = S.giorni[target] || {};
-  S.giorni[target] = { ...tg, extra: [...(tg.extra || []), { key: xkey, label: item.label, min, cat: item.cat, da: date }] };
+  S.giorni[target] = { ...tg, extra: [...(tg.extra || []), { key: xkey, label: item.label, min, cat: item.cat, da: date, at: at != null ? fmt(at) : null }] };
   saveState(); render();
-  toast(`${item.label} → ${dayShort(target)}`);
+  toast(`${item.label} → ${target === date ? 'oggi' : dayShort(target)}${at != null ? ' alle ' + fmt(at) : ''}`);
+}
+function moveToSunday(date, item, minOverride) { moveItem(date, item, nextSunday(date), null, minOverride); }
+const MENTAL = ['nerina', 'studio', 'impegno', 'ripetizione'];
+/* Spazi liberi di un giorno, come se il blocco da spostare non ci fosse. */
+function freeGaps(p, exclude) {
+  const busy = p.items.filter((i) => i.cat !== 'libero' && (i.base || i.key) !== exclude).map((i) => [i.start, i.end]).sort((a, b) => a[0] - b[0]);
+  const out = []; let cur = p.D0;
+  for (const [x, y] of busy) { if (x > cur) out.push([cur, Math.min(x, p.D1)]); cur = Math.max(cur, y); }
+  if (cur < p.D1) out.push([cur, p.D1]);
+  return out.filter(([a, b]) => b > a);
+}
+/* Orari proposti: oggi da adesso in poi, poi i giorni dopo; penalità per sere tarde, giorni già pieni, sport fuori fascia. */
+function suggestSlots(date, item, min, n = 4) {
+  const L = nowLogical(), c = cfg(), base = item.base || item.key, mental = MENTAL.includes(item.cat), out = [];
+  const start0 = date > L.date ? date : L.date;
+  for (let i = 0; i < 8 && out.length < 12; i++) {
+    const d = addDays(start0, i), p = plan(d);
+    const from = d === L.date ? Math.ceil((L.min + 10) / 15) * 15 : p.D0;
+    const extraLoad = d === date ? 0 : (mental ? min / 60 : 0);
+    for (const [a0, b] of freeGaps(p, d === date ? base : null)) {
+      const a = Math.max(a0, from); if (b - a < min) continue;
+      let pen = dayDiff(L.date, d) * 100 + a / 1440;
+      if (mental && a + min > 22 * 60 + 30) pen += 250;
+      if (mental && a >= 21 * 60) pen += 40;
+      if (mental && p.load.mente + extraLoad > c.soglia.mente) pen += 35;
+      if (item.cat === 'corpo' && (a < 14 * 60 || a + min > 21 * 60 + 30)) pen += 45;
+      if (dowOf(d) === 0 && mental) pen -= 20;
+      out.push({ d, at: a, pen, why: p.load.mente + extraLoad > c.soglia.mente && mental ? 'giornata già piena' : '' });
+    }
+  }
+  out.sort((x, y) => x.pen - y.pen);
+  const seen = new Set();
+  return out.filter((o) => { const k = o.d + Math.floor(o.at / 120); if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, n);
+}
+const slotLabel = (o) => { const L = nowLogical(); const t = o.d === L.date ? 'Oggi' : o.d === addDays(L.date, 1) ? 'Domani' : cap(WD[dowOf(o.d)]) + ' ' + parseISO(o.d).getDate(); return `${t} alle ${fmt(o.at)}`; };
+function openMove(d, it, back) {
+  const p = plan(d), base = it.base || it.key;
+  const chunk = it.key !== base && /\.\d+$/.test(it.key);
+  const min = it.ev ? evLen(it.ev) : (it.min || (chunk ? it.end - it.start : remainingMin(p, base)) || (it.end - it.start) || 60);
+  const sug = suggestSlots(d, it, min);
+  const go = (t, at) => { moveItem(d, it, t, at, it.ev ? null : min); if (back) back(); else closeSheet(); };
+  const L = nowLogical();
+  const dIn = h('input', { id: 'mv-d', type: 'date', value: sug[0] ? sug[0].d : L.date });
+  const tIn = h('input', { id: 'mv-t', type: 'time', value: sug[0] ? fmt(sug[0].at) : '' , step: 300 });
+  openSheet([xBtn(), h('h2', { text: 'Sposta ' + it.label }), h('p', { class: 'muted small', text: `${dur(min)} da sistemare` }),
+    sug.length ? h('button', { class: 'slot rec', type: 'button', onclick: () => go(sug[0].d, sug[0].at) },
+      h('span', { class: 'eyebrow', text: 'Consigliato' }), h('b', { text: slotLabel(sug[0]) }), h('span', { class: 'sub', text: `fino alle ${fmt(sug[0].at + min)}${sug[0].d !== L.date ? ' · oggi non c\'è uno spazio adatto' : ''}` })) : h('p', { class: 'muted', text: 'Nei prossimi giorni non c\'è uno spazio libero abbastanza lungo: scegli tu l\'orario.' }),
+    sug.length > 1 ? h('div', { class: 'slots' }, sug.slice(1).map((o) => h('button', { class: 'slot', type: 'button', onclick: () => go(o.d, o.at) }, h('b', { text: slotLabel(o) }), o.why ? h('span', { class: 'sub', text: o.why }) : null))) : null,
+    h('div', { class: 'card' }, h('b', { text: 'Scegli tu' }),
+      h('div', { class: 'two' }, h('div', { class: 'field' }, h('label', { for: 'mv-d', text: 'Giorno' }), dIn), h('div', { class: 'field' }, h('label', { for: 'mv-t', text: 'Ora' }), tIn)),
+      h('div', { class: 'btns' }, h('button', { class: 'btn go', type: 'button', text: 'Sposta qui', onclick: () => { if (!dIn.value) return; go(dIn.value, tIn.value ? toMin(tIn.value) : null); } }),
+        h('button', { class: 'btn', type: 'button', text: 'Quel giorno, dove c\'è spazio', onclick: () => { if (dIn.value) go(dIn.value, null); } }))),
+    !it.ev ? h('button', { class: 'btn ghost', type: 'button', text: 'Non lo faccio: toglilo', onclick: () => { skipToday(d, it); if (back) back(); else closeSheet(); } }) : null]);
+}
+/* Riorganizza: i blocchi rimasti indietro vanno nel miglior orario libero da adesso in poi. */
+function reflow(d) {
+  const L = nowLogical(); let n = 0, later = 0;
+  for (let guard = 0; guard < 12; guard++) {
+    const p = plan(d);
+    const late = p.tasks.filter((t) => !p.fatti[t.key] && t.end <= L.min && !t.ev && t.key !== 'uscita' && t.key !== 'karate');
+    if (!late.length) break;
+    const it = late[0], base = it.base || it.key, min = /\.\d+$/.test(it.key) ? it.end - it.start : remainingMin(p, base);
+    const sug = suggestSlots(d, it, min, 1)[0];
+    if (!sug) { skipToday(d, it); continue; }
+    if (sug.d !== d) later++;
+    moveItem(d, it, sug.d, sug.at, min); n++;
+  }
+  toast(n ? `Riorganizzati ${n} blocchi${later ? `, ${later} in un altro giorno` : ''}` : 'Niente da riorganizzare');
 }
 function skipToday(date, item) {
   const base = item.base || item.key, st = S.giorni[date] || {};
+  if (item.key !== base && /\.\d+$/.test(item.key) && item.end) { const mn = { ...(st.meno || {}) }; mn[base] = [...(mn[base] || []), { min: item.end - item.start, a: null, x: 'n' + Date.now().toString(36) }]; patchDay(date, { meno: mn }); toast(`${item.label}: tolto ${dur(item.end - item.start)}`); return; }
   patchDay(date, { skip: { ...(st.skip || {}), [base]: { a: null } } });
   toast(`${item.label}: saltato oggi`);
 }
-function restore(date, key) {
-  const st = S.giorni[date] || {}; const info = (st.skip || {})[key];
-  const sk = { ...(st.skip || {}) }; delete sk[key];
-  S.giorni[date] = { ...st, skip: sk };
+function restore(date, key, x) {
+  const st = S.giorni[date] || {};
+  let info = (st.skip || {})[key];
+  if (x && (st.meno || {})[key]) { const mn = { ...st.meno }; info = mn[key].find((m) => m.x === x); mn[key] = mn[key].filter((m) => m.x !== x); if (!mn[key].length) delete mn[key]; S.giorni[date] = { ...st, meno: mn }; }
+  else { const sk = { ...(st.skip || {}) }; delete sk[key]; S.giorni[date] = { ...st, skip: sk }; }
   if (info && info.a && info.x) { const tg = S.giorni[info.a] || {}; S.giorni[info.a] = { ...tg, extra: (tg.extra || []).filter((x) => x.key !== info.x) }; }
   saveState(); render();
 }
@@ -657,16 +724,17 @@ function streak() {
 
 /* ---------- pezzi di interfaccia ---------- */
 function tlItem(p, it, o) {
-  if (it.cat === 'pausa' || it.cat === 'viaggio') return h('li', { class: 'tl-mini', 'data-cat': it.cat }, h('b', { text: fmt(it.start) }), h('span', { class: 'dot', html: ICON[it.cat] }), h('span', { text: `${it.label} · ${dur(it.end - it.start)}` }));
-  if (it.cat === 'libero') return h('li', {}, h('div', { class: 'tl-item soft', 'data-cat': 'pausa' }, h('span', { class: 'time' }, h('b', { text: fmt(it.start) }), h('span', { text: fmt(it.end) })), badge('pausa', true), h('span', { class: 'txt' }, h('span', { class: 'lbl', text: `Libero · ${dur(it.end - it.start)}` }), h('span', { class: 'sub', text: it.end - it.start >= 120 ? 'Tempo tuo: esci, chiama qualcuno, riposa' : 'Un respiro tra un blocco e l\'altro' })), h('span')));
+  if (it.cat === 'pausa' || it.cat === 'viaggio') return h('li', { class: 'tl-mini', 'data-cat': it.cat }, h('span', { class: 't', text: fmt(it.start) }), h('span', { text: `${it.label} · ${dur(it.end - it.start)}` }));
+  if (it.cat === 'libero') return h('li', { class: 'tl-mini free' }, h('span', { class: 't', text: fmt(it.start) }), h('span', { text: `Libero fino alle ${fmt(it.end)} · ${dur(it.end - it.start)}` }));
   const done = !!p.fatti[it.key];
   const isNow = o.now != null && it.start <= o.now && o.now < it.end;
-  const late = o.now != null && it.end <= o.now && it.task;
+  const late = o.now != null && it.end <= o.now && it.task && !done;
   const cls = 'tl-item' + (done ? ' done' : '') + (isNow ? ' now' : '') + (late ? ' late' : '');
-  const chk = it.task && o.check ? h('button', { class: 'chk', type: 'button', 'aria-pressed': String(done), 'aria-label': (done ? 'Segna da fare: ' : 'Segna fatto: ') + it.label, html: CHECK, onclick: (e) => { e.stopPropagation(); const b = e.currentTarget; const v = toggleDone(p.date, it.key); if (v) cheer(p.date); requestAnimationFrame(() => { const nb = document.querySelector(`[data-k="${CSS.escape(p.date + it.key)}"] .chk`); if (nb && v) nb.classList.add('pop'); }); } }) : h('span');
-  const body = h('span', { class: 'txt' }, h('span', { class: 'lbl', text: it.label }), it.sub ? h('span', { class: 'sub', text: it.sub }) : null);
+  const chk = it.task && o.check ? h('button', { class: 'chk', type: 'button', 'aria-pressed': String(done), 'aria-label': (done ? 'Segna da fare: ' : 'Segna fatto: ') + it.label, html: CHECK, onclick: (e) => { e.stopPropagation(); const v = toggleDone(p.date, it.key); if (v) cheer(p.date); } }) : h('span');
+  const body = h('span', { class: 'txt' }, h('span', { class: 'lbl', text: it.label }), it.sub ? h('span', { class: 'sub', text: it.sub }) : null,
+    late && o.check && it.key !== 'uscita' ? h('span', { class: 'late-act' }, 'Non fatto · ', h('button', { class: 'link', type: 'button', text: 'Sposta', onclick: (e) => { e.stopPropagation(); openMove(p.date, it); } })) : null);
   const row = h(o.compact ? 'div' : 'button', { class: cls, 'data-cat': it.cat, type: o.compact ? null : 'button', onclick: o.compact ? null : () => openItem(p.date, it) },
-    h('span', { class: 'time' }, h('b', { text: fmt(it.start) }), h('span', { text: fmt(it.end) })), badge(it.cat, true), body, chk);
+    h('span', { class: 'time' }, h('b', { text: fmt(it.start) }), h('span', { text: fmt(it.end) })), h('span', { class: 'bar' }), body, chk);
   return h('li', { 'data-k': p.date + it.key }, row);
 }
 function timeline(p, o = {}) {
@@ -679,7 +747,7 @@ function nerinaCard(d) {
     h('span', { class: 'eyebrow', text: 'Nerina oggi · ' + (n.tipo || 'Lavoro') }),
     h('span', { class: 't', text: n.titolo }),
     (n.ob || []).length ? h('ul', {}, n.ob.map((x) => h('li', { text: x }))) : null,
-    h('span', { class: 'go', text: 'Apri i blocchi nel Cruscotto →' }));
+    h('span', { class: 'go', text: 'Apri i blocchi nel Cruscotto →' }), S.versione ? h('span', { class: 'small muted', text: `Titoli copiati dal Cruscotto (dati ${S.versione.split('.')[0]})` }) : null);
 }
 function noteChips(p) {
   if (!p.notes.length) return null;
@@ -713,30 +781,29 @@ function prepare(p) {
 }
 function unplacedBox(p) {
   if (!p.unplaced.length) return null;
-  return h('div', { class: 'warnbox' },
-    h('b', { text: 'Questo non ci sta nella giornata' }),
-    p.unplaced.map((u) => h('div', { class: 'it', 'data-cat': u.cat },
-      h('span', { style: 'display:flex;gap:8px;align-items:center' }, badge(u.cat, true), h('b', { text: u.label }), h('span', { class: 'muted', text: dur(u.min) })),
-      h('span', { class: 'btns' },
-        dowOf(p.date) !== 0 ? h('button', { class: 'btn small', type: 'button', text: 'A domenica', onclick: () => moveToSunday(p.date, u, u.min) }) : null,
-        h('button', { class: 'btn small ghost', type: 'button', text: 'Lascia perdere', onclick: () => skipToday(p.date, u) })))),
-    h('span', { class: 'small muted', text: 'Meglio deciderlo adesso che ritrovarlo indietro stasera.' }));
+  return h('section', { class: 'sec warn' },
+    h('div', { class: 'sec-h' }, h('h3', { text: 'Non ci sta in questa giornata' })),
+    h('ul', { class: 'rows' }, p.unplaced.map((u) => h('li', { class: 'r', 'data-cat': u.cat },
+      h('span', { class: 'dot' }), h('span', { class: 'grow' }, h('b', { text: u.label }), h('span', { class: 'muted', text: ' · ' + dur(u.min) })),
+      h('button', { class: 'btn small', type: 'button', text: 'Sposta', onclick: () => openMove(p.date, u) }),
+      h('button', { class: 'btn small ghost', type: 'button', text: 'Togli', onclick: () => skipToday(p.date, u) })))));
 }
 function skippedLine(p) {
   if (!p.skipped.length) return null;
   return h('div', { class: 'small muted', style: 'display:flex;flex-wrap:wrap;gap:6px;align-items:center' }, 'Tolti da qui:',
-    p.skipped.map((s) => h('button', { class: 'btn small ghost', type: 'button', text: `${labelOf(s.key)}${s.info && s.info.a ? ' → ' + dayShort(s.info.a) : ''} · rimetti`, onclick: () => restore(p.date, s.key) })));
+    p.skipped.map((s) => h('button', { class: 'btn small ghost', type: 'button', text: `${labelOf(s.key)}${s.part ? ' ' + dur(s.part) : ''}${s.info && s.info.a ? ' → ' + dayShort(s.info.a) : ''} · rimetti`, onclick: () => restore(p.date, s.key, s.part ? s.info.x : null) })));
 }
 function labelOf(key) {
   const n = NB.find((b) => b.key === key); if (n) return n.label;
   if (key === 'palestra') return 'Palestra'; if (key === 'karate') return 'Karate'; if (key === 'uscita') return 'Serata fuori';
   if (/^s\d/.test(key)) return 'Studio'; if (key.startsWith('e:')) { const e = S.eventi.find((x) => 'e:' + x.id === key); return e ? e.titolo : 'Impegno'; }
-  return 'Recupero';
+  for (const g of Object.values(S.giorni)) for (const x of (g.extra || [])) if (x.key === key) return x.label;
+  return 'Blocco spostato';
 }
-const CHEERS = ['Fatto!', 'Ottimo.', 'Uno in meno.', 'Vai così.', 'Bel colpo.'];
+const CHEERS = ['Fatto.'];
 function cheer(date) {
   const p = plan(date); const left = p.tasks.filter((t) => !p.fatti[t.key]).length;
-  toast(left ? `${CHEERS[left % CHEERS.length]} Ne restano ${left}.` : 'Giornata completata! Stasera chiudila con un tocco.');
+  toast(left ? `Fatto · ne restano ${left}` : 'Giornata completata');
 }
 
 /* ---------- viste ---------- */
@@ -843,7 +910,7 @@ function ritoCard(date, preview) {
   if (k === 'N' && !preview) {
     const ta = h('textarea', { id: 'rotta', placeholder: 'Es. capitolo 7 di KRR finito e inviti di Nerina chiusi' }); ta.value = rotta || '';
     card.append(h('label', { class: 'small muted', for: 'rotta', text: 'La rotta fino a domenica' }), ta,
-      h('div', { class: 'btns' }, h('button', { class: 'btn small c', 'data-cat': 'studio', style: `background:${mt.color};color:${mt.fg}`, type: 'button', text: 'Salva la rotta', onclick: () => { S.rotte[mon] = ta.value.trim(); saveState(); toast('Rotta salvata'); } }),
+      h('div', { class: 'btns' }, h('button', { class: 'btn small go', type: 'button', text: 'Salva la rotta', onclick: () => { S.rotte[mon] = ta.value.trim(); saveState(); toast('Rotta salvata'); } }),
         h('button', { class: 'btn small', type: 'button', text: 'Sport e biblioteca', onclick: openSport })));
   } else if (rotta) card.append(h('p', { class: 'small' }, h('b', { text: 'Rotta della settimana: ' }), rotta));
   if (!preview && k === 'V') card.append(h('button', { class: 'btn small', type: 'button', text: 'Valida la settimana', onclick: () => openValida(mon) }));
@@ -877,53 +944,56 @@ function viewOggi() {
   const out = [];
   const evening = L.min >= 21 * 60;
   const closed = !!p.st.chiusa;
-  if (evening && !closed) out.push(h('div', { class: 'card tint', 'data-cat': 'nerina' }, h('h2', { text: 'È sera: chiudi la giornata' }), h('p', { class: 'muted', text: 'Un minuto: segni cosa hai fatto, decidi cosa spostare, guardi domani.' }), h('button', { class: 'btn c wide', type: 'button', text: 'Chiudi la giornata', onclick: openClose })));
-  if (closed) out.push(h('div', { class: 'card tint', 'data-cat': 'nerina' }, h('div', { class: 'row' }, h('b', { text: 'Giornata chiusa. Bravo.' }), h('button', { class: 'btn small c', type: 'button', text: 'Guarda domani', onclick: () => select('domani') }))));
-  if (!p.st.energia && !evening) out.push(energyCard(d));
-  else if (p.st.energia) { const s = energyHints(p, L); if (s) out.push(s); }
-
   const open = p.tasks.filter((t) => !p.fatti[t.key]);
   const cur = open.find((t) => t.start <= L.min && L.min < t.end);
   const nxt = open.find((t) => t.start > L.min);
-  if (cur) out.push(h('div', { class: 'card tint now-card', 'data-cat': cur.cat }, h('div', { class: 'now-head' }, badge(cur.cat), h('div', {}, h('span', { class: 'eyebrow', text: 'Adesso' }), h('div', { class: 'big', text: cur.label }))), cur.sub ? h('span', { class: 'sub', text: cur.sub }) : null, h('span', { class: 'when', text: `Fino alle ${fmt(cur.end)} · mancano ${dur(cur.end - L.min)}` }), h('div', { class: 'btns' }, h('button', { class: 'btn c', type: 'button', text: 'Fatto', onclick: () => { toggleDone(d, cur.key, true); cheer(d); } }), h('button', { class: 'btn', style: 'background:var(--card)', type: 'button', text: 'Altro', onclick: () => openItem(d, cur) }))));
-  else if (nxt) out.push(h('div', { class: 'card tint now-card', 'data-cat': nxt.cat }, h('div', { class: 'now-head' }, badge(nxt.cat), h('div', {}, h('span', { class: 'eyebrow', text: `Tra ${dur(nxt.start - L.min)}` }), h('div', { class: 'big', text: nxt.label }))), h('span', { class: 'when', text: `${fmt(nxt.start)} - ${fmt(nxt.end)}` })));
+  const late = open.filter((t) => t.end <= L.min && !t.ev && t.key !== 'uscita' && t.key !== 'karate');
 
-  const rc = ritoCard(d); if (rc) out.push(rc);
+  if (evening && !closed) out.push(h('section', { class: 'sec' }, h('div', { class: 'sec-h' }, h('h3', { text: 'Chiudi la giornata' }), h('span', { class: 'muted small', text: '1 minuto' })),
+    h('p', { class: 'muted small', text: 'Segni cosa hai fatto, sposti quello che resta e guardi domani.' }), h('button', { class: 'btn go wide', type: 'button', text: 'Chiudi la giornata', onclick: openClose })));
+  if (closed) out.push(h('section', { class: 'sec' }, h('div', { class: 'sec-h' }, h('h3', { text: 'Giornata chiusa' }), h('button', { class: 'link', type: 'button', text: 'Guarda domani →', onclick: () => select('domani') }))));
+
+  const focus = cur || nxt;
+  if (focus) out.push(h('section', { class: 'now', 'data-cat': focus.cat },
+    h('span', { class: 'eyebrow', text: cur ? `Adesso · fino alle ${fmt(cur.end)}` : `Tra ${dur(nxt.start - L.min)} · alle ${fmt(nxt.start)}` }),
+    h('span', { class: 'big', text: focus.label }), focus.sub ? h('span', { class: 'sub', text: focus.sub }) : null,
+    cur ? h('div', { class: 'btns' }, h('button', { class: 'btn go', type: 'button', text: 'Fatto', onclick: () => { toggleDone(d, cur.key, true); cheer(d); } }),
+      !cur.ev && cur.key !== 'uscita' ? h('button', { class: 'btn', type: 'button', text: 'Sposta', onclick: () => openMove(d, cur) }) : null) : null));
+  else if (!p.tasks.length || !open.length) out.push(h('section', { class: 'now' }, h('span', { class: 'eyebrow', text: 'Oggi' }), h('span', { class: 'big', text: open.length ? 'Giornata libera' : 'Hai finito per oggi' })));
+
   const tot = p.tasks.reduce((a, t) => a + t.end - t.start, 0), done = p.tasks.filter((t) => p.fatti[t.key]).reduce((a, t) => a + t.end - t.start, 0);
-  const late = open.filter((t) => t.end <= L.min);
   const remMin = open.reduce((a, t) => a + t.end - t.start, 0);
-  out.push(h('div', { class: 'card' },
-    h('div', { class: 'row' }, h('h2', { text: 'Cosa manca' }), h('span', { class: 'small muted', text: tot ? Math.round(100 * done / tot) + '% fatto' : '' })),
+  if (p.tasks.length) out.push(h('section', { class: 'sec' },
+    h('div', { class: 'sec-h' }, h('h3', { text: 'Cosa manca' }), h('span', { class: 'muted small', text: `${Math.round(100 * done / (tot || 1))}% fatto` })),
+    h('p', { class: 'status' }, open.length ? `${open.length} ${open.length === 1 ? 'blocco' : 'blocchi'} · ${dur(remMin)} · fine verso le ${fmt(p.finish || L.min)}` : 'Tutto fatto.'),
     h('div', { class: 'prog' }, h('i', { style: `width:${tot ? (100 * done / tot).toFixed(1) : 0}%` })),
-    h('div', { class: 'stat3' },
-      h('div', {}, h('b', { text: String(open.length) }), h('span', { text: open.length === 1 ? 'blocco' : 'blocchi' })),
-      h('div', {}, h('b', { text: remMin ? dur(remMin) : '0' }), h('span', { text: 'di lavoro' })),
-      h('div', {}, h('b', { text: open.length && p.finish ? fmt(p.finish) : '—' }), h('span', { text: 'fine prevista' }))),
-    late.length ? h('p', { class: 'small', style: 'color:var(--cor)', text: `${late.length} ${late.length === 1 ? 'blocco è rimasto' : 'blocchi sono rimasti'} indietro: segnali fatti o spostali.` }) : null,
-    open.length ? null : h('p', { class: 'muted', text: 'Niente da fare: goditi il resto della giornata.' })));
+    late.length ? h('div', { class: 'late-box' }, h('span', { text: `${late.length} ${late.length === 1 ? 'blocco è rimasto' : 'blocchi sono rimasti'} indietro.` }),
+      h('button', { class: 'btn small', type: 'button', text: 'Riorganizza da adesso', onclick: () => reflow(d) })) : null));
+
+  if (!p.st.energia && !evening && p.tasks.length) out.push(energyCard(d));
+  else if (p.st.energia) { const s2 = energyHints(p, L); if (s2) out.push(s2); }
   const ub = unplacedBox(p); if (ub) out.push(ub);
-  const nc = noteChips(p); if (nc) out.push(nc);
+  out.push(h('div', { class: 'sec-h list-h' }, h('h3', { text: 'La giornata' }), noteChips(p)));
   out.push(timeline(p, { check: true, now: L.min }));
   const sk = skippedLine(p); if (sk) out.push(sk);
+  const rc = ritoCard(d); if (rc) out.push(rc);
   const nr = nerinaCard(d); if (nr) out.push(nr);
   return out;
 }
 function energyCard(d) {
   const val = { mente: 0, corpo: 0 };
-  const box = h('div', { class: 'card' }, h('h2', { text: 'Come stai stamattina?' }), h('p', { class: 'small muted', text: 'Due tocchi. Se l\'energia è bassa ti propongo cosa alleggerire.' }));
-  const mk = (k, label, cat) => {
-    const btns = [1, 2, 3, 4, 5].map((n) => h('button', { type: 'button', 'aria-pressed': 'false', 'aria-label': `${label} ${n} su 5`, text: String(n), onclick: () => { val[k] = n; btns.forEach((b, i) => b.setAttribute('aria-pressed', String(i + 1 === n))); if (val.mente && val.corpo) setTimeout(() => patchDay(d, { energia: { ...val } }), 250); } }));
-    return h('div', { class: 'field', 'data-cat': cat }, h('label', { text: label }), h('div', { class: 'scale' }, btns), h('div', { class: 'scale-l' }, h('span', { text: 'a terra' }), h('span', { text: 'al massimo' })));
+  const mk = (k, label) => {
+    const btns = [1, 2, 3, 4, 5].map((n) => h('button', { type: 'button', 'aria-pressed': 'false', 'aria-label': `${label} ${n} su 5`, text: String(n), onclick: () => { val[k] = n; btns.forEach((b2, i) => b2.setAttribute('aria-pressed', String(i + 1 === n))); if (val.mente && val.corpo) setTimeout(() => patchDay(d, { energia: { ...val } }), 250); } }));
+    return h('div', { class: 'erow' }, h('span', { text: label }), h('div', { class: 'scale' }, btns));
   };
-  box.append(mk('mente', 'Testa', 'studio'), mk('corpo', 'Corpo', 'corpo'));
-  return box;
+  return h('section', { class: 'sec' }, h('div', { class: 'sec-h' }, h('h3', { text: 'Come stai?' }), h('span', { class: 'muted small', text: '1 = a terra · 5 = al massimo' })), mk('mente', 'Testa'), mk('corpo', 'Corpo'));
 }
 function energyHints(p, L) {
   const e = p.st.energia || {}; const open = p.tasks.filter((t) => !p.fatti[t.key] && t.start >= L.min - 30);
   const parts = [];
   if (e.mente && e.mente <= 2) {
     const cand = [...open].reverse().find((t) => t.cat === 'studio') || open.find((t) => t.key === 'n2');
-    if (cand) parts.push(h('div', { class: 'hint' }, h('span', { text: `Testa scarica (${e.mente}/5). Tieni i blocchi importanti e alleggerisci la coda: ${cand.label} alle ${fmt(cand.start)}.` }), h('div', { class: 'btns' }, h('button', { class: 'btn small', style: 'background:var(--card)', type: 'button', text: 'Sposta a domenica', onclick: () => moveToSunday(p.date, cand) }))));
+    if (cand) parts.push(h('div', { class: 'hint' }, h('span', { text: `Testa scarica (${e.mente}/5). Tieni i blocchi importanti e alleggerisci la coda: ${cand.label} alle ${fmt(cand.start)}.` }), h('div', { class: 'btns' }, h('button', { class: 'btn small', type: 'button', text: 'Sposta', onclick: () => openMove(p.date, cand) }))));
   }
   const gym = open.find((t) => t.key === 'palestra' || t.key === 'karate');
   if (e.corpo && e.corpo <= 2 && gym) parts.push(h('div', { class: 'hint' }, h('span', { text: `Corpo stanco (${e.corpo}/5). Oggi ${gym.label.toLowerCase()} leggero: tecnica e mobilità, niente massimali. Oppure saltalo.` }), h('div', { class: 'btns' }, h('button', { class: 'btn small ghost', type: 'button', text: 'Salta oggi', onclick: () => skipToday(p.date, gym) }))));
@@ -998,14 +1068,14 @@ function viewSettimana() {
       mondayOf(days[6]) !== wkMon ? h('span', { class: 'small muted', text: 'Settimana dopo: ' + sportTxt(weekPlan(mondayOf(days[6]))) }) : null),
     legend(),
     h('div', { class: 'axis' }, ['8:30', '12', '16', '20', '00:30'].map((t) => h('span', { text: t }))),
-    ...plans.map((p) => {
+    h('div', { class: 'wlist' }, plans.map((p) => {
       const n = S.nerina[p.date]; const tags = dayTags(p);
       return h('button', { class: 'wrow', type: 'button', onclick: () => openDay(p.date) },
         h('div', { class: 'wrow-h' }, h('span', { class: 'day', style: 'display:flex;gap:8px;align-items:center' }, dayShort(p.date), ornOf(p.date) ? codeEl(ornOf(p.date), true) : null), h('span', { class: 'nn', text: n ? n.titolo : '' }), h('span', { class: 'lvl', 'data-l': String(loadLevel(p.load.mente)), text: 'Testa ' + hrs(p.load.mente) })),
         strip(p),
         tags.length ? h('div', { class: 'tags' }, tags.map(([c2, t]) => h('span', { class: 'tag', 'data-cat': c2, text: t }))) : null,
         p.unplaced.length ? h('span', { class: 'small', style: 'color:var(--bad)', text: 'Non ci sta: ' + p.unplaced.map((u) => `${u.label} ${dur(u.min)}`).join(', ') }) : null);
-    })
+    }))
   ];
 }
 
@@ -1018,10 +1088,10 @@ function viewMese() {
   setHero('mese:' + mi, () => monthHero(mi), monthSel != null);
   const headBg = dark ? th.bg : th.ink, headInk = dark ? th.ink : th.bg;
   const WN = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
-  const head = h('div', { class: 'og-head', style: `--m-ink:${headBg};--m-bg:${headInk}` }, h('span'), ...m.weeks[0].days.map((d, di) => h('span', {}, d.letter, h('small', { text: WN[di] }))));
+  const head = h('div', { class: 'og-head' }, h('span'), ...m.weeks[0].days.map((d, di) => h('span', { style: `--lc:${d.cDay}` }, d.letter, h('small', { text: WN[di] }))));
   const lvlCol = ['', 'var(--ner)', 'var(--ner)', 'var(--pau)', 'var(--cor)', 'var(--bad)'];
   const rows = m.weeks.map((w, wi) => h('div', { class: 'og-row' },
-    h('div', { class: 'og-wl', title: `Settimana ${wi + 1}: ${w.weekPhase}` }, h('b', { style: `--wt:color-mix(in srgb, ${w.weekColor} 45%, #fff)`, text: w.weekLetter })),
+    h('div', { class: 'og-wl', title: `Settimana ${wi + 1}: ${w.weekPhase}` }, h('b', { style: `--wc:${w.weekColor}`, text: w.weekLetter })),
     ...w.days.map((d) => {
       const p = plan(d.date), lv = loadLevel(p.load.mente), dd = parseISO(d.date);
       const dots = [];
@@ -1029,10 +1099,10 @@ function viewMese() {
       if (p.load.sociale) dots.push('sociale');
       if (p.items.some((i) => i.ev && i.cat !== 'sociale')) dots.push('impegno');
       if (p.notes.some((e) => e.tipo === 'scadenza') || p.unplaced.length) dots.push('scadenza');
-      return h('button', { class: 'og-c' + (d.date < L.date ? ' past' : '') + (d.date === L.date ? ' today' : ''), type: 'button', style: `--day-bg:${ORN.dayBg(d, { theme: { bg: '#FBF9F3' } })}`, 'aria-label': `${d.code}, ${dayLong(d.date)}: giornata ${loadWord(p.load.mente)}`, onclick: () => openDay(d.date) },
+      return h('button', { class: 'og-c' + (d.date < L.date ? ' past' : '') + (d.date === L.date ? ' today' : ''), type: 'button', 'aria-label': `${d.code}, ${dayLong(d.date)}: giornata ${loadWord(p.load.mente)}`, onclick: () => openDay(d.date) },
         h('span', { class: 'n', text: String(d.fictNum) }), h('span', { class: 'dt', text: `${dd.getDate()} ${MOS[dd.getMonth()]}` }),
         h('span', { class: 'mdots' }, [...new Set(dots)].map((c) => h('i', { 'data-cat': c }))),
-        h('span', { class: 'ld' }, h('i', { style: `width:${Math.min(100, 100 * p.load.mente / 12).toFixed(0)}%;background:${lvlCol[lv]}` })));
+        h('span', { class: 'ld' }, h('i', { 'data-l': String(lv), style: `width:${Math.min(100, 100 * p.load.mente / 12).toFixed(0)}%` })));
     })));
   const from = L.date > m.startDate ? L.date : m.startDate;
   const ev = S.eventi.filter((e) => e.data >= from && e.data <= m.endDate && e.tipo !== 'promemoria').sort((a, b) => (a.data + (a.inizio || '')).localeCompare(b.data + (b.inizio || '')));
@@ -1044,7 +1114,7 @@ function viewMese() {
       cur && mi !== cur.mi ? h('button', { class: 'btn small ghost', type: 'button', text: 'Torna a oggi', onclick: () => { monthSel = null; render(); } }) : null,
       h('button', { class: 'btn small', type: 'button', disabled: mi === 6, text: mi < 6 ? ORN.MONTHS[mi + 1].name + ' →' : '→', onclick: () => { monthSel = mi + 1; render(); } })),
     h('div', { class: 'og' }, head, ...rows),
-    h('div', { class: 'legend' }, h('span', {}, h('i', { style: 'background:var(--cor);border-radius:3px;width:16px;height:5px' }), 'barretta = ore di testa'), h('span', { 'data-cat': 'corpo' }, h('i'), 'sport'), h('span', { 'data-cat': 'sociale' }, h('i'), 'relazioni'), h('span', { 'data-cat': 'impegno' }, h('i'), 'impegni'), h('span', { 'data-cat': 'scadenza' }, h('i'), 'scadenze o cose che non ci stanno')),
+    h('div', { class: 'legend' }, h('span', {}, h('i', { style: 'background:var(--muted);border-radius:3px;width:16px;height:3px' }), 'ore di testa'), h('span', { 'data-cat': 'corpo' }, h('i'), 'sport'), h('span', { 'data-cat': 'sociale' }, h('i'), 'relazioni'), h('span', { 'data-cat': 'impegno' }, h('i'), 'impegni'), h('span', { 'data-cat': 'scadenza' }, h('i'), 'scadenze o cose che non ci stanno')),
     h('div', { class: 'card' }, h('h3', { text: `In arrivo in ${m.name}` }), ev.length ? h('ul', { class: 'list' }, ev.map((e) => { const o = ornOf(e.data); return h('li', { 'data-cat': e.tipo === 'scadenza' ? 'scadenza' : e.tipo === 'festa' ? 'festa' : evCat(e) }, h('span', { class: 'd', text: (o ? o.d.code + ' · ' : '') + dayShort(e.data) }), h('span', { text: (e.tipo === 'scadenza' ? 'Nerina: ' : '') + e.titolo + (e.inizio && !e.flessibile ? ' · ' + e.inizio : '') })); })) : h('p', { class: 'muted', text: 'Nessun impegno segnato.' })),
     firsts.length ? h('div', { class: 'card tint', 'data-cat': 'nerina' }, h('h3', { text: 'Il filo di Nerina' }), h('ul', { class: 'list' }, firsts.map((d) => h('li', { 'data-cat': 'nerina' }, h('span', { class: 'd', style: 'background:var(--card)', text: dayShort(d) }), h('span', { text: S.nerina[d].titolo })))), h('a', { class: 'small', href: cfg().cruscotto, target: '_blank', rel: 'noopener', style: 'font-weight:800;color:var(--ner)', text: 'Il piano completo è nel Cruscotto →' })) : null,
     h('a', { class: 'card', href: ORNRARV_APP, target: '_blank', rel: 'noopener', style: 'text-decoration:none;flex-direction:row;align-items:center;gap:12px' }, h('div', { style: 'width:46px;height:46px;flex:none', html: illus('V', 'V', true) }), h('span', {}, h('b', { text: 'Apri il Calendario ORNRARV' }), h('br'), h('span', { class: 'small muted', text: 'Obiettivi, Vision, corpo, studio e registri' })))
@@ -1070,19 +1140,18 @@ function openDay(d) {
 }
 function openItem(d, it) {
   const p = plan(d); const done = !!p.fatti[it.key];
-  const nodes = [xBtn(), h('div', { class: 'now-head', 'data-cat': it.cat }, badge(it.cat), h('div', {}, h('span', { class: 'eyebrow', text: CATN[it.cat] || '' }), h('h2', { text: it.label }))), h('p', { text: `${dayShort(d)} · ${fmt(it.start)} - ${fmt(it.end)} · ${dur(it.end - it.start)}` }), it.sub ? h('p', { class: 'muted', text: it.sub }) : null];
-  if (it.task) nodes.push(h('button', { class: 'btn c wide', 'data-cat': it.cat, type: 'button', text: done ? 'Segna da fare' : 'Segna fatto', onclick: () => { const v = toggleDone(d, it.key); if (v) cheer(d); closeSheet(); } }));
-  if (it.ev) nodes.push(h('button', { class: 'btn wide', style: 'background:var(--card)', type: 'button', text: it.flex ? 'Fissa l\'orario' : 'Modifica', onclick: () => openEvent(it.ev) }));
-  if (it.task && !it.ev && it.key !== 'uscita') {
-    const row = h('div', { class: 'btns' });
-    if (dowOf(d) !== 0) row.append(h('button', { class: 'btn', style: 'background:var(--card)', type: 'button', text: 'Sposta a domenica', onclick: () => { moveToSunday(d, it); closeSheet(); } }));
-    row.append(h('button', { class: 'btn ghost', type: 'button', text: 'Salta oggi', onclick: () => { skipToday(d, it); closeSheet(); } }));
-    nodes.push(row);
-  }
-  if (it.key === 'uscita') nodes.push(h('button', { class: 'btn ghost', type: 'button', text: 'Stasera niente uscita', onclick: () => { skipToday(d, it); closeSheet(); } }));
-  if (it.cat === 'studio') nodes.push(h('button', { class: 'btn', style: 'background:var(--card)', type: 'button', text: it.bib ? 'Studia a casa oggi' : 'Studia in biblioteca a Brescia oggi', onclick: () => { patchDay(d, { biblioteca: !it.bib }); closeSheet(); } }));
-  if (it.cat === 'corpo') nodes.push(h('button', { class: 'btn ghost', type: 'button', text: 'Cambia i giorni di sport', onclick: openSport }));
-  if (it.cat === 'nerina') nodes.push(h('a', { class: 'btn', style: 'background:var(--card);text-decoration:none', href: cfg().cruscotto, target: '_blank', rel: 'noopener', text: 'Apri il Cruscotto di Nerina' }));
+  const nodes = [xBtn(), h('span', { class: 'eyebrow', 'data-cat': it.cat, text: CATN[it.cat] || '' }), h('h2', { text: it.label }),
+    h('p', { class: 'muted', text: `${dayShort(d)} · ${fmt(it.start)} - ${fmt(it.end)} · ${dur(it.end - it.start)}` }), it.sub ? h('p', { class: 'small muted', text: it.sub }) : null];
+  if (it.task) nodes.push(h('button', { class: 'btn go wide', type: 'button', text: done ? 'Segna da fare' : 'Segna fatto', onclick: () => { const v = toggleDone(d, it.key); if (v) cheer(d); closeSheet(); } }));
+  if (it.task && it.key !== 'uscita') nodes.push(h('button', { class: 'btn wide', type: 'button', text: 'Sposta a un altro orario', onclick: () => openMove(d, it) }));
+  if (it.ev) nodes.push(h('button', { class: 'btn wide', type: 'button', text: it.flex ? 'Fissa l\'orario' : 'Modifica', onclick: () => openEvent(it.ev) }));
+  const more = h('div', { class: 'btns' });
+  if (it.task && !it.ev && it.key !== 'uscita') more.append(h('button', { class: 'btn ghost', type: 'button', text: 'Togli da oggi', onclick: () => { skipToday(d, it); closeSheet(); } }));
+  if (it.key === 'uscita') more.append(h('button', { class: 'btn ghost', type: 'button', text: 'Stasera niente uscita', onclick: () => { skipToday(d, it); closeSheet(); } }));
+  if (it.cat === 'studio') more.append(h('button', { class: 'btn ghost', type: 'button', text: it.bib ? 'Studia a casa oggi' : 'Studia in biblioteca a Brescia', onclick: () => { patchDay(d, { biblioteca: !it.bib }); closeSheet(); } }));
+  if (it.cat === 'corpo') more.append(h('button', { class: 'btn ghost', type: 'button', text: 'Giorni di sport', onclick: openSport }));
+  if (it.cat === 'nerina') more.append(h('a', { class: 'btn ghost', style: 'text-decoration:none', href: cfg().cruscotto, target: '_blank', rel: 'noopener', text: 'Apri il Cruscotto' }));
+  if (more.childNodes.length) nodes.push(more);
   openSheet(nodes);
 }
 function openEvent(ev) {
@@ -1113,11 +1182,11 @@ function openEvent(ev) {
   });
   openSheet([xBtn(), h('h2', { text: isNew ? 'Nuovo impegno' : 'Modifica' }), f]);
 }
-function saveEvent(ev, obj) {
+function saveEvent(ev, obj, quiet) {
   if (ev && ev.src === 'file') S.nascosti = [...S.nascosti, ev.id];
   if (ev && ev.src !== 'file') S.miei = S.miei.map((x) => x.id === ev.id ? { ...obj, id: ev.id } : x);
   else S.miei = [...S.miei, { ...obj, id: 'm' + Date.now().toString(36) }];
-  rebuildEvents(); saveState(); render(); toast(ev ? 'Salvato' : `Aggiunto a ${dayShort(obj.data)}`);
+  rebuildEvents(); saveState(); render(); if (!quiet) toast(ev ? 'Salvato' : `Aggiunto a ${dayShort(obj.data)}`);
 }
 function delEvent(ev) {
   if (ev.src === 'file') S.nascosti = [...S.nascosti, ev.id]; else S.miei = S.miei.filter((x) => x.id !== ev.id);
@@ -1153,16 +1222,15 @@ function openClose() {
   const votoBtns = [1, 2, 3, 4, 5].map((n) => h('button', { type: 'button', 'aria-pressed': String(voto === n), text: String(n), 'aria-label': `Giornata ${n} su 5`, onclick: () => { voto = n; votoBtns.forEach((b, i) => b.setAttribute('aria-pressed', String(i + 1 === n))); } }));
   const nota = h('textarea', { id: 'cl-nota', rows: 2, placeholder: 'Es. domani parto dalla parte difficile di KRR' }); nota.value = p.st.nota || '';
   const rows = rest.map((t) => {
-    const r = h('div', { class: 'closerow', 'data-cat': t.cat },
-      h('span', { style: 'display:flex;gap:8px;align-items:center' }, badge(t.cat, true), h('span', {}, h('b', { text: t.label }), h('span', { class: 'sub', text: ` ${fmt(t.start)}-${fmt(t.end)}` }))),
-      h('span', { class: 'btns' },
-        h('button', { class: 'btn small c', type: 'button', text: 'Fatto', onclick: () => { toggleDone(d, t.key, true); r.classList.add('gone'); } }),
-        dowOf(d) !== 0 && t.key !== 'uscita' && !t.ev ? h('button', { class: 'btn small', style: 'background:var(--card)', type: 'button', text: 'A domenica', onclick: () => { moveToSunday(d, t); r.classList.add('gone'); } }) : null,
-        h('button', { class: 'btn small ghost', type: 'button', text: 'Lascia', onclick: () => r.classList.add('gone') })));
+    const r = h('li', { class: 'r', 'data-cat': t.cat },
+      h('span', { class: 'dot' }), h('span', { class: 'grow' }, h('b', { text: t.label }), h('span', { class: 'muted small', text: ` ${fmt(t.start)}-${fmt(t.end)}` })),
+      h('button', { class: 'btn small go', type: 'button', text: 'Fatto', onclick: () => { toggleDone(d, t.key, true); r.classList.add('gone'); } }),
+      t.key !== 'uscita' ? h('button', { class: 'btn small', type: 'button', text: 'Sposta', onclick: () => openMove(d, t, openClose) }) : null,
+      h('button', { class: 'btn small ghost', type: 'button', text: 'Lascia', onclick: () => r.classList.add('gone') }));
     return r;
   });
   openSheet([xBtn(), h('h2', { text: 'Chiudi la giornata' }),
-    h('p', { class: 'muted', text: rest.length ? `Restano ${rest.length} blocchi. Per ognuno: fatto, a domenica, o lascia.` : 'Hai fatto tutto quello che c\'era.' }), ...rows,
+    h('p', { class: 'muted', text: rest.length ? `Restano ${rest.length} blocchi: fatto, sposta o lascia.` : 'Hai fatto tutto quello che c\'era.' }), rows.length ? h('ul', { class: 'rows' }, rows) : null,
     h('div', { class: 'field', 'data-cat': 'nerina' }, h('label', { text: 'Com\'è andata?' }), h('div', { class: 'scale' }, votoBtns), h('div', { class: 'scale-l' }, h('span', { text: 'pesante' }), h('span', { text: 'ottima' }))),
     h('div', { class: 'field' }, h('label', { for: 'cl-nota', text: 'Una riga per domani (facoltativa)' }), nota),
     h('button', { class: 'btn go wide', type: 'button', text: 'Chiudi la giornata', onclick: () => {
@@ -1181,7 +1249,9 @@ function openSettings() {
       h('button', { class: 'btn', type: 'button', text: 'Copia il backup', onclick: async () => { try { await navigator.clipboard.writeText(lsGet(LS.stato) || '{}'); toast('Backup copiato'); } catch (e) { ta.value = lsGet(LS.stato) || '{}'; ta.select(); toast('Copialo dal riquadro'); } } }),
       h('div', { class: 'field' }, h('label', { for: 'bk', text: 'Ripristina' }), ta),
       h('button', { class: 'btn ghost', type: 'button', text: 'Ripristina questo backup', onclick: () => { try { const x = JSON.parse(ta.value); if (!x || typeof x !== 'object' || !('giorni' in x)) throw 0; lsSet(LS.stato, ta.value); loadState(); rebuildEvents(); render(); closeSheet(); toast('Backup ripristinato'); } catch (e) { toast('Questo testo non è un backup di Ritmo'); } } })),
-    h('a', { class: 'btn', style: 'text-decoration:none', href: ORNRARV_APP, target: '_blank', rel: 'noopener', text: 'Apri il Calendario ORNRARV' }),
+    h('div', { class: 'card' }, h('b', { text: 'Widget per la Home e la schermata bloccata' }), h('span', { class: 'small muted', text: 'Con l\'app gratuita Scriptable: codice del giorno, cosa c\'è adesso e i prossimi blocchi.' }),
+      h('a', { class: 'btn', href: 'widget.html', target: '_blank', rel: 'noopener', text: 'Come metterlo' })),
+    h('a', { class: 'btn', href: ORNRARV_APP, target: '_blank', rel: 'noopener', text: 'Apri il Calendario ORNRARV' }),
     h('button', { class: 'btn ghost', type: 'button', text: 'Cambia la parola chiave', onclick: () => { try { localStorage.removeItem(LS.pass); } catch (e) { /* niente */ } closeSheet(); showWelcome(); } })]);
 }
 
@@ -1205,6 +1275,7 @@ function render() {
 function startTab() {
   const hs = location.hash.slice(1);
   if (hs === 'sera') { select('oggi'); openClose(); return; }
+  if (hs === 'nuovo') { select('oggi'); openEvent(null); return; }
   if (TABS.includes(hs)) { select(hs); return; }
   const L = nowLogical();
   select(L.min >= 21 * 60 + 30 && (S.giorni[L.date] || {}).chiusa ? 'domani' : 'oggi');
