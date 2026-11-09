@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Ritmo</title>
-<meta name="theme-color" content="#F7F6FB">
+<meta name="theme-color" content="#232B3B">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -14,18 +14,19 @@
 <link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Nunito:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="ornrarv.css">
 <style>
-/* Ritmo: un'app da tasca, chiara e colorata. Ogni area della vita ha il suo colore pieno e la sua tinta tenue:
-   menta per Nerina, cielo per lo studio, mandarino per il corpo, fragola per le persone, lavanda per gli impegni, sole per i pasti. */
+/* Ritmo × ORNRARV: in alto il paesaggio del mese settale (Brumale, Ianuario...) con il codice del giorno e la sua lettera;
+   sotto, la giornata su carta chiara. Lettere con i colori ORNRARV; le 5 aree (Lavoro, Scuola, Allenamento, Relazioni, Impegni) con tinte vivaci. */
 :root{
-  --bg:#F7F6FB; --card:#FFFFFF; --ink:#211D3B; --muted:#716C8C; --line:#ECE9F5; --soft:#F0EEF8;
+  --bg:#F7F4EC; --card:#FFFFFF; --ink:#211D3B; --muted:#716C8C; --line:#ECE9F5; --soft:#F0EEF8;
   --go:#FF5A5F; --go-ink:#FFFFFF;
   --ner:#14B87F; --ner-t:#DDF8EC; --stu:#4C6EF5; --stu-t:#E3E9FF; --cor:#FF7A1A; --cor-t:#FFEBDA;
   --soc:#F0408E; --soc-t:#FFE2EF; --imp:#8B5CF6; --imp-t:#EFE7FF; --pau:#F5B300; --pau-t:#FFF4CC; --via:#19A9C2; --via-t:#DAF5FA;
   --warm1:#FFF4CC; --warm2:#FFE2A8; --warm3:#FFC98A; --warm4:#FF9E80;
   --bad:#E5484D; --bad-t:#FFE5E5;
-  --f-disp:"Fredoka","Avenir Next Rounded","SF Pro Rounded",system-ui,sans-serif;
+  --f-disp:"Fraunces","Iowan Old Style",Georgia,serif;
   --f-body:"Nunito","Avenir Next",-apple-system,system-ui,sans-serif;
   --r:20px; color-scheme:light;
 }
@@ -44,12 +45,12 @@
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;font-weight:600;line-height:1.45;-webkit-text-size-adjust:100%;font-variant-numeric:tabular-nums;overscroll-behavior-y:none}
+body{margin:0;background:var(--bg) var(--pat,none);background-size:220px 220px;color:var(--ink);font-family:var(--f-body);font-size:16px;font-weight:600;line-height:1.45;-webkit-text-size-adjust:100%;font-variant-numeric:tabular-nums;overscroll-behavior-y:none}
 [hidden]{display:none!important}
 button,input,select,textarea{font:inherit;color:inherit}
 button{touch-action:manipulation}
 :focus-visible{outline:3px solid var(--stu);outline-offset:2px}
-h1,h2,h3{font-family:var(--f-disp);margin:0;line-height:1.12;text-wrap:balance;font-weight:600}
+h1,h2,h3{font-family:var(--f-disp);margin:0;line-height:1.1;text-wrap:balance;font-weight:600;letter-spacing:-.01em}
 h1{font-size:2rem} h2{font-size:1.3rem} h3{font-size:1.08rem}
 p{margin:0}
 a{color:inherit}
@@ -216,6 +217,58 @@ a{color:inherit}
 .toast{position:fixed;left:50%;transform:translateX(-50%) translateY(10px);bottom:calc(170px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:.9rem;font-weight:800;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:40;max-width:90vw;text-align:center}
 .toast.on{opacity:1;transform:translateX(-50%)}
 
+
+/* ---------- ORNRARV: testata con paesaggio ---------- */
+.app{position:relative}
+.top-r{position:absolute;z-index:6;top:calc(14px + env(safe-area-inset-top,0px));right:max(14px,env(safe-area-inset-right,0px));display:flex;gap:8px;align-items:center}
+.top-r .pill,.top-r .iconbtn{background:color-mix(in srgb,var(--h-bg,#232B3B) 55%,transparent);color:var(--h-ink,#fff);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:none}
+.top-r .pill svg{color:#F3C77A}
+.hero{position:relative;overflow:hidden;isolation:isolate;margin:calc(-18px - env(safe-area-inset-top,0px)) calc(-1 * max(18px,env(safe-area-inset-right,0px))) 0 calc(-1 * max(18px,env(safe-area-inset-left,0px)));min-height:calc(300px + env(safe-area-inset-top,0px));background:var(--h-bg);color:var(--h-ink);border-radius:0 0 30px 30px;display:flex;flex-direction:column;justify-content:flex-start}
+.hero.short{min-height:calc(240px + env(safe-area-inset-top,0px))}
+.hero > .scene{position:absolute;inset:0;width:100%;height:100%;z-index:-2}
+.hero::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,var(--h-bg) 0%,color-mix(in srgb,var(--h-bg) 86%,transparent) 34%,color-mix(in srgb,var(--h-bg) 30%,transparent) 58%,transparent 74%)}
+.hero .season-fx{position:absolute;inset:0;pointer-events:none;z-index:1}
+.hero-text{position:relative;z-index:2;padding:calc(18px + env(safe-area-inset-top,0px)) 22px 22px;display:flex;flex-direction:column;gap:6px;max-width:100%}
+.hero .kick{font-size:.86rem;font-weight:700;opacity:.85;padding-right:150px}
+.hero h1{font-size:2.15rem;line-height:1.02}
+.code-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:2px}
+.code{display:inline-flex;gap:4px;align-items:center}
+.code b{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font:700 1rem var(--f-disp);background:var(--lc);color:var(--lfg)}
+.code i{font-style:normal;opacity:.45;font-weight:800}
+.code.sm b{width:22px;height:22px;font-size:.78rem}
+.fict{font:600 1rem var(--f-disp);opacity:.9}
+.emblem{display:inline-flex;align-items:center;gap:10px;margin-top:8px;padding:6px 14px 6px 6px;border-radius:18px;align-self:flex-start;background:color-mix(in srgb,var(--h-bg) 62%,transparent);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1px solid color-mix(in srgb,var(--h-ink) 16%,transparent)}
+.em-icon{width:54px;height:54px;flex:none;border-radius:14px;padding:4px;background:radial-gradient(circle at 50% 40%,color-mix(in srgb,var(--lc) 7%,#FBF9F3),color-mix(in srgb,var(--lc) 22%,#EFEADC));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--lc) 30%,transparent)}
+.em-text{display:flex;flex-direction:column;line-height:1.2}
+.em-text span{font-size:.74rem;opacity:.75;font-weight:700}
+.em-text b{font-size:1rem;font-weight:800}
+.em-text small{font-family:var(--f-disp);font-style:italic;font-size:.86rem;opacity:.8}
+/* rito del giorno */
+.rito{border-left:6px solid var(--lc)}
+.rito .rh{display:flex;gap:12px;align-items:center}
+.rito .ri{width:48px;height:48px;flex:none}
+.rito textarea{border:2px solid var(--line);background:var(--card);border-radius:14px;padding:10px 12px;font-size:16px;width:100%;min-height:64px;resize:vertical}
+/* mese settale 7×7 */
+.mnav{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.og{border-radius:18px;overflow:hidden;background:var(--card)}
+.og-head,.og-row{display:grid;grid-template-columns:38px repeat(7,minmax(0,1fr))}
+.og-head{background:var(--m-ink)}
+.og-head span{padding:7px 0;text-align:center;color:var(--m-bg);font:700 1rem var(--f-disp)}
+.og-head span small{display:block;font:700 .56rem var(--f-body);opacity:.7}
+.og-wl{display:grid;place-items:center;background:color-mix(in srgb,var(--m-ink) 8%,var(--card));border-top:1px solid var(--line)}
+.og-wl b{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:700 .95rem var(--f-disp);background:var(--wt);color:var(--ink)}
+.og-c{position:relative;min-height:64px;border:0;border-top:1px solid color-mix(in srgb,var(--ink) 8%,transparent);border-left:1px solid color-mix(in srgb,var(--ink) 8%,transparent);background:var(--day-bg);padding:5px 4px 12px 5px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;cursor:pointer;text-align:left;color:var(--ink);transition:transform .12s}
+.og-c:active{transform:scale(.95)}
+.og-c .n{font:700 1.12rem/1 var(--f-disp)}
+.og-c .dt{font-size:.58rem;opacity:.7;font-weight:700}
+.og-c.past{opacity:.45}
+.og-c.today{box-shadow:inset 0 0 0 3px var(--go);z-index:1}
+.og-c .ld{position:absolute;left:5px;right:5px;bottom:4px;height:4px;border-radius:9px;background:color-mix(in srgb,var(--ink) 10%,transparent);overflow:hidden}
+.og-c .ld i{display:block;height:100%;border-radius:9px}
+.og-c .mdots{position:absolute;top:5px;right:4px;flex-direction:column;gap:2px;min-height:0}
+.og-c .mdots i{width:6px;height:6px}
+
+.lil.still .dr{stroke-dashoffset:0}.lil.still .pp,.lil.still .fi{opacity:1;transform:none}.lil.still .n-spin{opacity:1;transform:rotate(40deg)}.lil.still .r2-raise,.lil.still .r3-peri{transform:none}
 /* benvenuto */
 .welcome{min-height:100%;display:flex;flex-direction:column;justify-content:center;gap:18px;padding:calc(30px + env(safe-area-inset-top,0px)) 24px calc(30px + env(safe-area-inset-bottom,0px));max-width:480px;margin:0 auto}
 .logo{width:84px;height:84px;border-radius:24px}
@@ -238,13 +291,11 @@ a{color:inherit}
 
 <div id="main" hidden>
 <div class="app">
-  <header class="top">
-    <div><div class="hello" id="h-eye"></div><h1 id="h-title">…</h1><div class="week7" id="week7" aria-hidden="true"></div></div>
-    <div class="top-r">
+  <div class="top-r">
       <button class="pill" id="streak" type="button" aria-label="Serie di giornate chiuse"></button>
       <button class="iconbtn" id="gear" type="button" aria-label="Impostazioni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></button>
-    </div>
-  </header>
+  </div>
+  <div id="hero-slot"></div>
   <main id="view" style="display:flex;flex-direction:column;gap:14px"></main>
 </div>
 <button class="fab" id="fab" type="button" aria-label="Aggiungi un impegno"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
@@ -258,6 +309,7 @@ a{color:inherit}
 <div class="sheet-wrap" id="sheet" hidden><div class="scrim" id="scrim"></div><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title"><div class="grab"></div><div id="sheet-body" style="display:flex;flex-direction:column;gap:12px"></div></div></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script src="ornrarv-lib.js"></script>
 <script>
 (() => {
 'use strict';
@@ -285,14 +337,14 @@ const NB = [
   { key: 'n3', label: 'Nerina · B3', sub: 'Prepara e lancia il prompt della notte' }
 ];
 const TASK_TIPI = ['impegno', 'ripetizione', 'sociale'];
-const CATN = { nerina: 'Nerina', studio: 'Studio', corpo: 'Corpo', sociale: 'Persone', impegno: 'Impegno', ripetizione: 'Ripetizione' };
+const CATN = { nerina: 'Lavoro · Nerina', studio: 'Scuola', corpo: 'Allenamento', sociale: 'Relazioni', impegno: 'Impegno', ripetizione: 'Ripetizione' };
 const WD = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
 const WDS = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
 const MO = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
 const MOS = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
 
 /* S.file = dati dal file cifrato; S.miei, S.nascosti, S.giorni, S.settimane = stato sul telefono */
-const S = { cfg: null, nerina: {}, file: [], miei: [], nascosti: [], giorni: {}, settimane: {}, eventi: [], versione: null };
+const S = { cfg: null, nerina: {}, file: [], miei: [], nascosti: [], giorni: {}, settimane: {}, rotte: {}, eventi: [], versione: null };
 const rebuildEvents = () => { const hid = new Set(S.nascosti); S.eventi = [...S.file.filter((e) => !hid.has(e.id)).map((e) => ({ ...e, src: 'file' })), ...S.miei]; };
 
 /* ---------- tempo ---------- */
@@ -536,8 +588,8 @@ function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('o
 const LS = { pass: 'ritmo:pass', dati: 'ritmo:dati', stato: 'ritmo:stato' };
 const lsGet = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
 const lsSet = (k, v) => { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } };
-function saveState() { lsSet(LS.stato, JSON.stringify({ giorni: S.giorni, settimane: S.settimane, miei: S.miei, nascosti: S.nascosti })); }
-function loadState() { try { const x = JSON.parse(lsGet(LS.stato) || 'null'); if (x) { S.giorni = x.giorni || {}; S.settimane = x.settimane || {}; S.miei = x.miei || []; S.nascosti = x.nascosti || []; } } catch (e) { /* stato nuovo */ } }
+function saveState() { lsSet(LS.stato, JSON.stringify({ giorni: S.giorni, settimane: S.settimane, rotte: S.rotte, miei: S.miei, nascosti: S.nascosti })); }
+function loadState() { try { const x = JSON.parse(lsGet(LS.stato) || 'null'); if (x) { S.giorni = x.giorni || {}; S.settimane = x.settimane || {}; S.miei = x.miei || []; S.nascosti = x.nascosti || []; S.rotte = x.rotte || {}; } } catch (e) { /* stato nuovo */ } }
 function applyData(d) { S.cfg = d.cfg || null; S.nerina = d.nerina || {}; S.file = d.eventi || []; S.versione = d.versione || null; rebuildEvents(); }
 function loadCachedData() { try { const d = JSON.parse(lsGet(LS.dati) || 'null'); if (d) applyData(d); return !!d; } catch (e) { return false; } }
 const b64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
@@ -690,16 +742,138 @@ function cheer(date) {
 /* ---------- viste ---------- */
 let tab = 'oggi';
 function greeting() { const hh = new Date().getHours(); return hh < 4 ? 'Buonanotte, Niccolò' : hh < 13 ? 'Buongiorno, Niccolò' : hh < 18 ? 'Buon pomeriggio, Niccolò' : 'Buonasera, Niccolò'; }
-function setHeader(eye, title) { $('#h-eye').textContent = eye; $('#h-title').textContent = title; }
 function renderStreak() {
-  const L = nowLogical(), n = streak();
+  const n = streak();
   $('#streak').innerHTML = SUN; $('#streak').append(n ? `${n} di fila` : 'Chiudi');
-  $('#week7').replaceChildren(...[6, 5, 4, 3, 2, 1, 0].map((i) => h('i', { class: (S.giorni[addDays(L.date, -i)] || {}).chiusa ? 'on' : '' })));
+}
+
+/* ---------- ORNRARV: codice del giorno, lettere, paesaggi ---------- */
+const ORN = window.ORN || null;
+const ORNRARV_APP = 'https://claude.ai/artifact/NgatfEMcpganXPGesBZWim';
+function ornOf(date) {
+  if (!ORN) return null;
+  const n = dayDiff('2026-09-21', date); if (n < 0 || n >= 343) return null;
+  const mi = Math.floor(n / 49), r = n % 49, wi = Math.floor(r / 7), di = r % 7;
+  const m = ORN.MONTHS[mi], w = m.weeks[wi], d = w.days[di];
+  const dk = ORN.metaKeyFor(d.letter, di), wk = ORN.metaKeyFor(w.weekLetter, wi), mk = ORN.metaKeyFor(m.letter, mi);
+  return { n, mi, wi, di, m, w, d, dk, wk, mk, dm: ORN.LETTER_META[dk], wm: ORN.LETTER_META[wk], mm: ORN.LETTER_META[mk] };
+}
+function codeEl(o, sm, parts = 3) {
+  const L = [[o.m.letter, o.mm], [o.w.weekLetter, o.wm], [o.d.letter, o.dm]].slice(0, parts);
+  const el = h('span', { class: 'code' + (sm ? ' sm' : ''), 'aria-label': 'Codice ' + L.map((x) => x[0]).join('.') });
+  L.forEach(([l, mt], i) => { if (i) el.append(h('i', { text: '.' })); el.append(h('b', { style: `--lc:${mt.color};--lfg:${mt.fg}`, text: l })); });
+  return el;
+}
+const illus = (letter, key, still) => { const s2 = ORN.illusFor(letter, key, ORN.LETTER_META[key].color); return still ? s2.replace('class="lil ', 'class="lil still ') : s2; };
+function emblem(letter, key, kicker) {
+  const mt = ORN.LETTER_META[key];
+  return h('div', { class: 'emblem', style: `--lc:${mt.color}` }, h('div', { class: 'em-icon', html: illus(letter, key) }), h('div', { class: 'em-text' }, h('span', { text: kicker }), h('b', { text: mt.word }), h('small', { text: mt.label })));
+}
+const FALLBACK_THEME = { bg: '#232B3B', ink: '#E7E9F2', accent: '#8FA0D6', motif: 'mist' };
+function heroBox(th, mi, p, short) {
+  const el = h('section', { class: 'hero' + (short ? ' short' : ''), style: `--h-bg:${th.bg};--h-ink:${th.ink}` });
+  if (ORN && mi != null) el.insertAdjacentHTML('afterbegin', ORN.sceneSVG(mi, { p }));
+  return el;
+}
+function dayHero(date, kicker, short) {
+  const o = ornOf(date), th = o ? o.m.theme : FALLBACK_THEME;
+  const el = heroBox(th, o ? o.mi : null, o ? o.wi / 6 : 0, short);
+  const t = h('div', { class: 'hero-text' }, h('span', { class: 'kick', text: kicker }), h('h1', { text: dayLong(date) }));
+  if (o) {
+    t.append(h('div', { class: 'code-row' }, codeEl(o), h('span', { class: 'fict', text: `${o.d.fictNum} ${o.m.name}` })));
+    t.append(emblem(o.d.letter, o.dk, `Giorno ${o.d.letter} · settimana ${o.w.weekLetter}`));
+  }
+  el.append(t);
+  return { el, th, mi: o ? o.mi : null };
+}
+function weekHero(from, to) {
+  const o = ornOf(from), th = o ? o.m.theme : FALLBACK_THEME;
+  const el = heroBox(th, o ? o.mi : null, o ? o.wi / 6 : 0, true);
+  const t = h('div', { class: 'hero-text' }, h('span', { class: 'kick', text: `I prossimi 7 giorni · ${dateShort(from)} - ${dateShort(to)}` }),
+    h('h1', { text: o ? `Settimana ${o.w.weekLetter} di ${o.m.name}` : 'La settimana' }));
+  if (o) {
+    t.append(h('div', { class: 'code-row' }, codeEl(o, false, 2), h('span', { class: 'fict', text: `settimana ${o.wi + 1} di 7` })));
+    t.append(emblem(o.w.weekLetter, o.wk, 'Fase della settimana'));
+  }
+  el.append(t);
+  return { el, th, mi: o ? o.mi : null };
+}
+function monthHero(mi) {
+  const m = ORN.MONTHS[mi], L = nowLogical();
+  const p = L.date < m.startDate ? 0 : L.date > m.endDate ? 1 : Math.floor(dayDiff(m.startDate, L.date) / 7) / 6;
+  const el = heroBox(m.theme, mi, p, true);
+  el.append(h('div', { class: 'hero-text' }, h('span', { class: 'kick', text: `Mese ${m.num} di 7 · ${dateShort(m.startDate)} - ${dateShort(m.endDate)}` }), h('h1', { text: m.name }),
+    emblem(m.letter, ORN.metaKeyFor(m.letter, mi), `Fase del mese, ${m.letter}`)));
+  return { el, th: m.theme, mi };
+}
+let heroKey = null;
+function setHero(key, build, fx) {
+  if (key === heroKey) return;
+  heroKey = key;
+  const { el, th, mi } = build();
+  $('#hero-slot').replaceChildren(el);
+  const root = document.documentElement.style;
+  root.setProperty('--h-bg', th.bg); root.setProperty('--h-ink', th.ink);
+  if (ORN && mi != null) document.body.style.setProperty('--pat', ORN.patternURI(mi, th.accent, .1));
+  const tc = document.querySelector('meta[name="theme-color"]'); if (tc) tc.setAttribute('content', th.bg);
+  if (!ORN) return;
+  requestAnimationFrame(() => {
+    ORN.playAll(el);
+    if (fx && mi != null && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const f = ORN.seasonFx(th.motif, th.accent, el.clientWidth, el.clientHeight, mi + 1);
+      if (f) { el.append(f.svg); f.run(); f.svg.animate([{ opacity: 0 }, { opacity: 1, offset: .05 }, { opacity: 1, offset: .86 }, { opacity: 0 }], { duration: f.total, fill: 'forwards' }); setTimeout(() => f.svg.remove(), f.total + 80); }
+    }
+  });
+}
+const RITO = {
+  O: ['Osserva', 'Raccogli prima di correre: com\'è andata la settimana scorsa e cosa ti chiede il piano.'],
+  R1: ['Rema', 'Lavoro osservativo: produci partendo da ciò che hai visto lunedì.'],
+  N: ['Scegli la rotta', 'A metà settimana decidi cosa conta di più fino a domenica.'],
+  R2: ['Rema', 'Lavoro orientato: vai dritto nella direzione scelta mercoledì.'],
+  A: ['Automatizza', 'Cosa puoi far fare a Claude Code stanotte, o a una skill, invece che a mano?'],
+  R3: ['Rema', 'Lavoro automatizzato: usa i processi che hai preparato venerdì.'],
+  V: ['Valida', 'Guarda cosa hai fatto questa settimana, segna cosa funziona e goditelo.']
+};
+function ritoCard(date, preview) {
+  const o = ornOf(date); if (!o) return null;
+  const k = o.dk, mt = o.dm, mon = mondayOf(date), T = RITO[k], rotta = S.rotte[mon];
+  const card = h('div', { class: 'card rito', style: `--lc:${mt.color}` },
+    h('div', { class: 'rh' }, h('div', { class: 'ri', html: illus(o.d.letter, k, true) }), h('div', {}, h('span', { class: 'eyebrow', style: `color:${mt.color}`, text: `${preview ? 'Il rito di domani' : 'Il rito di oggi'} · ${o.d.letter}` }), h('h3', { text: T[0] }))),
+    h('p', { class: 'small', text: T[1] }));
+  if (k === 'N' && !preview) {
+    const ta = h('textarea', { id: 'rotta', placeholder: 'Es. capitolo 7 di KRR finito e inviti di Nerina chiusi' }); ta.value = rotta || '';
+    card.append(h('label', { class: 'small muted', for: 'rotta', text: 'La rotta fino a domenica' }), ta,
+      h('div', { class: 'btns' }, h('button', { class: 'btn small c', 'data-cat': 'studio', style: `background:${mt.color};color:${mt.fg}`, type: 'button', text: 'Salva la rotta', onclick: () => { S.rotte[mon] = ta.value.trim(); saveState(); toast('Rotta salvata'); } }),
+        h('button', { class: 'btn small', type: 'button', text: 'Sport e biblioteca', onclick: openSport })));
+  } else if (rotta) card.append(h('p', { class: 'small' }, h('b', { text: 'Rotta della settimana: ' }), rotta));
+  if (!preview && k === 'V') card.append(h('button', { class: 'btn small', type: 'button', text: 'Valida la settimana', onclick: () => openValida(mon) }));
+  if (!preview && k === 'O') card.append(h('button', { class: 'btn small', type: 'button', text: 'Guarda i prossimi 7 giorni', onclick: () => select('settimana') }));
+  return card;
+}
+function openValida(mon) {
+  const L = nowLogical(), days = [0, 1, 2, 3, 4, 5, 6].map((i) => addDays(mon, i)).filter((d) => d <= L.date);
+  const tot = {}, done = {};
+  let closed = 0;
+  const rows = days.map((d) => {
+    const p = plan(d); if (p.st.chiusa) closed++;
+    let a = 0, b = 0;
+    for (const t of p.tasks) { const m = t.end - t.start; tot[t.cat] = (tot[t.cat] || 0) + m; a += m; if (p.fatti[t.key]) { done[t.cat] = (done[t.cat] || 0) + m; b += m; } }
+    const o = ornOf(d);
+    return h('li', {}, h('span', { class: 'd', text: dayShort(d) }), h('span', { style: 'display:flex;gap:8px;align-items:center;justify-content:space-between' }, o ? codeEl(o, true) : '', h('b', { text: a ? Math.round(100 * b / a) + '%' : '—' })));
+  });
+  const areas = [['nerina', 'Lavoro'], ['studio', 'Scuola'], ['corpo', 'Allenamento'], ['sociale', 'Relazioni'], ['impegno', 'Impegni']].filter(([c]) => tot[c]);
+  const o = ornOf(mon);
+  openSheet([xBtn(), h('span', { class: 'eyebrow', style: 'color:#4B8F5A', text: 'V · Validare' }), h('h2', { text: o ? `Settimana ${o.m.letter}.${o.w.weekLetter} di ${o.m.name}` : 'La settimana' }),
+    S.rotte[mon] ? h('p', {}, h('b', { text: 'Rotta: ' }), S.rotte[mon]) : h('p', { class: 'muted small', text: 'Mercoledì (giorno N) puoi scrivere la rotta della settimana: qui la ritrovi da validare.' }),
+    h('div', { class: 'card' }, h('div', { class: 'bal' }, ...areas.flatMap(([c, l]) => [h('span', { text: l }), h('span', { class: 'meter', 'data-cat': c }, h('i', { style: `width:${(100 * (done[c] || 0) / tot[c]).toFixed(0)}%` })), h('span', { class: 'v', text: `${hrs((done[c] || 0) / 60)} su ${hrs(tot[c] / 60)}` })])),
+      h('p', { class: 'small muted', text: `Giornate chiuse: ${closed} su ${days.length}. Conta quanto hai fatto, non quanto mancava.` })),
+    h('div', { class: 'card' }, h('h3', { text: 'Giorno per giorno' }), h('ul', { class: 'list' }, rows))]);
 }
 
 function viewOggi() {
   const L = nowLogical(), d = L.date, p = plan(d);
-  setHeader(greeting(), dayLong(d));
+  const fx = lsGet('ritmo:fx') !== d; if (fx) lsSet('ritmo:fx', d);
+  setHero('oggi:' + d, () => dayHero(d, greeting()), fx);
   const out = [];
   const evening = L.min >= 21 * 60;
   const closed = !!p.st.chiusa;
@@ -714,6 +888,7 @@ function viewOggi() {
   if (cur) out.push(h('div', { class: 'card tint now-card', 'data-cat': cur.cat }, h('div', { class: 'now-head' }, badge(cur.cat), h('div', {}, h('span', { class: 'eyebrow', text: 'Adesso' }), h('div', { class: 'big', text: cur.label }))), cur.sub ? h('span', { class: 'sub', text: cur.sub }) : null, h('span', { class: 'when', text: `Fino alle ${fmt(cur.end)} · mancano ${dur(cur.end - L.min)}` }), h('div', { class: 'btns' }, h('button', { class: 'btn c', type: 'button', text: 'Fatto', onclick: () => { toggleDone(d, cur.key, true); cheer(d); } }), h('button', { class: 'btn', style: 'background:var(--card)', type: 'button', text: 'Altro', onclick: () => openItem(d, cur) }))));
   else if (nxt) out.push(h('div', { class: 'card tint now-card', 'data-cat': nxt.cat }, h('div', { class: 'now-head' }, badge(nxt.cat), h('div', {}, h('span', { class: 'eyebrow', text: `Tra ${dur(nxt.start - L.min)}` }), h('div', { class: 'big', text: nxt.label }))), h('span', { class: 'when', text: `${fmt(nxt.start)} - ${fmt(nxt.end)}` })));
 
+  const rc = ritoCard(d); if (rc) out.push(rc);
   const tot = p.tasks.reduce((a, t) => a + t.end - t.start, 0), done = p.tasks.filter((t) => p.fatti[t.key]).reduce((a, t) => a + t.end - t.start, 0);
   const late = open.filter((t) => t.end <= L.min);
   const remMin = open.reduce((a, t) => a + t.end - t.start, 0);
@@ -758,12 +933,12 @@ function energyHints(p, L) {
 
 function viewDomani() {
   const L = nowLogical(), d = addDays(L.date, 1), p = plan(d);
-  setHeader('Domani', dayLong(d));
+  setHero('domani:' + d, () => dayHero(d, 'Domani', true));
   const prep = prepare(p);
   return [
     h('div', { class: 'card' }, h('p', { style: 'font-size:1.08rem;font-weight:700', text: describe(p) }), meters(p), h('span', { class: 'small muted', text: `La lineetta su Testa è la tua soglia: ${cfg().soglia.mente} ore di concentrazione al giorno.` })),
     prep.length ? h('div', { class: 'card tint', 'data-cat': 'pausa' }, h('h3', { text: 'Prepara stasera' }), h('div', { class: 'tags' }, prep.map(([c, t]) => h('span', { class: 'tag', style: 'background:var(--card)', 'data-cat': c, text: t })))) : null,
-    unplacedBox(p), noteChips(p), nerinaCard(d),
+    ritoCard(d, true), unplacedBox(p), noteChips(p), nerinaCard(d),
     h('h3', { text: 'La giornata' }), timeline(p, { check: false }), skippedLine(p)
   ].filter(Boolean);
 }
@@ -776,7 +951,7 @@ function strip(p) {
   }));
 }
 function legend() {
-  return h('div', { class: 'legend' }, [['nerina', 'Nerina'], ['studio', 'Studio'], ['corpo', 'Corpo'], ['sociale', 'Persone'], ['impegno', 'Impegni'], ['pausa', 'Pasti']].map(([c, t]) => h('span', { 'data-cat': c }, h('i'), t)));
+  return h('div', { class: 'legend' }, [['nerina', 'Lavoro'], ['studio', 'Scuola'], ['corpo', 'Allenamento'], ['sociale', 'Relazioni'], ['impegno', 'Impegni'], ['pausa', 'Pasti']].map(([c, t]) => h('span', { 'data-cat': c }, h('i'), t)));
 }
 function dayTags(p) {
   const t = [];
@@ -791,7 +966,7 @@ function dayTags(p) {
 function viewSettimana() {
   const L = nowLogical(), c = cfg();
   const days = [1, 2, 3, 4, 5, 6, 7].map((i) => addDays(L.date, i));
-  setHeader('I prossimi 7 giorni', `${dateShort(days[0])} - ${dateShort(days[6])}`);
+  setHero('sett:' + days[0], () => weekHero(days[0], days[6]));
   const plans = days.map(plan);
   const sum = (f) => plans.reduce((a, p) => a + p.items.filter(f).reduce((x, i) => x + i.end - i.start, 0), 0) / 60;
   const ner = sum((i) => i.cat === 'nerina'), stu = sum((i) => i.cat === 'studio');
@@ -809,13 +984,14 @@ function viewSettimana() {
   return [
     h('div', { class: 'card' },
       h('h2', { text: 'Equilibrio' }),
-      h('span', { class: 'small muted', text: `Ore e volte previste. Obiettivi a settimana: palestra ${c.palestra.volte}, karate 1, momenti con persone ${c.sociale.obiettivo}.` }),
+      h('span', { class: 'small muted', text: `Ore e volte previste. Obiettivi a settimana: palestra ${c.palestra.volte}, karate 1, momenti di relazioni ${c.sociale.obiettivo}.` }),
       h('div', { class: 'bal' },
-        bal('Nerina', 'nerina', ner, nerTarget, `${hrs(ner)} su ${hrs(nerTarget)}`), bal('Studio', 'studio', stu, studyTarget, `${hrs(stu)} su ${hrs(studyTarget)}`),
+        bal('Lavoro', 'nerina', ner, nerTarget, `${hrs(ner)} su ${hrs(nerTarget)}`), bal('Scuola', 'studio', stu, studyTarget, `${hrs(stu)} su ${hrs(studyTarget)}`),
         bal('Palestra', 'corpo', gymN, c.palestra.volte, volte(gymN)), bal('Karate', 'corpo', karN, 1, volte(karN)),
-        bal('Persone', 'sociale', soc, c.sociale.obiettivo, volte(soc))),
+        bal('Relazioni', 'sociale', soc, c.sociale.obiettivo, volte(soc))),
       h('div', { class: 'tags' }, Object.entries(subj).map(([k, v]) => h('span', { class: 'tag', 'data-cat': 'studio', text: `${k} ${hrs(v)}` }))),
       over || unpl ? h('p', { class: 'small', style: 'color:var(--cor)', text: [over ? `${over} ${over === 1 ? 'giorno supera' : 'giorni superano'} le ${c.soglia.mente} ore di testa` : '', unpl ? `${unpl} ${unpl === 1 ? 'blocco non ci sta' : 'blocchi non ci stanno'}` : ''].filter(Boolean).join(' · ') + '.' }) : h('p', { class: 'small muted', text: 'Tutto ci sta e nessun giorno supera la soglia.' })),
+    S.rotte[mondayOf(days[0])] ? h('div', { class: 'card tint', 'data-cat': 'pausa' }, h('span', { class: 'eyebrow', style: 'color:#B08400', text: 'N · La rotta della settimana' }), h('p', { text: S.rotte[mondayOf(days[0])] })) : null,
     h('div', { class: 'card tint', 'data-cat': 'corpo' },
       h('div', { class: 'row' }, h('h3', { text: 'Sport' }), h('button', { class: 'btn small', style: 'background:var(--card)', type: 'button', text: 'Cambia giorni', onclick: openSport })),
       h('span', { class: 'small', text: sportTxt(wp) + (wp.auto ? ' · scelti dove c\'è più spazio' : ' · scelti da te') }),
@@ -825,7 +1001,7 @@ function viewSettimana() {
     ...plans.map((p) => {
       const n = S.nerina[p.date]; const tags = dayTags(p);
       return h('button', { class: 'wrow', type: 'button', onclick: () => openDay(p.date) },
-        h('div', { class: 'wrow-h' }, h('span', { class: 'day', text: dayShort(p.date) }), h('span', { class: 'nn', text: n ? n.titolo : '' }), h('span', { class: 'lvl', 'data-l': String(loadLevel(p.load.mente)), text: 'Testa ' + hrs(p.load.mente) })),
+        h('div', { class: 'wrow-h' }, h('span', { class: 'day', style: 'display:flex;gap:8px;align-items:center' }, dayShort(p.date), ornOf(p.date) ? codeEl(ornOf(p.date), true) : null), h('span', { class: 'nn', text: n ? n.titolo : '' }), h('span', { class: 'lvl', 'data-l': String(loadLevel(p.load.mente)), text: 'Testa ' + hrs(p.load.mente) })),
         strip(p),
         tags.length ? h('div', { class: 'tags' }, tags.map(([c2, t]) => h('span', { class: 'tag', 'data-cat': c2, text: t }))) : null,
         p.unplaced.length ? h('span', { class: 'small', style: 'color:var(--bad)', text: 'Non ci sta: ' + p.unplaced.map((u) => `${u.label} ${dur(u.min)}`).join(', ') }) : null);
@@ -833,32 +1009,45 @@ function viewSettimana() {
   ];
 }
 
+let monthSel = null;
 function viewMese() {
-  const L = nowLogical();
-  const start = mondayOf(L.date);
-  const days = Array.from({ length: 35 }, (_, i) => addDays(start, i));
-  setHeader('Le prossime 5 settimane', `${dateShort(days[0])} - ${dateShort(days[34])}`);
-  const cells = days.map((d) => {
-    const p = plan(d); const past = d < L.date; const dd = parseISO(d);
-    const dots = [];
-    if (p.items.some((i) => i.cat === 'corpo')) dots.push('corpo');
-    if (p.load.sociale) dots.push('sociale');
-    if (p.items.some((i) => i.ev && i.cat !== 'sociale')) dots.push('impegno');
-    if (p.notes.some((e) => e.tipo === 'scadenza') || p.unplaced.length) dots.push('scadenza');
-    return h('button', { class: 'mcell' + (past ? ' past' : '') + (d === L.date ? ' today' : ''), type: 'button', 'data-l': String(loadLevel(p.load.mente)), 'aria-label': `${dayLong(d)}: giornata ${loadWord(p.load.mente)}`, onclick: () => openDay(d) },
-      h('span', {}, h('span', { class: 'n', text: String(dd.getDate()) }), dd.getDate() === 1 || d === days[0] ? h('span', { class: 'm', text: ' ' + MOS[dd.getMonth()] }) : null),
-      h('span', { class: 'mdots' }, [...new Set(dots)].map((c) => h('i', { 'data-cat': c }))));
-  });
-  const ev = S.eventi.filter((e) => e.data >= L.date && e.data <= days[34] && e.tipo !== 'promemoria').sort((a, b) => (a.data + (a.inizio || '')).localeCompare(b.data + (b.inizio || '')));
-  const nerDays = days.filter((d) => d >= L.date && S.nerina[d]);
-  const firsts = nerDays.filter((d, i) => i === 0 || dowOf(d) === 1).slice(0, 6);
+  const L = nowLogical(), cur = ornOf(L.date);
+  if (!ORN) return [h('p', { class: 'muted', text: 'La grafica ORNRARV non si è caricata: riapri l\'app con la rete.' })];
+  const mi = monthSel != null ? monthSel : (cur ? cur.mi : (L.date < '2026-09-21' ? 0 : 6));
+  const m = ORN.MONTHS[mi], th = m.theme, dark = mi === 1;
+  setHero('mese:' + mi, () => monthHero(mi), monthSel != null);
+  const headBg = dark ? th.bg : th.ink, headInk = dark ? th.ink : th.bg;
+  const WN = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
+  const head = h('div', { class: 'og-head', style: `--m-ink:${headBg};--m-bg:${headInk}` }, h('span'), ...m.weeks[0].days.map((d, di) => h('span', {}, d.letter, h('small', { text: WN[di] }))));
+  const lvlCol = ['', 'var(--ner)', 'var(--ner)', 'var(--pau)', 'var(--cor)', 'var(--bad)'];
+  const rows = m.weeks.map((w, wi) => h('div', { class: 'og-row' },
+    h('div', { class: 'og-wl', title: `Settimana ${wi + 1}: ${w.weekPhase}` }, h('b', { style: `--wt:color-mix(in srgb, ${w.weekColor} 45%, #fff)`, text: w.weekLetter })),
+    ...w.days.map((d) => {
+      const p = plan(d.date), lv = loadLevel(p.load.mente), dd = parseISO(d.date);
+      const dots = [];
+      if (p.items.some((i) => i.cat === 'corpo')) dots.push('corpo');
+      if (p.load.sociale) dots.push('sociale');
+      if (p.items.some((i) => i.ev && i.cat !== 'sociale')) dots.push('impegno');
+      if (p.notes.some((e) => e.tipo === 'scadenza') || p.unplaced.length) dots.push('scadenza');
+      return h('button', { class: 'og-c' + (d.date < L.date ? ' past' : '') + (d.date === L.date ? ' today' : ''), type: 'button', style: `--day-bg:${ORN.dayBg(d, { theme: { bg: '#FBF9F3' } })}`, 'aria-label': `${d.code}, ${dayLong(d.date)}: giornata ${loadWord(p.load.mente)}`, onclick: () => openDay(d.date) },
+        h('span', { class: 'n', text: String(d.fictNum) }), h('span', { class: 'dt', text: `${dd.getDate()} ${MOS[dd.getMonth()]}` }),
+        h('span', { class: 'mdots' }, [...new Set(dots)].map((c) => h('i', { 'data-cat': c }))),
+        h('span', { class: 'ld' }, h('i', { style: `width:${Math.min(100, 100 * p.load.mente / 12).toFixed(0)}%;background:${lvlCol[lv]}` })));
+    })));
+  const from = L.date > m.startDate ? L.date : m.startDate;
+  const ev = S.eventi.filter((e) => e.data >= from && e.data <= m.endDate && e.tipo !== 'promemoria').sort((a, b) => (a.data + (a.inizio || '')).localeCompare(b.data + (b.inizio || '')));
+  const nerDays = m.weeks.flatMap((w) => w.days.map((d) => d.date)).filter((d) => d >= L.date && S.nerina[d]);
+  const firsts = nerDays.filter((d, i) => i === 0 || dowOf(d) === 1).slice(0, 7);
   return [
-    h('div', { class: 'card' },
-      h('div', { class: 'mhead' }, ['L', 'M', 'M', 'G', 'V', 'S', 'D'].map((x) => h('span', { text: x }))),
-      h('div', { class: 'mgrid' }, cells),
-      h('div', { class: 'legend' }, h('span', {}, h('i', { style: 'background:var(--warm3)' }), 'più caldo = più ore di testa'), h('span', { 'data-cat': 'corpo' }, h('i'), 'sport'), h('span', { 'data-cat': 'sociale' }, h('i'), 'persone'), h('span', { 'data-cat': 'impegno' }, h('i'), 'impegni'), h('span', { 'data-cat': 'scadenza' }, h('i'), 'scadenze o cose che non ci stanno'))),
-    h('div', { class: 'card' }, h('h3', { text: 'In arrivo' }), ev.length ? h('ul', { class: 'list' }, ev.map((e) => h('li', { 'data-cat': e.tipo === 'scadenza' ? 'scadenza' : e.tipo === 'festa' ? 'festa' : evCat(e) }, h('span', { class: 'd', text: dayShort(e.data) + (e.inizio && !e.flessibile ? ' · ' + e.inizio : '') }), h('span', { text: (e.tipo === 'scadenza' ? 'Nerina: ' : '') + e.titolo })))) : h('p', { class: 'muted', text: 'Nessun impegno segnato.' })),
-    firsts.length ? h('div', { class: 'card tint', 'data-cat': 'nerina' }, h('h3', { text: 'Il filo di Nerina' }), h('ul', { class: 'list' }, firsts.map((d) => h('li', { 'data-cat': 'nerina' }, h('span', { class: 'd', style: 'background:var(--card)', text: dayShort(d) }), h('span', { text: S.nerina[d].titolo })))), h('a', { class: 'small', href: cfg().cruscotto, target: '_blank', rel: 'noopener', style: 'font-weight:800;color:var(--ner)', text: 'Il piano completo è nel Cruscotto →' })) : null
+    h('div', { class: 'mnav' },
+      h('button', { class: 'btn small', type: 'button', disabled: mi === 0, text: mi > 0 ? '← ' + ORN.MONTHS[mi - 1].name : '←', onclick: () => { monthSel = mi - 1; render(); } }),
+      cur && mi !== cur.mi ? h('button', { class: 'btn small ghost', type: 'button', text: 'Torna a oggi', onclick: () => { monthSel = null; render(); } }) : null,
+      h('button', { class: 'btn small', type: 'button', disabled: mi === 6, text: mi < 6 ? ORN.MONTHS[mi + 1].name + ' →' : '→', onclick: () => { monthSel = mi + 1; render(); } })),
+    h('div', { class: 'og' }, head, ...rows),
+    h('div', { class: 'legend' }, h('span', {}, h('i', { style: 'background:var(--cor);border-radius:3px;width:16px;height:5px' }), 'barretta = ore di testa'), h('span', { 'data-cat': 'corpo' }, h('i'), 'sport'), h('span', { 'data-cat': 'sociale' }, h('i'), 'relazioni'), h('span', { 'data-cat': 'impegno' }, h('i'), 'impegni'), h('span', { 'data-cat': 'scadenza' }, h('i'), 'scadenze o cose che non ci stanno')),
+    h('div', { class: 'card' }, h('h3', { text: `In arrivo in ${m.name}` }), ev.length ? h('ul', { class: 'list' }, ev.map((e) => { const o = ornOf(e.data); return h('li', { 'data-cat': e.tipo === 'scadenza' ? 'scadenza' : e.tipo === 'festa' ? 'festa' : evCat(e) }, h('span', { class: 'd', text: (o ? o.d.code + ' · ' : '') + dayShort(e.data) }), h('span', { text: (e.tipo === 'scadenza' ? 'Nerina: ' : '') + e.titolo + (e.inizio && !e.flessibile ? ' · ' + e.inizio : '') })); })) : h('p', { class: 'muted', text: 'Nessun impegno segnato.' })),
+    firsts.length ? h('div', { class: 'card tint', 'data-cat': 'nerina' }, h('h3', { text: 'Il filo di Nerina' }), h('ul', { class: 'list' }, firsts.map((d) => h('li', { 'data-cat': 'nerina' }, h('span', { class: 'd', style: 'background:var(--card)', text: dayShort(d) }), h('span', { text: S.nerina[d].titolo })))), h('a', { class: 'small', href: cfg().cruscotto, target: '_blank', rel: 'noopener', style: 'font-weight:800;color:var(--ner)', text: 'Il piano completo è nel Cruscotto →' })) : null,
+    h('a', { class: 'card', href: ORNRARV_APP, target: '_blank', rel: 'noopener', style: 'text-decoration:none;flex-direction:row;align-items:center;gap:12px' }, h('div', { style: 'width:46px;height:46px;flex:none', html: illus('V', 'V', true) }), h('span', {}, h('b', { text: 'Apri il Calendario ORNRARV' }), h('br'), h('span', { class: 'small muted', text: 'Obiettivi, Vision, corpo, studio e registri' })))
   ];
 }
 
@@ -874,7 +1063,8 @@ function openDay(d) {
   const hasStudy = (c.studio[String(dow)] || []).length > 0;
   const bibOn = p.st.biblioteca !== undefined ? !!p.st.biblioteca : dow === c.sociale.biblioteca;
   const L = nowLogical();
-  openSheet([xBtn(), h('h2', { text: dayLong(d) }), h('p', { text: describe(p) }), h('div', { class: 'card' }, meters(p)),
+  const o = ornOf(d);
+  openSheet([xBtn(), h('h2', { text: dayLong(d) }), o ? h('div', { class: 'code-row' }, codeEl(o, true), h('span', { class: 'small', style: 'font-weight:800', text: `${o.d.fictNum} ${o.m.name} · ${o.dm.word}` })) : null, h('p', { text: describe(p) }), h('div', { class: 'card' }, meters(p)),
     hasStudy ? h('label', { class: 'check' }, h('input', { type: 'checkbox', id: 'bib-' + d, checked: bibOn, onchange: (e) => { patchDay(d, { biblioteca: e.target.checked }); openDay(d); } }), 'Studio in biblioteca a Brescia (viaggio compreso)') : null,
     unplacedBox(p), noteChips(p), nerinaCard(d), timeline(p, { check: d <= L.date, now: d === L.date ? L.min : null }), skippedLine(p)]);
 }
@@ -991,6 +1181,7 @@ function openSettings() {
       h('button', { class: 'btn', type: 'button', text: 'Copia il backup', onclick: async () => { try { await navigator.clipboard.writeText(lsGet(LS.stato) || '{}'); toast('Backup copiato'); } catch (e) { ta.value = lsGet(LS.stato) || '{}'; ta.select(); toast('Copialo dal riquadro'); } } }),
       h('div', { class: 'field' }, h('label', { for: 'bk', text: 'Ripristina' }), ta),
       h('button', { class: 'btn ghost', type: 'button', text: 'Ripristina questo backup', onclick: () => { try { const x = JSON.parse(ta.value); if (!x || typeof x !== 'object' || !('giorni' in x)) throw 0; lsSet(LS.stato, ta.value); loadState(); rebuildEvents(); render(); closeSheet(); toast('Backup ripristinato'); } catch (e) { toast('Questo testo non è un backup di Ritmo'); } } })),
+    h('a', { class: 'btn', style: 'text-decoration:none', href: ORNRARV_APP, target: '_blank', rel: 'noopener', text: 'Apri il Calendario ORNRARV' }),
     h('button', { class: 'btn ghost', type: 'button', text: 'Cambia la parola chiave', onclick: () => { try { localStorage.removeItem(LS.pass); } catch (e) { /* niente */ } closeSheet(); showWelcome(); } })]);
 }
 
@@ -1001,7 +1192,7 @@ function select(t) {
   TABS.forEach((x) => $('#t-' + x).setAttribute('aria-selected', String(x === tab)));
   render(); window.scrollTo(0, 0);
 }
-TABS.forEach((t) => $('#t-' + t).addEventListener('click', () => select(t)));
+TABS.forEach((t) => $('#t-' + t).addEventListener('click', () => { if (t === 'mese') monthSel = null; select(t); }));
 $('#fab').addEventListener('click', () => openEvent(null));
 $('#gear').addEventListener('click', openSettings);
 $('#streak').addEventListener('click', () => { const L = nowLogical(); if ((S.giorni[L.date] || {}).chiusa) select('domani'); else openClose(); });
