@@ -575,6 +575,51 @@ button:active{transform:scale(.97)}
 .adj-top{position:sticky;top:-18px;z-index:6;background:var(--bg);padding:14px 0 8px;margin-top:-14px;display:flex;flex-direction:column;gap:4px;box-shadow:0 8px 10px -10px rgb(0 0 0 / .25)}
 .adj{margin-top:24px;margin-bottom:24px}
 .btns.sticky{position:sticky;bottom:0;background:var(--bg);padding:10px 0 4px;z-index:5;flex-wrap:nowrap}
+
+/* ===== modifica nella giornata ===== */
+.ewrap{position:relative;padding:8px 0 30px}
+.eday{position:relative;margin-left:50px;border-left:2px solid var(--line)}
+.eday .hl{position:absolute;left:0;right:0;border-top:1px dashed var(--line)}
+.eday .hl span{position:absolute;left:-52px;top:-.62em;width:44px;text-align:right;font-size:.85rem;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.eday .slp{position:absolute;left:0;right:0;background:repeating-linear-gradient(135deg,transparent 0 6px,color-mix(in srgb,var(--line) 70%,transparent) 6px 8px);pointer-events:none}
+.eday .nowl{position:absolute;left:-7px;right:0;border-top:2px solid var(--bad);z-index:3}
+.eday .nowl::before{content:'';position:absolute;left:-4px;top:-6px;width:10px;height:10px;border-radius:50%;background:var(--bad)}
+.eb{position:absolute;left:8px;right:4px;border-radius:12px;display:flex;align-items:flex-start;gap:7px;padding:6px 10px;overflow:hidden;background:color-mix(in srgb,var(--c) 13%,var(--card));border-left:4px solid var(--c);color:var(--ink);font-size:.95rem;
+  transition:top .26s cubic-bezier(.2,.9,.3,1),height .26s cubic-bezier(.2,.9,.3,1),opacity .2s,transform .2s;will-change:top,height}
+.eb .ei{display:grid;place-items:center;color:var(--c);flex:none}
+.eb .ei .ic{width:17px;height:17px}
+.eb b{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.eb .et{margin-left:auto;font-size:.85rem;font-weight:600;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.eb.tiny{align-items:center;padding:0 10px;font-size:.85rem}
+.eb.tiny .et{font-size:.78rem}
+.eb.fx{background:color-mix(in srgb,var(--c) 24%,var(--card))}
+.eb.ml{background:var(--soft);border-left-color:var(--pau);color:var(--muted)}
+.eb.dn{opacity:.55}
+.eb.new{animation:fade .25s}
+.eb.gone{opacity:0;transform:scale(.96)}
+.eb.drag{z-index:6;background:var(--c);color:#fff;border-left-color:transparent;box-shadow:0 8px 22px rgb(0 0 0 / .22);touch-action:none;cursor:grab;transition:height .08s,box-shadow .15s,transform .15s;left:2px;right:-2px}
+.eb.drag .ei,.eb.drag .et{color:#fff}
+.eb.drag.lift{transform:scale(1.03);box-shadow:0 16px 34px rgb(0 0 0 / .3);cursor:grabbing}
+.eb.drag.bad{background:var(--bad)}
+.eb.drag .hd{position:absolute;left:50%;width:70px;height:26px;margin-left:-35px;touch-action:none;cursor:ns-resize;display:grid;place-items:center;z-index:2}
+.eb.drag .hd::after{content:'';width:42px;height:6px;border-radius:6px;background:#fff;box-shadow:0 1px 3px rgb(0 0 0 / .3)}
+.eb.drag .hd.top{top:-13px}.eb.drag .hd.bot{bottom:-13px}
+.eb.drag.tiny .hd.top{top:-22px}.eb.drag.tiny .hd.bot{bottom:-22px}
+.eb.drag.tiny .hd::after{background:var(--c);box-shadow:0 0 0 2px #fff,0 1px 4px rgb(0 0 0 / .3)}
+.eb.drag{overflow:visible}
+.ebar{position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:40;display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid var(--line);border-radius:20px;padding:10px 10px 10px 16px;box-shadow:0 12px 30px rgb(0 0 0 / .18);animation:rise .25s cubic-bezier(.2,.9,.3,1);transition:opacity .2s,transform .2s}
+.ebar.out{opacity:0;transform:translateY(20px)}
+.eb-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.eb-txt > div{display:flex;align-items:baseline;gap:4px 8px;flex-wrap:wrap}
+.eb-t{font-size:1.25rem;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.eb-l{font-size:.95rem;font-weight:700;color:var(--muted);white-space:nowrap}
+.eb-w{font-size:.88rem;font-weight:700;display:flex;align-items:center;gap:4px;min-height:0}
+.eb-w.bad{color:var(--bad)}
+.ebar .btn{min-height:48px;padding:0 16px;flex:none}
+.ebar .btn.x2{width:48px;padding:0}
+.ebar .btn.x2 .ic{width:20px;height:20px}
+body.editing .fab{opacity:0;pointer-events:none}
+body.editing #view > *:not(:has(.ewrap)):not(.ewrap){opacity:.55;pointer-events:none;transition:opacity .25s}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -1385,7 +1430,7 @@ function tlItem(p, it, o) {
   const MEALK = ['colazione', 'pranzo', 'merenda', 'cena'];
   if (it.cat === 'sonno') return h('li', { class: 'mini' }, h('div', { class: 'tl-mini sonno', 'data-cat': 'sonno' }, h('span', { class: 'time' }, h('b', { text: fmt(it.start) })), h('span', { class: 'node sm', html: ic(emo(it)) }), h('span', { class: 'grow', text: it.key === 'letto' ? `A letto · ${it.sub}` : 'Sveglia' })));
   const T = (x) => h('span', { class: 'time' }, h('b', { text: fmt(x.start) }), x.cat === 'pausa' || x.cat === 'viaggio' || x.cat === 'libero' ? null : h('span', { text: fmt(x.end) }));
-  if (it.cat === 'pausa' && !o.compact && MEALK.includes(it.key)) { const mb = h('button', { class: 'tl-mini meal', type: 'button', 'data-cat': it.cat, onclick: () => { if (!afterLP()) openMeal(p.date, it.key); } }, T(it), h('span', { class: 'node sm', html: ic(emo(it)) }), h('span', { class: 'grow', text: it.label }), h('span', { class: 'chev', html: ic('matita') })); longPress(mb, () => openAdjust(p.date, it)); return h('li', { class: 'mini' }, mb); }
+  if (it.cat === 'pausa' && !o.compact && MEALK.includes(it.key)) { const mb = h('button', { class: 'tl-mini meal', type: 'button', 'data-cat': it.cat, onclick: () => { if (!afterLP()) openMeal(p.date, it.key); } }, T(it), h('span', { class: 'node sm', html: ic(emo(it)) }), h('span', { class: 'grow', text: it.label }), h('span', { class: 'chev', html: ic('matita') })); longPress(mb, (ptr) => startEdit(p.date, it, mb, ptr)); return h('li', { class: 'mini' }, mb); }
   if (it.cat === 'pausa' || it.cat === 'viaggio' || it.cat === 'libero') return h('li', { class: 'mini' + (it.cat === 'libero' ? ' free' : '') }, h('div', { class: 'tl-mini', 'data-cat': it.cat }, T(it), h('span', { class: 'node sm', html: ic(emo(it)) }), h('span', { class: 'grow', text: it.cat === 'libero' ? `Libero · ${dur(it.end - it.start)}` : `${it.label} · ${dur(it.end - it.start)}` })));
   const done = !!p.fatti[it.key];
   const isNow = o.now != null && it.start <= o.now && o.now < it.end && !done;
@@ -1398,7 +1443,7 @@ function tlItem(p, it, o) {
   const body = h('span', { class: 'txt' }, h('span', { class: 'lbl', text: it.label }), note,
     null);
   const row = h(o.compact ? 'div' : 'button', { class: cls, 'data-cat': it.cat, type: o.compact ? null : 'button', onclick: o.compact ? null : () => { if (!afterLP()) openItem(p.date, it); } }, T(it), node, body);
-  if (!o.compact && canAdjust(it)) longPress(row, () => openAdjust(p.date, it));
+  if (!o.compact && canAdjust(it)) longPress(row, (ptr) => startEdit(p.date, it, row, ptr));
   return h('li', { 'data-k': p.date + it.key, class: done ? 'ok' : '' }, row);
 }
 function timeline(p, o = {}) {
@@ -1919,31 +1964,141 @@ function viewMese() {
 let lastLP = 0;
 const afterLP = () => performance.now() - lastLP < 800;
 function longPress(el, fn) {
-  let t = null, x0 = 0, y0 = 0, fired = false;
+  let t = null, x0 = 0, y0 = 0, fired = false, lx = 0, ly = 0, pid = null, ptype = 'touch';
   const cancel = () => { clearTimeout(t); t = null; el.classList.remove('pressing'); };
-  el.addEventListener('pointerdown', (e) => { if (e.button > 0) return; fired = false; x0 = e.clientX; y0 = e.clientY; cancel(); el.classList.add('pressing');
-    t = setTimeout(() => { fired = true; lastLP = performance.now(); el.classList.remove('pressing'); try { navigator.vibrate && navigator.vibrate(12); } catch (x) { /* niente */ } lsSet('ritmo:lp', '1'); fn(); }, 430); });
-  el.addEventListener('pointermove', (e) => { if (t && Math.abs(e.clientX - x0) + Math.abs(e.clientY - y0) > 10) cancel(); });
-  ['pointerup', 'pointercancel', 'pointerleave'].forEach((ev) => el.addEventListener(ev, cancel));
+  el.addEventListener('pointerdown', (e) => { if (e.button > 0) return; fired = false; x0 = lx = e.clientX; y0 = ly = e.clientY; pid = e.pointerId; ptype = e.pointerType; cancel(); el.classList.add('pressing');
+    t = setTimeout(() => { t = null; fired = true; lastLP = performance.now(); el.classList.remove('pressing'); try { navigator.vibrate && navigator.vibrate(12); } catch (x) { /* niente */ } lsSet('ritmo:lp', '1'); fn({ x: lx, y: ly, id: pid, type: ptype }); }, 430); });
+  el.addEventListener('pointermove', (e) => { lx = e.clientX; ly = e.clientY; if (t && Math.abs(e.clientX - x0) + Math.abs(e.clientY - y0) > 10) cancel(); });
+  ['pointerup', 'pointercancel'].forEach((ev) => el.addEventListener(ev, cancel));
+  el.addEventListener('pointerleave', () => { if (t) cancel(); });
   el.addEventListener('click', (e) => { if (fired) { e.preventDefault(); e.stopImmediatePropagation(); fired = false; } }, true);
   el.addEventListener('contextmenu', (e) => e.preventDefault());
 }
 const canAdjust = (it) => it && (it.task || it.meal) && it.cat !== 'sonno' && it.cat !== 'libero' && it.cat !== 'viaggio' && !(it.ev && it.flex && !it.start);
-/* Salva il nuovo orario e la nuova durata. */
-function adjustItem(d, it, s0, len) {
-  const L = nowLogical(), p = plan(d), st = S.giorni[d] || {}, rec = p.fatti[it.key];
-  if (rec) { const f = { ...(st.fatti || {}) }; f[it.key] = { a: s0, b: s0 + len, t: Math.max(L.min, rec.t || 0) }; patchDay(d, { fatti: f }); toast(`⏱️ ${fmt(s0)} · ${dur(len)}`); return; }
-  if (it.meal) { patchDay(d, { pasti: { ...(st.pasti || {}), [it.key]: { da: hm(s0), min: len } } }); toast(`⏱️ ${it.label} ${fmt(s0)}`); return; }
-  if (it.ev) { const e = it.ev, obj = { ...e, inizio: hm(s0), fine: hm(s0 + len), durata: len }; delete obj.id; delete obj.src; delete obj.flessibile; delete obj.dopo; saveEvent(e, obj, true); toast(`⏱️ ${fmt(s0)}–${fmt(s0 + len)}`); return; }
+/* Applica nuovo orario e durata allo stato (senza salvare): serve sia per l'anteprima dal vivo sia per salvare. */
+function applyAdj(p0, it, s0, len, xkey) {
+  const d = p0.date, st = S.giorni[d] || {}, rec = p0.fatti[it.key];
+  if (rec) { S.giorni[d] = { ...st, fatti: { ...(st.fatti || {}), [it.key]: { a: s0, b: s0 + len, t: Math.max(nowLogical().min, rec.t || 0) } } }; return it.key; }
+  if (it.meal) { S.giorni[d] = { ...st, pasti: { ...(st.pasti || {}), [it.key]: { da: hm(s0), min: len } } }; return it.key; }
+  if (it.ev) {
+    const e = it.ev, obj = { ...e, inizio: hm(s0), fine: hm(s0 + len), durata: len }; delete obj.src; delete obj.flessibile; delete obj.dopo;
+    if (e.src === 'file') { S.nascosti = [...S.nascosti, e.id]; S.miei = [...S.miei, { ...obj, id: xkey }]; rebuildEvents(); return 'e:' + xkey; }
+    S.miei = S.miei.map((x) => x.id === e.id ? { ...obj, id: e.id } : x); rebuildEvents(); return it.key;
+  }
   const ex = (st.extra || []).find((x) => x.key === it.key);
-  if (ex) { S.giorni[d] = { ...st, extra: st.extra.map((x) => x.key === it.key ? { ...x, at: hm(s0), min: len } : x) }; saveState(); render(); toast(`⏱️ ${fmt(s0)}–${fmt(s0 + len)}`); return; }
-  const base = it.base || it.key, part = it.end - it.start, shared = p.items.some((i) => i !== it && (i.base || i.key) === base);
-  const xkey = 'x' + Date.now().toString(36);
-  if (shared) { const mn = { ...(st.meno || {}) }; mn[base] = [...(mn[base] || []), { min: part, a: d, x: xkey }]; S.giorni[d] = { ...st, meno: mn }; }
-  else S.giorni[d] = { ...st, skip: { ...(st.skip || {}), [base]: { a: d, x: xkey } } };
-  const tg = S.giorni[d];
-  S.giorni[d] = { ...tg, extra: [...(tg.extra || []), { key: xkey, label: it.label, min: len, cat: it.cat, da: d, at: hm(s0) }] };
+  if (ex) { S.giorni[d] = { ...st, extra: st.extra.map((x) => x.key === it.key ? { ...x, at: hm(s0), min: len } : x) }; return it.key; }
+  const base = it.base || it.key, part = it.end - it.start, shared = p0.items.some((i) => i !== it && (i.base || i.key) === base);
+  let nd;
+  if (shared) { const mn = { ...(st.meno || {}) }; mn[base] = [...(mn[base] || []), { min: part, a: d, x: xkey }]; nd = { ...st, meno: mn }; }
+  else nd = { ...st, skip: { ...(st.skip || {}), [base]: { a: d, x: xkey } } };
+  S.giorni[d] = { ...nd, extra: [...(nd.extra || []), { key: xkey, label: it.label, min: len, cat: it.cat, da: d, at: hm(s0) }] };
+  return xkey;
+}
+/* Piano di prova con il blocco in un altro posto: lo stato torna com'era subito dopo. */
+function previewPlan(p0, it, s0, len) {
+  const d = p0.date, keep = { g: S.giorni[d], m: S.miei, n: S.nascosti };
+  const k = applyAdj(p0, it, s0, len, 'x_drag');
+  const pp = plan(d);
+  S.giorni[d] = keep.g; if (keep.g === undefined) delete S.giorni[d];
+  if (S.miei !== keep.m || S.nascosti !== keep.n) { S.miei = keep.m; S.nascosti = keep.n; rebuildEvents(); }
+  return { pp, k };
+}
+function adjustItem(d, it, s0, len) {
+  const p0 = plan(d), part = it.end - it.start;
+  applyAdj(p0, it, s0, len, 'x' + Date.now().toString(36));
   saveState(); render(); toast(`⏱️ ${fmt(s0)}–${fmt(s0 + len)}${len < part ? ` · −${dur(part - len)}` : ''}`);
+}
+/* ---------- modifica nella giornata: la giornata diventa in scala, il blocco segue il dito, gli altri si risistemano ---------- */
+let EDIT = null;
+function startEdit(d, it, src, ptr) {
+  if (EDIT) return;
+  const ol = src && src.closest('ol.tl'); if (!ol) { openAdjust(d, it); return; }
+  const p0 = plan(d), L = nowLogical(), PX = 1.5, SNAP = 5;
+  const wake = (p0.items.find((i) => i.key === 'sveglia') || { start: p0.D0 }).start, bed = (p0.items.find((i) => i.key === 'letto') || { start: p0.D1 + 45 }).start;
+  const A = Math.floor(Math.min(wake, it.start) / 60) * 60, B = Math.ceil(Math.max(bed, it.end) / 60) * 60, y = (m) => (m - A) * PX;
+  const o0 = it.start, l0 = it.end - it.start; let s0 = o0, len = l0;
+  /* posizioni di partenza nella lista, per l'animazione da lista a giornata in scala */
+  const from = {}; ol.querySelectorAll('li[data-k]').forEach((li) => { from[li.dataset.k] = li.getBoundingClientRect(); });
+  const grid = h('div', { class: 'eday', style: `height:${(B - A) * PX}px` });
+  for (let m = A; m <= B; m += 60) grid.append(h('div', { class: 'hl', style: `top:${y(m)}px` }, h('span', { text: fmt(m) })));
+  grid.append(h('i', { class: 'slp', style: `top:0;height:${y(wake)}px` }), h('i', { class: 'slp', style: `top:${y(bed)}px;bottom:0` }));
+  if (d === L.date && L.min > A && L.min < B) grid.append(h('div', { class: 'nowl', style: `top:${y(L.min)}px` }));
+  const nodes = new Map();
+  const shown = (i) => i.end > i.start && i.cat !== 'libero' && i.cat !== 'sonno';
+  const mk = (i) => h('div', { class: 'eb' + (isFix(i) ? ' fx' : '') + (i.meal ? ' ml' : '') + (p0.fatti[i.key] ? ' dn' : ''), 'data-cat': i.cat },
+    h('span', { class: 'ei', html: ic(emo(i)) }), h('b', { text: i.label }), h('span', { class: 'et' }));
+  const place = (el, i) => { el.style.top = y(i.start) + 'px'; el.style.height = Math.max(16, (i.end - i.start) * PX - 3) + 'px'; el.classList.toggle('tiny', (i.end - i.start) * PX < 34); el.querySelector('.et').textContent = `${fmt(i.start)}–${fmt(i.end)}`; };
+  const idOf = (i) => p0.date + i.key;
+  /* blocco che si trascina */
+  const tTop = h('i', { class: 'hd top' }), tBot = h('i', { class: 'hd bot' });
+  const dl = h('span', { class: 'et' });
+  const drag = h('div', { class: 'eb drag', 'data-cat': it.cat }, tTop, h('span', { class: 'ei', html: ic(emo(it)) }), h('b', { text: it.label }), dl, tBot);
+  const bar = h('div', { class: 'ebar' });
+  const bt = h('b', { class: 'eb-t' }), bl = h('span', { class: 'eb-l' }), bw = h('span', { class: 'eb-w' });
+  bar.append(h('div', { class: 'eb-txt' }, h('div', {}, bt, bl), bw),
+    h('button', { class: 'btn x2', type: 'button', html: ic('x'), 'aria-label': 'Annulla', onclick: () => endEdit(false) }),
+    h('button', { class: 'btn go', type: 'button', html: `${ic('check')}<span>Fatto</span>`, onclick: () => endEdit(true) }));
+  let lastKey = null, raf = 0;
+  const refresh = (force) => {
+    const key = s0 + ':' + len; if (!force && key === lastKey) return; lastKey = key;
+    const { pp, k } = previewPlan(p0, it, s0, len);
+    const seen = new Set();
+    for (const i of pp.items) { if (!shown(i) || i.key === k) continue; const id = pp.date + i.key; seen.add(id);
+      let el = nodes.get(id); if (!el) { el = mk(i); el.classList.add('new'); grid.append(el); nodes.set(id, el); } place(el, i); }
+    for (const [id, el] of nodes) if (!seen.has(id)) { el.classList.add('gone'); setTimeout(() => el.remove(), 260); nodes.delete(id); }
+    const bad = pp.items.filter((i) => i.key !== k && isFix(i) && i.start < s0 + len && s0 < i.end && !it.meal);
+    drag.classList.toggle('bad', bad.length > 0);
+    bw.replaceChildren(...(bad.length ? [icEl('avviso'), 'Sopra ' + bad.map((i) => i.label).join(', ')] : []));
+    bw.classList.toggle('bad', bad.length > 0);
+  };
+  const draw = () => {
+    drag.style.top = y(s0) + 'px'; drag.style.height = Math.max(22, len * PX - 2) + 'px'; drag.classList.toggle('tiny', len * PX < 38);
+    dl.textContent = `${fmt(s0)}–${fmt(s0 + len)}`; bt.textContent = `${fmt(s0)} → ${fmt(s0 + len)}`;
+    bl.textContent = dur(len) + (len !== l0 ? ` (${len < l0 ? '−' : '+'}${dur(Math.abs(len - l0))})` : '');
+    cancelAnimationFrame(raf); raf = requestAnimationFrame(() => refresh());
+  };
+  /* sostituisce la lista con la giornata in scala, al suo posto */
+  const wrap = h('div', { class: 'ewrap' }, grid);
+  ol.before(wrap); ol.style.display = 'none'; grid.append(drag); document.body.append(bar); document.body.classList.add('editing');
+  refresh(true); draw();
+  /* il blocco resta sotto il dito: allinea lo scorrimento alla riga premuta */
+  { const r0 = from[idOf(it)]; if (r0) { const dy = drag.getBoundingClientRect().top - r0.top; window.scrollTo({ top: scrollY + dy, behavior: 'instant' }); } }
+  for (const [id, el] of nodes) { const r0 = from[id]; if (!r0) continue; const r1 = el.getBoundingClientRect();
+    el.animate([{ transform: `translate(${r0.left - r1.left}px, ${r0.top - r1.top}px)`, opacity: .6 }, { transform: 'none', opacity: 1 }], { duration: 320, easing: 'cubic-bezier(.2,.9,.3,1)' }); }
+  { const r0 = from[idOf(it)], r1 = drag.getBoundingClientRect(); if (r0) drag.animate([{ transform: `translate(${r0.left - r1.left}px, ${r0.top - r1.top}px) scale(.96)` }, { transform: 'none' }], { duration: 260, easing: 'cubic-bezier(.2,.9,.3,1)' }); }
+  /* trascinamento con il dito (touch) o il mouse, anche continuando la pressione lunga */
+  let G = null;
+  const gridTop = () => grid.getBoundingClientRect().top;
+  const onMove = (cy) => { if (!G) return; G.cy = cy;
+    const m = (cy - gridTop()) / PX + A;
+    if (G.mode === 'move') s0 = Math.min(B - len, Math.max(A, Math.round((m - G.off) / SNAP) * SNAP));
+    else if (G.mode === 'bot') len = Math.max(15, Math.min(B - s0, Math.round((m - G.off - s0) / SNAP) * SNAP));
+    else { const e2 = s0 + len, ns = Math.min(e2 - 15, Math.max(A, Math.round((m - G.off) / SNAP) * SNAP)); s0 = ns; len = e2 - ns; }
+    draw(); };
+  const tick = () => { if (!G) return; const vh = innerHeight, cy = G.cy, top = 90, botLim = vh - 170;
+    const v = cy < top ? -Math.min(18, (top - cy) / 4 + 2) : cy > botLim ? Math.min(18, (cy - botLim) / 4 + 2) : 0;
+    if (v) { scrollBy(0, v); onMove(cy); } G.loop = requestAnimationFrame(tick); };
+  const begin = (mode, cy) => { const m = (cy - gridTop()) / PX + A; G = { mode, off: mode === 'bot' ? m - (s0 + len) : m - s0, cy }; drag.classList.add('lift'); G.loop = requestAnimationFrame(tick); };
+  const finish = () => { if (!G) return; cancelAnimationFrame(G.loop); G = null; drag.classList.remove('lift'); refresh(true); };
+  const tm = (e) => { if (!G) return; if (e.cancelable) e.preventDefault(); onMove(e.touches[0].clientY); };
+  const pm = (e) => { if (G && e.pointerType === 'mouse') onMove(e.clientY); };
+  const te = () => finish();
+  document.addEventListener('touchmove', tm, { passive: false }); document.addEventListener('touchend', te); document.addEventListener('touchcancel', te);
+  document.addEventListener('pointermove', pm); document.addEventListener('pointerup', (e) => { if (e.pointerType === 'mouse') finish(); });
+  const startOn = (el, mode) => {
+    el.addEventListener('touchstart', (e) => { e.stopPropagation(); begin(mode, e.touches[0].clientY); }, { passive: true });
+    el.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') return; e.preventDefault(); e.stopPropagation(); begin(mode, e.clientY); });
+  };
+  startOn(tTop, 'top'); startOn(tBot, 'bot'); startOn(drag, 'move');
+  if (ptr) begin('move', ptr.y);
+  EDIT = { d, it, get s0() { return s0; }, get len() { return len; }, o0, l0, wrap, bar, cleanup: () => {
+    document.removeEventListener('touchmove', tm); document.removeEventListener('touchend', te); document.removeEventListener('touchcancel', te); document.removeEventListener('pointermove', pm);
+    if (G) cancelAnimationFrame(G.loop); G = null; } };
+}
+function endEdit(save) {
+  const E = EDIT; if (!E) return; E.cleanup(); EDIT = null;
+  E.bar.classList.add('out'); setTimeout(() => E.bar.remove(), 220); document.body.classList.remove('editing');
+  if (save && (E.s0 !== E.o0 || E.len !== E.l0)) adjustItem(E.d, E.it, E.s0, E.len); else render();
 }
 function openAdjust(d, it) {
   const p = plan(d), L = nowLogical(), PX = 1.6, SNAP = 5;
@@ -2042,7 +2197,7 @@ function openItem(d, it) {
     nodes.push(h('div', { class: 'card' }, h('b', { text: 'Quanto ci hai messo?' }), h('span', { class: 'small muted', text: 'Se hai finito prima, i blocchi attaccati dopo partono prima.' }),
       h('div', { class: 'chips' }, opts.map((m) => h('button', { class: 'chip', type: 'button', 'aria-pressed': String(m === len), text: dur(m), onclick: () => { setDoneLen(d, it, m); closeSheet(); } })))));
   }
-  if (canAdjust(it) && !future) nodes.push(h('button', { class: 'btn wide', type: 'button', text: 'Sposta o accorcia nella giornata', onclick: () => openAdjust(d, it) }));
+  if (canAdjust(it) && !future) nodes.push(h('button', { class: 'btn wide', type: 'button', text: 'Sposta o accorcia nella giornata', onclick: () => { closeSheet(); const row = document.querySelector(`#view li[data-k="${CSS.escape(d + it.key)}"] > *`); if (row) { row.scrollIntoView({ block: 'center', behavior: 'smooth' }); setTimeout(() => startEdit(d, it, row, null), 350); } else openAdjust(d, it); } }));
   if (it.task && it.key !== 'uscita' && !done) nodes.push(h('button', { class: 'btn wide', type: 'button', text: 'Sposta più tardi o un altro giorno', onclick: () => openMove(d, it) }));
   if (it.ev) nodes.push(h('button', { class: 'btn wide', type: 'button', text: it.flex ? 'Fissa l\'orario' : 'Modifica', onclick: () => openEvent(it.ev) }));
   const more = h('div', { class: 'btns' });
@@ -2236,7 +2391,7 @@ $('#gear').addEventListener('click', openSettings);
 $('#streak').addEventListener('click', () => { const L = nowLogical(); if ((S.giorni[L.date] || {}).chiusa) select('domani'); else openClose(); });
 let enterAnim = false;
 function render() {
-  if ($('#main').hidden) return;
+  if ($('#main').hidden || EDIT) return;
   const v = tab === 'domani' ? viewDomani() : tab === 'settimana' ? viewSettimana() : tab === 'mese' ? viewMese() : viewOggi();
   const view = $('#view');
   view.replaceChildren(...v.filter(Boolean));
