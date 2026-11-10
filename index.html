@@ -381,7 +381,7 @@ button:active{transform:scale(.97)}
 .bigin:focus{outline:none;border-color:var(--ok)}
 .bigin.shake{animation:shake .4s}
 @keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
-.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .tiles button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 4px;border-radius:16px;border:2px solid var(--line);background:var(--card);font-weight:700;font-size:.9rem;cursor:pointer;box-shadow:0 3px 0 var(--line)}
 .tiles button span{font-size:1.75rem}
 .tiles button[aria-pressed="true"]{border-color:var(--ok);background:var(--ok-t);box-shadow:0 3px 0 var(--ok)}
@@ -462,7 +462,7 @@ button:active{transform:scale(.97)}
 .toast .ici .ic{width:20px;height:20px;stroke-width:2.2;color:#7EE0A6}
 .toast{display:flex;align-items:center;gap:8px}
 .tiles button span{display:grid;place-items:center}
-.tiles button span .ic{width:28px;height:28px;stroke-width:1.9}
+.tiles button span .ic{width:24px;height:24px;stroke-width:1.9;color:var(--c)}
 .tiles button[aria-pressed="true"] span{color:var(--ok)}
 .btn .ic{width:20px;height:20px;stroke-width:2.3}
 .btn.small .ic{width:17px;height:17px}
@@ -533,7 +533,7 @@ button:active{transform:scale(.97)}
 .daypick{display:flex;gap:6px;overflow-x:auto;scroll-snap-type:x proximity;margin:0 -18px;padding:2px 18px 6px;scrollbar-width:none}
 .daypick::-webkit-scrollbar{display:none}
 .daypick button{flex:0 0 54px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 7px;border-radius:14px;border:2px solid var(--line);background:var(--card);cursor:pointer}
-.daypick small{font-size:.8rem;font-weight:700;color:var(--muted)}
+.daypick small{font-size:.72rem;font-weight:700;color:var(--muted);white-space:nowrap}
 .daypick b{font-size:1.2rem;font-variant-numeric:tabular-nums}
 .daypick button[aria-pressed="true"]{background:var(--ok);border-color:var(--ok);color:#fff}
 .daypick button[aria-pressed="true"] small{color:#fff}
@@ -610,7 +610,8 @@ button:active{transform:scale(.97)}
 .ebar{position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:40;display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid var(--line);border-radius:20px;padding:10px 10px 10px 16px;box-shadow:0 12px 30px rgb(0 0 0 / .18);animation:rise .25s cubic-bezier(.2,.9,.3,1);transition:opacity .2s,transform .2s}
 .ebar.out{opacity:0;transform:translateY(20px)}
 .eb-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
-.eb-txt > div{display:flex;align-items:baseline;gap:4px 8px;flex-wrap:wrap}
+.eb-txt > div{display:flex;flex-direction:column;gap:0}
+.eb-l.moved{color:var(--o)}
 .eb-t{font-size:1.25rem;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
 .eb-l{font-size:.95rem;font-weight:700;color:var(--muted);white-space:nowrap}
 .eb-w{font-size:.88rem;font-weight:700;display:flex;align-items:center;gap:4px;min-height:0}
@@ -619,7 +620,176 @@ button:active{transform:scale(.97)}
 .ebar .btn.x2{width:48px;padding:0}
 .ebar .btn.x2 .ic{width:20px;height:20px}
 body.editing .fab{opacity:0;pointer-events:none}
-body.editing #view > *:not(:has(.ewrap)):not(.ewrap){opacity:.55;pointer-events:none;transition:opacity .25s}
+
+
+/* ===================== Ritmo 3: aspetto professionale, arancio ===================== */
+:root{--bg:#F7F7F5;--card:#FFFFFF;--ink:#17181B;--muted:#6B6E75;--line:#E7E7E3;--soft:#F1F1EE;
+  --o:#EA6A1A;--o-d:#C9540D;--o-t:color-mix(in srgb,#EA6A1A 12%,#fff);--ok:var(--o);--ok-d:var(--o-d);--ok-t:var(--o-t);--go:var(--o);--go-ink:#fff;--bad:#C8412F;--warn:#B7791F;
+  --k-scuola:#4C5FD0;--k-lavoro:#11806B;--k-palestra:#D14646;--k-karate:#7E4FC9;--k-impegno:#2A7BC4;--k-ripetizione:#4C8F2E;--k-persone:#C2457F;--k-salute:#1D99A6;--k-promemoria:#B07E22;--k-pasto:#A39C91;--k-viaggio:#8E99A5;--k-sonno:#59677A;
+  --ner:var(--k-lavoro);--stu:var(--k-scuola);--cor:var(--k-palestra);--soc:var(--k-persone);--imp:var(--k-impegno);--pau:var(--k-pasto);--via:var(--k-viaggio)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#121315;--card:#1B1C1F;--ink:#EDEDEA;--muted:#9EA0A6;--line:#2B2C30;--soft:#222326;--o:#F2792C;--o-d:#D0611A;--o-t:color-mix(in srgb,#F2792C 18%,#1B1C1F);
+  --ok:var(--o);--ok-d:var(--o-d);--ok-t:var(--o-t);--go:var(--o);--go-ink:#fff;--bad:#E8705F;--warn:#D9A04A;
+  --k-scuola:#8695F0;--k-lavoro:#43B79F;--k-palestra:#EE7A72;--k-karate:#A988EC;--k-impegno:#5FA6E6;--k-ripetizione:#7DBB5C;--k-persone:#E57FAE;--k-salute:#4CC3CF;--k-promemoria:#D8A84D;--k-pasto:#6E695F;--k-viaggio:#7A8590;--k-sonno:#8392A6}}
+[data-cat="scuola"]{--c:var(--k-scuola)}[data-cat="lavoro"]{--c:var(--k-lavoro)}[data-cat="palestra"]{--c:var(--k-palestra)}[data-cat="karate"]{--c:var(--k-karate)}
+[data-cat="impegno"]{--c:var(--k-impegno)}[data-cat="ripetizione"]{--c:var(--k-ripetizione)}[data-cat="persone"]{--c:var(--k-persone)}[data-cat="salute"]{--c:var(--k-salute)}
+[data-cat="promemoria"],[data-cat="scadenza"],[data-cat="festa"]{--c:var(--k-promemoria)}[data-cat="pasto"],[data-cat="pausa"]{--c:var(--k-pasto)}[data-cat="viaggio"]{--c:var(--k-viaggio)}[data-cat="sonno"]{--c:var(--k-sonno)}
+[data-cat="nerina"]{--c:var(--k-lavoro)}[data-cat="studio"]{--c:var(--k-scuola)}[data-cat="corpo"]{--c:var(--k-palestra)}[data-cat="sociale"]{--c:var(--k-persone)}
+:focus-visible{outline:2px solid var(--o)}
+.app{padding-top:calc(14px + env(safe-area-inset-top,0px));gap:14px}
+#view{gap:14px}
+/* bottoni piatti */
+.btn,.btn.go,.btn.c,.banner,.tiles button,.big3{box-shadow:none!important}
+.btn{border-width:1.5px;border-radius:12px;transition:transform .1s,background .15s}
+.btn:active,.banner:active{transform:scale(.98)}
+.btn.go,.btn.c{background:var(--o);border-color:var(--o);color:#fff}
+.chip[aria-pressed="true"],.daypick button[aria-pressed="true"],.cd.sel{background:var(--o);border-color:var(--o);color:#fff}
+.tiles button[aria-pressed="true"]{border-color:var(--o);background:var(--o-t)}
+.tiles button[aria-pressed="true"] span{color:var(--o)}
+.seg button[aria-pressed="true"]{color:var(--o)}
+.fab{width:56px;height:56px;background:var(--o);box-shadow:0 6px 18px rgb(0 0 0 / .18)!important}
+.fab:active{transform:scale(.94)}
+.tabbar .in{grid-template-columns:repeat(3,1fr)}
+.tabbar button[aria-selected="true"]{color:var(--o)}
+.tabbar button[aria-selected="true"] svg{animation:none}
+.pill#streak{background:var(--card);border:1px solid var(--line);color:var(--ink);font-weight:700}
+.pill#streak .ici{color:var(--o)}
+.toast .ici .ic{color:var(--o)}
+.party .pe{color:var(--o)}
+.lvlb rect.on{fill:var(--o)}
+.lvlb.warn rect.on{fill:var(--warn)}
+.pillc{background:var(--soft);font-weight:600}
+.banner{border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:1.02rem}
+.banner .be{width:36px;height:36px;border-radius:10px}
+.banner.warn{background:color-mix(in srgb,var(--warn) 8%,var(--card));border-color:color-mix(in srgb,var(--warn) 30%,var(--line))}
+.card{border-radius:16px}
+.enter > *{animation-duration:.28s}
+/* barra in alto */
+.abar{display:flex;flex-direction:column;gap:2px;padding-right:0}
+.abar h1{font-size:1.95rem;font-weight:800;letter-spacing:-.025em;padding-right:110px;min-height:40px;display:flex;align-items:center}
+.ab-r{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ab-s{font-size:1rem;font-weight:600;color:var(--muted)}
+.ab-n{display:flex;align-items:center;gap:6px}
+.ab-arr{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;cursor:pointer;color:var(--ink)}
+.ab-arr .ic{width:18px;height:18px;stroke-width:2.3}
+.ab-arr:active{background:var(--soft)}
+.ab-today{border:1.5px solid var(--o);color:var(--o);background:none;border-radius:999px;padding:6px 14px;font-weight:700;cursor:pointer}
+.top-r{top:calc(16px + env(safe-area-inset-top,0px))}
+/* striscia della settimana */
+.wstrip{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.wstrip button{border:0;background:none;border-radius:14px;padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;color:var(--ink)}
+.wstrip small{font-size:.75rem;font-weight:700;color:var(--muted)}
+.wstrip b{font-size:1.12rem;font-variant-numeric:tabular-nums}
+.wstrip button.today b{color:var(--o)}
+.wstrip button.sel{background:var(--o)}
+.wstrip button.sel b,.wstrip button.sel small{color:#fff}
+.wstrip button.sel .cdots i{background:#fff}
+.wstrip .cdots i{background:var(--muted)}
+/* stato di oggi */
+.srow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.sring{position:relative;width:46px;height:46px;flex:none}
+.sring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.sring circle{fill:none;stroke-width:4.5}
+.sring .r0{stroke:var(--line)}
+.sring .r1{stroke:var(--o);stroke-linecap:round;transition:stroke-dashoffset .8s cubic-bezier(.2,.9,.3,1)}
+.sring > span{position:absolute;inset:0;display:grid;place-items:center;color:var(--o)}
+.sring .ic{width:20px;height:20px}
+.st{display:flex;flex-direction:column;line-height:1.2;flex:1;min-width:0}
+.st b{font-size:1.08rem}
+.st span{font-size:.92rem;color:var(--muted);font-weight:600}
+.srow .pills{flex-basis:100%}
+.nowc{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:14px;padding:12px 12px 12px 14px}
+.nc-i{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--c) 14%,var(--card));color:var(--c)}
+.nc-i .ic{width:22px;height:22px}
+.nc-t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.nc-e{font-size:.85rem;font-weight:700;color:var(--muted)}
+.nc-t b{font-size:1.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nc-t .tbar{height:5px;margin-top:4px;background:var(--soft)}
+.nc-t .tbar i{background:var(--c)}
+.nowc .btn{min-height:44px;padding:0 14px}
+.hint-lp{font-size:.9rem;color:var(--muted)}
+.hint-lp .ic{width:16px;height:16px}
+/* orari in scala */
+.tt{position:relative;display:grid;grid-template-columns:46px minmax(0,1fr);margin-top:6px}
+.tt.week{grid-template-columns:24px minmax(0,1fr)}
+.tt-h{position:relative}
+.tt-h span{position:absolute;right:8px;transform:translateY(-50%);font-size:.78rem;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.tt.week .tt-h span{right:4px;font-size:.66rem}
+.tt-h span:first-child{transform:none}
+.tt-cols{position:relative;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);background-image:linear-gradient(var(--line) 1px,transparent 1px);background-size:100% var(--hh);border-top:1px solid var(--line)}
+.tt-col{position:relative;min-width:0}
+.tt.week .tt-col{border-left:1px solid var(--line)}
+.tt.week .tt-col.today{background:color-mix(in srgb,var(--o) 6%,transparent)}
+.tt-col .slp{position:absolute;left:0;right:0;background:repeating-linear-gradient(135deg,transparent 0 6px,color-mix(in srgb,var(--line) 80%,transparent) 6px 7px);pointer-events:none}
+.tt-col .nowl{position:absolute;left:-3px;right:0;height:2px;background:var(--o);z-index:5;pointer-events:none}
+.tt-col .nowl::before{content:'';position:absolute;left:-4px;top:-4px;width:10px;height:10px;border-radius:50%;background:var(--o)}
+.blk{position:absolute;left:4px;right:4px;border-radius:8px;background:color-mix(in srgb,var(--c) 14%,var(--card));border-left:3px solid var(--c);padding:5px 34px 5px 8px;display:flex;align-items:flex-start;gap:7px;overflow:hidden;color:var(--ink);font-size:.92rem;line-height:1.25;cursor:pointer;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;transition:top .26s cubic-bezier(.2,.9,.3,1),height .26s cubic-bezier(.2,.9,.3,1),opacity .2s,transform .2s,background .2s;z-index:1}
+.blk:active{filter:brightness(.97)}
+.blk .bi{display:grid;place-items:center;color:var(--c);flex:none;padding-top:1px}
+.blk .bi .ic{width:16px;height:16px;stroke-width:2}
+.blk .bt{display:flex;flex-direction:column;min-width:0;gap:1px}
+.blk .bt b{font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.blk .bh{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.blk .bs{font-size:.78rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.blk.sm .bt{flex-direction:row;align-items:baseline;gap:8px}
+.blk.sm .bs{display:none}
+.blk.xs{align-items:center;padding-top:0;padding-bottom:0;font-size:.8rem}
+.blk.xs .bt{flex-direction:row;align-items:center;gap:6px}
+.blk.xs .bs{display:none}
+.blk.xs .bh{font-size:.72rem}
+.blk.xs .bi .ic{width:13px;height:13px}
+.blk.fix{background:color-mix(in srgb,var(--c) 22%,var(--card))}
+.blk.meal{background:var(--soft);border-left-color:var(--k-pasto);color:var(--muted);z-index:0}
+.blk.meal .bi{color:var(--muted)}
+.blk.flex{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--c) 12%,var(--card)) 0 8px,var(--card) 8px 12px);border-left-style:dashed}
+.blk.run{box-shadow:inset 0 0 0 1.5px var(--c)}
+.blk.late{border-left-style:dashed}
+.blk.late .bh{color:var(--warn);font-weight:700}
+.blk.done{background:color-mix(in srgb,var(--c) 7%,var(--card))}
+.blk.done .bt b{color:var(--muted)}
+.bchk{position:absolute;right:6px;top:5px;width:24px;height:24px;border-radius:50%;border:1.5px solid color-mix(in srgb,var(--c) 55%,var(--line));background:var(--card);display:grid;place-items:center;padding:0;cursor:pointer;color:#fff;transition:transform .15s,background .15s}
+.bchk .ic{width:15px;height:15px;stroke-width:3;opacity:0}
+.bchk[aria-pressed="true"]{background:var(--o);border-color:var(--o)}
+.bchk[aria-pressed="true"] .ic{opacity:1}
+.bchk.pop{animation:popn .4s cubic-bezier(.3,1.7,.5,1)}
+.blk.xs .bchk{top:50%;margin-top:-10px;width:20px;height:20px}
+.blk.xs .bchk .ic{width:12px;height:12px}
+.tt.week .blk{left:1px;right:1px;border-radius:4px;padding:2px 2px 2px 3px;border-left-width:2px;font-size:.62rem;display:block}
+.tt.week .blk .wl{display:block;font-weight:700;line-height:1.15;overflow:hidden;white-space:nowrap;text-overflow:clip}
+.tt.week .blk.xs .wl,.tt.week .blk.meal .wl{display:none}
+.tt.week .blk .wck{position:absolute;right:1px;top:1px;color:var(--o)}
+.tt.week .blk .wck .ic{width:10px;height:10px;stroke-width:3.5}
+.tt.week .blk.meal{border-left-width:0;background:color-mix(in srgb,var(--k-pasto) 30%,var(--card))}
+.blk.gone{opacity:0;transform:scale(.96);pointer-events:none}
+.blk.fresh{animation:fade .25s}
+.wk{display:flex;flex-direction:column}
+.wk-h{display:grid;grid-template-columns:24px repeat(7,minmax(0,1fr));position:sticky;top:0;z-index:7;background:var(--bg);padding:4px 0 6px}
+.wk-h button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;padding:2px 0;color:var(--ink);border-radius:10px}
+.wk-h small{font-size:.68rem;font-weight:700;color:var(--muted)}
+.wk-h b{font-size:1rem;font-variant-numeric:tabular-nums}
+.wk-h button.today b{color:#fff;background:var(--o);border-radius:50%;width:28px;height:28px;display:grid;place-items:center}
+.wk-h .wl-l .lvlb{width:18px;height:11px}
+/* trascinamento */
+.iconbtn#gear{background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.pill#streak{padding:7px 12px}
+#dragHold{position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden}
+.blk.drag{z-index:8;background:var(--c);color:#fff;border-left-color:transparent;box-shadow:0 10px 26px rgb(0 0 0 / .25);touch-action:none;cursor:grab;transition:height .08s,box-shadow .15s,transform .15s;overflow:visible;left:2px;right:2px;padding-right:8px}
+.blk.drag .bi,.blk.drag .bh,.blk.drag .bt b{color:#fff}
+.blk.drag.lift{transform:scale(1.03);box-shadow:0 16px 34px rgb(0 0 0 / .3);cursor:grabbing}
+.blk.drag.bad{background:var(--bad)}
+.blk.drag .hd{position:absolute;left:50%;width:64px;height:26px;margin-left:-32px;touch-action:none;cursor:ns-resize;display:grid;place-items:center;z-index:2}
+.blk.drag .hd::after{content:'';width:38px;height:6px;border-radius:6px;background:#fff;box-shadow:0 1px 3px rgb(0 0 0 / .35)}
+.blk.drag .hd.top{top:-13px}.blk.drag .hd.bot{bottom:-13px}
+.blk.drag.xs .hd.top{top:-22px}.blk.drag.xs .hd.bot{bottom:-22px}
+.blk.drag.xs .hd::after{background:var(--c);box-shadow:0 0 0 2px #fff,0 1px 4px rgb(0 0 0 / .3)}
+.tt.week .blk.drag{font-size:.66rem;left:-6px;right:-6px}
+.tt.week .blk.drag .bh{display:block;font-size:.6rem;color:#fff}
+.tt.week .blk.drag .hd{width:40px;margin-left:-20px}
+.tt.week .blk.drag .hd::after{width:24px}
+.ebar{border-width:1px;border-radius:18px;box-shadow:0 10px 30px rgb(0 0 0 / .16)}
+.ebar .btn.go{background:var(--o);border-color:var(--o)}
+body.editing #view > *:not(.tt):not(.wk){opacity:.4;pointer-events:none;transition:opacity .2s}
+body.editing .tabbar{pointer-events:none}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -647,10 +817,9 @@ body.editing #view > *:not(:has(.ewrap)):not(.ewrap){opacity:.55;pointer-events:
 </div>
 <button class="fab" id="fab" type="button" aria-label="Aggiungi un impegno"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span>Impegno</span></button>
 <nav class="tabbar" aria-label="Viste"><div class="in" role="tablist">
-  <button role="tab" id="t-oggi" type="button" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg>Oggi</button>
-  <button role="tab" id="t-domani" type="button" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h18M6.5 17a5.5 5.5 0 0 1 11 0M12 4v3M4.5 9.5l2 1.5M19.5 9.5l-2 1.5"/></svg>Domani</button>
-  <button role="tab" id="t-settimana" type="button" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 18V10M8 18V6M12 18v-7M16 18V5M20 18v-5"/></svg>Settimana</button>
-  <button role="tab" id="t-mese" type="button" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="4"/><path d="M3 9.5h18M8 3v3M16 3v3"/><path d="M7.5 13.5h.01M12 13.5h.01M16.5 13.5h.01M7.5 17h.01M12 17h.01" stroke-linecap="round" stroke-width="2.8"/></svg>Calendario</button>
+  <button role="tab" id="t-giorno" type="button" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4.5" width="16" height="16" rx="3"/><path d="M4 9.5h16M8.5 3v3M15.5 3v3"/><path d="M9 14.5h6" stroke-width="2.4"/></svg>Giorno</button>
+  <button role="tab" id="t-settimana" type="button" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M3 9.5h18M8.5 9.5v11M12 9.5v11M15.5 9.5v11"/></svg>Settimana</button>
+  <button role="tab" id="t-mese" type="button" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M3 9.5h18M8 3v3M16 3v3"/><path d="M7.5 13.5h.01M12 13.5h.01M16.5 13.5h.01M7.5 17h.01M12 17h.01" stroke-linecap="round" stroke-width="2.8"/></svg>Mese</button>
 </div></nav>
 </div>
 <div class="sheet-wrap" id="sheet" hidden><div class="scrim" id="scrim"></div><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title"><div class="grab"></div><div id="sheet-body" style="display:flex;flex-direction:column;gap:12px"></div></div></div>
@@ -687,8 +856,8 @@ const NB = [
   { key: 'n2', label: 'Nerina · B2', sub: 'Lavoro a mano: account, prove, documenti' },
   { key: 'n3', label: 'Nerina · B3', sub: 'Prepara e lancia il prompt della notte' }
 ];
-const TASK_TIPI = ['impegno', 'ripetizione', 'sociale'];
-const CATN = { nerina: 'Lavoro · Nerina', studio: 'Scuola', corpo: 'Allenamento', sociale: 'Relazioni', impegno: 'Impegno', ripetizione: 'Ripetizione' };
+const TASK_TIPI = ['impegno', 'ripetizione', 'sociale', 'scuola', 'lavoro', 'palestra', 'karate', 'salute'];
+const CATN = { nerina: 'Lavoro', studio: 'Scuola', corpo: 'Palestra', sociale: 'Persone', impegno: 'Impegno', ripetizione: 'Ripetizione' };
 const WD = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
 const WDS = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
 const MO = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
@@ -725,7 +894,7 @@ function cfg() {
   return out;
 }
 const eventsOn = (d) => S.eventi.filter((e) => e.data === d);
-const evCat = (e) => e.tipo === 'sociale' ? 'sociale' : e.tipo === 'ripetizione' ? 'ripetizione' : 'impegno';
+const evCat = (e) => ({ sociale: 'sociale', ripetizione: 'ripetizione', scuola: 'studio', lavoro: 'nerina', palestra: 'corpo', karate: 'corpo' })[e.tipo] || 'impegno';
 const evLen = (e) => e.inizio && e.fine ? toMin(e.fine, toMin(e.inizio)) - toMin(e.inizio) : (Number(e.durata) || 60);
 const nerinaCount = (c, dow) => dow === 0 ? c.nerina.domenica : dow === 6 ? c.nerina.sabato : c.nerina.feriale;
 
@@ -1150,7 +1319,7 @@ function toggleDone(date, key, val, it) {
     if (typeof r === 'object' && it) { if (r.b < it.start) msg = 'Fatto in anticipo'; else if (r.b < it.end - 4) msg = `Finito ${dur(it.end - r.b)} prima`; }
   } else delete f[key];
   patchDay(date, { fatti: f });
-  if (v) { requestAnimationFrame(() => { const nb = document.querySelector(`[data-k="${CSS.escape(date + key)}"] .node`); if (nb) nb.classList.add('pop'); }); cheer(date, msg); }
+  if (v) { requestAnimationFrame(() => { const nb = document.querySelector(`[data-k="${CSS.escape(date + key)}"] .bchk, [data-k="${CSS.escape(date + key)}"] .node`); if (nb) nb.classList.add('pop'); }); cheer(date, msg); }
   return v;
 }
 /* Quanto ci hai messo davvero: accorcia il blocco fatto e fa partire prima quelli dopo. */
@@ -1354,6 +1523,7 @@ const IP = {
   battito: '<path d="M3 12h4l2.5-6 4.5 12 2.5-6H21"/>',
   freccia: '<path d="M9 5l7 7-7 7"/>',
   bussola: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+  salute: '<path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/><path d="M12 11v4M10 13h4"/>',
   festa: '<path d="M4 20l4.5-12 7.5 7.5z"/><path d="M14 4.5c.5 1.5 0 3-1.5 3.5M19 9.5c-1.5-.3-3 .4-3.5 2M17 3v2M21 6.5h-2"/>'
 };
 const ic = (n, cls) => `<svg class="ic${cls ? ' ' + cls : ''}" viewBox="0 0 24 24" aria-hidden="true">${IP[n] || IP.impegno}</svg>`;
@@ -1368,6 +1538,7 @@ const lvlBars = (n, warn) => `<svg class="lvlb${warn ? ' warn' : ''}" viewBox="0
 const SUBJ = { 'KRR': 'rete', 'Fisica': 'atomo', 'Computer Programming': 'codice', 'Analisi': 'funzione', 'Computational Logic': 'logica' };
 function emo(it) {
   const k = it.key || '';
+  if (it.ev) { const t = it.ev.tipo; const m = { scuola: 'libro', lavoro: 'nerina', palestra: 'pesi', karate: 'karate', salute: 'salute', sociale: 'persone', ripetizione: 'insegna', promemoria: 'campana' }[t]; if (m) return m; }
   if (k === 'palestra') return 'pesi'; if (k === 'karate') return 'karate'; if (k === 'uscita') return 'festa';
   if (k === 'colazione') return 'tazza'; if (k === 'merenda') return 'mela'; if (k === 'pranzo' || k === 'cena') return 'posate';
   if (k === 'sveglia') return 'alba'; if (k === 'letto') return 'luna';
@@ -1406,6 +1577,7 @@ let lastTap = null;
 document.addEventListener('pointerdown', (e) => { lastTap = [e.clientX, e.clientY]; }, true);
 const calm = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 function burst(big) {
+  return; /* niente coriandoli: feedback sobrio */
   if (calm()) return;
   const [x, y] = lastTap || [innerWidth / 2, innerHeight / 2];
   const cols = ['#2F9E5B', '#F2B53A', '#E0745A', '#5B8DEF', '#B36BD4'];
@@ -1430,7 +1602,7 @@ function tlItem(p, it, o) {
   const MEALK = ['colazione', 'pranzo', 'merenda', 'cena'];
   if (it.cat === 'sonno') return h('li', { class: 'mini' }, h('div', { class: 'tl-mini sonno', 'data-cat': 'sonno' }, h('span', { class: 'time' }, h('b', { text: fmt(it.start) })), h('span', { class: 'node sm', html: ic(emo(it)) }), h('span', { class: 'grow', text: it.key === 'letto' ? `A letto · ${it.sub}` : 'Sveglia' })));
   const T = (x) => h('span', { class: 'time' }, h('b', { text: fmt(x.start) }), x.cat === 'pausa' || x.cat === 'viaggio' || x.cat === 'libero' ? null : h('span', { text: fmt(x.end) }));
-  if (it.cat === 'pausa' && !o.compact && MEALK.includes(it.key)) { const mb = h('button', { class: 'tl-mini meal', type: 'button', 'data-cat': it.cat, onclick: () => { if (!afterLP()) openMeal(p.date, it.key); } }, T(it), h('span', { class: 'node sm', html: ic(emo(it)) }), h('span', { class: 'grow', text: it.label }), h('span', { class: 'chev', html: ic('matita') })); longPress(mb, (ptr) => startEdit(p.date, it, mb, ptr)); return h('li', { class: 'mini' }, mb); }
+  if (it.cat === 'pausa' && !o.compact && MEALK.includes(it.key)) { const mb = h('button', { class: 'tl-mini meal', type: 'button', 'data-cat': it.cat, onclick: () => { if (!afterLP()) openMeal(p.date, it.key); } }, T(it), h('span', { class: 'node sm', html: ic(emo(it)) }), h('span', { class: 'grow', text: it.label }), h('span', { class: 'chev', html: ic('matita') })); longPress(mb, () => openAdjust(p.date, it)); return h('li', { class: 'mini' }, mb); }
   if (it.cat === 'pausa' || it.cat === 'viaggio' || it.cat === 'libero') return h('li', { class: 'mini' + (it.cat === 'libero' ? ' free' : '') }, h('div', { class: 'tl-mini', 'data-cat': it.cat }, T(it), h('span', { class: 'node sm', html: ic(emo(it)) }), h('span', { class: 'grow', text: it.cat === 'libero' ? `Libero · ${dur(it.end - it.start)}` : `${it.label} · ${dur(it.end - it.start)}` })));
   const done = !!p.fatti[it.key];
   const isNow = o.now != null && it.start <= o.now && o.now < it.end && !done;
@@ -1443,7 +1615,7 @@ function tlItem(p, it, o) {
   const body = h('span', { class: 'txt' }, h('span', { class: 'lbl', text: it.label }), note,
     null);
   const row = h(o.compact ? 'div' : 'button', { class: cls, 'data-cat': it.cat, type: o.compact ? null : 'button', onclick: o.compact ? null : () => { if (!afterLP()) openItem(p.date, it); } }, T(it), node, body);
-  if (!o.compact && canAdjust(it)) longPress(row, (ptr) => startEdit(p.date, it, row, ptr));
+  if (!o.compact && canAdjust(it)) longPress(row, () => openAdjust(p.date, it));
   return h('li', { 'data-k': p.date + it.key, class: done ? 'ok' : '' }, row);
 }
 function timeline(p, o = {}) {
@@ -1523,7 +1695,7 @@ function cheer(date, msg) {
 }
 
 /* ---------- viste ---------- */
-let tab = 'oggi';
+let tab = 'giorno';
 function greeting() { const hh = new Date().getHours(); return hh < 4 ? 'Buonanotte, Niccolò' : hh < 13 ? 'Buongiorno, Niccolò' : hh < 18 ? 'Buon pomeriggio, Niccolò' : 'Buonasera, Niccolò'; }
 function renderStreak() {
   const n = streak();
@@ -1663,7 +1835,7 @@ function heroStatus(p, L) {
     h('div', { class: 'ring', html: `<svg viewBox="0 0 72 72"><circle cx="36" cy="36" r="30" class="r0"/><circle cx="36" cy="36" r="30" class="r1" stroke-dasharray="${C}" stroke-dashoffset="${C}"/></svg><span class="re"></span>` }),
     h('div', { class: 'hs-t' }, h('b'), h('span')), h('div', { class: 'hs-c' }));
   const e = box.querySelector('.re');
-  if (e.dataset.i !== m.e) { e.dataset.i = m.e; e.innerHTML = ic(m.e); e.style.setProperty('--mc', m.col); e.classList.remove('bump'); void e.offsetWidth; e.classList.add('bump'); }
+  if (e.dataset.i !== m.e) { e.dataset.i = m.e; e.innerHTML = ic(m.e); e.style.setProperty('--mc', m.late ? 'var(--warn)' : 'var(--o)'); e.classList.remove('bump'); void e.offsetWidth; e.classList.add('bump'); }
   requestAnimationFrame(() => box.querySelector('.r1').setAttribute('stroke-dashoffset', String(C * (1 - m.pct))));
   box.querySelector('.hs-t b').textContent = m.t;
   box.querySelector('.hs-t span').textContent = m.line;
@@ -1803,11 +1975,8 @@ function dayTags(p) {
   for (const it of p.items) if (it.ev) t.push([it.cat, it.label + (it.flex ? '' : ' ' + fmt(it.start))]);
   return t;
 }
-function viewSettimana() {
+function weekSummary(days, plans) {
   const L = nowLogical(), c = cfg();
-  const days = [1, 2, 3, 4, 5, 6, 7].map((i) => addDays(L.date, i));
-  setHero('sett:' + days[0], () => weekHero(days[0], days[6]));
-  const plans = days.map(plan);
   const sum = (f) => plans.reduce((a, p) => a + p.items.filter(f).reduce((x, i) => x + i.end - i.start, 0), 0) / 60;
   const ner = sum((i) => i.cat === 'nerina'), stu = sum((i) => i.cat === 'studio');
   const gymN = plans.filter((p) => p.items.some((i) => i.key === 'palestra')).length, karN = plans.filter((p) => p.items.some((i) => i.key === 'karate')).length;
@@ -1833,13 +2002,6 @@ function viewSettimana() {
     h('div', { class: 'card' },
       h('div', { class: 'row' }, h('h3', { text: 'Sport' }), h('button', { class: 'link', type: 'button', text: 'Cambia', onclick: openSport })),
       chipsEl([...plans.filter((p) => p.items.some((i) => i.key === 'palestra')).map((p) => ['corpo', 'pesi', dayShort(p.date)]), ...plans.filter((p) => p.items.some((i) => i.key === 'karate')).map((p) => ['corpo', 'karate', dayShort(p.date)])])),
-    h('div', { class: 'wlist' }, plans.map((p) => {
-      const n = S.nerina[p.date]; const tags = dayTags(p);
-      return h('button', { class: 'wrow', type: 'button', onclick: () => openDay(p.date) },
-        h('div', { class: 'wrow-h' }, h('span', { class: 'day', style: 'display:flex;gap:8px;align-items:center' }, cap(WD[dowOf(p.date)]) + ' ' + parseISO(p.date).getDate(), ornOf(p.date) ? codeEl(ornOf(p.date), true) : null), h('span'), h('span', { class: 'lvl', 'data-l': String(loadLevel(p.load.mente)), html: lvlBars(loadLevel(p.load.mente), loadLevel(p.load.mente) >= 4) + '<span>' + loadWord(p.load.mente) + '</span>' })),
-        strip(p),
-        tags.length ? h('div', { class: 'tags' }, tags.slice(0, 3).map(([c2, t]) => h('span', { class: 'tag', 'data-cat': c2, text: t }))) : null);
-    }))
   ];
 }
 
@@ -1904,14 +2066,14 @@ function dayStrip(p, o = {}) {
   const pos = (a, b) => `left:${(100 * (a - A) / W).toFixed(2)}%;width:${Math.max(.6, 100 * (b - a) / W).toFixed(2)}%`;
   const el = h('div', { class: 'dstrip' + (o.pick ? ' pick' : '') },
     h('i', { class: 'sl', style: pos(A, inf.wake) }), h('i', { class: 'sl', style: pos(inf.bed, B) }),
-    ...p.items.filter((i) => i.end > i.start && i.cat !== 'libero').map((i) => h('i', { class: isFix(i) ? 'fx' : i.meal ? 'ml' : 'fl', 'data-cat': i.cat, style: pos(i.start, i.end) })),
+    ...p.items.filter((i) => i.end > i.start && i.cat !== 'libero').map((i) => h('i', { class: isFix(i) ? 'fx' : i.meal ? 'ml' : 'fl', 'data-cat': dcat(i), style: pos(i.start, i.end) })),
     o.mark ? h('i', { class: 'nw' + (o.clash ? ' bad' : ''), style: pos(o.mark[0], o.mark[1]) }) : null);
   if (o.pick) el.addEventListener('click', (e) => { const r = el.getBoundingClientRect(); const m = A + (e.clientX - r.left) / r.width * W; o.pick(Math.max(A, Math.round(m / 15) * 15)); });
   const ticks = h('div', { class: 'dticks' }, [9, 12, 15, 18, 21, 24].filter((x) => x * 60 > A && x * 60 < B).map((x) => h('span', { style: `left:${(100 * (x * 60 - A) / W).toFixed(2)}%`, text: String(x % 24) })));
   return h('div', { class: 'dstrip-w' }, el, ticks);
 }
 function fixedRow(d, it) {
-  return h('button', { class: 'fxrow', type: 'button', 'data-cat': it.cat, onclick: () => it.ev ? openEvent(it.ev) : openItem(d, it) },
+  return h('button', { class: 'fxrow', type: 'button', 'data-cat': dcat(it), onclick: () => it.ev ? openEvent(it.ev) : openItem(d, it) },
     h('span', { class: 'fxi', html: ic(emo(it)) }), h('b', { class: 't', text: it.flex ? 'da fissare' : `${fmt(it.start)}–${fmt(it.end)}` }), h('span', { class: 'grow', text: it.label }));
 }
 function dayPanel(d, o = {}) {
@@ -1925,17 +2087,17 @@ function dayPanel(d, o = {}) {
     h('div', { class: 'dp-lab' }, h('b', { text: 'Libero' }), h('span', { class: 'small muted', text: inf.work ? `studio e Nerina (${dur(inf.work)}) si adattano` : '' })),
     inf.free.length ? h('div', { class: 'chips' }, inf.free.map(([a, b]) => h('button', { class: 'chip free', type: 'button', text: `${fmt(a)}–${fmt(b)}`, onclick: () => (o.onFree ? o.onFree(a, b) : openEvent(null, { data: d, inizio: hm(a) })) }))) : h('span', { class: 'small muted', text: 'Nessuno spazio libero' }),
     o.strip !== false ? dayStrip(p) : null,
-    o.actions !== false ? h('div', { class: 'btns' }, h('button', { class: 'btn go', type: 'button', html: `${ic('piu')}<span>Impegno qui</span>`, onclick: () => openEvent(null, { data: d }) }), h('button', { class: 'btn', type: 'button', text: 'Apri il giorno', onclick: () => openDay(d) })) : null);
+    o.actions !== false ? h('div', { class: 'btns' }, h('button', { class: 'btn go', type: 'button', html: `${ic('piu')}<span>Impegno qui</span>`, onclick: () => openEvent(null, { data: d }) }), h('button', { class: 'btn', type: 'button', text: 'Apri il giorno', onclick: () => { dayD = d; select('giorno'); } })) : null);
 }
 let calMode = 'cal', calMonth = null, calDay = null;
 function viewMese() {
   const seg = h('div', { class: 'seg' }, [['cal', 'Calendario'], ['orn', 'Mese settale']].map(([k, t]) => h('button', { type: 'button', 'aria-pressed': String(calMode === k), text: t, onclick: () => { calMode = k; render(); } })));
-  if (calMode === 'orn') return [seg, ...viewMeseOrn()];
+  if (calMode === 'orn') return [appBar('Mese settale', 'ORNRARV'), seg, ...viewMeseOrn()];
   const L = nowLogical();
   if (!calDay) calDay = L.date;
   if (!calMonth) calMonth = calDay.slice(0, 8) + '01';
   const o = ornOf(calDay);
-  if (ORN && o) setHero('cal:' + o.mi, () => monthHero(o.mi)); else setHero('cal', () => dayHero(calDay, 'Calendario', true));
+  clearHero();
   const m0 = parseISO(calMonth), y = m0.getFullYear(), mo = m0.getMonth();
   const start = addDays(calMonth, -((dowOf(calMonth) + 6) % 7)), days = [...Array(42)].map((_, i) => addDays(start, i));
   const weeks = days.slice(35).some((d) => parseISO(d).getMonth() === mo) ? 6 : 5;
@@ -1943,20 +2105,16 @@ function viewMese() {
   const grid = h('div', { class: 'cal' }, ['L', 'M', 'M', 'G', 'V', 'S', 'D'].map((x) => h('span', { class: 'cw', text: x })),
     ...days.slice(0, weeks * 7).map((d) => {
       const dd = parseISO(d), inM = dd.getMonth() === mo, p = plan(d), fx = dayInfo(p).fixed;
-      const dots = fx.slice(0, 3).map((i) => h('i', { 'data-cat': i.cat }));
+      const dots = fx.slice(0, 3).map((i) => h('i', { 'data-cat': dcat(i) }));
       if (p.notes.some((e) => e.tipo === 'scadenza')) dots.push(h('i', { 'data-cat': 'scadenza' }));
       return h('button', { class: 'cd' + (inM ? '' : ' out') + (d < L.date ? ' past' : '') + (d === L.date ? ' today' : '') + (d === calDay ? ' sel' : ''), type: 'button', 'aria-label': `${dayLong(d)}: ${fx.length ? fx.length + ' impegni' : 'nessun impegno'}`, onclick: () => { calDay = d; if (!inM) calMonth = d.slice(0, 8) + '01'; render(); } },
         h('span', { class: 'n', text: String(dd.getDate()) }), h('span', { class: 'cdots' }, dots));
     }));
   const upcoming = [];
   for (let i = 0; i < 21 && upcoming.length < 8; i++) { const d = addDays(L.date, i), p = plan(d); for (const it of dayInfo(p).fixed) if (it.ev) upcoming.push([d, it]); }
-  return [seg,
-    h('div', { class: 'mnav' }, h('button', { class: 'iconbtn2', type: 'button', 'aria-label': 'Mese prima', html: ic('freccia', 'flip'), onclick: () => go(-1) }),
-      h('b', { class: 'mtitle', text: cap(MO[mo]) + ' ' + y }),
-      h('button', { class: 'iconbtn2', type: 'button', 'aria-label': 'Mese dopo', html: ic('freccia'), onclick: () => go(1) })),
-    calDay !== L.date || calMonth.slice(0, 7) !== L.date.slice(0, 7) ? h('button', { class: 'btn small ghost', type: 'button', text: 'Torna a oggi', onclick: () => { calDay = L.date; calMonth = L.date.slice(0, 8) + '01'; render(); } }) : null,
-    grid, dayPanel(calDay),
-    upcoming.length ? h('section', { class: 'sec' }, h('h3', { text: 'Prossimi impegni' }), h('div', { class: 'fxlist card' }, upcoming.map(([d, it]) => h('button', { class: 'fxrow', type: 'button', 'data-cat': it.cat, onclick: () => { calDay = d; calMonth = d.slice(0, 8) + '01'; render(); window.scrollTo({ top: 0 }); } },
+  return [appBar(cap(MO[mo]), String(y) + (o ? ' · ' + o.m.name : ''), calDay !== L.date || calMonth.slice(0, 7) !== L.date.slice(0, 7) ? () => { calDay = L.date; calMonth = L.date.slice(0, 8) + '01'; render(); } : null),
+    seg, grid, dayPanel(calDay),
+    upcoming.length ? h('section', { class: 'sec' }, h('h3', { text: 'Prossimi impegni' }), h('div', { class: 'fxlist card' }, upcoming.map(([d, it]) => h('button', { class: 'fxrow', type: 'button', 'data-cat': dcat(it), onclick: () => { calDay = d; calMonth = d.slice(0, 8) + '01'; render(); window.scrollTo({ top: 0 }); } },
       h('span', { class: 'fxi', html: ic(emo(it)) }), h('b', { class: 't', text: `${dayShort(d)}${it.flex ? '' : ' · ' + fmt(it.start)}` }), h('span', { class: 'grow', text: it.label }))))) : null];
 }
 
@@ -1975,130 +2133,43 @@ function longPress(el, fn) {
   el.addEventListener('contextmenu', (e) => e.preventDefault());
 }
 const canAdjust = (it) => it && (it.task || it.meal) && it.cat !== 'sonno' && it.cat !== 'libero' && it.cat !== 'viaggio' && !(it.ev && it.flex && !it.start);
-/* Applica nuovo orario e durata allo stato (senza salvare): serve sia per l'anteprima dal vivo sia per salvare. */
-function applyAdj(p0, it, s0, len, xkey) {
+/* Applica nuovo giorno T, orario e durata allo stato (senza salvare): serve per l'anteprima dal vivo e per salvare. */
+function applyAdj(p0, it, T, s0, len, xkey) {
   const d = p0.date, st = S.giorni[d] || {}, rec = p0.fatti[it.key];
-  if (rec) { S.giorni[d] = { ...st, fatti: { ...(st.fatti || {}), [it.key]: { a: s0, b: s0 + len, t: Math.max(nowLogical().min, rec.t || 0) } } }; return it.key; }
+  if (rec && T === d) { S.giorni[d] = { ...st, fatti: { ...(st.fatti || {}), [it.key]: { a: s0, b: s0 + len, t: Math.max(nowLogical().min, rec.t || 0) } } }; return it.key; }
   if (it.meal) { S.giorni[d] = { ...st, pasti: { ...(st.pasti || {}), [it.key]: { da: hm(s0), min: len } } }; return it.key; }
   if (it.ev) {
-    const e = it.ev, obj = { ...e, inizio: hm(s0), fine: hm(s0 + len), durata: len }; delete obj.src; delete obj.flessibile; delete obj.dopo;
+    const e = it.ev, obj = { ...e, data: T, inizio: hm(s0), fine: hm(s0 + len), durata: len }; delete obj.src; delete obj.flessibile; delete obj.dopo;
     if (e.src === 'file') { S.nascosti = [...S.nascosti, e.id]; S.miei = [...S.miei, { ...obj, id: xkey }]; rebuildEvents(); return 'e:' + xkey; }
     S.miei = S.miei.map((x) => x.id === e.id ? { ...obj, id: e.id } : x); rebuildEvents(); return it.key;
   }
   const ex = (st.extra || []).find((x) => x.key === it.key);
-  if (ex) { S.giorni[d] = { ...st, extra: st.extra.map((x) => x.key === it.key ? { ...x, at: hm(s0), min: len } : x) }; return it.key; }
+  if (ex) {
+    if (T === d) S.giorni[d] = { ...st, extra: st.extra.map((x) => x.key === it.key ? { ...x, at: hm(s0), min: len } : x) };
+    else { S.giorni[d] = { ...st, extra: st.extra.filter((x) => x.key !== it.key) }; const tg = S.giorni[T] || {}; S.giorni[T] = { ...tg, extra: [...(tg.extra || []), { ...ex, at: hm(s0), min: len }] }; }
+    return ex.key;
+  }
   const base = it.base || it.key, part = it.end - it.start, shared = p0.items.some((i) => i !== it && (i.base || i.key) === base);
-  let nd;
-  if (shared) { const mn = { ...(st.meno || {}) }; mn[base] = [...(mn[base] || []), { min: part, a: d, x: xkey }]; nd = { ...st, meno: mn }; }
-  else nd = { ...st, skip: { ...(st.skip || {}), [base]: { a: d, x: xkey } } };
-  S.giorni[d] = { ...nd, extra: [...(nd.extra || []), { key: xkey, label: it.label, min: len, cat: it.cat, da: d, at: hm(s0) }] };
+  if (shared) { const mn = { ...(st.meno || {}) }; mn[base] = [...(mn[base] || []), { min: part, a: T, x: xkey }]; S.giorni[d] = { ...st, meno: mn }; }
+  else S.giorni[d] = { ...st, skip: { ...(st.skip || {}), [base]: { a: T, x: xkey } } };
+  const tg = S.giorni[T] || {};
+  S.giorni[T] = { ...tg, extra: [...(tg.extra || []), { key: xkey, label: it.label, min: len, cat: it.cat, da: d, at: hm(s0) }] };
   return xkey;
 }
-/* Piano di prova con il blocco in un altro posto: lo stato torna com'era subito dopo. */
-function previewPlan(p0, it, s0, len) {
-  const d = p0.date, keep = { g: S.giorni[d], m: S.miei, n: S.nascosti };
-  const k = applyAdj(p0, it, s0, len, 'x_drag');
-  const pp = plan(d);
-  S.giorni[d] = keep.g; if (keep.g === undefined) delete S.giorni[d];
+/* Piani di prova (giorno di partenza e di arrivo) con il blocco altrove: lo stato torna com'era subito dopo. */
+function previewPlan(p0, it, T, s0, len) {
+  const d = p0.date, keep = { gd: S.giorni[d], gt: S.giorni[T], m: S.miei, n: S.nascosti };
+  const k = applyAdj(p0, it, T, s0, len, 'x_drag');
+  const plans = { [d]: plan(d) }; if (T !== d) plans[T] = plan(T);
+  const back = (x, v) => { if (v === undefined) delete S.giorni[x]; else S.giorni[x] = v; };
+  back(d, keep.gd); if (T !== d) back(T, keep.gt);
   if (S.miei !== keep.m || S.nascosti !== keep.n) { S.miei = keep.m; S.nascosti = keep.n; rebuildEvents(); }
-  return { pp, k };
+  return { plans, k };
 }
-function adjustItem(d, it, s0, len) {
-  const p0 = plan(d), part = it.end - it.start;
-  applyAdj(p0, it, s0, len, 'x' + Date.now().toString(36));
-  saveState(); render(); toast(`⏱️ ${fmt(s0)}–${fmt(s0 + len)}${len < part ? ` · −${dur(part - len)}` : ''}`);
-}
-/* ---------- modifica nella giornata: la giornata diventa in scala, il blocco segue il dito, gli altri si risistemano ---------- */
-let EDIT = null;
-function startEdit(d, it, src, ptr) {
-  if (EDIT) return;
-  const ol = src && src.closest('ol.tl'); if (!ol) { openAdjust(d, it); return; }
-  const p0 = plan(d), L = nowLogical(), PX = 1.5, SNAP = 5;
-  const wake = (p0.items.find((i) => i.key === 'sveglia') || { start: p0.D0 }).start, bed = (p0.items.find((i) => i.key === 'letto') || { start: p0.D1 + 45 }).start;
-  const A = Math.floor(Math.min(wake, it.start) / 60) * 60, B = Math.ceil(Math.max(bed, it.end) / 60) * 60, y = (m) => (m - A) * PX;
-  const o0 = it.start, l0 = it.end - it.start; let s0 = o0, len = l0;
-  /* posizioni di partenza nella lista, per l'animazione da lista a giornata in scala */
-  const from = {}; ol.querySelectorAll('li[data-k]').forEach((li) => { from[li.dataset.k] = li.getBoundingClientRect(); });
-  const grid = h('div', { class: 'eday', style: `height:${(B - A) * PX}px` });
-  for (let m = A; m <= B; m += 60) grid.append(h('div', { class: 'hl', style: `top:${y(m)}px` }, h('span', { text: fmt(m) })));
-  grid.append(h('i', { class: 'slp', style: `top:0;height:${y(wake)}px` }), h('i', { class: 'slp', style: `top:${y(bed)}px;bottom:0` }));
-  if (d === L.date && L.min > A && L.min < B) grid.append(h('div', { class: 'nowl', style: `top:${y(L.min)}px` }));
-  const nodes = new Map();
-  const shown = (i) => i.end > i.start && i.cat !== 'libero' && i.cat !== 'sonno';
-  const mk = (i) => h('div', { class: 'eb' + (isFix(i) ? ' fx' : '') + (i.meal ? ' ml' : '') + (p0.fatti[i.key] ? ' dn' : ''), 'data-cat': i.cat },
-    h('span', { class: 'ei', html: ic(emo(i)) }), h('b', { text: i.label }), h('span', { class: 'et' }));
-  const place = (el, i) => { el.style.top = y(i.start) + 'px'; el.style.height = Math.max(16, (i.end - i.start) * PX - 3) + 'px'; el.classList.toggle('tiny', (i.end - i.start) * PX < 34); el.querySelector('.et').textContent = `${fmt(i.start)}–${fmt(i.end)}`; };
-  const idOf = (i) => p0.date + i.key;
-  /* blocco che si trascina */
-  const tTop = h('i', { class: 'hd top' }), tBot = h('i', { class: 'hd bot' });
-  const dl = h('span', { class: 'et' });
-  const drag = h('div', { class: 'eb drag', 'data-cat': it.cat }, tTop, h('span', { class: 'ei', html: ic(emo(it)) }), h('b', { text: it.label }), dl, tBot);
-  const bar = h('div', { class: 'ebar' });
-  const bt = h('b', { class: 'eb-t' }), bl = h('span', { class: 'eb-l' }), bw = h('span', { class: 'eb-w' });
-  bar.append(h('div', { class: 'eb-txt' }, h('div', {}, bt, bl), bw),
-    h('button', { class: 'btn x2', type: 'button', html: ic('x'), 'aria-label': 'Annulla', onclick: () => endEdit(false) }),
-    h('button', { class: 'btn go', type: 'button', html: `${ic('check')}<span>Fatto</span>`, onclick: () => endEdit(true) }));
-  let lastKey = null, raf = 0;
-  const refresh = (force) => {
-    const key = s0 + ':' + len; if (!force && key === lastKey) return; lastKey = key;
-    const { pp, k } = previewPlan(p0, it, s0, len);
-    const seen = new Set();
-    for (const i of pp.items) { if (!shown(i) || i.key === k) continue; const id = pp.date + i.key; seen.add(id);
-      let el = nodes.get(id); if (!el) { el = mk(i); el.classList.add('new'); grid.append(el); nodes.set(id, el); } place(el, i); }
-    for (const [id, el] of nodes) if (!seen.has(id)) { el.classList.add('gone'); setTimeout(() => el.remove(), 260); nodes.delete(id); }
-    const bad = pp.items.filter((i) => i.key !== k && isFix(i) && i.start < s0 + len && s0 < i.end && !it.meal);
-    drag.classList.toggle('bad', bad.length > 0);
-    bw.replaceChildren(...(bad.length ? [icEl('avviso'), 'Sopra ' + bad.map((i) => i.label).join(', ')] : []));
-    bw.classList.toggle('bad', bad.length > 0);
-  };
-  const draw = () => {
-    drag.style.top = y(s0) + 'px'; drag.style.height = Math.max(22, len * PX - 2) + 'px'; drag.classList.toggle('tiny', len * PX < 38);
-    dl.textContent = `${fmt(s0)}–${fmt(s0 + len)}`; bt.textContent = `${fmt(s0)} → ${fmt(s0 + len)}`;
-    bl.textContent = dur(len) + (len !== l0 ? ` (${len < l0 ? '−' : '+'}${dur(Math.abs(len - l0))})` : '');
-    cancelAnimationFrame(raf); raf = requestAnimationFrame(() => refresh());
-  };
-  /* sostituisce la lista con la giornata in scala, al suo posto */
-  const wrap = h('div', { class: 'ewrap' }, grid);
-  ol.before(wrap); ol.style.display = 'none'; grid.append(drag); document.body.append(bar); document.body.classList.add('editing');
-  refresh(true); draw();
-  /* il blocco resta sotto il dito: allinea lo scorrimento alla riga premuta */
-  { const r0 = from[idOf(it)]; if (r0) { const dy = drag.getBoundingClientRect().top - r0.top; window.scrollTo({ top: scrollY + dy, behavior: 'instant' }); } }
-  for (const [id, el] of nodes) { const r0 = from[id]; if (!r0) continue; const r1 = el.getBoundingClientRect();
-    el.animate([{ transform: `translate(${r0.left - r1.left}px, ${r0.top - r1.top}px)`, opacity: .6 }, { transform: 'none', opacity: 1 }], { duration: 320, easing: 'cubic-bezier(.2,.9,.3,1)' }); }
-  { const r0 = from[idOf(it)], r1 = drag.getBoundingClientRect(); if (r0) drag.animate([{ transform: `translate(${r0.left - r1.left}px, ${r0.top - r1.top}px) scale(.96)` }, { transform: 'none' }], { duration: 260, easing: 'cubic-bezier(.2,.9,.3,1)' }); }
-  /* trascinamento con il dito (touch) o il mouse, anche continuando la pressione lunga */
-  let G = null;
-  const gridTop = () => grid.getBoundingClientRect().top;
-  const onMove = (cy) => { if (!G) return; G.cy = cy;
-    const m = (cy - gridTop()) / PX + A;
-    if (G.mode === 'move') s0 = Math.min(B - len, Math.max(A, Math.round((m - G.off) / SNAP) * SNAP));
-    else if (G.mode === 'bot') len = Math.max(15, Math.min(B - s0, Math.round((m - G.off - s0) / SNAP) * SNAP));
-    else { const e2 = s0 + len, ns = Math.min(e2 - 15, Math.max(A, Math.round((m - G.off) / SNAP) * SNAP)); s0 = ns; len = e2 - ns; }
-    draw(); };
-  const tick = () => { if (!G) return; const vh = innerHeight, cy = G.cy, top = 90, botLim = vh - 170;
-    const v = cy < top ? -Math.min(18, (top - cy) / 4 + 2) : cy > botLim ? Math.min(18, (cy - botLim) / 4 + 2) : 0;
-    if (v) { scrollBy(0, v); onMove(cy); } G.loop = requestAnimationFrame(tick); };
-  const begin = (mode, cy) => { const m = (cy - gridTop()) / PX + A; G = { mode, off: mode === 'bot' ? m - (s0 + len) : m - s0, cy }; drag.classList.add('lift'); G.loop = requestAnimationFrame(tick); };
-  const finish = () => { if (!G) return; cancelAnimationFrame(G.loop); G = null; drag.classList.remove('lift'); refresh(true); };
-  const tm = (e) => { if (!G) return; if (e.cancelable) e.preventDefault(); onMove(e.touches[0].clientY); };
-  const pm = (e) => { if (G && e.pointerType === 'mouse') onMove(e.clientY); };
-  const te = () => finish();
-  document.addEventListener('touchmove', tm, { passive: false }); document.addEventListener('touchend', te); document.addEventListener('touchcancel', te);
-  document.addEventListener('pointermove', pm); document.addEventListener('pointerup', (e) => { if (e.pointerType === 'mouse') finish(); });
-  const startOn = (el, mode) => {
-    el.addEventListener('touchstart', (e) => { e.stopPropagation(); begin(mode, e.touches[0].clientY); }, { passive: true });
-    el.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') return; e.preventDefault(); e.stopPropagation(); begin(mode, e.clientY); });
-  };
-  startOn(tTop, 'top'); startOn(tBot, 'bot'); startOn(drag, 'move');
-  if (ptr) begin('move', ptr.y);
-  EDIT = { d, it, get s0() { return s0; }, get len() { return len; }, o0, l0, wrap, bar, cleanup: () => {
-    document.removeEventListener('touchmove', tm); document.removeEventListener('touchend', te); document.removeEventListener('touchcancel', te); document.removeEventListener('pointermove', pm);
-    if (G) cancelAnimationFrame(G.loop); G = null; } };
-}
-function endEdit(save) {
-  const E = EDIT; if (!E) return; E.cleanup(); EDIT = null;
-  E.bar.classList.add('out'); setTimeout(() => E.bar.remove(), 220); document.body.classList.remove('editing');
-  if (save && (E.s0 !== E.o0 || E.len !== E.l0)) adjustItem(E.d, E.it, E.s0, E.len); else render();
+function adjustItem(d, it, s0, len, T) {
+  T = T || d; const p0 = plan(d), part = it.end - it.start;
+  applyAdj(p0, it, T, s0, len, 'x' + Date.now().toString(36));
+  saveState(); render(); toast(`📅 ${T !== d ? dayShort(T) + ' · ' : ''}${fmt(s0)}–${fmt(s0 + len)}${len < part ? ` · −${dur(part - len)}` : ''}`);
 }
 function openAdjust(d, it) {
   const p = plan(d), L = nowLogical(), PX = 1.6, SNAP = 5;
@@ -2181,7 +2252,7 @@ function openDay(d) {
 }
 function openItem(d, it) {
   const p = plan(d), L = nowLogical(), rec = p.fatti[it.key], done = !!rec, today = d === L.date, future = d > L.date;
-  const nodes = [xBtn(), h('span', { class: 'eyebrow', 'data-cat': it.cat, text: CATN[it.cat] || '' }), h('h2', { text: it.label }),
+  const nodes = [xBtn(), h('span', { class: 'eyebrow', 'data-cat': dcat(it), text: CATN[it.cat] || '' }), h('h2', { text: it.label }),
     h('p', { class: 'muted', text: `${dayShort(d)} · ${fmt(it.start)} - ${fmt(it.end)} · ${dur(it.end - it.start)}` }), it.sub ? h('p', { class: 'small muted', text: it.sub }) : null];
   if (it.task && future && canAhead(it)) {
     nodes.push(h('button', { class: 'btn go wide', type: 'button', text: 'L\'ho già fatto', onclick: () => { doneAhead(d, it); closeSheet(); } }));
@@ -2197,7 +2268,7 @@ function openItem(d, it) {
     nodes.push(h('div', { class: 'card' }, h('b', { text: 'Quanto ci hai messo?' }), h('span', { class: 'small muted', text: 'Se hai finito prima, i blocchi attaccati dopo partono prima.' }),
       h('div', { class: 'chips' }, opts.map((m) => h('button', { class: 'chip', type: 'button', 'aria-pressed': String(m === len), text: dur(m), onclick: () => { setDoneLen(d, it, m); closeSheet(); } })))));
   }
-  if (canAdjust(it) && !future) nodes.push(h('button', { class: 'btn wide', type: 'button', text: 'Sposta o accorcia nella giornata', onclick: () => { closeSheet(); const row = document.querySelector(`#view li[data-k="${CSS.escape(d + it.key)}"] > *`); if (row) { row.scrollIntoView({ block: 'center', behavior: 'smooth' }); setTimeout(() => startEdit(d, it, row, null), 350); } else openAdjust(d, it); } }));
+  if (canAdjust(it)) nodes.push(h('button', { class: 'btn wide', type: 'button', text: 'Sposta o accorcia nella giornata', onclick: () => { closeSheet(); const row = document.querySelector(`#view .blk[data-k="${CSS.escape(d + it.key)}"]`); if (row) { row.scrollIntoView({ block: 'center', behavior: 'smooth' }); setTimeout(() => startDrag(d, it, row, null), 350); } else openAdjust(d, it); } }));
   if (it.task && it.key !== 'uscita' && !done) nodes.push(h('button', { class: 'btn wide', type: 'button', text: 'Sposta più tardi o un altro giorno', onclick: () => openMove(d, it) }));
   if (it.ev) nodes.push(h('button', { class: 'btn wide', type: 'button', text: it.flex ? 'Fissa l\'orario' : 'Modifica', onclick: () => openEvent(it.ev) }));
   const more = h('div', { class: 'btns' });
@@ -2213,16 +2284,16 @@ function openEvent(ev, pre = {}) {
   const L = nowLogical(), isNew = !ev;
   const e = ev || { titolo: '', tipo: 'impegno', data: pre.data || L.date, inizio: pre.inizio || '', durata: 60 };
   let tipo = e.tipo === 'scadenza' || e.tipo === 'festa' ? 'promemoria' : e.tipo, data = e.data, ini = e.flessibile ? '' : (e.inizio || ''), len = ev ? evLen(ev) : 60, rip = 1;
-  const TIPI = [['impegno', 'impegno', 'Impegno'], ['ripetizione', 'insegna', 'Ripetizione'], ['sociale', 'persone', 'Persone'], ['promemoria', 'campana', 'Promemoria']];
+  const TIPI = [['impegno', 'impegno', 'Impegno'], ['scuola', 'libro', 'Scuola'], ['lavoro', 'nerina', 'Lavoro'], ['palestra', 'pesi', 'Palestra'], ['karate', 'karate', 'Karate'], ['ripetizione', 'insegna', 'Ripetizione'], ['sociale', 'persone', 'Persone'], ['salute', 'salute', 'Salute'], ['promemoria', 'campana', 'Promemoria']];
   const pick = (box, sel) => box.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === sel)));
   const title = h('input', { id: 'ev-t', class: 'bigin', type: 'text', value: e.titolo, placeholder: 'Cosa devi fare?', autocomplete: 'off' });
   const recent = [...new Map([...S.miei].reverse().map((x) => [x.titolo.toLowerCase(), x])).values()].slice(0, 5);
   const recentBox = isNew && recent.length ? h('div', { class: 'chips' }, recent.map((x) => h('button', { class: 'chip soft', type: 'button', text: x.titolo, onclick: () => { title.value = x.titolo; tipo = x.tipo; len = evLen(x); if (x.dove) where.value = x.dove; pick(tiles, tiles.querySelector(`[data-t="${tipo}"]`)); pick(lenBox, lenBox.querySelector(`[data-m="${len}"]`)); upd(); } }))) : null;
-  const tiles = h('div', { class: 'tiles' }, TIPI.map(([v, i, t]) => h('button', { type: 'button', 'data-t': v, 'aria-pressed': String(v === tipo), onclick: (x) => { tipo = v; pick(tiles, x.currentTarget); upd(); } }, h('span', { html: ic(i) }), t)));
+  const tiles = h('div', { class: 'tiles' }, TIPI.map(([v, i, t]) => h('button', { type: 'button', 'data-t': v, 'data-cat': dcat({ cat: evCat({ tipo: v }), ev: { tipo: v } }), 'aria-pressed': String(v === tipo), onclick: (x) => { tipo = v; pick(tiles, x.currentTarget); upd(); } }, h('span', { html: ic(i) }), t)));
   /* giorni: striscia che scorre, con i pallini degli impegni */
   const strip = h('div', { class: 'daypick' }, [...Array(35)].map((_, i) => { const d = addDays(L.date, i), n = dayInfo(plan(d)).fixed.length, dd = parseISO(d);
     return h('button', { type: 'button', 'data-d': d, 'aria-pressed': String(d === data), onclick: (x) => { data = d; dIn.value = d; pick(strip, x.currentTarget); upd(); } },
-      h('small', { text: i === 0 ? 'Oggi' : i === 1 ? 'Dom' : WDS[dd.getDay()] }), h('b', { text: String(dd.getDate()) }), h('span', { class: 'cdots' }, [...Array(Math.min(n, 3))].map(() => h('i')))); }));
+      h('small', { text: i === 0 ? 'Oggi' : i === 1 ? 'Domani' : WDS[dd.getDay()] }), h('b', { text: String(dd.getDate()) }), h('span', { class: 'cdots' }, [...Array(Math.min(n, 3))].map(() => h('i')))); }));
   const dIn = h('input', { type: 'date', value: data, class: 'mini-in', style: 'align-self:flex-start', 'aria-label': 'Altra data', onchange: () => { if (!dIn.value) return; data = dIn.value; pick(strip, strip.querySelector(`[data-d="${data}"]`)); upd(); } });
   const preview = h('div', { class: 'evprev' });
   const tIn = h('input', { type: 'time', value: ini, class: 'mini-in', step: 300, 'aria-label': 'Ora precisa', onchange: () => { ini = tIn.value; upd(); } });
@@ -2244,7 +2315,7 @@ function openEvent(ev, pre = {}) {
     const mealHit = mark ? p0.items.filter((i) => i.meal && i.start < mark[1] && mark[0] < i.end) : [];
     preview.replaceChildren(...[
       h('div', { class: 'dp-h' }, h('b', { text: dayLong(data) }), h('span', { class: 'lvl', html: lvlBars(loadLevel(p0.load.mente), loadLevel(p0.load.mente) >= 4) + `<span>${loadWord(p0.load.mente)}</span>` })),
-      inf.fixed.length ? h('div', { class: 'fxlist' }, inf.fixed.map((it) => h('div', { class: 'fxrow', 'data-cat': it.cat }, h('span', { class: 'fxi', html: ic(emo(it)) }), h('b', { class: 't', text: it.flex ? 'da fissare' : `${fmt(it.start)}–${fmt(it.end)}` }), h('span', { class: 'grow', text: it.label })))) : h('div', { class: 'dp-free ih' }, icEl('check'), 'Nessun impegno fisso'),
+      inf.fixed.length ? h('div', { class: 'fxlist' }, inf.fixed.map((it) => h('div', { class: 'fxrow', 'data-cat': dcat(it) }, h('span', { class: 'fxi', html: ic(emo(it)) }), h('b', { class: 't', text: it.flex ? 'da fissare' : `${fmt(it.start)}–${fmt(it.end)}` }), h('span', { class: 'grow', text: it.label })))) : h('div', { class: 'dp-free ih' }, icEl('check'), 'Nessun impegno fisso'),
       tipo !== 'promemoria' ? dayStrip(p0, { mark, clash: clash.length > 0, pick: (m) => { ini = hm(m); tIn.value = ini; upd(); } }) : null,
       clash.length ? h('div', { class: 'warnline ih' }, icEl('avviso'), `Si sovrappone a ${clash.map((c2) => `${c2.label} (${fmt(c2.start)}–${fmt(c2.end)})`).join(', ')}`) : null,
       !clash.length && (moves.length || mealHit.length) ? h('div', { class: 'okline ih' }, icEl('stelle'), [moves.length ? (() => { const u = [...new Set(moves.map((t) => t.label))]; return `${u.join(', ')} ${u.length === 1 ? 'si sposta da solo' : 'si spostano da soli'}`; })() : '', mealHit.length ? 'il pasto si sposta' : ''].filter(Boolean).join(' · ')) : null].filter(Boolean));
@@ -2379,31 +2450,295 @@ function openSettings() {
     h('button', { class: 'btn ghost', type: 'button', text: 'Cambia la parola chiave', onclick: () => { try { localStorage.removeItem(LS.pass); } catch (e) { /* niente */ } closeSheet(); showWelcome(); } })]);
 }
 
+
+/* ===================== Giorno, Settimana, Mese: orari in scala ===================== */
+function dcat(i) {
+  if (i.key === 'karate' || (i.ev && i.ev.tipo === 'karate')) return 'karate';
+  if (i.ev && i.ev.tipo === 'salute') return 'salute';
+  return { nerina: 'lavoro', studio: 'scuola', corpo: 'palestra', sociale: 'persone', impegno: 'impegno', ripetizione: 'ripetizione', pausa: 'pasto', viaggio: 'viaggio', sonno: 'sonno', libero: 'libero', promemoria: 'promemoria', scadenza: 'promemoria', festa: 'promemoria' }[i.cat] || 'impegno';
+}
+let dayD = null, weekM = null;
+const PXD = 1.15, PXW = 0.62;
+function clearHero() { if (heroKey === null && !$('#hero-slot').firstChild) return; $('#hero-slot').replaceChildren(); heroKey = null; const tc = document.querySelector('meta[name="theme-color"]'); if (tc) tc.setAttribute('content', getComputedStyle(document.body).backgroundColor); }
+function appBar(title, sub, today) {
+  return h('div', { class: 'abar' },
+    h('h1', { text: title }),
+    h('div', { class: 'ab-r' }, h('span', { class: 'ab-s', text: sub || '' }),
+      h('div', { class: 'ab-n' }, today ? h('button', { class: 'ab-today', type: 'button', text: 'Oggi', onclick: today }) : null,
+        h('button', { class: 'ab-arr', type: 'button', 'aria-label': 'Prima', html: ic('freccia', 'flip'), onclick: () => swipeNav(-1) }),
+        h('button', { class: 'ab-arr', type: 'button', 'aria-label': 'Dopo', html: ic('freccia'), onclick: () => swipeNav(1) }))));
+}
+const sleepOf = (p) => [(p.items.find((i) => i.key === 'sveglia') || { start: p.D0 }).start, (p.items.find((i) => i.key === 'letto') || { start: p.D1 + 45 }).start];
+function gridRange(plans) {
+  let A = 1440, B = 0;
+  for (const p of plans) { const [w, b] = sleepOf(p); A = Math.min(A, w); B = Math.max(B, b); for (const i of p.items) if (i.end > i.start && i.cat !== 'libero') { A = Math.min(A, i.start); B = Math.max(B, i.end); } }
+  return [Math.floor(Math.min(A, 8 * 60) / 60) * 60, Math.ceil(Math.max(B, 23 * 60) / 60) * 60];
+}
+const shownI = (i) => i.end > i.start && i.cat !== 'libero' && i.cat !== 'sonno';
+function placeBlk(el, i, o) {
+  const hpx = (i.end - i.start) * o.px;
+  el.style.top = (i.start - o.A) * o.px + 'px'; el.style.height = Math.max(o.week ? 5 : 14, hpx - (o.week ? 1 : 2)) + 'px';
+  el.classList.toggle('xs', hpx < 30); el.classList.toggle('sm', hpx >= 30 && hpx < 52);
+  const t = el.querySelector('.bh'); if (t) t.textContent = `${fmt(i.start)}–${fmt(i.end)}`;
+}
+const SHORT = { 'Computer Programming': 'CP', 'Computational Logic': 'CL', 'Analisi': 'Analisi', 'Fisica': 'Fisica', 'KRR': 'KRR' };
+const shortLabel = (i) => i.cat === 'nerina' ? i.label.replace('Nerina · ', 'N·') : i.cat === 'studio' ? (SHORT[i.label] || i.label) : i.key === 'uscita' ? 'Fuori' : i.label;
+function blockEl(p, i, o) {
+  const done = !!p.fatti[i.key];
+  const running = o.now != null && i.start <= o.now && o.now < i.end && !done;
+  const late = o.now != null && i.end <= o.now && i.task && !done && !i.ev && !FIXED_KEYS.includes(i.key);
+  const el = h('div', { class: 'blk' + (done ? ' done' : '') + (i.meal ? ' meal' : '') + (isFix(i) ? ' fix' : '') + (i.flex ? ' flex' : '') + (running ? ' run' : '') + (late ? ' late' : ''), 'data-cat': dcat(i), 'data-k': p.date + i.key, role: 'button', 'aria-label': `${i.label}, ${fmt(i.start)}–${fmt(i.end)}${done ? ', fatto' : ''}` });
+  if (o.week) el.append(...[h('b', { class: 'wl', text: i.meal ? '' : shortLabel(i) }), done ? h('span', { class: 'wck', html: ic('check') }) : null].filter(Boolean));
+  else {
+    el.append(h('span', { class: 'bi', html: ic(emo(i)) }), h('span', { class: 'bt' }, ...[h('b', { text: i.label }), h('span', { class: 'bh' }), i.sub && (i.moved || i.flex || i.bib || /^Recupero/.test(i.sub)) ? h('span', { class: 'bs', text: i.sub }) : null].filter(Boolean)));
+    if (i.task && o.check) el.append(h('button', { class: 'bchk', type: 'button', 'aria-pressed': String(done), 'aria-label': done ? 'Segna da fare' : 'Segna fatto', html: ic('check'), onclick: (e) => { e.stopPropagation(); if (!afterLP()) toggleDone(p.date, i.key, undefined, i); } }));
+  }
+  placeBlk(el, i, o);
+  el.addEventListener('click', () => { if (afterLP() || EDIT) return; if (i.meal) openMeal(p.date, i.key); else openItem(p.date, i); });
+  if (!o.noEdit && canAdjust(i)) longPress(el, (ptr) => startDrag(p.date, i, el, ptr));
+  return el;
+}
+function colEl(p, o) {
+  const col = h('div', { class: 'tt-col' + (p.date === nowLogical().date ? ' today' : ''), 'data-d': p.date });
+  const [w, b] = sleepOf(p);
+  if (w > o.A) col.append(h('i', { class: 'slp', style: `top:0;height:${(w - o.A) * o.px}px` }));
+  if (b < o.B) col.append(h('i', { class: 'slp', style: `top:${(b - o.A) * o.px}px;bottom:0` }));
+  if (o.now != null && o.now > o.A && o.now < o.B) col.append(h('i', { class: 'nowl', style: `top:${(o.now - o.A) * o.px}px` }));
+  for (const i of p.items) if (shownI(i)) col.append(blockEl(p, i, o));
+  return col;
+}
+function ttGrid(plans, o) {
+  const [A, B] = gridRange(plans), L = nowLogical();
+  const hours = h('div', { class: 'tt-h' }); for (let m = A; m < B; m += 60) hours.append(h('span', { style: `top:${(m - A) * o.px}px`, text: o.week ? String(Math.floor(m / 60) % 24) : fmt(m) }));
+  const cols = h('div', { class: 'tt-cols' }, plans.map((p) => colEl(p, { ...o, A, B, now: p.date === L.date ? L.min : null, check: p.date <= L.date })));
+  return h('div', { class: 'tt ' + (o.week ? 'week' : 'day'), 'data-a': A, 'data-b': B, 'data-px': o.px, style: `--hh:${60 * o.px}px;height:${(B - A) * o.px}px` }, hours, cols);
+}
+function weekStrip(d) {
+  const L = nowLogical(), m = mondayOf(d);
+  return h('div', { class: 'wstrip' }, [...Array(7)].map((_, i) => { const x = addDays(m, i), dd = parseISO(x), n = dayInfo(plan(x)).fixed.length;
+    return h('button', { type: 'button', class: (x === d ? 'sel' : '') + (x === L.date ? ' today' : ''), onclick: () => { if (x !== dayD) slideTo(x > dayD ? 1 : -1, () => { dayD = x; }); } },
+      h('small', { text: WDS[dd.getDay()].slice(0, 1) }), h('b', { text: String(dd.getDate()) }), h('span', { class: 'cdots' }, [...Array(Math.min(n, 3))].map(() => h('i')))); }));
+}
+function statusRow(p, L) {
+  const m = mood(p, L), C = 2 * Math.PI * 17;
+  return h('div', { class: 'srow' },
+    h('div', { class: 'sring', html: `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" class="r0"/><circle cx="20" cy="20" r="17" class="r1" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - m.pct)}"/></svg><span>${ic(m.e)}</span>` }),
+    h('div', { class: 'st' }, h('b', { text: m.t }), h('span', { text: m.line })),
+    chipsEl(dayChips(p, true).slice(0, 3)));
+}
+function viewGiorno() {
+  const L = nowLogical(); if (!dayD) dayD = L.date;
+  const d = dayD, p = plan(d), isToday = d === L.date, o = ornOf(d);
+  clearHero();
+  const title = isToday ? 'Oggi' : d === addDays(L.date, 1) ? 'Domani' : d === addDays(L.date, -1) ? 'Ieri' : cap(WD[dowOf(d)]);
+  const sub = `${isToday || d === addDays(L.date, 1) || d === addDays(L.date, -1) ? cap(WD[dowOf(d)]) + ' ' : ''}${parseISO(d).getDate()} ${MO[parseISO(d).getMonth()]}${o ? ' · ' + o.d.code : ''}`;
+  const out = [appBar(title, sub, isToday ? null : () => slideTo(d > L.date ? -1 : 1, () => { dayD = L.date; })), weekStrip(d)];
+  if (isToday) {
+    out.push(statusRow(p, L));
+    const open = p.tasks.filter((t) => !p.fatti[t.key]);
+    const cur = open.find((t) => t.start <= L.min && L.min < t.end), nxt = open.find((t) => t.start > L.min);
+    const late = open.filter((t) => t.end <= L.min && !t.ev && !FIXED_KEYS.includes(t.key));
+    const focus = cur || nxt;
+    if (focus) out.push(h('section', { class: 'nowc', 'data-cat': dcat(focus) },
+      h('span', { class: 'nc-i', html: ic(emo(focus)) }),
+      h('div', { class: 'nc-t' }, h('span', { class: 'nc-e', text: cur ? `Adesso · fino alle ${fmt(cur.end)}` : `Tra ${dur(nxt.start - L.min)} · ${fmt(nxt.start)}` }), h('b', { text: focus.label }),
+        cur ? h('div', { class: 'tbar' }, h('i', { style: `width:${Math.min(100, 100 * (L.min - cur.start) / (cur.end - cur.start)).toFixed(1)}%` })) : null),
+      cur ? h('button', { class: 'btn go', type: 'button', html: `${ic('check')}<span>Fatto</span>`, onclick: () => toggleDone(d, cur.key, true, cur) })
+        : canAhead(nxt) && nxt.start - L.min >= 10 ? h('button', { class: 'btn', type: 'button', html: `${ic('play')}<span>Inizia</span>`, onclick: () => doNow(d, nxt) }) : null));
+    if (late.length) out.push(h('button', { class: 'banner warn', type: 'button', onclick: () => reflow(d) }, h('span', { class: 'be', html: ic('cronometro') }), h('b', { text: `${late.length} ${late.length === 1 ? 'blocco indietro' : 'blocchi indietro'}` }), h('span', { class: 'chev' }, icEl('stelle'), 'Riorganizza')));
+    if (L.min >= 21 * 60 && !p.st.chiusa) out.push(h('button', { class: 'banner', type: 'button', onclick: openClose }, h('span', { class: 'be', html: ic('luna') }), h('b', { text: 'Chiudi la giornata' }), h('span', { class: 'chev', text: '1 min ›' })));
+    if (!p.st.energia && L.min < 21 * 60 && p.tasks.length) out.push(energyCard(d));
+  }
+  const ub = unplacedBox(p); if (ub) out.push(ub);
+  if (!lsGet('ritmo:lp')) out.push(h('p', { class: 'hint-lp ih' }, icEl('matita'), 'Tieni premuto un blocco per spostarlo, anche su un altro giorno'));
+  out.push(ttGrid([p], { px: PXD }));
+  const sk = skippedLine(p); if (sk) out.push(sk);
+  const rc = ritoCard(d, !isToday); if (rc) out.push(rc);
+  const nr = nerinaCard(d, true); if (nr) out.push(nr);
+  return out;
+}
+function viewSettimana() {
+  const L = nowLogical(); if (!weekM) weekM = mondayOf(L.date);
+  clearHero();
+  const days = [...Array(7)].map((_, i) => addDays(weekM, i)), plans = days.map(plan), a = parseISO(days[0]), b = parseISO(days[6]);
+  const title = 'Settimana', rel = weekM === mondayOf(L.date) ? ' · questa' : weekM === addDays(mondayOf(L.date), 7) ? ' · prossima' : weekM === addDays(mondayOf(L.date), -7) ? ' · scorsa' : '';
+  const sub = (a.getMonth() === b.getMonth() ? `${a.getDate()}–${b.getDate()} ${MO[a.getMonth()]}` : `${a.getDate()} ${MO[a.getMonth()].slice(0, 3)} – ${b.getDate()} ${MO[b.getMonth()].slice(0, 3)}`) + rel;
+  const head = h('div', { class: 'wk-h' }, h('span'), plans.map((p) => { const dd = parseISO(p.date), lv = loadLevel(p.load.mente);
+    return h('button', { type: 'button', class: p.date === L.date ? 'today' : '', onclick: () => { dayD = p.date; select('giorno'); } }, h('small', { text: WDS[dd.getDay()] }), h('b', { text: String(dd.getDate()) }), h('span', { class: 'wl-l', html: lvlBars(lv, lv >= 4) })); }));
+  return [appBar(title, sub, weekM !== mondayOf(L.date) ? () => slideTo(weekM > L.date ? -1 : 1, () => { weekM = mondayOf(L.date); }) : null),
+    h('div', { class: 'wk' }, head, ttGrid(plans, { px: PXW, week: true })),
+    ...weekSummary(days, plans)];
+}
+/* scorrere a destra e a sinistra per cambiare giorno, settimana o mese */
+function navNow(dir) {
+  const L = nowLogical();
+  if (tab === 'giorno') dayD = addDays(dayD || L.date, dir);
+  else if (tab === 'settimana') weekM = addDays(weekM || mondayOf(L.date), 7 * dir);
+  else if (tab === 'mese') {
+    if (calMode === 'orn') { const cur = ornOf(L.date); const mi = monthSel != null ? monthSel : cur ? cur.mi : 0; monthSel = Math.max(0, Math.min(6, mi + dir)); }
+    else { const base = parseISO(calMonth || L.date.slice(0, 8) + '01'), nm = new Date(base.getFullYear(), base.getMonth() + dir, 1); calMonth = iso(nm);
+      const dd = parseISO(calDay || L.date).getDate(), last = new Date(nm.getFullYear(), nm.getMonth() + 1, 0).getDate(); calDay = iso(new Date(nm.getFullYear(), nm.getMonth(), Math.min(dd, last))); }
+  }
+}
+function slideTo(dir, change) {
+  const v = $('#view');
+  if (calm()) { change(); render(); return; }
+  v.animate([{ transform: 'none', opacity: 1 }, { transform: `translateX(${-dir * 36}px)`, opacity: 0 }], { duration: 110, easing: 'ease-in' }).onfinish = () => {
+    change(); render(); v.animate([{ transform: `translateX(${dir * 36}px)`, opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 220, easing: 'cubic-bezier(.2,.9,.3,1)' }); };
+}
+function swipeNav(dir) { slideTo(dir, () => navNow(dir)); }
+(() => {
+  const v = $('#view'); let x0 = 0, y0 = 0, dx = 0, mode = null, t0 = 0;
+  v.addEventListener('touchstart', (e) => { if (EDIT || e.touches.length > 1 || e.target.closest('.cards-x,.daypick,.seg,input,textarea,select')) { mode = 'no'; return; } x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; dx = 0; mode = null; t0 = performance.now(); }, { passive: true });
+  v.addEventListener('touchmove', (e) => {
+    if (mode === 'no' || EDIT) { if (mode === 'h') { v.style.transform = ''; v.style.opacity = ''; } mode = 'no'; return; }
+    const x = e.touches[0].clientX - x0, y = e.touches[0].clientY - y0;
+    if (!mode) { if (Math.abs(x) > 12 && Math.abs(x) > Math.abs(y) * 1.4) mode = 'h'; else if (Math.abs(y) > 10) mode = 'no'; }
+    if (mode === 'h') { if (e.cancelable) e.preventDefault(); dx = x; v.style.transition = 'none'; v.style.transform = `translateX(${x * .6}px)`; v.style.opacity = String(1 - Math.min(.45, Math.abs(x) / 700)); }
+  }, { passive: false });
+  const end = () => {
+    if (mode !== 'h') { mode = null; return; } mode = null;
+    const fast = Math.abs(dx) / Math.max(1, performance.now() - t0) > .45, go = Math.abs(dx) > 70 || (fast && Math.abs(dx) > 35);
+    v.style.transition = 'transform .16s ease-in, opacity .16s';
+    if (!go) { v.style.transform = ''; v.style.opacity = ''; return; }
+    const dir = dx < 0 ? 1 : -1; v.style.transform = `translateX(${-dir * 110}px)`; v.style.opacity = '0';
+    setTimeout(() => { v.style.transition = 'none'; navNow(dir); render(); v.style.transform = `translateX(${dir * 70}px)`; void v.offsetWidth;
+      v.style.transition = 'transform .24s cubic-bezier(.2,.9,.3,1), opacity .24s'; v.style.transform = ''; v.style.opacity = ''; }, 150);
+  };
+  v.addEventListener('touchend', end); v.addEventListener('touchcancel', end);
+})();
+
+/* ---------- trascinare un blocco nella giornata o su un altro giorno ---------- */
+let EDIT = null;
+function startDrag(d, it, srcEl, ptr) {
+  if (EDIT) return;
+  const week = !!srcEl.closest('.tt.week'), p0 = plan(d);
+  const lockDay = !!(it.meal || p0.fatti[it.key]);
+  const o0 = it.start, l0 = it.end - it.start, SNAP = 5;
+  let T = d, s0 = o0, len = l0, G = null, edgeAt = 0, edgeDir = 0, raf = 0, lastKey = '';
+  const touched = new Set([d]);
+  const hold = document.getElementById('dragHold') || document.body.appendChild(h('div', { id: 'dragHold', 'aria-hidden': 'true' }));
+  const r0 = srcEl.getBoundingClientRect();
+  hold.append(srcEl);
+  const dl = h('span', { class: 'bh' }), tTop = h('i', { class: 'hd top' }), tBot = h('i', { class: 'hd bot' });
+  const drag = h('div', { class: 'blk drag' + (week ? ' wk' : ''), 'data-cat': dcat(it) }, tTop, week ? h('b', { class: 'wl', text: shortLabel(it) }) : h('span', { class: 'bi', html: ic(emo(it)) }), week ? dl : h('span', { class: 'bt' }, h('b', { text: it.label }), dl), tBot);
+  const bt = h('b', { class: 'eb-t' }), bl = h('span', { class: 'eb-l' }), bw = h('span', { class: 'eb-w' });
+  const bar = h('div', { class: 'ebar' }, h('div', { class: 'eb-txt' }, h('div', {}, bt, bl), bw),
+    h('button', { class: 'btn x2', type: 'button', html: ic('x'), 'aria-label': 'Annulla', onclick: () => endDrag(false) }),
+    h('button', { class: 'btn go', type: 'button', html: `${ic('check')}<span>Fatto</span>`, onclick: () => endDrag(true) }));
+  document.body.append(bar); document.body.classList.add('editing');
+  const geo = () => { const g = document.querySelector('#view .tt'); return g ? { g, A: +g.dataset.a, B: +g.dataset.b, px: +g.dataset.px } : null; };
+  const colOf = (x) => document.querySelector(`#view .tt-col[data-d="${x}"]`);
+  const patchCol = (x, pp, k) => {
+    const col = colOf(x), q = geo(); if (!col || !q) return;
+    const o = { A: q.A, B: q.B, px: q.px, week, noEdit: true }, seen = new Set();
+    for (const i of pp.items) { if (!shownI(i) || (x === T && i.key === k)) continue; const id = x + i.key; seen.add(id);
+      let el = col.querySelector(`.blk[data-k="${CSS.escape(id)}"]:not(.drag)`);
+      if (!el) { el = blockEl(pp, i, o); el.classList.add('fresh'); col.append(el); }
+      el.classList.remove('gone'); placeBlk(el, i, o); }
+    col.querySelectorAll('.blk:not(.drag)').forEach((el) => { if (!seen.has(el.dataset.k)) el.classList.add('gone'); });
+  };
+  const update = (force) => {
+    const key = T + ':' + s0 + ':' + len; if (!force && key === lastKey) return; lastKey = key;
+    const { plans, k } = previewPlan(p0, it, T, s0, len); touched.add(T);
+    for (const x of touched) patchCol(x, plans[x] || plan(x), k);
+    const pt = plans[T], bad = it.meal ? [] : pt.items.filter((i) => i.key !== k && isFix(i) && i.start < s0 + len && s0 < i.end);
+    drag.classList.toggle('bad', bad.length > 0); bw.classList.toggle('bad', bad.length > 0);
+    bw.replaceChildren(...(bad.length ? [icEl('avviso'), 'Sopra ' + bad.map((i) => i.label).join(', ')] : []));
+  };
+  const draw = () => {
+    const q = geo(), col = colOf(T); if (!q || !col) return;
+    s0 = Math.max(q.A, Math.min(q.B - len, s0));
+    if (drag.parentNode !== col) col.append(drag);
+    drag.style.top = (s0 - q.A) * q.px + 'px'; drag.style.height = Math.max(week ? 10 : 22, len * q.px - 2) + 'px';
+    drag.classList.toggle('xs', len * q.px < 36);
+    dl.textContent = `${fmt(s0)}–${fmt(s0 + len)}`;
+    bt.textContent = `${fmt(s0)} → ${fmt(s0 + len)}`;
+    bl.textContent = (T !== d ? dayShort(T) + ' · ' : '') + dur(len) + (len !== l0 ? ` (${len < l0 ? '−' : '+'}${dur(Math.abs(len - l0))})` : '');
+    bl.classList.toggle('moved', T !== d);
+    cancelAnimationFrame(raf); raf = requestAnimationFrame(() => update());
+  };
+  /* cambia giorno (o settimana) quando il dito resta sul bordo */
+  const jump = (dir) => {
+    if (week) { weekM = addDays(weekM, 7 * dir); T = dir > 0 ? weekM : addDays(weekM, 6); }
+    else { T = addDays(T, dir); dayD = T; }
+    touched.clear(); touched.add(T); if (T === d || (week && mondayOf(d) === weekM)) touched.add(d);
+    paint(); const q = geo(); if (q) q.g.animate([{ transform: `translateX(${dir * 40}px)`, opacity: .3 }, { transform: 'none', opacity: 1 }], { duration: 240, easing: 'cubic-bezier(.2,.9,.3,1)' });
+    lastKey = ''; draw(); update(true);
+  };
+  const pick = (cx, cy) => {
+    const q = geo(); if (!q) return;
+    if (week && !lockDay) { for (const c of document.querySelectorAll('#view .tt-col')) { const r = c.getBoundingClientRect(); if (cx >= r.left && cx < r.right) { T = c.dataset.d; break; } } }
+    const col = colOf(T) || q.g, top = col.getBoundingClientRect().top, m = (cy - top) / q.px + q.A;
+    if (G.mode === 'move') s0 = Math.round((m - G.off) / SNAP) * SNAP;
+    else if (G.mode === 'bot') len = Math.max(15, Math.min(q.B - s0, Math.round((m - G.off - s0) / SNAP) * SNAP));
+    else { const e2 = s0 + len, ns = Math.min(e2 - 15, Math.max(q.A, Math.round((m - G.off) / SNAP) * SNAP)); s0 = ns; len = e2 - ns; }
+    if (G.mode === 'move' && !lockDay) { const dir = cx > innerWidth - 28 ? 1 : cx < 28 ? -1 : 0;
+      if (dir !== edgeDir) { edgeDir = dir; edgeAt = performance.now(); }
+      else if (dir && performance.now() - edgeAt > 480) { edgeAt = performance.now() + 200; jump(dir); } }
+    draw();
+  };
+  const tick = () => { if (!G) return; const cy = G.cy, top = 110, lim = innerHeight - 170;
+    const v = cy < top ? -Math.min(18, (top - cy) / 4 + 2) : cy > lim ? Math.min(18, (cy - lim) / 4 + 2) : 0;
+    if (v) scrollBy(0, v); pick(G.cx, cy); G.loop = requestAnimationFrame(tick); };
+  const begin = (mode, cx, cy) => { const q = geo(), col = colOf(T); if (!q || !col) return; const m = (cy - col.getBoundingClientRect().top) / q.px + q.A;
+    G = { mode, off: mode === 'bot' ? m - (s0 + len) : m - s0, cx, cy }; edgeDir = 0; drag.classList.add('lift'); G.loop = requestAnimationFrame(tick); };
+  const finish = () => { if (!G) return; cancelAnimationFrame(G.loop); G = null; drag.classList.remove('lift'); update(true); };
+  const tm = (e) => { if (!G) return; if (e.cancelable) e.preventDefault(); G.cx = e.touches[0].clientX; G.cy = e.touches[0].clientY; };
+  const pm = (e) => { if (G && e.pointerType === 'mouse') { G.cx = e.clientX; G.cy = e.clientY; } };
+  const pu = (e) => { if (e.pointerType === 'mouse') finish(); };
+  document.addEventListener('touchmove', tm, { passive: false }); document.addEventListener('touchend', finish); document.addEventListener('touchcancel', finish);
+  document.addEventListener('pointermove', pm); document.addEventListener('pointerup', pu);
+  const startOn = (el, mode) => {
+    el.addEventListener('touchstart', (e) => { e.stopPropagation(); begin(mode, e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+    el.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') return; e.preventDefault(); e.stopPropagation(); begin(mode, e.clientX, e.clientY); });
+  };
+  startOn(tTop, 'top'); startOn(tBot, 'bot'); startOn(drag, 'move');
+  EDIT = { cleanup: () => { document.removeEventListener('touchmove', tm); document.removeEventListener('touchend', finish); document.removeEventListener('touchcancel', finish); document.removeEventListener('pointermove', pm); document.removeEventListener('pointerup', pu); if (G) cancelAnimationFrame(G.loop); G = null; },
+    save: () => ({ d, it, T, s0, len, changed: T !== d || s0 !== o0 || len !== l0 }), bar, drag, srcEl };
+  draw(); update(true);
+  { const r1 = drag.getBoundingClientRect(); drag.animate([{ transform: `translate(${r0.left - r1.left}px, ${r0.top - r1.top}px)` }, { transform: 'none' }], { duration: 160, easing: 'ease-out' }); }
+  if (ptr) begin('move', ptr.x, ptr.y);
+}
+function endDrag(save) {
+  const E = EDIT; if (!E) return; E.cleanup(); EDIT = null;
+  const r = E.save(); E.bar.classList.add('out'); setTimeout(() => E.bar.remove(), 220); E.drag.remove(); E.srcEl.remove(); document.body.classList.remove('editing');
+  if (save && r.changed) { if (tab === 'giorno') dayD = r.T; adjustItem(r.d, r.it, r.s0, r.len, r.T); } else render();
+}
+
 /* ---------- navigazione ---------- */
-const TABS = ['oggi', 'domani', 'settimana', 'mese'];
+const TABS = ['giorno', 'settimana', 'mese'];
 function select(t) {
-  const go = () => { enterAnim = true; tab = TABS.includes(t) ? t : 'oggi'; TABS.forEach((x) => $('#t-' + x).setAttribute('aria-selected', String(x === tab))); render(); window.scrollTo(0, 0); };
+  const L0 = nowLogical();
+  if (t === 'oggi') { dayD = L0.date; t = 'giorno'; } else if (t === 'domani') { dayD = addDays(L0.date, 1); t = 'giorno'; }
+  const go = () => { enterAnim = true; tab = TABS.includes(t) ? t : 'giorno'; TABS.forEach((x) => $('#t-' + x).setAttribute('aria-selected', String(x === tab))); render(); window.scrollTo(0, 0); };
   if (document.startViewTransition && !$('#main').hidden && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.startViewTransition(go); else go();
 }
-TABS.forEach((t) => $('#t-' + t).addEventListener('click', () => { if (t === 'mese') { monthSel = null; if (tab === 'mese') { calDay = null; calMonth = null; } } select(t); }));
-$('#fab').addEventListener('click', () => openEvent(null, tab === 'mese' && calMode === 'cal' && calDay ? { data: calDay } : {}));
+TABS.forEach((t) => $('#t-' + t).addEventListener('click', () => {
+  const L0 = nowLogical();
+  if (tab === t) { if (t === 'giorno') dayD = L0.date; if (t === 'settimana') weekM = null; if (t === 'mese') { monthSel = null; calDay = null; calMonth = null; } }
+  select(t);
+}));
+$('#fab').addEventListener('click', () => openEvent(null, tab === 'giorno' && dayD ? { data: dayD } : tab === 'mese' && calMode === 'cal' && calDay ? { data: calDay } : {}));
 $('#gear').addEventListener('click', openSettings);
 $('#streak').addEventListener('click', () => { const L = nowLogical(); if ((S.giorni[L.date] || {}).chiusa) select('domani'); else openClose(); });
 let enterAnim = false;
-function render() {
-  if ($('#main').hidden || EDIT) return;
-  const v = tab === 'domani' ? viewDomani() : tab === 'settimana' ? viewSettimana() : tab === 'mese' ? viewMese() : viewOggi();
+function render() { if (EDIT) return; paint(); }
+function paint() {
+  if ($('#main').hidden) return;
+  const v = tab === 'settimana' ? viewSettimana() : tab === 'mese' ? viewMese() : viewGiorno();
   const view = $('#view');
   view.replaceChildren(...v.filter(Boolean));
   if (enterAnim) { enterAnim = false; view.classList.remove('enter'); void view.offsetWidth; view.classList.add('enter'); }
-  $('#fab').classList.toggle('ext', tab === 'oggi');
+  $('#fab').classList.toggle('ext', false);
   renderStreak();
 }
 function startTab() {
   const hs = location.hash.slice(1);
   if (hs === 'sera') { select('oggi'); openClose(); return; }
   if (hs === 'nuovo') { select('oggi'); openEvent(null); return; }
-  if (TABS.includes(hs)) { select(hs); return; }
+  if (TABS.includes(hs) || hs === 'oggi' || hs === 'domani') { select(hs); return; }
+  if (hs === 'calendario') { select('mese'); return; }
   const L = nowLogical();
   select(L.min >= 21 * 60 + 30 && (S.giorni[L.date] || {}).chiusa ? 'domani' : 'oggi');
 }

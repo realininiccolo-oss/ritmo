@@ -34,8 +34,8 @@ const NB = [
   { key: 'n2', label: 'Nerina · B2', sub: 'Lavoro a mano: account, prove, documenti' },
   { key: 'n3', label: 'Nerina · B3', sub: 'Prepara e lancia il prompt della notte' }
 ];
-const TASK_TIPI = ['impegno', 'ripetizione', 'sociale'];
-const CATN = { nerina: 'Lavoro · Nerina', studio: 'Scuola', corpo: 'Allenamento', sociale: 'Relazioni', impegno: 'Impegno', ripetizione: 'Ripetizione' };
+const TASK_TIPI = ['impegno', 'ripetizione', 'sociale', 'scuola', 'lavoro', 'palestra', 'karate', 'salute'];
+const CATN = { nerina: 'Lavoro', studio: 'Scuola', corpo: 'Palestra', sociale: 'Persone', impegno: 'Impegno', ripetizione: 'Ripetizione' };
 const WD = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
 const WDS = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
 const MO = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
@@ -72,7 +72,7 @@ function cfg() {
   return out;
 }
 const eventsOn = (d) => S.eventi.filter((e) => e.data === d);
-const evCat = (e) => e.tipo === 'sociale' ? 'sociale' : e.tipo === 'ripetizione' ? 'ripetizione' : 'impegno';
+const evCat = (e) => ({ sociale: 'sociale', ripetizione: 'ripetizione', scuola: 'studio', lavoro: 'nerina', palestra: 'corpo', karate: 'corpo' })[e.tipo] || 'impegno';
 const evLen = (e) => e.inizio && e.fine ? toMin(e.fine, toMin(e.inizio)) - toMin(e.inizio) : (Number(e.durata) || 60);
 const nerinaCount = (c, dow) => dow === 0 ? c.nerina.domenica : dow === 6 ? c.nerina.sabato : c.nerina.feriale;
 
