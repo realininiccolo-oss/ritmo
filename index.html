@@ -543,6 +543,38 @@ button:active{transform:scale(.97)}
 .okline{color:var(--ok);font-weight:600;font-size:.98rem}
 .code-box{display:block;font:600 .95rem ui-monospace,Menlo,monospace;background:var(--soft);border-radius:10px;padding:10px 12px;word-break:break-all;user-select:all;-webkit-user-select:all}
 .btn.go.warn{background:var(--warn);border-color:var(--warn);box-shadow:0 4px 0 color-mix(in srgb,var(--warn) 60%,#000)}
+
+/* ===== tieni premuto e regola ===== */
+.tl-item,.tl-mini.meal{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.tl-item.pressing,.tl-mini.meal.pressing{transform:scale(.965);background:color-mix(in srgb,var(--c) 14%,var(--card));transition:transform .43s ease,background .43s ease}
+.adj-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.adj-t{font-size:1.7rem;font-weight:800;font-variant-numeric:tabular-nums}
+.adj-l{font-size:1.1rem;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.adj-i{min-height:1.4em}
+.adj{position:relative;margin-left:44px;border-left:2px solid var(--line);touch-action:pan-y}
+.adj .hl{position:absolute;left:0;right:0;border-top:1px dashed var(--line)}
+.adj .hl span{position:absolute;left:-46px;top:-.6em;width:40px;text-align:right;font-size:.82rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.adj .nowl{position:absolute;left:-6px;right:0;border-top:2px solid var(--bad);z-index:3}
+.adj .gh{position:absolute;left:8px;right:8px;border-radius:10px;padding:2px 8px;font-size:.82rem;overflow:hidden;color:var(--muted);pointer-events:none}
+.adj .gh.fx{background:color-mix(in srgb,var(--c) 22%,var(--card));border:1.5px solid color-mix(in srgb,var(--c) 45%,var(--card))}
+.adj .gh.fl{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--c) 10%,var(--card)) 0 6px,var(--card) 6px 10px);border:1.5px dashed color-mix(in srgb,var(--c) 35%,var(--line))}
+.adj .gh span{white-space:nowrap}
+.abox{position:absolute;left:24px;right:0;border-radius:14px;background:var(--c);color:#fff;z-index:4;touch-action:none;box-shadow:0 6px 18px rgb(0 0 0 / .18);cursor:grab;display:flex;align-items:center;transition:box-shadow .15s,transform .15s}
+.abox.drag{transform:scale(1.02);box-shadow:0 12px 28px rgb(0 0 0 / .28);cursor:grabbing}
+.abox.bad{background:var(--bad)}
+.abox .ain{display:flex;align-items:center;gap:8px;padding:4px 12px;min-width:0;overflow:hidden;white-space:nowrap}
+.abox .ain b{font-size:1rem;overflow:hidden;text-overflow:ellipsis}
+.abox .ain span{font-size:.9rem;font-weight:600;opacity:.9;font-variant-numeric:tabular-nums}
+.abox .ain .ic{width:18px;height:18px}
+.abox .hd{position:absolute;left:50%;width:64px;height:22px;margin-left:-32px;touch-action:none;cursor:ns-resize;display:grid;place-items:center}
+.abox .hd::after{content:'';width:40px;height:6px;border-radius:6px;background:#fff;box-shadow:0 1px 3px rgb(0 0 0 / .3)}
+.abox .hd.top{top:-11px}.abox .hd.bot{bottom:-11px}
+.abox.short .hd.top{top:-20px}.abox.short .hd.bot{bottom:-20px}
+.abox.short .hd::after{background:var(--c);box-shadow:0 0 0 2px #fff,0 1px 4px rgb(0 0 0 / .3)}
+.abox.bad.short .hd::after{background:var(--bad)}
+.adj-top{position:sticky;top:-18px;z-index:6;background:var(--bg);padding:14px 0 8px;margin-top:-14px;display:flex;flex-direction:column;gap:4px;box-shadow:0 8px 10px -10px rgb(0 0 0 / .25)}
+.adj{margin-top:24px;margin-bottom:24px}
+.btns.sticky{position:sticky;bottom:0;background:var(--bg);padding:10px 0 4px;z-index:5;flex-wrap:nowrap}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -771,7 +803,7 @@ function plan(date) {
      Ogni pasto va nel punto libero più vicino all'ideale, mai nell'ora e mezza prima di un allenamento. */
   const ML = (c.pasti && c.pasti.min) || 15, GAP = (c.allenamento || DEF.allenamento).dopoPasto;
   const PW = (k) => { const m = (c.pasti || {})[k]; return m && m.ideale ? m : DEF.pasti[k]; };
-  const trains = () => items.filter((i) => i.key === 'karate' || i.key === 'palestra');
+  const trains = () => items.filter((i) => i.key === 'karate' || i.key === 'palestra' || (i.cat === 'corpo' && i.task));
   const nearTrain = (a, b) => trains().some((t) => b > t.start - GAP && a < t.end);
   const findSlot = (ideal, lo, hi, len, rule) => {
     let best = null;
@@ -1353,19 +1385,20 @@ function tlItem(p, it, o) {
   const MEALK = ['colazione', 'pranzo', 'merenda', 'cena'];
   if (it.cat === 'sonno') return h('li', { class: 'mini' }, h('div', { class: 'tl-mini sonno', 'data-cat': 'sonno' }, h('span', { class: 'time' }, h('b', { text: fmt(it.start) })), h('span', { class: 'node sm', html: ic(emo(it)) }), h('span', { class: 'grow', text: it.key === 'letto' ? `A letto · ${it.sub}` : 'Sveglia' })));
   const T = (x) => h('span', { class: 'time' }, h('b', { text: fmt(x.start) }), x.cat === 'pausa' || x.cat === 'viaggio' || x.cat === 'libero' ? null : h('span', { text: fmt(x.end) }));
-  if (it.cat === 'pausa' && !o.compact && MEALK.includes(it.key)) return h('li', { class: 'mini' }, h('button', { class: 'tl-mini meal', type: 'button', 'data-cat': it.cat, onclick: () => openMeal(p.date, it.key) }, T(it), h('span', { class: 'node sm', html: ic(emo(it)) }), h('span', { class: 'grow', text: it.label }), h('span', { class: 'chev', html: ic('matita') })));
+  if (it.cat === 'pausa' && !o.compact && MEALK.includes(it.key)) { const mb = h('button', { class: 'tl-mini meal', type: 'button', 'data-cat': it.cat, onclick: () => { if (!afterLP()) openMeal(p.date, it.key); } }, T(it), h('span', { class: 'node sm', html: ic(emo(it)) }), h('span', { class: 'grow', text: it.label }), h('span', { class: 'chev', html: ic('matita') })); longPress(mb, () => openAdjust(p.date, it)); return h('li', { class: 'mini' }, mb); }
   if (it.cat === 'pausa' || it.cat === 'viaggio' || it.cat === 'libero') return h('li', { class: 'mini' + (it.cat === 'libero' ? ' free' : '') }, h('div', { class: 'tl-mini', 'data-cat': it.cat }, T(it), h('span', { class: 'node sm', html: ic(emo(it)) }), h('span', { class: 'grow', text: it.cat === 'libero' ? `Libero · ${dur(it.end - it.start)}` : `${it.label} · ${dur(it.end - it.start)}` })));
   const done = !!p.fatti[it.key];
   const isNow = o.now != null && it.start <= o.now && o.now < it.end && !done;
   const late = o.now != null && it.end <= o.now && it.task && !done && !it.ev && !FIXED_KEYS.includes(it.key);
   const cls = 'tl-item' + (done ? ' done' : '') + (isNow ? ' now' : '') + (late ? ' late' : '') + (S.flash === it.key ? ' flash' : '');
   const inner = [h('span', { class: 'em', html: ic(emo(it)) }), h('span', { class: 'ck', html: ic('check') })];
-  const node = it.task && o.check ? h('button', { class: 'node', type: 'button', 'aria-pressed': String(done), 'aria-label': (done ? 'Segna da fare: ' : 'Segna fatto: ') + it.label, onclick: (e) => { e.stopPropagation(); toggleDone(p.date, it.key, undefined, it); } }, ...inner) : h('span', { class: 'node' }, ...inner);
+  const node = it.task && o.check ? h('button', { class: 'node', type: 'button', 'aria-pressed': String(done), 'aria-label': (done ? 'Segna da fare: ' : 'Segna fatto: ') + it.label, onclick: (e) => { e.stopPropagation(); if (!afterLP()) toggleDone(p.date, it.key, undefined, it); } }, ...inner) : h('span', { class: 'node' }, ...inner);
   const showSub = it.sub && (it.moved || it.bib || it.flex || /^Recupero/.test(it.sub));
   const note = !done && it.prima ? h('span', { class: 'sub ok' }, icEl('fulmine'), `${dur(it.prima)} prima`) : showSub ? h('span', { class: 'sub', text: it.sub }) : null;
   const body = h('span', { class: 'txt' }, h('span', { class: 'lbl', text: it.label }), note,
     null);
-  const row = h(o.compact ? 'div' : 'button', { class: cls, 'data-cat': it.cat, type: o.compact ? null : 'button', onclick: o.compact ? null : () => openItem(p.date, it) }, T(it), node, body);
+  const row = h(o.compact ? 'div' : 'button', { class: cls, 'data-cat': it.cat, type: o.compact ? null : 'button', onclick: o.compact ? null : () => { if (!afterLP()) openItem(p.date, it); } }, T(it), node, body);
+  if (!o.compact && canAdjust(it)) longPress(row, () => openAdjust(p.date, it));
   return h('li', { 'data-k': p.date + it.key, class: done ? 'ok' : '' }, row);
 }
 function timeline(p, o = {}) {
@@ -1639,7 +1672,7 @@ function viewOggi() {
   if (!p.st.energia && !evening && p.tasks.length) out.push(energyCard(d));
   else if (p.st.energia) { const s2 = energyHints(p, L); if (s2) out.push(s2); }
   const ub = unplacedBox(p); if (ub) out.push(ub);
-  out.push(h('div', { class: 'sec-h list-h' }, h('h3', { text: 'Il percorso di oggi' }), noteChips(p)));
+  out.push(h('div', { class: 'sec-h list-h' }, h('h3', { text: 'Il percorso di oggi' }), lsGet('ritmo:lp') ? noteChips(p) : h('span', { class: 'small muted', text: 'Tieni premuto per spostare' })));
   out.push(timeline(p, { check: true, now: L.min }));
   const sk = skippedLine(p); if (sk) out.push(sk);
   const rc = ritoCard(d); if (rc) out.push(rc);
@@ -1882,6 +1915,89 @@ function viewMese() {
       h('span', { class: 'fxi', html: ic(emo(it)) }), h('b', { class: 't', text: `${dayShort(d)}${it.flex ? '' : ' · ' + fmt(it.start)}` }), h('span', { class: 'grow', text: it.label }))))) : null];
 }
 
+/* ---------- tieni premuto: sposta e accorcia nella giornata ---------- */
+let lastLP = 0;
+const afterLP = () => performance.now() - lastLP < 800;
+function longPress(el, fn) {
+  let t = null, x0 = 0, y0 = 0, fired = false;
+  const cancel = () => { clearTimeout(t); t = null; el.classList.remove('pressing'); };
+  el.addEventListener('pointerdown', (e) => { if (e.button > 0) return; fired = false; x0 = e.clientX; y0 = e.clientY; cancel(); el.classList.add('pressing');
+    t = setTimeout(() => { fired = true; lastLP = performance.now(); el.classList.remove('pressing'); try { navigator.vibrate && navigator.vibrate(12); } catch (x) { /* niente */ } lsSet('ritmo:lp', '1'); fn(); }, 430); });
+  el.addEventListener('pointermove', (e) => { if (t && Math.abs(e.clientX - x0) + Math.abs(e.clientY - y0) > 10) cancel(); });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach((ev) => el.addEventListener(ev, cancel));
+  el.addEventListener('click', (e) => { if (fired) { e.preventDefault(); e.stopImmediatePropagation(); fired = false; } }, true);
+  el.addEventListener('contextmenu', (e) => e.preventDefault());
+}
+const canAdjust = (it) => it && (it.task || it.meal) && it.cat !== 'sonno' && it.cat !== 'libero' && it.cat !== 'viaggio' && !(it.ev && it.flex && !it.start);
+/* Salva il nuovo orario e la nuova durata. */
+function adjustItem(d, it, s0, len) {
+  const L = nowLogical(), p = plan(d), st = S.giorni[d] || {}, rec = p.fatti[it.key];
+  if (rec) { const f = { ...(st.fatti || {}) }; f[it.key] = { a: s0, b: s0 + len, t: Math.max(L.min, rec.t || 0) }; patchDay(d, { fatti: f }); toast(`⏱️ ${fmt(s0)} · ${dur(len)}`); return; }
+  if (it.meal) { patchDay(d, { pasti: { ...(st.pasti || {}), [it.key]: { da: hm(s0), min: len } } }); toast(`⏱️ ${it.label} ${fmt(s0)}`); return; }
+  if (it.ev) { const e = it.ev, obj = { ...e, inizio: hm(s0), fine: hm(s0 + len), durata: len }; delete obj.id; delete obj.src; delete obj.flessibile; delete obj.dopo; saveEvent(e, obj, true); toast(`⏱️ ${fmt(s0)}–${fmt(s0 + len)}`); return; }
+  const ex = (st.extra || []).find((x) => x.key === it.key);
+  if (ex) { S.giorni[d] = { ...st, extra: st.extra.map((x) => x.key === it.key ? { ...x, at: hm(s0), min: len } : x) }; saveState(); render(); toast(`⏱️ ${fmt(s0)}–${fmt(s0 + len)}`); return; }
+  const base = it.base || it.key, part = it.end - it.start, shared = p.items.some((i) => i !== it && (i.base || i.key) === base);
+  const xkey = 'x' + Date.now().toString(36);
+  if (shared) { const mn = { ...(st.meno || {}) }; mn[base] = [...(mn[base] || []), { min: part, a: d, x: xkey }]; S.giorni[d] = { ...st, meno: mn }; }
+  else S.giorni[d] = { ...st, skip: { ...(st.skip || {}), [base]: { a: d, x: xkey } } };
+  const tg = S.giorni[d];
+  S.giorni[d] = { ...tg, extra: [...(tg.extra || []), { key: xkey, label: it.label, min: len, cat: it.cat, da: d, at: hm(s0) }] };
+  saveState(); render(); toast(`⏱️ ${fmt(s0)}–${fmt(s0 + len)}${len < part ? ` · −${dur(part - len)}` : ''}`);
+}
+function openAdjust(d, it) {
+  const p = plan(d), L = nowLogical(), PX = 1.6, SNAP = 5;
+  const wake = (p.items.find((i) => i.key === 'sveglia') || { start: p.D0 }).start, bed = (p.items.find((i) => i.key === 'letto') || { start: p.D1 + 45 }).start;
+  const o0 = it.start, l0 = it.end - it.start; let s0 = o0, len = l0;
+  const A = Math.max(Math.floor(wake / 60) * 60, Math.floor((o0 - 180) / 60) * 60), B = Math.min(Math.ceil(bed / 60) * 60, Math.ceil((o0 + l0 + 180) / 60) * 60);
+  const y = (m) => (m - A) * PX;
+  const others = p.items.filter((i) => i !== it && i.key !== it.key && i.end > i.start && i.cat !== 'libero' && i.end > A && i.start < B);
+  const grid = h('div', { class: 'adj', style: `height:${(B - A) * PX}px` });
+  for (let m = Math.ceil(A / 60) * 60; m <= B; m += 60) grid.append(h('div', { class: 'hl', style: `top:${y(m)}px` }, h('span', { text: fmt(m) })));
+  if (d === L.date && L.min > A && L.min < B) grid.append(h('div', { class: 'nowl', style: `top:${y(L.min)}px` }));
+  for (const i of others) grid.append(h('div', { class: 'gh ' + (isFix(i) || i.meal ? 'fx' : 'fl'), 'data-cat': i.cat, style: `top:${y(Math.max(A, i.start))}px;height:${Math.max(14, (Math.min(B, i.end) - Math.max(A, i.start)) * PX - 2)}px` }, h('span', { text: `${fmt(i.start)} ${i.label}` })));
+  const tTop = h('i', { class: 'hd top', 'aria-label': 'Inizio' }), tBot = h('i', { class: 'hd bot', 'aria-label': 'Fine' });
+  const bl = h('b', { text: it.label }), bt = h('span');
+  const box = h('div', { class: 'abox', 'data-cat': it.cat }, tTop, h('div', { class: 'ain', html: ic(emo(it)) }, bl, bt), tBot);
+  grid.append(box);
+  const big = h('b', { class: 'adj-t' }), lenT = h('span', { class: 'adj-l' }), info = h('div', { class: 'adj-i' });
+  const draw = () => {
+    box.style.top = y(s0) + 'px'; box.style.height = Math.max(24, len * PX) + 'px'; box.classList.toggle('short', len * PX < 44);
+    bt.textContent = `${fmt(s0)}–${fmt(s0 + len)}`; big.textContent = `${fmt(s0)} → ${fmt(s0 + len)}`;
+    lenT.textContent = dur(len) + (len !== l0 ? ` (${len < l0 ? '−' : '+'}${dur(Math.abs(len - l0))})` : '');
+    const hit = others.filter((i) => i.start < s0 + len && s0 < i.end);
+    const bad = hit.filter((i) => isFix(i) && !it.meal), soft = hit.filter((i) => !isFix(i) && i.task), meals = hit.filter((i) => i.meal);
+    box.classList.toggle('bad', bad.length > 0);
+    info.replaceChildren(...[bad.length ? h('span', { class: 'warnline ih' }, icEl('avviso'), 'Si sovrappone a ' + bad.map((i) => i.label).join(', ')) : null,
+      !bad.length && (soft.length || meals.length) ? (() => { const u = [...new Set([...soft, ...meals].map((i) => i.label))]; return h('span', { class: 'okline ih' }, icEl('stelle'), `${u.join(', ')} ${u.length === 1 ? 'si sposta da solo' : 'si spostano da soli'}`); })() : null,
+      it.ev && !bad.length && !soft.length && !meals.length ? h('span', { class: 'small muted', text: 'Cambi l\'orario dell\'impegno.' }) : null].filter(Boolean));
+  };
+  /* trascinamento: corpo = sposta, bordo sotto = fine, bordo sopra = inizio */
+  const drag = (el, mode) => {
+    el.addEventListener('pointerdown', (e) => {
+      e.preventDefault(); e.stopPropagation(); el.setPointerCapture(e.pointerId);
+      const yy = e.clientY, a0 = s0, n0 = len; box.classList.add('drag');
+      const mv = (ev) => { const dm = Math.round((ev.clientY - yy) / PX / SNAP) * SNAP;
+        if (mode === 'move') s0 = Math.min(B - len, Math.max(A, a0 + dm));
+        else if (mode === 'bot') len = Math.max(15, Math.min(B - s0, n0 + dm));
+        else { const ns = Math.min(a0 + n0 - 15, Math.max(A, a0 + dm)); len = n0 + (a0 - ns); s0 = ns; }
+        draw(); };
+      const up = () => { box.classList.remove('drag'); el.removeEventListener('pointermove', mv); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up); };
+      el.addEventListener('pointermove', mv); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+    });
+  };
+  drag(box, 'move'); drag(tBot, 'bot'); drag(tTop, 'top');
+  const q = (t, f) => h('button', { class: 'chip', type: 'button', text: t, onclick: () => { f(); draw(); } });
+  const quick = h('div', { class: 'chips' }, q('−15 min', () => { len = Math.max(15, len - 15); }), q('−30 min', () => { len = Math.max(15, len - 30); }), q('Metà', () => { len = Math.max(15, Math.round(len / 2 / 5) * 5); }),
+    d === L.date && L.min + len <= B ? q('Da adesso', () => { s0 = Math.max(A, Math.ceil(L.min / 5) * 5); }) : null, q('Com\'era', () => { s0 = o0; len = l0; }));
+  draw();
+  openSheet([xBtn(), h('div', { class: 'adj-top' }, h('h2', { text: it.label }), h('div', { class: 'adj-h' }, big, lenT), info), quick,
+    h('p', { class: 'small muted', text: 'Trascina il blocco per spostarlo, la maniglia in basso per accorciarlo o allungarlo.' }), grid,
+    h('div', { class: 'btns sticky' }, h('button', { class: 'btn go big3', type: 'button', html: `${ic('check')}<span>Salva</span>`, onclick: () => { closeSheet(); if (s0 !== o0 || len !== l0) adjustItem(d, it, s0, len); } }),
+      it.task && !it.meal && !p.fatti[it.key] ? h('button', { class: 'btn big3', type: 'button', text: 'Altro giorno', onclick: () => openMove(d, it) }) : null)]);
+  requestAnimationFrame(() => { const sh = document.querySelector('.sheet'); const r = box.getBoundingClientRect(); sh.scrollTop += r.top - sh.clientHeight / 2 + 40; });
+}
+
 /* ---------- fogli ---------- */
 function openSheet(nodes) { $('#sheet-body').replaceChildren(...nodes.filter(Boolean)); $('#sheet').hidden = false; document.body.style.overflow = 'hidden'; const f = $('#sheet-body').querySelector('h2'); if (f) f.id = 'sheet-title'; }
 /* Il + si stringe quando scorri, per non coprire la giornata. */
@@ -1889,7 +2005,7 @@ let scT = 0; addEventListener('scroll', () => { if (scT) return; scT = requestAn
 /* Foglio: si chiude trascinandolo in giù. */
 (() => {
   const sh = document.querySelector('.sheet'); let y0 = null, dy = 0;
-  sh.addEventListener('touchstart', (e) => { if (sh.scrollTop > 0) { y0 = null; return; } y0 = e.touches[0].clientY; dy = 0; sh.style.transition = 'none'; }, { passive: true });
+  sh.addEventListener('touchstart', (e) => { if (sh.scrollTop > 0 || e.target.closest('.adj')) { y0 = null; return; } y0 = e.touches[0].clientY; dy = 0; sh.style.transition = 'none'; }, { passive: true });
   sh.addEventListener('touchmove', (e) => { if (y0 == null) return; dy = e.touches[0].clientY - y0; if (dy > 0) { sh.style.transform = `translateY(${dy}px)`; if (e.cancelable) e.preventDefault(); } }, { passive: false });
   sh.addEventListener('touchend', () => { if (y0 == null) return; sh.style.transition = 'transform .22s cubic-bezier(.2,.9,.3,1)'; if (dy > 110) { sh.style.transform = 'translateY(100%)'; setTimeout(() => { closeSheet(); sh.style.transform = ''; }, 200); } else sh.style.transform = ''; y0 = null; });
 })();
@@ -1926,6 +2042,7 @@ function openItem(d, it) {
     nodes.push(h('div', { class: 'card' }, h('b', { text: 'Quanto ci hai messo?' }), h('span', { class: 'small muted', text: 'Se hai finito prima, i blocchi attaccati dopo partono prima.' }),
       h('div', { class: 'chips' }, opts.map((m) => h('button', { class: 'chip', type: 'button', 'aria-pressed': String(m === len), text: dur(m), onclick: () => { setDoneLen(d, it, m); closeSheet(); } })))));
   }
+  if (canAdjust(it) && !future) nodes.push(h('button', { class: 'btn wide', type: 'button', text: 'Sposta o accorcia nella giornata', onclick: () => openAdjust(d, it) }));
   if (it.task && it.key !== 'uscita' && !done) nodes.push(h('button', { class: 'btn wide', type: 'button', text: 'Sposta più tardi o un altro giorno', onclick: () => openMove(d, it) }));
   if (it.ev) nodes.push(h('button', { class: 'btn wide', type: 'button', text: it.flex ? 'Fissa l\'orario' : 'Modifica', onclick: () => openEvent(it.ev) }));
   const more = h('div', { class: 'btns' });

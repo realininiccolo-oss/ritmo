@@ -195,7 +195,7 @@ function plan(date) {
      Ogni pasto va nel punto libero più vicino all'ideale, mai nell'ora e mezza prima di un allenamento. */
   const ML = (c.pasti && c.pasti.min) || 15, GAP = (c.allenamento || DEF.allenamento).dopoPasto;
   const PW = (k) => { const m = (c.pasti || {})[k]; return m && m.ideale ? m : DEF.pasti[k]; };
-  const trains = () => items.filter((i) => i.key === 'karate' || i.key === 'palestra');
+  const trains = () => items.filter((i) => i.key === 'karate' || i.key === 'palestra' || (i.cat === 'corpo' && i.task));
   const nearTrain = (a, b) => trains().some((t) => b > t.start - GAP && a < t.end);
   const findSlot = (ideal, lo, hi, len, rule) => {
     let best = null;
