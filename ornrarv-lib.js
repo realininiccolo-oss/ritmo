@@ -270,6 +270,13 @@ const PAL = [
     extra: ['#C0392B', '#FFFFFF'], sea: ['#5AA7AE', '#2F7A86'], sand: '#EFD39A' },
 ];
 
+/* Brumale di giorno (v2 di Ritmo): cielo d'autunno coperto, sole basso, nebbia nelle valli, alberi spogli, casa col camino. */
+const PAL_BRUMALE_GIORNO = { sky: ['#B7C4D4', '#EEE7DB'], sun: '#FFF3D6', far: '#A9B4C3', mid: '#8E9AAB', near: '#6F7B8C', front: '#566171', trunk: '#454B56',
+  extra: ['#5C7290', '#E9E2D3'], fog: '#FFFFFF' };
+const THEME_BRUMALE_GIORNO = { bg: '#E6EAEF', bg2: '#D9DFE7', ink: '#1E2733', accent: '#5C7290', line: '#C9D1DB', motif: 'mist' };
+/* Variante del paesaggio: 'giorno' o 'notte' esistono solo per Brumale; gli altri mesi hanno un solo disegno. */
+const hasVariants = (mi) => mi === 1;
+const themeFor = (mi, variant) => (mi === 1 && variant === 'giorno') ? THEME_BRUMALE_GIORNO : THEMES[mi];
 let sceneUid = 0;
 const hsh = (a, b) => { const v = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453; return v - Math.floor(v); };
 function mixHex(a, b, t) {
@@ -406,7 +413,8 @@ function sailboat(x, y, s, hull, sail) {
 function sceneSVG(mi, opts = {}) {
   const G = !!opts.ground;               // ground variant: no sky, static
   const p = clamp(opts.p ?? monthP(mi), 0, 1);   // week-by-week progression
-  const P = Object.assign({}, PAL[mi]), R = rng(mi * 131 + 7), u = 'sc' + (++sceneUid);
+  const DAY = mi === 1 && opts.variant === 'giorno';
+  const P = Object.assign({}, DAY ? PAL_BRUMALE_GIORNO : PAL[mi]), R = rng(mi * 131 + 7), u = 'sc' + (++sceneUid);
   const s = [];
   const sky = str => { if (!G) s.push(str); };
   const defs = `<defs>
@@ -455,7 +463,28 @@ function sceneSVG(mi, opts = {}) {
       if (!G) for (let i = 0; i < 3 + Math.round(p * 6); i++) s.push(faller(`<path d="${mapleD(6 + R() * 3)}" fill="${P.extra[i % 4]}"/>`, 620 + R() * 520, 110 + R() * 70, 30 + R() * 50, 120 + R() * 70, (R() < .5 ? -1 : 1) * (200 + R() * 200), 6 + R() * 3, 2 + i * 1.3));
       break;
     }
-    case 1: { // Brumale — night, moon, fog banks, bare trees, lit house
+    case 1: if (DAY) { // Brumale di giorno — sole basso e velato, nebbia, stormo, casa col camino che fuma
+      sky(sun(930, f2(118 + p * 18), 26, .1));
+      sky(cloud(640, 64, 1.2, .4) + cloud(1110, 46, .9, .6) + cloud(820, 108, .7, .8));
+      if (!G) [[700, 92, .55], [735, 80, .45], [760, 98, .5], [1050, 120, .5], [1078, 110, .4]].forEach(([x, y, k]) => s.push(gull(x, y, k, '#3C4350', R)));
+      const fogD = (y, h, d, dur, dx) => `<g class="sc-fade" style="--d:${d}s"><g class="sc-fog" opacity="${f2(.55 + p * .35)}" style="--fgd:${dur}s;--fgx:${dx}px"><rect x="-140" y="${y}" width="${SW + 280}" height="${h}" fill="url(#${u}f)"/></g></g>`;
+      s.push(hill(far, P.far, .1, 20));
+      s.push(fogD(160, 70, .5, 18, 50));
+      s.push(hill(mid, P.mid, .22, 30));
+      [[690, .9], [880, 1.1], [1110, 1]].forEach(([x, k], i) => s.push(grow(bareTree(x, yAt(mid, x) + 4, k, P.trunk, R), .4 + i * .1)));
+      s.push(fogD(222, 66, .8, 14, -60));
+      s.push(hill(near, P.near, .34, 40));
+      { const hx = 1010, hy = yAt(near, 1010) + 3;
+        s.push(pop(`<rect x="${hx - 17}" y="${f2(hy - 22)}" width="34" height="22" fill="${P.extra[1]}"/><path d="M${hx - 21} ${f2(hy - 21)}L${hx} ${f2(hy - 38)}L${hx + 21} ${f2(hy - 21)}Z" fill="#8C4B3A"/>`
+          + `<rect x="${hx + 8}" y="${f2(hy - 40)}" width="5" height="12" fill="#6E3B2E"/><rect x="${hx - 9}" y="${f2(hy - 16)}" width="7" height="7" fill="#5B6573"/><rect x="${hx + 3}" y="${f2(hy - 16)}" width="7" height="7" fill="#5B6573"/>`
+          + `<rect x="${hx - 3}" y="${f2(hy - 9)}" width="6" height="9" fill="#6E3B2E"/>`, .7));
+        if (!G) for (let i = 0; i < 4; i++) s.push(faller(`<circle r="${4 + i * 1.6}" fill="#FFFFFF" fill-opacity=".55"/>`, hx + 10, hy - 44, 14 + R() * 14, -50, 0, 5, 1.6 + i * 1.3)); }
+      [[780, 1.35], [1150, 1.2]].forEach(([x, k], i) => s.push(grow(bareTree(x, yAt(near, x) + 4, k, P.trunk, R), .55 + i * .1)));
+      s.push(hill(front, P.front, .46, 50));
+      if (p > .7) s.push(`<path class="sc-rise" style="--d:.5s;--rise:50px" d="${smoothPath(front).split('L' + (SW + 24))[0]}" fill="none" stroke="#FFFFFF" stroke-opacity="${f2((p - .7) * 2.6)}" stroke-width="4" stroke-linecap="round"/>`);
+      s.push(fogD(286, 60, 1, 16, 70));
+      break;
+    } else { // Brumale — night, moon, fog banks, bare trees, lit house
       if (!G) { let st = ''; for (let i = 0; i < 34; i++) st += `<circle class="sc-twinkle" style="--td:${f2(2 + R() * 3)}s;--tdl:${f2(R() * 3)}s" cx="${f2(470 + R() * 730)}" cy="${f2(10 + R() * 160)}" r="${f2(.7 + R() * 1.3)}" fill="#E7E9F2"/>`;
         s.push(`<g class="sc-fade" style="--d:.4s">${st}</g>`); }
       sky(sun(960, 84, 24, .1) + `<g class="sc-fade" style="--d:.9s"><circle cx="953" cy="78" r="4" fill="#C9D2EE"/><circle cx="968" cy="93" r="3" fill="#C9D2EE"/><circle cx="962" cy="72" r="2" fill="#C9D2EE"/></g>`);
@@ -781,5 +810,5 @@ function seasonFx(motif, accent, W, H, seed) {
   return { svg, total: end + 150, run() { anims.forEach(([e, kf, o]) => e.animate(kf, Object.assign({ fill: 'both', easing: 'linear' }, o))); } };
 }
 
-window.ORN = { MONTHS, LETTER_META, metaKeyFor, dayBg, illusFor, sceneSVG, patternURI, ornamentSVG, playAll, seasonFx, setToday: (s) => { todayStr = s; } };
+window.ORN = { MONTHS, LETTER_META, metaKeyFor, dayBg, illusFor, sceneSVG, hasVariants, themeFor, patternURI, ornamentSVG, playAll, seasonFx, setToday: (s) => { todayStr = s; } };
 })();
