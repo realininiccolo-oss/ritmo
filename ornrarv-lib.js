@@ -547,12 +547,13 @@ function treeBlossom(x, y, s, cols, trunk, R, p) {
 }
 function grassTuft(x, y, s, c) { return `<path d="M${f2(x)} ${f2(y)}q${f2(-2 * s)} ${f2(-8 * s)} ${f2(-7 * s)} ${f2(-12 * s)}M${f2(x)} ${f2(y)}q${f2(.4 * s)} ${f2(-9 * s)} ${f2(1.4 * s)} ${f2(-15 * s)}M${f2(x)} ${f2(y)}q${f2(2 * s)} ${f2(-7 * s)} ${f2(7 * s)} ${f2(-11 * s)}" stroke="${c}" stroke-width="${f2(1.5 * s)}" fill="none" stroke-linecap="round"/>`; }
 function reed(x, y, s, c) { return `<path d="M${f2(x)} ${f2(y)}q${f2(-1.5 * s)} ${f2(-16 * s)} ${f2(-4 * s)} ${f2(-30 * s)}M${f2(x + 2 * s)} ${f2(y)}q${f2(1 * s)} ${f2(-12 * s)} ${f2(5 * s)} ${f2(-22 * s)}" stroke="${c}" stroke-width="${f2(1.6 * s)}" fill="none" stroke-linecap="round"/><ellipse cx="${f2(x - 3.8 * s)}" cy="${f2(y - 27 * s)}" rx="${f2(1.8 * s)}" ry="${f2(5 * s)}" transform="rotate(-8 ${f2(x - 3.8 * s)} ${f2(y - 27 * s)})" fill="${shade(c, .25)}"/>`; }
-function cottage(x, y, s, wall, roof, L, chimney = true) {
+function cottage(x, y, s, wall, roof, L, chimney = true, snow = false) {
   const w = 17 * s, h = 15 * s;
   return `<rect x="${f2(x - w)}" y="${f2(y - h)}" width="${f2(2 * w)}" height="${f2(h)}" fill="${wall}"/><rect x="${f2(L > 0 ? x : x - w)}" y="${f2(y - h)}" width="${f2(w)}" height="${f2(h)}" fill="#000" fill-opacity=".13"/>`
     + `<path d="M${f2(x - w - 3 * s)} ${f2(y - h + .5)}L${f2(x)} ${f2(y - h - 13 * s)}L${f2(x + w + 3 * s)} ${f2(y - h + .5)}Z" fill="${roof}"/><path d="M${f2(x)} ${f2(y - h - 13 * s)}L${f2(x + L * (w + 3 * s))} ${f2(y - h + .5)}H${f2(x)}Z" fill="#000" fill-opacity=".16"/>`
     + (chimney ? `<rect x="${f2(x + 7 * s)}" y="${f2(y - h - 13 * s)}" width="${f2(4 * s)}" height="${f2(9 * s)}" fill="${shade(roof, .25)}"/>` : '')
-    + `<rect x="${f2(x - 3 * s)}" y="${f2(y - 8 * s)}" width="${f2(6 * s)}" height="${f2(8 * s)}" fill="${shade(roof, .35)}"/>`;
+    + `<rect x="${f2(x - 3 * s)}" y="${f2(y - 8 * s)}" width="${f2(6 * s)}" height="${f2(8 * s)}" fill="${shade(roof, .35)}"/>`
+    + (snow ? `<path d="M${f2(x - w - 4 * s)} ${f2(y - h + 1)}L${f2(x)} ${f2(y - h - 14 * s)}L${f2(x + w + 4 * s)} ${f2(y - h + 1)}L${f2(x + w)} ${f2(y - h + 2 * s)}L${f2(x)} ${f2(y - h - 9 * s)}L${f2(x - w)} ${f2(y - h + 2 * s)}Z" fill="#FFFFFF"/>` : '');
 }
 /* ===== 2.9: i soggetti della settimana cambiano col luogo e col clima del mese =====
    STY[mi] dice come sono fatti: legno e tetti, barca e rematore, vele, borgo, mulino, cose in vetta. */
@@ -563,35 +564,35 @@ const STY = [
     sail: { rig: 'sloop', main: '#D98B3A', jib: '#C9642E', hull: '#6E4A2E', stripe: '#E9DCC4', band: '#3E2A1A', pen: '#7A2E22', mark: true },
     town: 'toscano', spire: 'merli', body: '#C98256', flag: '#8E2A22', terr: 'olivi' },
   { // Brumale: il lago nella nebbia, novembre
-    wood: ['#3E3128', '#5A4636', '#7A6450'], roof: '#4E5662', tower: 'wood', lamp: true,
+    wood: ['#3E3128', '#5A4636', '#7A6450'], roof: '#4E5662', tower: 'palafitta', lamp: true,
     boat: { hull: '#2A2622', trim: '#C9C1B2', band: '#141210', coat: '#3E4650', hat: 'cappuccio', canopy: true },
     sail: { rig: 'terzaroli', main: '#B9B5AC', jib: '#A8A49B', hull: '#2E3440', stripe: '#C9C1B2', band: '#1A1E26', pen: '#6A3A34', lamp: true },
-    town: 'lombardo', spire: 'piramide', body: '#A9A59C', flag: '#5A3A34', terr: 'lampione' },
+    town: 'lombardo', spire: 'cono', body: '#A9A59C', flag: '#5A3A34', terr: 'lampione' },
   { // Ianuario: montagne e neve
     wood: ['#4A3426', '#6A4A34', '#8A6A4E'], roof: '#4E5A64', tower: 'baita',
     boat: { hull: '#F2F4F6', trim: '#2F5A7A', band: '#2F5A7A', coat: '#7A2E2A', hat: 'pelliccia', cargo: 'neve' },
     sail: { rig: 'ghiaccio', main: '#FBF7EE', jib: '#F1E8D4', hull: '#2F5A7A', stripe: '#FFFFFF', band: '#B23A2E', pen: '#B23A2E' },
     town: 'baite', spire: 'cipolla', body: '#ECE8E0', flag: '#B23A2E', terr: 'ghiaccioli' },
   { // Germinale: primavera, alberi in fiore
-    wood: ['#7A5A3E', '#A27A54', '#C9A27A'], roof: '#5E8A4A', tower: 'wood', vine: true,
+    wood: ['#7A5A3E', '#A27A54', '#C9A27A'], roof: '#5E8A4A', tower: 'albero', vine: true,
     boat: { hull: '#5E8A5A', trim: '#F4EFE2', band: '#3E6440', coat: '#C9A27A', hat: 'none', cargo: 'fiori' },
-    sail: { rig: 'sloop', main: '#FBF7EE', jib: '#F4EFE2', hull: '#F4EFE2', stripe: '#5E8A5A', band: '#3E6440', pen: '#E89BB5' },
-    town: 'pastello', spire: 'piramide', body: '#EBCFC2', flag: '#5E8A4A', terr: 'glicine' },
+    sail: { rig: 'iole', pen: '#E89BB5' },
+    town: 'pastello', spire: 'cupola', body: '#EBCFC2', flag: '#5E8A4A', terr: 'glicine' },
   { // Floreale: i campi in fiore
-    wood: ['#6A4A3A', '#8E6A52', '#B48E70'], roof: '#7E5A8E', tower: 'wood', box: true,
+    wood: ['#6A4A3A', '#8E6A52', '#B48E70'], roof: '#7E5A8E', tower: 'gazebo', box: true,
     boat: { hull: '#3E6E9A', trim: '#F4EFE2', band: '#2A4E70', coat: '#E9DCC4', hat: 'none', cargo: 'lavanda' },
-    sail: { rig: 'sloop', main: '#FBF7EE', jib: '#E6D6EE', hull: '#FFFFFF', stripe: '#7E5A8E', band: '#4E3A5E', pen: '#7E5A8E' },
-    town: 'graticcio', spire: 'piramide', body: '#E6D8C2', flag: '#7E5A8E', terr: 'fioriere' },
+    sail: { rig: 'botter', pen: '#E3A33B' },
+    town: 'graticcio', spire: 'guglia', body: '#F2E8D6', flag: '#7E5A8E', terr: 'fioriere' },
   { // Messidoro: la costa del grano, estate
     wood: [WOOD_D, WOOD, WOOD_L], roof: '#A9502F', tower: 'saracena',
-    boat: { hull: '#F4F1EA', trim: '#2F6E9A', band: '#B23A2E', coat: '#EDE6D8', hat: 'paglia', cargo: 'reti', gozzo: true },
-    sail: { rig: 'latina', main: '#F7F0DE', jib: '#F7F0DE', hull: '#F4F1EA', stripe: '#2F6E9A', band: '#B23A2E', pen: '#2F6E9A' },
+    boat: { hull: '#F4F1EA', trim: '#2F6E9A', band: '#B23A2E', coat: '#2F5A8A', hat: 'paglia', cargo: 'reti', gozzo: true },
+    sail: { rig: 'feluca', pen: '#2F6E9A' },
     town: 'bianco', spire: 'campanile', body: '#F4F1EA', flag: '#2F6E9A', terr: 'limone' },
   { // Estiario: il mare d'estate, le scogliere, il tramonto
     wood: [WOOD_D, WOOD, WOOD_L], roof: '#C0392B', tower: 'bagnino',
     boat: { hull: '#3E9AA6', trim: '#F4F1EA', band: '#1E6474', coat: '#F4F1EA', hat: 'paglia', cargo: 'ombrellone' },
     sail: { rig: 'spinnaker', main: '#FBF7EE', jib: '#F1E8D4', hull: '#F4F1EA', stripe: '#C0392B', band: '#1E2A44', pen: '#C0392B' },
-    town: 'ligure', spire: 'piramide', body: '#D9A85B', flag: '#C0392B', terr: 'buganvillea' },
+    town: 'ligure', spire: 'piramide', body: '#ECE6DA', flag: '#C0392B', terr: 'buganvillea' },
 ];
 /* la barca a remi (prua a sinistra). Il rematore guarda la poppa, come si rema davvero: tira i remi verso di sé e la pala, sott'acqua, spinge l'acqua indietro.
    Origine = linea di galleggiamento. Ogni colpo: la pala entra a prua, passa sott'acqua verso poppa, esce appena e torna. */
@@ -611,6 +612,7 @@ function rowBoat2(lamp = true, st = STY[0].boat) {
     reti: `<path d="M24 -4Q30 -12 38 -6Q34 -2 24 -4Z" fill="#6E7A5A"/><path d="M26 -6l4 -3M30 -5l4 -3" stroke="#4E5A3E" stroke-width=".7"/><circle cx="36" cy="-8" r="1.6" fill="#E3A33B"/>`,
     neve: `<path d="M-54 -15Q-48 -19 -40 -12Q-34 -9 -28 -7L-30 -4Q-44 -6 -54 -15Z" fill="#FFFFFF"/><path d="M28 -4Q36 -8 44 -13L46 -11Q38 -5 30 -2Z" fill="#FFFFFF"/>`,
     ombrellone: `<path d="M-42 -6L-24 -10" stroke="#7A5A3A" stroke-width="1.6"/><path d="M-40 -7L-22 -11L-24 -14L-38 -11Z" fill="#E8C34A"/><path d="M-36 -9.4L-30 -10.6" stroke="#C0392B" stroke-width="2.4"/>` }[st.cargo] || '';
+  if (st.gozzo) hull = gozzo(true);
   const canopy = st.canopy ? [-46, -36, -26].map((x) => `<path d="M${x} -4Q${x + 4} -22 ${x + 8} -4" stroke="${st.trim}" stroke-width="1.4" fill="none"/>`).join('') + `<path d="M-42 -13Q-32 -15 -18 -13" stroke="${st.trim}" stroke-width=".8" fill="none"/>` : '';
   const hat = { cap: `<path d="M9 -32Q13.5 -38.6 18 -32.2Z" fill="#8E3A2E"/><path d="M8.8 -32.2H18.4" stroke="#6E2A20" stroke-width="1.2"/>`,
     pelliccia: `<path d="M8.6 -32Q13.5 -41 18.4 -32Z" fill="#6B5240"/><rect x="8.2" y="-33.6" width="10.6" height="3" rx="1.4" fill="#E9E2D6"/>`,
@@ -625,13 +627,14 @@ function rowBoat2(lamp = true, st = STY[0].boat) {
     + `<circle cx="13.5" cy="-30.5" r="4.6" fill="#D9A47E"/>${hat}${scarf}<circle cx="16.2" cy="-31" r=".6" fill="#2A2420"/></g>`;
   const lantern = lamp ? `<path d="M-48 -11L-53 -40" stroke="${WOOD_D}" stroke-width="1.8" stroke-linecap="round"/><path d="M-53 -40h-5" stroke="${WOOD_D}" stroke-width="1.6"/>`
     + `<g transform="translate(-58 -34)"><path d="M0 -6v2" stroke="#3A3A3A" stroke-width=".9"/><path d="M-3.6 -3.4L3.6 -3.4L2.2 -5.4L-2.2 -5.4Z" fill="#3A3A3A"/><rect x="-3" y="-3.4" width="6" height="7.2" rx=".8" fill="#3A3A3A"/><rect x="-2" y="-2.4" width="4" height="5.2" fill="#F6C76E"/></g>` : '';
-  return oar(-3, .55, 1.8) + lantern + hull + canopy + cargo + body + oar(0, 1, 2.2) + `<circle cx="5" cy="-4" r="1.6" fill="${BRASS_D}"/>`;
+  return oar(-3, .55, 1.8) + lantern + hull + canopy + (st.gozzo ? '' : cargo) + body + oar(0, 1, 2.2) + `<circle cx="5" cy="-4" r="1.6" fill="${BRASS_D}"/>`;
 }
 /* la barca a vela (prua a sinistra): il vento viene da poppa, la bandierina in testa d'albero punta avanti, la scia resta dietro.
    Il capitano tiene il timone a poppa e guarda avanti. rig: sloop · terzaroli (vele ridotte col tempo brutto) · latina (la vela triangolare del Mediterraneo)
    ghiaccio (l'iceboat sui pattini, sul lago gelato: origine = il ghiaccio) · spinnaker (la vela a pallone col vento in poppa) */
 const captainL = () => `<g transform="scale(-1 1)">${captain()}</g>`;
 function sailBoat2(st) {
+  if (st.rig === 'iole' || st.rig === 'botter' || st.rig === 'feluca') return sailExtra(st.rig);
   const ice = st.rig === 'ghiaccio', dy = ice ? -10 : 0;
   let s = '';
   if (st.rig === 'latina') {
@@ -650,13 +653,16 @@ function sailBoat2(st) {
     s += `<path class="sc-flagw2" d="M-2 -110L-17 -107L-2 -104Z" fill="${st.pen}"/>` + (st.lamp ? `<rect x="-4.4" y="-115" width="5" height="5" rx="1" fill="#3A3A3A"/><rect x="-3.4" y="-114" width="3" height="3" fill="#F6C76E"/>` : '');
   }
   s += `<g transform="translate(30 -7)">${captainL()}</g><path d="M42 -8L19 -15" stroke="#6E4A2C" stroke-width="1.8" stroke-linecap="round"/>`;
-  if (ice) s += `<path d="M-60 -9L44 -10L46 -4L-56 -2Z" fill="${st.hull}"/><path d="M-60 -9L44 -10" stroke="${st.stripe}" stroke-width="1.4"/><path d="M-14 -4L-20 8M18 -4L24 8M-52 -3L-56 8" stroke="#3A3A3A" stroke-width="2"/><path d="M-30 9H34M-66 9H-46" stroke="#9AA6B2" stroke-width="2.6" stroke-linecap="round"/><path d="M-14 -4H18" stroke="${st.band}" stroke-width="3"/>`;
+  if (ice) s += `<path d="M-60 -9L44 -10L46 -4L-56 -2Z" fill="${st.hull}"/><path d="M-60 -9L44 -10" stroke="${st.stripe}" stroke-width="1.4"/><path d="M-14 -4L-20 8M18 -4L24 8M-52 -3L-56 8" stroke="#3A3A3A" stroke-width="2"/><path d="M-30 9H34M-66 9H-46" stroke="#9AA6B2" stroke-width="2.6" stroke-linecap="round"/><path d="M-14 -4H18" stroke="${st.band}" stroke-width="3"/><path d="M-58 -10Q-40 -14 -20 -11L-22 -9Q-40 -11 -57 -8Z" fill="#FFFFFF"/><path d="M-1 -20H38" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>`;
   else s += `<path d="M44 -8L46 6" stroke="#5A4632" stroke-width="2.2"/><path d="M-50 -12Q-10 -5 44 -9Q40 5 22 9L-24 9Q-40 6 -50 -12Z" fill="${st.hull}"/><path d="M-50 -12Q-10 -5 44 -9L43.5 -6Q-10 -1 -49 -9Z" fill="${st.stripe}"/><path d="M-38 4Q0 7 36 3" stroke="${st.band}" stroke-width="1.6" fill="none"/>`;
   return dy ? `<g transform="translate(0 ${dy})">${s}</g>` : s;
 }
 /* le vedette, una per luogo: di legno (con le varianti del mese), la baita in quota, la torre saracena sulla costa, la torretta del bagnino sulla duna */
 function watchtower(mi, L) {
   const st = STY[mi], [wd, wm, wl] = st.wood, snowy = mi === 2;
+  if (st.tower === 'palafitta') return stiltHut(L);
+  if (st.tower === 'albero') return treeHouse(L, rng(53));
+  if (st.tower === 'gazebo') return ironGazebo(L);
   if (st.tower === 'saracena') {
     const c = '#CDB78F', sd = shade(c, .3);
     let t = `<path d="M-31 0L-25 -32H25L31 0Z" fill="${shade(c, .1)}"/><path d="M-24 -30L-20 -112H20L24 -30Z" fill="${c}"/><path d="M${L > 0 ? 3 : -24} -30L${L > 0 ? 3 : -20} -112H${L > 0 ? 20 : -3}L${L > 0 ? 24 : -3} -30Z" fill="#000" fill-opacity=".14"/><path d="M${L > 0 ? 3 : -31} 0L${L > 0 ? 3 : -25} -32H${L > 0 ? 25 : -3}L${L > 0 ? 31 : -3} 0Z" fill="#000" fill-opacity=".14"/>`;
@@ -702,6 +708,9 @@ function clockTower(mi, L, hr) {
   if (mi === 0) for (let j = 1; j < 18; j++) t += `<path d="M-19 ${-8 - j * 5.2}H19" stroke="${sd}" stroke-opacity=".35" stroke-width=".6"/>`;
   else for (let j = 1; j < 8; j++) t += `<path d="M-19 ${-8 - j * 12}H19" stroke="${sd}" stroke-opacity=".5" stroke-width=".9"/>`;
   if (mi === 2) t += `<path d="M-19 -8V-100M19 -8V-100" stroke="#7A5236" stroke-width="2.4"/>`;
+  if (mi === 1) t += `<path d="M-19 -8V-100M19 -8V-100M0 -8V-60" stroke="${shade(body, .25)}" stroke-width="3"/>` + [-15, -9, -3, 3, 9, 15].map((x) => `<path d="M${x - 3} -100q3 4 6 0" stroke="${shade(body, .3)}" stroke-width="1" fill="none"/>`).join('') + `<path d="M-10 -66V-56M10 -66V-56" stroke="#2E2A26" stroke-width="3"/><path d="M-13 -56V-66Q-10 -70 -7 -66V-56ZM7 -56V-66Q10 -70 13 -66V-56Z" fill="#2E2A26"/>`;
+  if (mi === 4) t += `<path d="M-19 -40L19 -100M19 -40L-19 -100M-19 -40H19M-19 -70H19M-10 -8V-40M10 -8V-40" stroke="#5A3A2E" stroke-width="2"/>`;
+  if (mi === 6) for (let j = 0; j < 11; j++) t += `<rect x="-19" y="${-16 - j * 8}" width="38" height="4" fill="#3A3836" fill-opacity=".75"/>`;
   t += `<path d="M-7 -8V-26Q0 -33 7 -26V-8Z" fill="${WOOD_D}"/><rect x="-4" y="-56" width="8" height="12" rx="4" fill="#3E3A34"/>`
     + `<rect x="-22" y="-104" width="44" height="5" fill="${shade(body, .12)}"/><path d="M-19 -104V-124H19V-104" fill="${light(body, .08)}"/>`;
   if (st.spire === 'campanile') t += `<path d="M-14 -104V-118Q-9 -124 -4 -118V-104ZM4 -104V-118Q9 -124 14 -118V-104Z" fill="#2E261E"/>`;
@@ -709,7 +718,10 @@ function clockTower(mi, L, hr) {
   t += `<g><animateTransform attributeName="transform" type="rotate" values="-6 0 -119;6 0 -119;-6 0 -119" dur="4s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/><path d="M0 -119V-116" stroke="#3A3226" stroke-width="1"/><path d="M-4.6 -106Q-4.6 -116 0 -116Q4.6 -116 4.6 -106Z" fill="#B8863B"/></g>`;
   if (st.spire === 'merli') { t += `<rect x="-22" y="-127" width="44" height="4" fill="${shade(body, .12)}"/>`; for (let j = 0; j < 5; j++) t += `<path d="M${-21 + j * 9} -127v-9l3 3l3 -3v9z" fill="${body}"/>`; }
   else if (st.spire === 'cipolla') t += `<rect x="-22" y="-127" width="44" height="4" fill="#7A5236"/><path d="M-17 -127C-24 -142 -6 -146 0 -162C6 -146 24 -142 17 -127Z" fill="#4E6E64"/><path d="M0 -162C6 -146 24 -142 17 -127H0Z" fill="#000" fill-opacity=".16"/><path d="M-15 -134Q0 -150 15 -134Q8 -146 0 -152Q-8 -146 -15 -134Z" fill="#FFFFFF"/><circle cx="0" cy="-164" r="2.6" fill="${BRASS}"/><path d="M0 -166V-176M-3 -172H3" stroke="#3A3226" stroke-width="1.2"/>`;
-  else if (st.spire === 'campanile') t += `<rect x="-22" y="-127" width="44" height="4" fill="${shade(body, .08)}"/><path d="M-14 -127Q0 -146 14 -127Z" fill="${light(body, .05)}"/><path d="M0 -146Q8 -137 14 -127H0Z" fill="#000" fill-opacity=".1"/><path d="M0 -146V-158M-4 -153H4" stroke="#3A3226" stroke-width="1.4"/>`;
+  else if (st.spire === 'cono') t += `<rect x="-22" y="-127" width="44" height="4" fill="${shade(body, .12)}"/><path d="M-20 -127L0 -182L20 -127Z" fill="${st.roof}"/><path d="M0 -182L${20 * L} -127H0Z" fill="#000" fill-opacity=".18"/><path d="M0 -182V-192M-3 -188H3" stroke="#3A3226" stroke-width="1.2"/>`;
+  else if (st.spire === 'cupola') t += `<rect x="-22" y="-127" width="44" height="4" fill="${shade(body, .12)}"/><path d="M-18 -127Q-18 -152 0 -154Q18 -152 18 -127Z" fill="#6E9C7E"/><path d="M0 -154Q18 -152 18 -127H0Z" fill="#000" fill-opacity=".14"/><rect x="-4" y="-164" width="8" height="10" fill="${body}"/><path d="M-5 -164Q0 -172 5 -164Z" fill="#6E9C7E"/><path d="M0 -170V-176" stroke="#3A3226" stroke-width="1.2"/>`;
+  else if (st.spire === 'guglia') t += `<rect x="-22" y="-127" width="44" height="4" fill="#5A3A2E"/><path d="M-24 -127L-12 -140L0 -196L12 -140L24 -127Z" fill="${st.roof}"/><path d="M0 -196L12 -140L24 -127H0Z" fill="#000" fill-opacity=".16"/><path d="M-12 -140H12" stroke="#5A3A2E" stroke-width="1.4"/><circle cx="0" cy="-198" r="2.4" fill="${BRASS}"/>`;
+  else if (st.spire === 'campanile') t += `<rect x="-22" y="-127" width="44" height="4" fill="${shade(body, .08)}"/><path d="M-14 -127Q0 -146 14 -127Z" fill="#2F6E9A"/><path d="M0 -146Q8 -137 14 -127H0Z" fill="#000" fill-opacity=".1"/><path d="M0 -146V-158M-4 -153H4" stroke="#3A3226" stroke-width="1.4"/>`;
   else t += `<rect x="-22" y="-127" width="44" height="4" fill="${shade(body, .12)}"/><path d="M-24 -127L0 -152L24 -127Z" fill="${st.roof}"/><path d="M0 -152L${24 * L} -127H0Z" fill="#000" fill-opacity=".16"/><path d="M0 -152V-162" stroke="#3A3226" stroke-width="1.4"/><path d="M-3 -160H3" stroke="#3A3226" stroke-width="1.2"/>`;
   t += `<circle cx="0" cy="-76" r="13" fill="#F4EFE0" stroke="#3A3226" stroke-width="2.2"/>`;
   for (let j = 0; j < 12; j++) { const a = j * Math.PI / 6, r0 = j % 3 ? 10.2 : 8.8; t += `<path d="M${f2(Math.sin(a) * r0)} ${f2(-76 - Math.cos(a) * r0)}L${f2(Math.sin(a) * 11.6)} ${f2(-76 - Math.cos(a) * 11.6)}" stroke="#3A3226" stroke-width="${j % 3 ? .8 : 1.4}"/>`; }
@@ -783,6 +795,108 @@ function cairn(mi) {
   return o;
 }
 
+/* ===== 3.0: figure ancora più legate al luogo ===== */
+/* animazione di un colpo di remo o di pagaia: tre pose (presa, fine, ritorno) */
+const SMILk = (vals, attr, dur = '3.2s') => `<animate attributeName="${attr}" values="${vals}" keyTimes="0;.56;.74;1" calcMode="spline" keySplines=".5 0 .5 1;.4 0 .6 1;.4 0 .6 1" dur="${dur}" repeatCount="indefinite"/>`;
+const seg4 = (A, B) => [0, 1, 2, 0].map((i) => `M${f2(A[i][0])} ${f2(A[i][1])}L${f2(B[i][0])} ${f2(B[i][1])}`).join(';');
+/* una figura in piedi che rema (vista di fianco, guarda a sinistra): piedi in (0,0); mani che spingono il remo */
+function standingRower(coat, hat, Hd, Bl, dur) {
+  const S = [[-3, -36], [3, -35], [0, -36]], Hh = Hd;
+  return `<path d="M-3 0L-1 -18M3 0L1 -18" stroke="#2E2A26" stroke-width="3.4" stroke-linecap="round"/>`
+    + `<path d="M0 -18L${S[0][0]} ${S[0][1]}" stroke="${coat}" stroke-width="8" stroke-linecap="round">${SMILk(seg4([[0, -18], [0, -18], [0, -18]], S), 'd', dur)}</path>`
+    + `<path d="M${S[0][0]} ${S[0][1] + 3}L${Hh[0][0]} ${Hh[0][1]}" stroke="${shade(coat, .15)}" stroke-width="3" stroke-linecap="round">${SMILk(seg4(S.map(([x, y]) => [x, y + 3]), Hh), 'd', dur)}</path>`
+    + `<path d="M${Hh[0][0]} ${Hh[0][1]}L${Bl[0][0]} ${Bl[0][1]}" stroke="${WOOD}" stroke-width="2.2" stroke-linecap="round">${SMILk(seg4(Hh, Bl), 'd', dur)}</path>`
+    + `<g><animateTransform attributeName="transform" type="translate" values="${[0, 1, 2, 0].map((i) => `${S[i][0] + 3} ${S[i][1] + 36}`).join(';')}" keyTimes="0;.56;.74;1" calcMode="spline" keySplines=".5 0 .5 1;.4 0 .6 1;.4 0 .6 1" dur="${dur}" repeatCount="indefinite"/>`
+    + `<circle cx="-3" cy="-41" r="4.4" fill="#D9A47E"/><circle cx="-5.4" cy="-41.6" r=".55" fill="#2A2420"/>${hat}</g>`;
+}
+/* la canoa canadese di Germinale: chi la guida sta in ginocchio e usa una pagaia sola, la pala entra davanti e spinge indietro */
+function canoe() {
+  const Hu = [[-8, -30], [4, -30], [0, -26]], Hl = [[-14, -14], [4, -14], [-4, -12]], Bl = [[-30, 8], [12, 8], [0, -2]];
+  return `<path d="M-60 -12Q-54 -2 -36 -1H36Q54 -2 60 -12Q62 -4 52 3Q30 9 0 9Q-30 9 -52 3Q-62 -4 -60 -12Z" fill="#A9553A"/><path d="M-60 -12Q-54 -2 -36 -1H36Q54 -2 60 -12" stroke="#E9DCC4" stroke-width="2" fill="none"/>`
+    + `<path d="M-58 -10l-3 -6M58 -10l3 -6" stroke="#6E3A26" stroke-width="2.4" stroke-linecap="round"/><path d="M-40 3Q0 7 40 3" stroke="#7A3A26" stroke-width="1" fill="none"/>`
+    + `<path d="M2 -2L2 -6M-2 -4H8" stroke="#2E2A26" stroke-width="4.4" stroke-linecap="round"/><path d="M2 -6L0 -26" stroke="#E3A33B" stroke-width="8" stroke-linecap="round"/>`
+    + `<path d="M-1 -24L${Hl[0][0]} ${Hl[0][1]}" stroke="#C98B2E" stroke-width="3" stroke-linecap="round">${SMILk(seg4([[-1, -24], [-1, -24], [-1, -24]], Hl), 'd')}</path>`
+    + `<path d="M${Hu[0][0]} ${Hu[0][1]}L${Bl[0][0]} ${Bl[0][1]}" stroke="${WOOD}" stroke-width="2" stroke-linecap="round">${SMILk(seg4(Hu, Bl), 'd')}</path>`
+    + `<path d="M${Bl[0][0]} ${Bl[0][1]}l1.6 -9" stroke="${WOOD_L}" stroke-width="5.4" stroke-linecap="round">${SMILk([0, 1, 2, 0].map((i) => `M${Bl[i][0]} ${Bl[i][1]}l1.6 -9`).join(';'), 'd')}</path>`
+    + `<circle cx="-1" cy="-31" r="4.4" fill="#D9A47E"/><path d="M-5.4 -32Q-1 -38 3.6 -32Z" fill="#5E8A5A"/><circle cx="-3.6" cy="-31.4" r=".55" fill="#2A2420"/><path d="M38 -2l6 -8h6l-2 8z" fill="#8A6A48"/>`;
+}
+/* il sandolo di Floreale: fondo piatto, il barcaiolo in piedi a poppa voga alla veneta con un remo sulla forcola, tra le ninfee */
+function sandolo() {
+  const H = [[24, -28], [34, -26], [30, -24]], Bl = [[70, 9], [56, 9], [62, 0]];
+  return `<path d="M-64 -14Q-50 -4 -30 -4H44Q54 -5 58 -10L56 2Q40 7 10 8L-36 8Q-56 6 -64 -14Z" fill="#2A4E70"/><path d="M-64 -14Q-50 -4 -30 -4H44Q54 -5 58 -10" stroke="#F4EFE2" stroke-width="2" fill="none"/>`
+    + `<path d="M-52 -6Q-10 0 50 -5" stroke="#C9A04A" stroke-width="1.2" fill="none"/><path d="M44 -5L46 -16" stroke="${WOOD_D}" stroke-width="3" stroke-linecap="round"/><path d="M43 -16q3 -4 6 0" stroke="${WOOD_D}" stroke-width="2" fill="none"/>`
+    + [-40, -32, -24].map((x, i) => `<path d="M${x} -6l-1 -9" stroke="#6E8F55" stroke-width="1"/><ellipse cx="${x - 1}" cy="-16" rx="2" ry="4" fill="#8E5FA3" transform="rotate(${-10 + i * 6} ${x - 1} -16)"/>`).join('')
+    + `<g transform="translate(26 -4)">${standingRower('#E9DCC4', `<path d="M-8.4 -43.4h10.8" stroke="#2A2A2A" stroke-width="1.4"/><path d="M-6.6 -43.4Q-3 -49 1 -43.4Z" fill="#E2C77A"/><path d="M-6.4 -44.4h7" stroke="#2A4E70" stroke-width="1"/>`, H.map(([x, y]) => [x - 26, y + 4]), Bl.map(([x, y]) => [x - 26, y + 4]), '3.6s')}</g>`;
+}
+/* il pattino di salvataggio di Estiario: due galleggianti rossi, il bagnino in piedi che spinge i remi guardando avanti */
+function pattino() {
+  const H = [[-10, -30], [4, -30], [-2, -26]], Bl = [[-50, 8], [-12, 8], [-26, -2]];
+  return `<path d="M-56 -4Q-60 -10 -52 -12H50Q58 -10 54 -4Q50 6 40 7H-44Q-54 6 -56 -4Z" fill="#C0392B" opacity=".55"/>`
+    + `<path d="M-60 -8Q-64 -16 -54 -18H52Q62 -16 58 -8Q54 4 42 5H-46Q-58 4 -60 -8Z" fill="#D9442F"/><path d="M-54 -18H52" stroke="#F4F1EA" stroke-width="1.6"/><path d="M-40 -4H38" stroke="#F4F1EA" stroke-width="3"/>`
+    + `<path d="M-30 -18V-26M24 -18V-26M-34 -26H28" stroke="#F4F1EA" stroke-width="2.4" stroke-linecap="round"/><rect x="-6" y="-30" width="12" height="4" fill="#E8C34A"/>`
+    + `<g transform="translate(0 -26)">${standingRower('#C0392B', `<path d="M-8 -45.6Q-3 -50 2 -45.6Z" fill="#E8C34A"/><path d="M-8.6 -45.4h11" stroke="#C98B2E" stroke-width="1.4"/>`, H.map(([x, y]) => [x, y + 26 - 26]), Bl.map(([x, y]) => [x, y + 26]), '3s')}</g>`;
+}
+/* il gozzo ligure di Messidoro: doppia prua alta (torelle), capodibanda in legno chiaro, fasce azzurra e rossa, la lampara a poppa per la pesca di notte,
+   le reti coi sugheri, la cassetta del pesce. Il pescatore (maglia a righe, cappello di paglia) rema guardando la poppa. */
+function gozzo(lamp) {
+  let s = `<path d="M-60 -20Q-58 -8 -44 -5Q-10 -2 30 -4Q48 -6 56 -18L55 -8Q52 4 38 8Q10 12 -26 10Q-48 7 -56 -4Q-60 -10 -60 -20Z" fill="#F4F1EA"/>`
+    + `<path d="M-58 -10Q-50 2 -30 4Q10 7 40 3Q50 0 55 -8L54 -4Q48 6 36 8Q10 12 -26 10Q-48 7 -56 -4Z" fill="#3E86B8"/><path d="M-56 -6Q-30 4 10 5Q38 4 54 -6" stroke="#B23A2E" stroke-width="1.4" fill="none"/>`
+    + `<path d="M-60 -20Q-58 -8 -44 -5Q-10 -2 30 -4Q48 -6 56 -18" stroke="#C99A5E" stroke-width="2.8" fill="none"/><path d="M-60 -20L-64 -32Q-62 -34 -60 -32L-58 -20" fill="#C99A5E"/><path d="M56 -18L60 -28Q62 -29 62 -26L58 -16" fill="#C99A5E"/>`
+    + `<path d="M-44 -6Q-42 -1 -38 0M-24 -4Q-22 1 -18 2M-4 -3Q-2 2 2 3M16 -4Q18 1 22 2" stroke="#000" stroke-opacity=".08" stroke-width="1" fill="none"/>`
+    + `<path d="M-52 -10Q-44 -20 -32 -10Q-40 -6 -52 -10Z" fill="#6E7A5A"/>` + [-48, -43, -38, -34].map((x, i) => `<circle cx="${x}" cy="${-13 + (i % 2) * 2}" r="1.6" fill="#E3A33B"/>`).join('')
+    + `<rect x="-28" y="-12" width="12" height="7" rx="1" fill="#8A5E3B"/>` + [-26, -22, -18].map((x) => `<ellipse cx="${x}" cy="-12.4" rx="2.6" ry="1.2" fill="#9FB4C0"/>`).join('');
+  if (lamp) s += `<path d="M48 -16L50 -52" stroke="#5A4632" stroke-width="2"/><path d="M42 -52h14" stroke="#5A4632" stroke-width="1.6"/><path d="M45 -52l-2 -6h12l-2 6z" fill="#3A3A3A"/><rect x="44" y="-50" width="10" height="7" rx="2" fill="#FFF1BE"/>`;
+  return s;
+}
+/* le vele in più: la iole di Germinale (due alberi, legno verniciato), il botter olandese di Floreale (fondo piatto, deriva laterale, randa aurica rossiccia),
+   la feluca di Messidoro (scafo a doppia punta, antenna lunga, vela latina con le cuciture) */
+function sailExtra(kind) {
+  if (kind === 'iole') return `<path d="M-6 -104V-5" stroke="#5A4632" stroke-width="2.4"/><path d="M-4 -100Q14 -64 32 -16L-4 -16Z" fill="#FBF7EE"/><path d="M-8 -96Q-26 -52 -44 -12L-8 -14Z" fill="#F4EFE2"/><path d="M-4 -16H34" stroke="#5A4632" stroke-width="2"/>`
+    + `<path d="M40 -6V-56" stroke="#5A4632" stroke-width="1.8"/><path d="M42 -54Q50 -34 54 -12L42 -12Z" fill="#FBF7EE"/><path class="sc-flagw2" d="M-6 -104L-24 -101L-6 -97Z" fill="#E89BB5"/><path class="sc-flagw2" d="M40 -56L28 -54L40 -51Z" fill="#5E8A5A"/>`
+    + `<g transform="translate(30 -7)">${captainL()}</g><path d="M-50 -12Q-10 -5 46 -9Q42 5 24 9L-24 9Q-40 6 -50 -12Z" fill="#B98A5C"/><path d="M-50 -12Q-10 -5 46 -9L45.5 -6.4Q-10 -1.6 -49 -9.4Z" fill="#5E8A5A"/><path d="M-38 3Q0 6 38 2" stroke="#8A5E3B" stroke-width="1.2" fill="none"/>`;
+  if (kind === 'botter') return `<path d="M0 -6V-96" stroke="#3A2E24" stroke-width="3"/><path d="M2 -60L40 -88" stroke="#3A2E24" stroke-width="2.2"/><path d="M2 -58L40 -86Q44 -46 42 -14L2 -14Z" fill="#9A4A2E"/><path d="M2 -14Q20 -40 41 -84" stroke="#7E3A22" stroke-width="1" fill="none"/>`
+    + `<path d="M-2 -90Q-20 -50 -38 -12L-2 -12Z" fill="#B85A34"/><path d="M0 -96L-30 -100" stroke="#3A2E24" stroke-width=".8"/><path class="sc-flagw2" d="M0 -96L-26 -94L0 -91Z" fill="#E3A33B"/>`
+    + `<g transform="translate(30 -9)">${captainL()}</g><path d="M-52 -14Q-48 2 -30 6H34Q48 4 50 -16Q0 -10 -52 -14Z" fill="#3A2A20"/><path d="M-52 -14Q0 -10 50 -16" stroke="#C9A04A" stroke-width="2.4" fill="none"/>`
+    + `<ellipse cx="-2" cy="-2" rx="12" ry="18" fill="#5A3A26" transform="rotate(-8 -2 -2)"/><ellipse cx="-2" cy="-2" rx="8" ry="13" fill="#6E4A30" transform="rotate(-8 -2 -2)"/>`;
+  /* feluca */
+  return `<path d="M-2 -5V-64" stroke="#5A4632" stroke-width="2.8"/><path d="M-54 -12L38 -124" stroke="#5A4632" stroke-width="2.4" stroke-linecap="round"/>`
+    + `<path d="M-52 -13L37 -122Q46 -66 34 -14Z" fill="#F7F0DE"/>` + [.2, .4, .6, .8].map((t) => `<path d="M${f2(-52 + 89 * t)} ${f2(-13 - 109 * t)}L${f2(-52 + 86 * t + 30 * (1 - t) * .2)} -14" stroke="#E2D6BA" stroke-width=".8"/>`).join('')
+    + `<path d="M-52 -13L37 -122Q30 -66 12 -14Z" fill="#000" fill-opacity=".04"/><path class="sc-flagw2" d="M38 -124L22 -122L37 -118Z" fill="#2F6E9A"/><path d="M-54 -12L-50 -4" stroke="#5A4632" stroke-width="1.6"/>`
+    + `<g transform="translate(30 -8)">${captainL()}</g><path d="M42 -10L20 -16" stroke="#6E4A2C" stroke-width="1.8" stroke-linecap="round"/>`
+    + `<path d="M-60 -18Q-50 -6 -30 -5Q10 -3 40 -6Q50 -8 54 -16L52 -6Q46 6 30 9Q0 12 -30 9Q-52 6 -58 -6Z" fill="#B98A5C"/><path d="M-58 -8Q-30 2 10 3Q40 2 52 -8L51 -4Q44 6 30 8Q0 11 -30 8Q-50 5 -57 -4Z" fill="#2F6E9A"/>`
+    + `<path d="M-60 -18Q-50 -6 -30 -5Q10 -3 40 -6Q50 -8 54 -16" stroke="#8A5E3B" stroke-width="2.4" fill="none"/><circle cx="-48" cy="-9" r="2.4" fill="#F4F1EA"/><circle cx="-48" cy="-9" r="1.1" fill="#1E1A14"/>`;
+}
+/* vedette in più: la palafitta di Brumale sullo stagno, la casa sull'albero fiorito di Germinale, il belvedere di ferro battuto coi rampicanti di Floreale */
+function stiltHut(L) {
+  let t = '';
+  [-20, -7, 7, 20].forEach((x, i) => { t += `<path d="M${x} 30L${x * .9} -40" stroke="${i % 2 ? '#3E3128' : '#4A3A2E'}" stroke-width="3.4" stroke-linecap="round"/>`; });
+  t += `<path d="M-20 10L20 -20M20 10L-20 -20" stroke="#5A4636" stroke-width="1.6"/><rect x="-30" y="-44" width="60" height="5" fill="#3E3128"/>`
+    + `<path d="M-24 -44V-74H24V-44Z" fill="#6A5644"/>` + Array.from({ length: 8 }, (_, j) => `<path d="M${-24 + j * 6.8} -44V-74" stroke="#4A3A2E" stroke-width="1"/>`).join('')
+    + `<rect x="-6" y="-66" width="10" height="10" fill="#2E2218"/><path d="M-34 -72L0 -98L34 -72Z" fill="#8C7A4A"/>` + Array.from({ length: 9 }, (_, j) => `<path d="M${-30 + j * 7.4} -73l${f2((j - 4) * -.8)} -6" stroke="#6E5E36" stroke-width="1"/>`).join('')
+    + `<path d="M0 -98L${34 * L} -72H0Z" fill="#000" fill-opacity=".14"/><path d="M30 -44L44 26" stroke="#5A4636" stroke-width="1.6"/>` + [0, 1, 2, 3, 4, 5].map((i) => `<path d="M${f2(31 + i * 2.2)} ${f2(-34 + i * 11)}h6" stroke="#5A4636" stroke-width="1.2"/>`).join('')
+    + `<path d="M-30 -44h-10v8" stroke="#2E2A26" stroke-width="1.4" fill="none"/><rect x="-43" y="-36" width="6" height="8" rx="1" fill="#2E2A26"/>`;
+  return { svg: t, lamp: [-1, -61], lamp2: [-40, -32] };
+}
+function treeHouse(L, R) {
+  let t = `<path d="M-6 2Q-4 -40 -2 -60Q-14 -80 -30 -88M-2 -60Q8 -82 28 -92M-3 -40Q-20 -44 -34 -40M2 -2Q-2 -40 4 -64" stroke="#6B5040" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M-12 2Q-6 -6 -6 -14M6 2Q4 -6 2 -12" stroke="#6B5040" stroke-width="5" fill="none"/>`;
+  t += `<rect x="-30" y="-62" width="60" height="5" fill="#8A6A48"/><path d="M-26 -62V-92H26V-62Z" fill="#C9A27A"/>` + Array.from({ length: 6 }, (_, j) => `<path d="M-26 ${-66 - j * 5}H26" stroke="#A27A54" stroke-width="1"/>`).join('')
+    + `<rect x="-14" y="-84" width="10" height="10" fill="#3E4652"/><rect x="6" y="-84" width="10" height="10" fill="#3E4652"/><path d="M-32 -90L0 -110L32 -90Z" fill="#5E8A4A"/><path d="M0 -110L${32 * L} -90H0Z" fill="#000" fill-opacity=".14"/>`
+    + `<path d="M28 -60L40 2M36 -60L48 2" stroke="#8A6A48" stroke-width="1.6"/>` + [0, 1, 2, 3, 4, 5, 6].map((i) => `<path d="M${f2(29 + i * 1.8)} ${-52 + i * 8}h8" stroke="#8A6A48" stroke-width="1.3"/>`).join('');
+  const cols = ['#F4C9D8', '#FFFFFF', '#E89BB5', '#F7DCE6'];
+  let cr = ''; for (let i = 0; i < 70; i++) { const a = R() * Math.PI * 2, rr = Math.sqrt(R()), x = Math.cos(a) * rr * 62, y = -104 + Math.sin(a) * rr * 34; if (y > -94 && Math.abs(x) < 34) continue; cr += `<circle cx="${f2(x)}" cy="${f2(y)}" r="${f2(5 + R() * 6)}" fill="${cols[i % 4]}"/>`; }
+  return { svg: t + cr + `<path class="sc-flagw" d="M0 -110L0 -126L14 -122L0 -118" fill="#E89BB5" stroke="#3A2E24" stroke-width="1.2"/>`, lamp: [-9, -79], lamp2: null };
+}
+function ironGazebo(L) {
+  const G = '#3E5A48', GL = '#5E7E66';
+  let t = `<rect x="-26" y="-6" width="52" height="6" fill="#B9B0A0"/>`;
+  [-20, -7, 7, 20].forEach((x) => { t += `<path d="M${x} -6V-104" stroke="${G}" stroke-width="2.6"/>`; });
+  for (let j = 0; j < 9; j++) t += `<path d="M-20 ${-12 - j * 10}L20 ${-17 - j * 10}" stroke="${GL}" stroke-width="1.4"/>`;
+  t += `<path d="M-24 -54H24M-24 -104H24" stroke="${G}" stroke-width="3"/><path d="M-24 -104Q-18 -112 -20 -118Q-10 -122 0 -140Q10 -122 20 -118Q18 -112 24 -104Z" fill="${G}"/><path d="M0 -140L${20 * L} -118Q${18 * L} -112 ${24 * L} -104H0Z" fill="#000" fill-opacity=".15"/>`
+    + `<circle cx="0" cy="-143" r="3" fill="${BRASS}"/>` + [-16, -8, 0, 8, 16].map((x) => `<path d="M${x} -104q4 6 0 12" stroke="${GL}" stroke-width="1.2" fill="none"/>`).join('');
+  let roses = ''; const RR = rng(91); for (let i = 0; i < 40; i++) { const side = i % 2 ? 1 : -1, y = -6 - RR() * 98, x = side * 20 + (RR() - .5) * 8; roses += `<circle cx="${f2(x)}" cy="${f2(y)}" r="${f2(1.6 + RR() * 1.6)}" fill="${i % 3 ? '#5E8A44' : ['#D8453A', '#F4C9D8', '#C2307A'][i % 3]}"/>`; }
+  return { svg: t + roses + `<path class="sc-flagw" d="M0 -146V-160L14 -156L0 -152" fill="#7E5A8E" stroke="#3A2E24" stroke-width="1"/>`, lamp: null, lamp2: null };
+}
+
 function sceneSVG(mi, opts = {}) {
   const p = clamp(opts.p ?? monthP(mi), 0, 1);
   const DAYB = mi === 1 && opts.variant === 'giorno';
@@ -791,6 +905,11 @@ function sceneSVG(mi, opts = {}) {
   const seed = mi * 131 + (opts.prot ? 900 : (opts.wk ?? 0) * 37) + 7, R = rng(seed), RN = rng(seed * 7 + 3);
   const T = Math.max(0, Math.round(opts.top || 0)), B = Math.max(0, Math.round(opts.bot || 0)), BOT = SH + B + 4;
   const sky = NIGHT ? NIGHT_SKY2[mi] : LD.sky.slice();
+  /* 3.0: le settimane di pioggia (Foliaio 2 e 6, Germinale 2 e 5, Floreale 7) e il temporale lontano sul mare (Messidoro 4); Brumale di giorno pioviggina sempre */
+  const RAINW = !opts.prot && (({ 0: [1, 5], 3: [1, 4], 4: [6] })[mi] || []).includes(opts.wk ?? -1), RAIN = RAINW || DAYB, STORM = !opts.prot && mi === 5 && opts.wk === 3;
+  if (RAINW && !NIGHT) { sky[0] = mixHex(sky[0], '#8A94A2', .55); sky[1] = mixHex(sky[1], '#B6BEC8', .5); }
+  if (RAINW && NIGHT) { sky[0] = mixHex(sky[0], '#1A2030', .4); sky[1] = mixHex(sky[1], '#2A3040', .4); }
+  const waterTops = [];
   const s = [];
   const tone = (str) => NIGHT ? toneStr(str, NK) : str;
   const add = (str, d) => { if (str) s.push(d == null ? tone(str) : `<g class="sc-fade" style="--d:${f2(d)}s">${tone(str)}</g>`); };
@@ -832,13 +951,13 @@ function sceneSVG(mi, opts = {}) {
     s.push(lit(st, .3)); }
   /* nuvole (Brumale di giorno: cielo coperto) */
   const cloud = (x, y, k, col, op) => `<g class="sc-drift" opacity="${f2(NIGHT ? op * .45 : op)}" style="--dd:${f2(50 + R() * 30)}s;--dx:${f2((R() < .5 ? -1 : 1) * (24 + R() * 24))}px"><ellipse cx="${f2(x)}" cy="${f2(y)}" rx="${f2(44 * k)}" ry="${f2(10 * k)}" fill="${col}"/><ellipse cx="${f2(x - 16 * k)}" cy="${f2(y - 6 * k)}" rx="${f2(20 * k)}" ry="${f2(11 * k)}" fill="${col}"/><ellipse cx="${f2(x + 14 * k)}" cy="${f2(y - 9 * k)}" rx="${f2(25 * k)}" ry="${f2(14 * k)}" fill="${col}"/></g>`;
-  if (DAYB) add([[620, 40, 1.4], [820, 10, 1.6], [1020, 52, 1.5], [1170, 18, 1.3], [900, 96, 1], [700, -40, 1.5], [1080, -70, 1.4]].map(([x, y, k], i) => cloud(x, y, k, ['#D3DAE4', '#C9D1DC', '#DCE1E8'][i % 3], .9)).join(''), .3);
+  if (DAYB || RAINW) add([[620, 40, 1.4], [820, 10, 1.6], [1020, 52, 1.5], [1170, 18, 1.3], [900, 96, 1], [700, -40, 1.5], [1080, -70, 1.4], [760, 120, 1.2], [1140, 110, 1.3], [940, -100, 1.6]].map(([x, y, k], i) => cloud(x, y, k, RAINW ? ['#A9B1BC', '#9CA4B0', '#B4BBC5'][i % 3] : ['#D3DAE4', '#C9D1DC', '#DCE1E8'][i % 3], .92)).join(''), .3);
   else if (mi !== 6 || !NIGHT) add([[700, 70 - T * .3, 1.1], [1080, 40 - T * .5, .8], [880, 130, .6]].map(([x, y, k]) => cloud(x, y, k, '#FFFFFF', mi === 5 || mi === 6 ? .5 : .62)).join(''), .4);
 
   /* il sole o la luna */
   if (cel) {
     const { x, y, r } = cel;
-    if (cel.kind === 'sol') s.push(`<g class="sc-fade" style="--d:.2s"><g opacity="${DAYB ? .55 : 1}"><circle class="sc-glow" cx="${f2(x)}" cy="${f2(y)}" r="${r * 3.4}" fill="url(#${u}g)"/><circle cx="${f2(x)}" cy="${f2(y)}" r="${r}" fill="${low > .5 ? '#FBD9A0' : '#FFF6DE'}"/></g></g>`);
+    if (cel.kind === 'sol') s.push(`<g class="sc-fade" style="--d:.2s"><g opacity="${DAYB ? .55 : RAINW ? .35 : 1}"><circle class="sc-glow" cx="${f2(x)}" cy="${f2(y)}" r="${r * 3.4}" fill="url(#${u}g)"/><circle cx="${f2(x)}" cy="${f2(y)}" r="${r}" fill="${low > .5 ? '#FBD9A0' : '#FFF6DE'}"/></g></g>`);
     else {
       const k = Math.cos(2 * Math.PI * MP), rx = f2(Math.abs(k) * r), wax = MP < .5, T0 = `${f2(x)} ${f2(y - r)}`, B0 = `${f2(x)} ${f2(y + r)}`;
       const litD = wax ? `M${T0}A${r} ${r} 0 0 1 ${B0}A${rx} ${r} 0 0 ${k > 0 ? 0 : 1} ${T0}Z` : `M${T0}A${r} ${r} 0 0 0 ${B0}A${rx} ${r} 0 0 ${k > 0 ? 1 : 0} ${T0}Z`;
@@ -851,11 +970,17 @@ function sceneSVG(mi, opts = {}) {
   const wkx = opts.prot ? 9 : (opts.wk ?? 0), RW = rng(seed + 99);
   if (mi === 3 && !NIGHT && (wkx === 1 || wkx === 4) && cel && cel.alt > .12) {   // Germinale: dopo l'acquazzone, l'arcobaleno dalla parte opposta al sole
     const cx = cel.x < 960 ? 1100 : 820, cy = HZ + 60, r0 = 210;
-    s.push(`<g class="sc-fade" style="--d:1.4s"><g opacity=".2">${['#E25B4A', '#F0A04A', '#F2D45A', '#7DBE6A', '#5A9AD6', '#8A6ACB'].map((c, i) => `<path d="M${cx - (r0 - i * 5)} ${cy}A${r0 - i * 5} ${r0 - i * 5} 0 0 1 ${cx + (r0 - i * 5)} ${cy}" stroke="${c}" stroke-width="5.4" fill="none"/>`).join('')}</g></g>`); }
+    s.push(`<g class="sc-fade" style="--d:1.4s"><g opacity=".32">${['#E25B4A', '#F0A04A', '#F2D45A', '#7DBE6A', '#5A9AD6', '#8A6ACB'].map((c, i) => `<path d="M${cx - (r0 - i * 5)} ${cy}A${r0 - i * 5} ${r0 - i * 5} 0 0 1 ${cx + (r0 - i * 5)} ${cy}" stroke="${c}" stroke-width="5.4" fill="none"/>`).join('')}</g></g>`); }
   if (mi === 5) {   // Messidoro: di giorno i cumuli alti sul mare; di notte i lampi di calore lontani, dentro le nuvole all'orizzonte
     const bank = wkx % 2 ? [[820, 200, 22], [846, 192, 30], [872, 200, 20], [1090, 200, 26], [1120, 190, 36], [1150, 200, 22]] : [[900, 200, 24], [930, 188, 36], [962, 200, 22], [1160, 202, 18]];
     if (NIGHT) s.push(lit(`<ellipse class="sc-flash" style="--fld:9s;--fll:-3s" cx="1010" cy="176" rx="130" ry="56" fill="url(#${u}g)"/><ellipse class="sc-flash" style="--fld:13s;--fll:-8s" cx="860" cy="186" rx="100" ry="44" fill="url(#${u}g)"/>`, .5));
     add(`<g opacity="${NIGHT ? .9 : .85}">` + bank.map(([x, y, r]) => `<circle cx="${x}" cy="${y - r * .5}" r="${r}" fill="${NIGHT ? '#7E88A6' : '#FFFFFF'}"/><circle cx="${x + r * .5}" cy="${y - r * 1.1}" r="${r * .62}" fill="${NIGHT ? '#8892AE' : '#FFFFFF'}"/><ellipse cx="${x}" cy="${y - r * .2}" rx="${r * 1.1}" ry="${r * .35}" fill="${NIGHT ? '#6E7896' : '#E4EAEF'}"/>`).join('') + '</g>', .3); }
+  if (STORM && !NIGHT) { const cx = 870; s.push('<g transform="translate(348 86) scale(.6)">');   // il temporale lontano sul mare: la torre di nuvole con l'incudine, la cortina di pioggia sfumata che tocca l'acqua, il fulmine
+    s.push(`<g class="sc-fade" style="--d:.6s"><defs><linearGradient id="${u}cur" x1="0" y1="150" x2="0" y2="214" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#6E7888" stop-opacity=".7"/><stop offset="1" stop-color="#8A94A2" stop-opacity=".15"/></linearGradient><linearGradient id="${u}cb" x1="0" y1="20" x2="0" y2="160" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#D9DEE5"/><stop offset=".6" stop-color="#9AA3B0"/><stop offset="1" stop-color="#6E7888"/></linearGradient></defs>`
+      + `<path d="M${cx - 60} 150L${cx - 78} 214H${cx + 96}L${cx + 76} 150Z" fill="url(#${u}cur)"/>` + Array.from({ length: 10 }, (_, i) => `<path d="M${cx - 50 + i * 13} 152l-8 60" stroke="#6E7888" stroke-opacity=".18" stroke-width="5"/>`).join('')
+      + `<path d="M${cx - 150} 44Q${cx - 60} 22 ${cx} 30Q${cx + 90} 20 ${cx + 170} 40Q${cx + 80} 52 ${cx + 40} 60Q${cx + 70} 90 ${cx + 80} 120Q${cx + 100} 136 ${cx + 76} 152H${cx - 62}Q${cx - 86} 136 ${cx - 64} 118Q${cx - 70} 86 ${cx - 40} 62Q${cx - 90} 54 ${cx - 150} 44Z" fill="url(#${u}cb)"/>`
+      + `<path d="M${cx - 40} 62Q${cx - 10} 80 ${cx + 40} 60" stroke="#FFFFFF" stroke-opacity=".3" stroke-width="6" fill="none"/></g>`
+      + `<g data-lit="1"><path class="sc-flash" style="--fld:7s;--fll:-2s" d="M${cx + 20} 152l-8 20l7 0l-12 26l18 -30l-8 0l8 -16z" fill="#FFF8D0"/><ellipse class="sc-flash" style="--fld:7s;--fll:-2s" cx="${cx + 10}" cy="110" rx="80" ry="50" fill="url(#${u}g)"/></g>`); s.push('</g>'); }
   if (mi === 6 && NIGHT) s.push(lit([[760, 30, 13, 3], [1100, -20, 17, 9], [920, -60, 21, 15]].map(([x, y, d, l]) => `<g class="sc-shoot" style="--sd2:${d}s;--sdl2:${l}s"><path d="M${x} ${y - T * .3}l-64 24" stroke="url(#${u}t)" stroke-width="1.6" stroke-linecap="round"/></g>`).join(''), 2));
 
   /* ---- strumenti per costruire il luogo ---- */
@@ -863,7 +988,8 @@ function sceneSVG(mi, opts = {}) {
     for (let i = 0; i < keys.length - 1; i++) { const [x0, y0] = keys[i], [x1, y1] = keys[i + 1], n = Math.max(1, Math.round((x1 - x0) / step));
       for (let k = 0; k < n; k++) { const t = k / n; c.push([x0 + (x1 - x0) * t, y0 + (y1 - y0) * smooth(t) + (k ? (R() - .5) * rough : 0)]); } }
     c.push(keys[keys.length - 1]); const pts = crSample(c); const by = base ?? BOT + 40; return { pts, y: (x) => interpY(pts, x), d: ptsD(pts) + `L${f2(pts[pts.length - 1][0])} ${f2(by)}L${f2(pts[0][0])} ${f2(by)}Z` }; };
-  const fill = (rg, col, extra = '') => `<path d="${rg.d}" fill="${col}"${extra}/>`;
+  /* in Ianuario la neve si posa sui crinali: un orlo bianco sopra ogni piano */
+  const fill = (rg, col, extra = '') => `<path d="${rg.d}" fill="${col}"${extra}/>` + (snowy ? `<path d="${ptsD(rg.pts)}" stroke="#FFFFFF" stroke-width="2.6" stroke-opacity=".85" fill="none" stroke-linecap="round"/>` : '');
   const snowCap = (rg, line, h = 22) => { const top = rg.pts.filter(([, y]) => y < line + 4); if (top.length < 2) return '';
     let d = ''; let run = [];
     const flush = () => { if (run.length > 2) d += ptsD(run) + run.slice().reverse().map(([x, y], i) => `L${f2(x)} ${f2(Math.min(y + h * (.6 + .4 * hsh(x, 3)), Math.max(y, line + (hsh(x, 7) - .5) * 14)))}`).join('') + 'Z'; run = []; };
@@ -911,7 +1037,7 @@ function sceneSVG(mi, opts = {}) {
   const WTh = NIGHT ? [mixHex(sky[1], toneHex(LD.water[0], NK), .4), mi === 1 ? '#0A1120' : toneHex(shade(LD.water[1], .2), NK)] : [mixHex(sky[1], LD.water[0], .55), LD.water[1]];
   const WT = [rgb(WTh[0]), rgb(WTh[1]), rgb(mixHex(WTh[0], WTh[1], .6)), rgb(mixHex(WTh[0], WTh[1], .5))];
   let wN = 0, wId = u + 'w0';
-  const water = (top, x0 = -20, x1 = SW + 20) => { wId = u + 'w' + (++wN); return `<defs><linearGradient id="${wId}" x1="0" y1="${top}" x2="0" y2="${BOT}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${WT[0]}"/><stop offset=".45" stop-color="${WT[2]}"/><stop offset="1" stop-color="${WT[1]}"/></linearGradient>`
+  const water = (top, x0 = -20, x1 = SW + 20) => { wId = u + 'w' + (++wN); if (x1 - x0 > 280) waterTops.push([top, x0, x1]); return `<defs><linearGradient id="${wId}" x1="0" y1="${top}" x2="0" y2="${BOT}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${WT[0]}"/><stop offset=".45" stop-color="${WT[2]}"/><stop offset="1" stop-color="${WT[1]}"/></linearGradient>`
     + `<clipPath id="${wId}c"><rect x="${x0}" y="${f2(top)}" width="${x1 - x0}" height="${f2(BOT - top + 40)}"/></clipPath></defs><rect x="${x0}" y="${f2(top)}" width="${x1 - x0}" height="${f2(BOT - top + 40)}" fill="url(#${wId})"/>`; };
   const mirror = (inner, wl, op = .38) => `<g clip-path="url(#${wId}c)"><g transform="translate(0 ${f2(2 * wl)}) scale(1 -1)" opacity="${op}">${inner}</g></g>`;
   const ripplesOn = (top, x0, x1, n) => { let o = ''; for (let i = 0; i < n; i++) { const t = Math.pow(R(), .8), y = top + 4 + t * (BOT - top - 4), w = 6 + t * 46 * (.5 + R()), x = x0 + R() * (x1 - x0);
@@ -1104,9 +1230,18 @@ function sceneSVG(mi, opts = {}) {
       const X = 1100, y = rg.y(X) + 3, L = Ls(X), T0 = watchtower(mi, L), K = mi === 5 ? 1.12 : 1.16;
       const path = `<path d="${ptsD(crSample([[900, BOT], [940, 352], [1010, 330], [960, 316], [1030, 298], [1080, 286], [X - 18, y]], 4))}" stroke="${LD.path}" stroke-opacity=".75" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="1 5"/>`;
       let dg = ''; if (dune) for (let i = 0; i < 18; i++) { const x = 900 + R() * 320, yy = rg.y(x) + 3 + R() * 30; dg += `<path d="M${f2(x)} ${f2(yy)}q-3 -10 -8 -14M${f2(x)} ${f2(yy)}q1 -12 4 -18M${f2(x)} ${f2(yy)}q4 -8 9 -10" stroke="#A9A05A" stroke-width="1.4" fill="none" stroke-linecap="round"/>`; }
-      add(fill(rg, dune ? '#E9CF98' : landCol(.82)) + (dune ? `<path d="M940 330Q1040 300 1140 306M960 360Q1060 340 1180 344" stroke="#D9B97E" stroke-width="2" fill="none"/>` + dg + `<path d="M1150 ${f2(rg.y(1150) + 4)}l40 -2" stroke="#7A5A3A" stroke-width="2"/>` : path + forest(rg, 1150, 1220, 2, .9, .85) + groundDetail(rg, 930, 1220, 16, 1, .9)) + shadowAt(X, y, 30) + at(X, y, K, T0.svg), .35);
-      if (T0.lamp && (NIGHT || DAYB)) addLit(at(X, y, K, `<rect x="${T0.lamp[0] - 4}" y="${T0.lamp[1] - 4}" width="8" height="8" rx="1.5" fill="#F6C76E"/>` + glow(T0.lamp[0], T0.lamp[1], 28)), 1.6);
-      if (T0.lamp2) addLit(at(X, y, K, `<rect x="${T0.lamp2[0] - 2}" y="${T0.lamp2[1] - 3}" width="4" height="5" fill="#F6C76E"/>` + glow(T0.lamp2[0], T0.lamp2[1], 22, NIGHT ? 1 : .6)), 1.7);
+      if (T0.lamp2 && STY[mi].tower === 'palafitta') { // Brumale: la palafitta sta nello stagno: i pali entrano nell'acqua scura, canne tutt'intorno, si specchia
+        const WLm = 318, bank = ridge([[860, BOT], [890, 340], [950, 316], [1000, 312]], 2, 30, BOT + 40);
+        add(fill(ridge([[930, 318], [1000, 300], [1080, 296], [1160, 300], [1240, 296]], 3, 30, WLm + 2), landCol(.7)) + forest(ridge([[930, 318], [1240, 300]], 0), 1170, 1230, 2, .8, .7, () => true, 2), .3);
+        s.push(water(WLm, 900, 1240));
+        const hut = at(X, WLm, K, T0.svg);
+        let rd = ''; for (let i2 = 0; i2 < 30; i2++) { const x = 930 + R() * 300, yy = WLm + 4 + R() * 30; if (Math.abs(x - X) < 30 && yy < WLm + 20) continue; rd += reed(x, yy, .7 + (yy - WLm) / 40, shade(LD.front, .1)); }
+        add(mirror(hut, WLm, .35) + ripplesOn(WLm, 920, 1220, 14) + hut + frontWater(X, WLm, 90, 40) + rd + fill(bank, landCol(.85)) + groundDetail(bank, 870, 990, 8, 1.2, .9), .35);
+        if (NIGHT || DAYB) addLit(mirror(at(X, WLm, K, glow(T0.lamp[0], T0.lamp[1], 20)), WLm, .5), 1.6);
+      } else add(fill(rg, dune ? '#E9CF98' : landCol(.82)) + (dune ? `<path d="M940 330Q1040 300 1140 306M960 360Q1060 340 1180 344" stroke="#D9B97E" stroke-width="2" fill="none"/>` + dg + `<path d="M1150 ${f2(rg.y(1150) + 4)}l40 -2" stroke="#7A5A3A" stroke-width="2"/>` : path + forest(rg, 1150, 1220, 2, .9, .85) + groundDetail(rg, 930, 1220, 16, 1, .9)) + shadowAt(X, y, 30) + at(X, y, K, T0.svg), .35);
+      const yL = STY[mi].tower === 'palafitta' ? 318 : y;
+      if (T0.lamp && (NIGHT || DAYB)) addLit(at(X, yL, K, `<rect x="${T0.lamp[0] - 4}" y="${T0.lamp[1] - 4}" width="8" height="8" rx="1.5" fill="#F6C76E"/>` + glow(T0.lamp[0], T0.lamp[1], 28)), 1.6);
+      if (T0.lamp2) addLit(at(X, yL, K, `<rect x="${T0.lamp2[0] - 2}" y="${T0.lamp2[1] - 3}" width="4" height="5" fill="#F6C76E"/>` + glow(T0.lamp2[0], T0.lamp2[1], 22, NIGHT ? 1 : .6)), 1.7);
       const fr = ridge([[-20, BOT - 22], [700, BOT - 30], [900, BOT - 26], [960, BOT + 10]], 3);
       add(fill(fr, dune ? '#D9B97E' : shade(LD.front, .1)) + groundDetail(fr, 650, 940, 14, 1.5, 1), .5);
       break;
@@ -1117,7 +1252,7 @@ function sceneSVG(mi, opts = {}) {
       const sh = sea ? ridge([[640, WL + 1], [700, WL - 8], [780, WL - 14], [860, WL - 6], [920, WL + 1]], 3, 30, WL + 1) : ridge([[-20, 224], [500, 220], [760, 224], [880, 216], [1000, 222], [1220, 216]], 3);
       let shore = fill(sh, landCol(.34)) + (sea ? '' : forest(sh, 500, 1200, 20, .32, .34, (x) => Math.abs(x - 860) > 22, 3));
       let lights = '', lightsM = null;
-      if (wk === 1) { const hx = sea ? 760 : 860, hy = sh.y(hx) + 3; shore += cottage(hx, hy, .62, haze(mi === 2 ? '#8A5A3C' : mi === 5 || mi === 6 ? '#F4F1EA' : '#E6D6BC', .35), haze(STY[mi].roof, .35), Ls(hx));
+      if (wk === 1) { const hx = sea ? 760 : 860, hy = sh.y(hx) + 3; shore += cottage(hx, hy, .62, haze(mi === 2 ? '#8A5A3C' : mi === 5 || mi === 6 ? '#F4F1EA' : '#E6D6BC', .35), haze(STY[mi].roof, .35), Ls(hx), true, snowy);
         shore += `<path d="M${hx + 14} ${f2(hy + 1)}h26" stroke="${haze(WOOD, .4)}" stroke-width="2"/>`; lights = win(hx - 6.5, hy - 6.5, 3.2, 3.2, .4) + win(hx + 3, hy - 6.5, 3.2, 3.2, 1.9); }
       else { const fx = sea ? 784 : 880, fy = sh.y(fx) + 1;
         shore += `<path d="M${fx - 5} ${f2(fy)}L${fx - 3.4} ${f2(fy - 34)}H${fx + 3.4}L${fx + 5} ${f2(fy)}Z" fill="${haze('#FFFFFF', .3)}"/><path d="M${fx - 4.4} ${f2(fy - 12)}h8.8M${fx - 4} ${f2(fy - 24)}h8" stroke="${haze('#B23A2E', .3)}" stroke-width="3.4"/><rect x="${fx - 4}" y="${f2(fy - 41)}" width="8" height="7" fill="${haze('#3A2E24', .3)}"/><path d="M${fx - 5} ${f2(fy - 41)}l5 -5l5 5z" fill="${haze('#B23A2E', .3)}"/>`;
@@ -1132,9 +1267,16 @@ function sceneSVG(mi, opts = {}) {
       if (!sea && !ice) { add(ripplesOn(WL, 300, 1200, 44)); s.push(glitter(WL)); }
       if (mi === 1) add(mist(WL - 16, 26, DAYB ? .7 : .3, 24, 60), .4);
       if (snowy && !ice) add(`<path d="M-20 ${WL + 1}H1220" stroke="#FFFFFF" stroke-width="2.4" stroke-opacity=".8"/>` + Array.from({ length: 8 }, () => { const x = 300 + R() * 900, y = WL + 6 + R() * 50, w = 10 + R() * 30; return `<ellipse cx="${f2(x)}" cy="${f2(y)}" rx="${f2(w)}" ry="${f2(w * .1)}" fill="#E8F1F5" fill-opacity=".85"/>`; }).join(''), .4);
-      if (wk === 1) { const bx = 1060, by = 300, k = 1.32, boat = at(bx, by, k, rowBoat2(true, STY[mi].boat));
+      if (wk === 1) { /* la barca del mese: barchino, lucia, barca tra i ghiacci, canoa, sandolo tra le ninfee, gozzo con la lampara, pattino del bagnino */
+        const bx = 1060, by = 300, k = 1.32, kind = mi === 3 ? 'canoa' : mi === 4 ? 'sandolo' : mi === 6 ? 'pattino' : 'remi';
+        const boat = at(bx, by, k, kind === 'canoa' ? canoe() : kind === 'sandolo' ? sandolo() : kind === 'pattino' ? pattino() : rowBoat2(mi !== 5, STY[mi].boat));
+        let deco = '';
+        if (mi === 4) for (let i2 = 0; i2 < 14; i2++) { const x = 760 + R() * 460, y = 300 + Math.pow(R(), .7) * (BOT - 300), w = 6 + (y - 290) * .12; if (Math.abs(x - bx) < 90 && Math.abs(y - by) < 20) continue; deco += `<ellipse cx="${f2(x)}" cy="${f2(y)}" rx="${f2(w)}" ry="${f2(w * .3)}" fill="#5E8A44"/><path d="M${f2(x)} ${f2(y)}l${f2(w * .6)} ${f2(-w * .1)}" stroke="#4A6E36" stroke-width="1"/>` + (i2 % 3 ? '' : `<circle cx="${f2(x - w * .3)}" cy="${f2(y - w * .15)}" r="${f2(w * .3)}" fill="#F4C9D8"/>`); }
+        if (mi === 0) for (let i2 = 0; i2 < 16; i2++) { const x = 740 + R() * 480, y = 250 + Math.pow(R(), .7) * (BOT - 250), w = 2 + (y - 240) * .03; deco += `<ellipse cx="${f2(x)}" cy="${f2(y)}" rx="${f2(w)}" ry="${f2(w * .4)}" fill="${AUT[i2 % 4]}"/>`; }
+        add(deco, .4);
         add(mirror(boat, by, .32) + boat + frontWater(bx, by, 150 * k, 18) + ripRings(bx - 30 * k, by + 1, 3, 24) + `<path d="M${f2(bx + 50 * k)} ${by + 3}l34 2M${f2(bx + 46 * k)} ${by + 7}l26 5" stroke="#FFFFFF" stroke-opacity=".55" stroke-width="1.2"/>`, .45);
-        addLit(glow(bx - 58 * k, by - 34 * k, NIGHT || DAYB ? 34 : 16) + mirror(glow(bx - 58 * k, by - 34 * k, 22), by, .6), 1.6); }
+        if (kind === 'remi' && mi !== 5) addLit(glow(bx - 58 * k, by - 34 * k, NIGHT || DAYB ? 34 : 16) + mirror(glow(bx - 58 * k, by - 34 * k, 22), by, .6), 1.6);
+        if (mi === 5 && NIGHT) addLit(glow(bx + 49 * k, by - 47 * k, 70) + mirror(glow(bx + 49 * k, by - 47 * k, 50), by, .8) + Array.from({ length: 8 }, (_, i2) => `<rect class="sc-twinkle" style="--td:${f2(1.6 + i2 * .3)}s" x="${f2(bx + 49 * k - 14 - i2 * 3)}" y="${f2(by + 10 + i2 * 10)}" width="${f2(28 + i2 * 6)}" height="1.8" rx=".9" fill="#FFF1BE" fill-opacity=".7"/>`).join(''), 1.6); }
       else { const st = STY[mi].sail, bx = 1070, by = ice ? 300 : 296, k = 1.3, boat = at(bx, by, k, sailBoat2(st));
         if (ice) add(`<ellipse cx="${bx}" cy="${by + 2}" rx="${70 * k}" ry="5" fill="#5A6E7E" fill-opacity=".2"/>` + boat + `<path d="M${f2(bx + 50 * k)} ${by + 1}q40 -1 90 1M${f2(bx + 46 * k)} ${by + 4}q30 0 70 3" stroke="#FFFFFF" stroke-width="1.6" fill="none" stroke-linecap="round"/>`, .45);
         else add(mirror(boat, by, .3) + `<g class="sc-bob2">${boat}</g>` + frontWater(bx, by, 140 * k, 18) + `<path d="M${f2(bx + 50 * k)} ${by + 3}q30 2 58 -1M${f2(bx + 46 * k)} ${by + 8}q24 2 48 4" stroke="#FFFFFF" stroke-opacity=".6" stroke-width="1.3" fill="none" stroke-linecap="round"/>`, .45);
@@ -1142,43 +1284,155 @@ function sceneSVG(mi, opts = {}) {
       if (!sea) { let rd = ''; for (let i = 0; i < 12; i++) { const x = 1160 + i * 5.5 + R() * 4, y = BOT - 4 - R() * 10; rd += snowy ? `<path d="M${f2(x)} ${f2(y)}q3 -14 1 -26" stroke="#7A6A58" stroke-width="1.4" fill="none"/>` : reed(x, y, 1.4 + R() * .6, shade(LD.front, .15)); } add(rd, .6); }
       break;
     }
-    case 2: { // Navigare: la sfera armillare sul belvedere di pietra, ornato come vuole il mese; sotto, la pianura col lago lontano; di notte l'asse indica la stella polare
-      backdrop();
-      const mid = ridge([[-20, 236], [600, 230], [860, 226], [1000, 232], [1220, 226]], 3);
-      add(fill(mid, landCol(.4)) + patches(mid, 400, 1200, .4) + forest(mid, 560, 1200, 16, .3, .4) + (LD.sea ? '' : `<ellipse cx="900" cy="${f2(mid.y(900) + 12)}" rx="80" ry="5" fill="${mixHex(WTh[0], '#FFFFFF', .15)}"/>`), .25);
-      const plain = ridge([[-20, 262], [700, 258], [1000, 256], [1220, 260]], 2);
-      add(fill(plain, landCol(.6)) + patches(plain, 400, 1200, .6, 3) + hedge(plain, 400, 1200, 14, .6) + `<path d="M560 ${f2(plain.y(600) + 40)}Q820 ${f2(plain.y(800) + 8)} 900 ${f2(mid.y(900) + 14)}" stroke="${LD.path}" stroke-opacity=".55" stroke-width="2" fill="none"/>`, .3);
-      const ty = 298, X = 1090, fy = ty + 34;
-      const stone = mi === 6 ? '#EFE9DE' : mixHex(LD.rock, '#D8D0C0', .45);
-      let terr = `<defs><linearGradient id="${u}tf" x1="0" y1="${ty}" x2="0" y2="${BOT}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${shade(stone, .08)}"/><stop offset="1" stop-color="${light(stone, .12)}"/></linearGradient></defs><path d="M-20 ${ty}H1230V${BOT + 40}H-20Z" fill="url(#${u}tf)"/>`;
-      for (let k = 1; k < 7; k++) { const y = ty + Math.pow(k / 6, 1.6) * (BOT - ty); terr += `<path d="M-20 ${f2(y)}H1230" stroke="${shade(stone, .2)}" stroke-opacity=".35" stroke-width="${f2(.6 + k * .2)}"/>`; }
-      for (let k = -6; k <= 10; k++) { const x0 = 900 + k * 34; terr += `<path d="M${x0} ${ty}L${f2(900 + (x0 - 900) * 3.2)} ${BOT + 40}" stroke="${shade(stone, .2)}" stroke-opacity=".28" stroke-width="1"/>`; }
-      const bc = mi === 6 ? '#F4F1EA' : '#D6CEBD', bc2 = mi === 6 ? '#E6E0D4' : '#C3BAA8';
-      let bal = `<path d="M-20 ${ty - 30}H1230" stroke="${bc}" stroke-width="5"/><path d="M-20 ${ty - 3}H1230" stroke="${shade(bc, .12)}" stroke-width="4"/>`;
-      for (let x = -14; x < 1230; x += 13) bal += `<path d="M${x} ${ty - 27}q-3.2 6 0 11.5q3.2 6 0 11.5" stroke="${bc2}" stroke-width="5.4" fill="none"/><path d="M${x + 1.6} ${ty - 26}q2 5 0 10q-2 5 0 10" stroke="#000" stroke-opacity=".08" stroke-width="1.6" fill="none"/>`;
-      for (let x = 30; x < 1230; x += 120) bal += `<rect x="${x - 6}" y="${ty - 36}" width="12" height="36" fill="${shade(bc, .06)}"/><rect x="${x - 8}" y="${ty - 39}" width="16" height="4" fill="${light(bc, .1)}"/>`;
-      /* gli ornamenti del mese */
-      const RD2 = rng(seed + 41); let deco = '', decoLit = '';
-      const potTree = (px, tree) => `<path d="M${px - 13} ${fy + 26}l3 -20h20l3 20Z" fill="#B0643F"/><path d="M${px - 11} ${fy + 8}h22" stroke="#8E4A2E" stroke-width="2"/>` + tree;
-      switch (STY[mi].terr) {
-        case 'olivi': for (let x = 870; x < 1230; x += 40) { const xx = x + RD2() * 10; deco += `<path d="M${xx - 20} ${ty - 31}Q${xx} ${ty - 22} ${xx + 20} ${ty - 31}" stroke="#4E6A34" stroke-width="2.4" fill="none"/>` + [0, 1, 2, 3, 4].map((k) => `<circle cx="${f2(xx - 2 + (k % 2) * 3)}" cy="${f2(ty - 24 + Math.floor(k / 2) * 3.4)}" r="2" fill="#5A2E5E"/>`).join(''); }
-          deco += potTree(1196, treeRound(1196, fy + 8, 1, '#7E8F5A', '#5B4130', Ls(1196))); break;
-        case 'lampione': { const lx = 1000; deco += `<path d="M${lx} ${fy + 20}V${fy - 128}" stroke="#2E2A26" stroke-width="3.4"/><rect x="${lx - 5}" y="${fy + 12}" width="10" height="8" fill="#2E2A26"/><path d="M${lx - 8} ${fy - 128}h16l-3 -6h-10z" fill="#2E2A26"/><rect x="${lx - 6}" y="${fy - 128}" width="12" height="14" fill="#2E2A26"/>`;
-          decoLit = lit(`<rect x="${lx - 4}" y="${fy - 126}" width="8" height="10" fill="#F6C76E"/>` + glow(lx, fy - 121, NIGHT ? 60 : 34) + Array.from({ length: 5 }, (_, i) => `<rect class="sc-twinkle" style="--td:${f2(2 + i * .4)}s" x="${lx - 8 - i * 3}" y="${fy + 30 + i * 12}" width="${16 + i * 6}" height="1.6" rx=".8" fill="#F6C76E" fill-opacity=".55"/>`).join(''), 1.5);
-          deco += Array.from({ length: 6 }, () => { const x = 880 + RD2() * 340, y = fy + 30 + RD2() * (BOT - fy - 40), w = 16 + RD2() * 30; return `<ellipse cx="${f2(x)}" cy="${f2(y)}" rx="${f2(w)}" ry="${f2(w * .14)}" fill="#FFFFFF" fill-opacity=".12"/>`; }).join(''); break; }
-        case 'ghiaccioli': deco += `<path d="M-20 ${ty - 33}H1230" stroke="#FFFFFF" stroke-width="3"/>`; for (let x = -10; x < 1230; x += 6 + RD2() * 6) deco += `<path d="M${f2(x)} ${ty - 28}l1.2 ${f2(4 + RD2() * 7)}l1.2 ${f2(-4 - RD2() * 7)}" fill="#E4F0F6"/>`;
-          deco += [880, 1010, 1180].map((x) => `<path d="M${x - 46} ${fy + 24}Q${x - 20} ${fy + 8} ${x} ${fy + 12}Q${x + 26} ${fy + 8} ${x + 46} ${fy + 24}Z" fill="#FFFFFF"/>`).join(''); break;
-        case 'glicine': { let g = `<path d="M1230 ${ty - 92}Q1160 ${ty - 100} 1100 ${ty - 80}Q1060 ${ty - 66} 1040 ${ty - 34}" stroke="#6E5236" stroke-width="3.4" fill="none"/>`;
-          for (let i = 0; i < 12; i++) { const t = i / 11, x = 1230 - t * 190, y = ty - 92 + t * 40 + RD2() * 6; g += `<path d="M${f2(x)} ${f2(y)}l-2 ${f2(16 + RD2() * 10)}" stroke="#B48ECF" stroke-width="5" stroke-linecap="round"/><path d="M${f2(x - 1)} ${f2(y + 6)}l-1 ${f2(8 + RD2() * 6)}" stroke="#D9C2EA" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="${f2(x + 6)}" cy="${f2(y)}" rx="5" ry="2.4" fill="#6E9C52"/>`; }
-          deco += g + Array.from({ length: 10 }, () => `<ellipse cx="${f2(900 + RD2() * 320)}" cy="${f2(fy + 20 + RD2() * (BOT - fy - 30))}" rx="2.4" ry="1.3" fill="#C9A6DE"/>`).join(''); break; }
-        case 'fioriere': for (let x = 90; x < 1230; x += 120) deco += `<rect x="${x - 22}" y="${ty - 40}" width="44" height="8" fill="#8A5E3B"/>` + Array.from({ length: 9 }, (_, i) => `<circle cx="${x - 20 + i * 5}" cy="${f2(ty - 42 - RD2() * 3)}" r="2.6" fill="${['#D8453A', '#8E5FA3', '#F4ECDD', '#E3A33B'][i % 4]}"/>`).join(''); break;
-        case 'limone': deco += potTree(1196, treeRound(1196, fy + 8, 1.1, '#4F7A3A', '#5B4130', Ls(1196)) + [[-8, -26], [6, -30], [-2, -36], [10, -22], [-12, -18]].map(([a, b]) => `<ellipse cx="${1196 + a}" cy="${fy + 8 + b}" rx="2.6" ry="2" fill="#F2D23A"/>`).join('')); break;
-        case 'buganvillea': for (let i = 0; i < 70; i++) { const x = 1100 + RD2() * 140, y = ty - 46 + RD2() * 34 + Math.max(0, x - 1150) * .3 * RD2(); deco += `<circle cx="${f2(x)}" cy="${f2(y)}" r="${f2(2 + RD2() * 2.6)}" fill="${['#C2307A', '#E0559A', '#9E2A60', '#5E8A44'][i % 4]}"/>`; } break;
+    case 2: { // Navigare: ogni mese si trova la rotta a modo suo
+      const RN2 = rng(seed + 41);
+      if (mi === 0 || mi > 6) { // Foliaio: la sfera armillare sul belvedere tra le vigne, sotto il pergolato; di notte l'asse indica la stella polare
+        backdrop();
+        const mid = ridge([[-20, 236], [600, 230], [860, 226], [1000, 232], [1220, 226]], 3);
+        add(fill(mid, landCol(.4)) + patches(mid, 400, 1200, .4) + forest(mid, 560, 1200, 16, .3, .4) + `<ellipse cx="900" cy="${f2(mid.y(900) + 12)}" rx="80" ry="5" fill="${mixHex(WTh[0], '#FFFFFF', .15)}"/>`, .25);
+        const plain = ridge([[-20, 262], [700, 258], [1000, 256], [1220, 260]], 2);
+        let vines = ''; for (let k = 0; k < 7; k++) { const y0 = (x) => plain.y(x) + 4 + Math.pow(k / 6, 1.4) * 26; let d = ''; for (let x = 600; x <= 1200; x += 8) d += `${x === 600 ? 'M' : 'L'}${x} ${f2(y0(x))}`; vines += `<path d="${d}" stroke="${haze(mixHex('#5E7A34', '#8E3A1E', p), .55 + k * .05)}" stroke-width="${f2(1 + k * .4)}" stroke-dasharray="${f2(.6 + k * .2)} ${f2(3 + k)}" fill="none"/>`; }
+        add(fill(plain, landCol(.6)) + vines, .3);
+        const ty = 298, X = 1090, fy = ty + 34, stone = mixHex(LD.rock, '#D8D0C0', .45);
+        let terr = `<defs><linearGradient id="${u}tf" x1="0" y1="${ty}" x2="0" y2="${BOT}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${shade(stone, .08)}"/><stop offset="1" stop-color="${light(stone, .12)}"/></linearGradient></defs><path d="M-20 ${ty}H1230V${BOT + 40}H-20Z" fill="url(#${u}tf)"/>`;
+        for (let k = 1; k < 7; k++) { const y = ty + Math.pow(k / 6, 1.6) * (BOT - ty); terr += `<path d="M-20 ${f2(y)}H1230" stroke="${shade(stone, .2)}" stroke-opacity=".35" stroke-width="${f2(.6 + k * .2)}"/>`; }
+        for (let k = -6; k <= 10; k++) { const x0 = 900 + k * 34; terr += `<path d="M${x0} ${ty}L${f2(900 + (x0 - 900) * 3.2)} ${BOT + 40}" stroke="${shade(stone, .2)}" stroke-opacity=".28" stroke-width="1"/>`; }
+        let bal = `<path d="M-20 ${ty - 30}H1230" stroke="#D6CEBD" stroke-width="5"/><path d="M-20 ${ty - 3}H1230" stroke="#B9B0A0" stroke-width="4"/>`;
+        for (let x = -14; x < 1230; x += 13) bal += `<path d="M${x} ${ty - 27}q-3.2 6 0 11.5q3.2 6 0 11.5" stroke="#C3BAA8" stroke-width="5.4" fill="none"/>`;
+        let perg = ''; for (let x = 870; x < 1230; x += 40) { const xx = x + RN2() * 10; perg += `<path d="M${xx - 20} ${ty - 31}Q${xx} ${ty - 20} ${xx + 20} ${ty - 31}" stroke="#4E6A34" stroke-width="2.6" fill="none"/>` + [0, 1, 2].map((j) => `<path d="${mapleD(4 + RN2() * 2)}" transform="translate(${f2(xx - 12 + j * 12)} ${f2(ty - 26 + (j % 2) * 3)})" fill="${AUT[(j + x) % 4]}"/>`).join('') + [0, 1, 2, 3, 4].map((k2) => `<circle cx="${f2(xx - 2 + (k2 % 2) * 3)}" cy="${f2(ty - 22 + Math.floor(k2 / 2) * 3.4)}" r="2" fill="#5A2E5E"/>`).join(''); }
+        perg += `<path d="M1183 ${fy + 26}l3 -20h20l3 20Z" fill="#B0643F"/><path d="M1185 ${fy + 8}h22" stroke="#8E4A2E" stroke-width="2"/>` + treeRound(1196, fy + 8, 1.05, '#7E8F5A', '#5B4130', Ls(1196));
+        add(terr + bal + shadowAt(X, fy, 30) + at(X, fy, 1.4, armillary(false)) + perg, .35);
+        if (NIGHT) { const S = 1.4, cx = X + ARM_AX[0] * 34 * S, cy = fy - 84 * S + ARM_AX[1] * 34 * S, py = -T + 40, t = (cy - py) / -ARM_AX[1], px = cx + ARM_AX[0] * t;
+          addLit(`<path d="M${f2(cx)} ${f2(cy)}L${f2(px)} ${f2(py)}" stroke="#E9ECF6" stroke-opacity=".16" stroke-width="1" stroke-dasharray="2 6"/><g transform="translate(${f2(px)} ${f2(py)})"><circle class="sc-glow" r="26" fill="url(#${u}g)"/><path class="sc-twinkle" style="--td:3.6s" d="M0 -12L2 -2L12 0L2 2L0 12L-2 2L-12 0L-2 -2Z" fill="#FFFFFF"/><circle r="2" fill="#FFFFFF"/></g>`, 1.2); }
+      } else if (mi === 1) { // Brumale: nella nebbia la rotta si trova a orecchio e a occhio: la boa con la campana che dondola, il fanale verde in fondo al molo
+        backdrop();
+        const WL = 234, sh = ridge([[-20, 222], [500, 218], [760, 222], [880, 214], [1000, 220], [1220, 214]], 3);
+        const shore = fill(sh, landCol(.34)) + forest(sh, 500, 1200, 22, .34, .34, () => true, 3);
+        add(shore, .25); s.push(water(WL)); add(mirror(shore, WL, .38) + ripplesOn(WL, 300, 1200, 40)); s.push(glitter(WL));
+        add(mist(WL - 14, 26, DAYB ? .7 : .3, 24, 60), .4);
+        /* il molo di pietra che viene verso di noi da destra, coi pali d'ormeggio */
+        const P0 = [1240, 262], P1 = [1050, 300], th = (t) => 6 + t * 16;
+        let molo = `<path d="M${P0[0]} ${P0[1] - 6}L${P1[0]} ${P1[1] - 10}L${P1[0]} ${P1[1] + th(1)}L${P0[0]} ${P0[1] + th(0)}Z" fill="#7D7A74"/><path d="M${P0[0]} ${P0[1] - 6}L${P1[0]} ${P1[1] - 10}L${P1[0] + 12} ${P1[1] - 16}L${P0[0]} ${P0[1] - 10}Z" fill="#A9A59C"/>`;
+        for (let i = 0; i < 9; i++) { const t = i / 8, x = P0[0] + (P1[0] - P0[0]) * t, y = P0[1] + (P1[1] - P0[1]) * t; molo += `<path d="M${f2(x)} ${f2(y - 8 - t * 2)}v${f2(th(t) + 6)}" stroke="#5E5B56" stroke-opacity=".5" stroke-width="${f2(.6 + t)}"/>`; }
+        molo += `<rect x="${P1[0] + 30}" y="${P1[1] - 26}" width="5" height="10" rx="2" fill="#3A3836"/><rect x="${P1[0] + 70}" y="${P1[1] - 33}" width="4" height="8" rx="2" fill="#3A3836"/>`;
+        const lx = P1[0] + 10, ly = P1[1] - 14;
+        molo += `<path d="M${lx - 8} ${ly}h16l-3 -40h-10z" fill="#3E6A4E"/><path d="M${lx - 8} ${ly - 14}h16M${lx - 7} ${ly - 28}h14" stroke="#2E4E3A" stroke-width="1.4"/><rect x="${lx - 6}" y="${ly - 54}" width="12" height="14" rx="2" fill="#2E3A34"/><path d="M${lx - 8} ${ly - 54}l8 -8l8 8z" fill="#2E3A34"/>`;
+        add(mirror(molo, P1[1] + th(1), .4) + molo, .4);
+        addLit(`<rect class="sc-beam" x="${lx - 4}" y="${ly - 52}" width="8" height="10" fill="#9FF0B8"/>` + `<circle cx="${lx}" cy="${ly - 47}" r="${NIGHT || DAYB ? 46 : 20}" fill="url(#${u}l)" opacity=".7"/>` + mirror(`<rect x="${lx - 4}" y="${ly - 52}" width="8" height="10" fill="#9FF0B8" opacity=".6"/>`, P1[1] + th(1), .6), 1.4);
+        /* la boa a campana: galleggiante rosso, gabbia, campana che dondola col moto dell'acqua, luce rossa in cima */
+        const bx = 950, by = 318, k = 1.25;
+        const buoy = `<path d="M-20 0Q-22 -10 -14 -12H14Q22 -10 20 0Q18 10 0 12Q-18 10 -20 0Z" fill="#B23A2E"/><path d="M-14 -12H14" stroke="#F4F1EA" stroke-width="2"/><path d="M-12 -12L-6 -56M12 -12L6 -56M-9 -30H9M-7 -46H7" stroke="#3A3836" stroke-width="2"/>`
+          + `<g><animateTransform attributeName="transform" type="rotate" values="-14 0 -52;14 0 -52;-14 0 -52" dur="3.4s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/><path d="M0 -52V-48" stroke="#3A3226" stroke-width="1"/><path d="M-6 -30Q-6 -48 0 -48Q6 -48 6 -30Z" fill="#B8863B"/><circle cx="0" cy="-29" r="1.6" fill="#7A5520"/></g>`
+          + `<path d="M-7 -56H7L5 -62H-5Z" fill="#3A3836"/>`;
+        const bb = at(bx, by, k, `<g class="sc-bob2">${buoy}</g>`);
+        add(mirror(bb, by, .35) + bb + frontWater(bx, by, 70, 14) + ripRings(bx, by + 2, 3, 22), .45);
+        addLit(`<rect class="sc-beam" x="${f2(bx - 3)}" y="${f2(by - 66 * k)}" width="6" height="5" fill="#FF7A6A"/>` + glow(bx, by - 64 * k, NIGHT || DAYB ? 30 : 12) + mirror(glow(bx, by - 64 * k, 16), by, .5), 1.5);
+        /* la barchetta ormeggiata al molo */
+        const mb = at(1150, 296, .8, `<path d="M-40 -6Q-30 2 -14 3H24Q34 2 38 -6Q36 4 26 8H-24Q-36 5 -40 -6Z" fill="#2A2622"/><path d="M-40 -6Q-30 2 -14 3H24Q34 2 38 -6" stroke="#C9C1B2" stroke-width="1.6" fill="none"/>`);
+        add(mirror(mb, 296, .3) + mb + frontWater(1150, 296, 70, 10) + `<path d="M1180 293Q1186 286 1190 ${P0[1] + (P1[1] - P0[1]) * .3 - 10}" stroke="#C9B48A" stroke-width="1" fill="none"/>`, .5);
+      } else if (mi === 2) { // Ianuario: in vetta la tavola d'orientamento di bronzo dice il nome di ogni cima; la linea di mira va al picco più alto; sotto, il rifugio acceso
+        backdrop();
+        const mid = ridge([[-20, 246], [600, 240], [820, 232], [960, 244], [1220, 236]], 4);
+        const hx = 880, hy = mid.y(hx) + 4;
+        add(fill(mid, '#E9F0F3') + forest(mid, 560, 1200, 16, .34, .32) + cottage(hx, hy, .7, haze('#7A5236', .4), haze('#4E5A64', .4), Ls(hx)) + `<path d="M${hx - 16} ${f2(hy - 11)}L${hx} ${f2(hy - 22)}L${hx + 16} ${f2(hy - 11)}L${hx} ${f2(hy - 18)}Z" fill="#FFFFFF"/>`, .25);
+        addLit(win(hx - 7, hy - 7, 3.6, 3.6, .4) + win(hx + 3.4, hy - 7, 3.6, 3.6, 1.6));
+        if (!NIGHT) add([0, 1, 2].map((j) => `<circle class="sc-puff2" style="--pfd:7s;--pfl:${f2(-j * 2.3)}s" cx="${hx + 7}" cy="${f2(hy - 26)}" r="${3 + j}" fill="#FFFFFF" fill-opacity=".6"/>`).join(''), .6);
+        const top = ridge([[860, BOT], [900, 330], [980, 300], [1060, 288], [1140, 290], [1220, 300]], 2);
+        const X = 1086, y = top.y(X) + 4, peak = [990, 84];
+        let tav = `<path d="M-12 0L-10 -44H10L12 0Z" fill="#A39C8E"/><path d="M2 0L2 -44H10L12 0Z" fill="#000" fill-opacity=".12"/><path d="M-11 -14H11M-10.5 -30H10.5" stroke="#8C877C" stroke-width=".8"/>`
+          + `<ellipse cx="0" cy="-48" rx="34" ry="10" fill="${BRASS_D}"/><ellipse cx="0" cy="-50" rx="33" ry="9.4" fill="${BRASS}"/><ellipse cx="0" cy="-50" rx="26" ry="7.2" fill="none" stroke="${BRASS_D}" stroke-width=".8"/>`;
+        for (let j = 0; j < 16; j++) { const a = j * Math.PI / 8; tav += `<path d="M${f2(Math.cos(a) * 6)} ${f2(-50 + Math.sin(a) * 1.7)}L${f2(Math.cos(a) * (j % 2 ? 24 : 31))} ${f2(-50 + Math.sin(a) * (j % 2 ? 6.6 : 8.6))}" stroke="${BRASS_D}" stroke-width="${j % 4 ? .6 : 1.2}"/>`; }
+        tav += `<path d="M-2 -50L-14 -56L0 -51Z" fill="#B23A2E"/><circle cx="0" cy="-50" r="2" fill="${BRASS_D}"/>` + [[-20, -55], [-8, -57.6], [10, -57], [22, -54]].map(([a, b]) => `<path d="M${a - 3} ${b}l3 -3l3 3z" fill="${BRASS_D}"/>`).join('')
+          + `<path d="M-34 -49Q-18 -52 -2 -50M6 -50Q20 -52 33 -48" stroke="#FFFFFF" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
+        let prints = ''; for (let i = 0; i < 12; i++) { const t = i / 11, xx = 900 + t * (X - 50 - 900) + (i % 2 ? 4 : -4), yy = BOT - 18 - t * (BOT - 18 - y); prints += `<ellipse cx="${f2(xx)}" cy="${f2(yy)}" rx="${f2(3 * (1.4 - t))}" ry="${f2(1.2 * (1.4 - t))}" fill="#B9CCD8"/>`; }
+        const skis = `<path d="M${X + 48} ${f2(y + 2)}L${X + 40} ${f2(y - 62)}M${X + 56} ${f2(y + 2)}L${X + 52} ${f2(y - 62)}" stroke="#B23A2E" stroke-width="2.4" stroke-linecap="round"/><path d="M${X + 37} ${f2(y - 62)}q3 -4 5 -1M${X + 50} ${f2(y - 62)}q3 -4 5 -1" stroke="#B23A2E" stroke-width="2" fill="none"/><path d="M${X + 62} ${f2(y + 2)}L${X + 66} ${f2(y - 44)}" stroke="#3A3A3A" stroke-width="1.4"/><circle cx="${X + 63.4}" cy="${f2(y - 8)}" r="3" fill="none" stroke="#3A3A3A" stroke-width="1"/>`;
+        add(fill(top, '#F4F8FA') + `<path d="${ptsD(top.pts)}" stroke="#D2E0E8" stroke-width="2.4" fill="none"/>` + prints + `<path d="M${X - 20} ${f2(y - 58 * 1.3)}L${peak[0]} ${peak[1]}" stroke="${NIGHT ? '#E9ECF6' : '#5C7290'}" stroke-opacity=".35" stroke-width="1.2" stroke-dasharray="3 5"/>`
+          + shadowAt(X, y, 34) + at(X, y, 1.3, `<ellipse cx="0" cy="2" rx="30" ry="5" fill="#FFFFFF"/>${tav}`) + skis + forest(top, 1170, 1220, 2, 1.1, .9), .35);
+        addLit(`<g transform="translate(${peak[0]} ${peak[1] - 8})"><path class="sc-twinkle" style="--td:3s" d="M0 -5L1.2 -1.2L5 0L1.2 1.2L0 5L-1.2 1.2L-5 0L-1.2 -1.2Z" fill="#FFF3D0"/></g>`, 1.6);
+      } else if (mi === 3) { // Germinale: la banderuola in cima alla colombaia dice da dove viene il vento; in cielo le cicogne tornano a nord in formazione
+        backdrop();
+        const mid = ridge([[-20, 238], [600, 232], [860, 228], [1220, 234]], 3);
+        add(fill(mid, landCol(.42)) + patches(mid, 300, 1200, .42, 3) + hedge(mid, 300, 1200, 24, .42) + forest(mid, 560, 1200, 18, .3, .42), .25);
+        const hill = ridge([[780, BOT], [860, 322], [960, 290], [1060, 276], [1140, 274], [1220, 282]], 2);
+        const X = 1100, y = hill.y(X) + 3, L = Ls(X);
+        let orch = ''; for (let k = 0; k < 3; k++) for (let i = 0; i < 6; i++) { const x = 880 + i * 34 + k * 14, yy = hill.y(x) + 12 + k * 16; if (Math.abs(x - X) < 60) continue; orch += treeBlossom(x, yy, .7 + k * .18, ['#F4C9D8', '#FFFFFF', '#E89BB5'], '#6B5040', R, p); }
+        const W = '#EDE0C8';
+        let dv = `<path d="M-40 0V-34H10V0Z" fill="${W}"/><path d="M-46 -32L-15 -54L16 -32Z" fill="#B5643A"/><rect x="-30" y="-24" width="8" height="10" fill="#4E6B4A"/><rect x="-14" y="-18" width="9" height="18" fill="${WOOD_D}"/>`
+          + `<path d="M8 0V-96H40V0Z" fill="${W}"/><path d="M${L > 0 ? 26 : 8} 0V-96H${L > 0 ? 40 : 22}V0Z" fill="#000" fill-opacity=".12"/>`
+          + `<path d="M6 -96H42L38 -100H10Z" fill="#C9B898"/>` + [0, 1, 2].map((r) => [0, 1, 2].map((c) => `<path d="M${14 + c * 9} ${-74 - r * 6}a2.4 2.4 0 0 1 4.8 0v2.6h-4.8z" fill="#3A3026"/>`).join('')).join('') + `<path d="M12 -64H36" stroke="#C9B898" stroke-width="2"/>`
+          + `<path d="M4 -98L24 -118L44 -98Z" fill="#A9583A"/><path d="M24 -118L${24 + 20 * L} -98H24Z" fill="#000" fill-opacity=".15"/><path d="M24 -118V-150" stroke="#2E2A26" stroke-width="1.6"/>`
+          + `<path d="M16 -130H32M24 -122V-138" stroke="#2E2A26" stroke-width="1"/><path d="M14 -132l-3 2l3 2zM34 -132l3 2l-3 2z" fill="#2E2A26"/>`
+          + `<g transform="translate(24 0)"><g><animateTransform attributeName="transform" type="scale" values="1 1;.55 1;1 1;.8 1;1 1" dur="9s" repeatCount="indefinite"/><g transform="translate(-24 0)">`
+          + `<path d="M24 -144H10l-4 -3h4zM24 -144H38" stroke="#2E2A26" stroke-width="1.6"/><path d="M28 -144q-1 -6 3 -8q2 -4 6 -2l-2 2q3 2 1 5q-3 4 -8 3z" fill="#2E2A26"/><path d="M33 -152l2 -3l1 3" fill="#B23A2E"/></g></g></g>`;
+        for (let i = 0; i < 4; i++) dv += `<g transform="translate(${-30 + i * 9} -36)"><path d="M0 0q3 -4 6 0q-3 2 -6 0z" fill="#E6E2DC"/></g>`;
+        add(fill(hill, landCol(.8)) + orch + shadowAt(X, y, 40) + at(X, y, 1.15, dv) + groundDetail(hill, 860, 1220, 14, 1.1, .9), .35);
+        if (NIGHT || DAYB) addLit(at(X, y, 1.15, glow(-26, -19, 12)) + win(X - 30 * 1.15, y - 24 * 1.15, 8 * 1.15, 10 * 1.15), 1.6);
+        /* le cicogne: nove in formazione a V, verso sinistra */
+        let birds = ''; for (let i = 0; i < 9; i++) { const side = i % 2 ? 1 : -1, n = Math.ceil(i / 2), bx = 900 + n * 26, byy = 40 - T * .45 + side * n * 14;
+          birds += `<g transform="translate(${bx} ${f2(byy)}) scale(${f2(1.3 - n * .06)})"><path class="sc-gull" style="animation-duration:${f2(1.6 + (i % 3) * .2)}s" d="M-14 0Q-7 -6 0 0Q7 -6 14 0" stroke="${NIGHT ? '#C9D0E0' : '#2E2A26'}" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M0 0l-10 1M0 0l4 .6" stroke="${NIGHT ? '#C9D0E0' : '#2E2A26'}" stroke-width="1.2"/></g>`; }
+        add(birds, 1);
+      } else if (mi === 4) { // Floreale: il labirinto di siepi nel giardino in fiore; al centro il gazebo: per arrivarci bisogna scegliere la strada giusta
+        backdrop();
+        const mid = ridge([[-20, 238], [600, 232], [860, 228], [1220, 234]], 3);
+        add(fill(mid, landCol(.42)) + patches(mid, 300, 1200, .42, 3) + forest(mid, 560, 1200, 16, .3, .42), .25);
+        const gy = 268, cx = 1046, cy = 344, RX = [40, 76, 112, 148, 184], H = (r) => 6 + r * .05, ry = (r) => r * .3;
+        const Gc = '#4E7E3E', Gd = '#36602E', Gl = '#6E9E52';
+        let gnd = `<path d="M-20 ${gy}Q600 ${gy - 6} 1230 ${gy - 2}V${BOT + 40}H-20Z" fill="${landCol(.82)}"/><ellipse cx="${cx}" cy="${cy}" rx="200" ry="64" fill="${mixHex(LD.path, '#FFFFFF', .2)}"/>`;
+        const gaps = RX.map((_, i) => [(1.3 + i * 1.7) % (2 * Math.PI), (4.1 + i * 2.3) % (2 * Math.PI)]);
+        const arc = (r, a0, a1) => { const o = []; for (let a = a0; a <= a1 + 1e-6; a += .05) o.push([cx + r * Math.cos(a), cy + ry(r) * Math.sin(a)]); return o; };
+        const inGap = (a, g) => g.some((x) => { const d = Math.abs(((a - x + 3 * Math.PI) % (2 * Math.PI)) - Math.PI); return d < .16; });
+        const hedgeSeg = (r, a0, a1, i) => { let o = '', run = [];
+          const flush = () => { if (run.length > 1) { const top = run.map(([x, y]) => [x, y - H(r)]); o += `<path d="${ptsD(top)}${run.slice().reverse().map(([x, y]) => `L${f2(x)} ${f2(y)}`).join('')}Z" fill="${Gd}"/><path d="${ptsD(top)}" stroke="${Gl}" stroke-width="${f2(3 + r * .02)}" fill="none" stroke-linecap="round"/>`; } run = []; };
+          arc(r, a0, a1).forEach((pt, j) => { const a = a0 + j * .05; if (inGap(a, gaps[i])) flush(); else run.push(pt); }); flush(); return o; };
+        let backH = '', frontH = '';
+        RX.slice().reverse().forEach((r, k) => { backH += hedgeSeg(r, Math.PI, 2 * Math.PI, RX.length - 1 - k); });
+        RX.forEach((r, i) => { frontH += hedgeSeg(r, 0, Math.PI, i); });
+        const gz = at(cx, cy, 1, `<ellipse cx="0" cy="0" rx="22" ry="7" fill="#D8D0C0"/>` + [-16, -8, 0, 8, 16].map((x) => `<rect x="${x - 1.4}" y="-30" width="2.8" height="30" fill="#F4F1EA"/>`).join('') + `<path d="M-22 -30Q-20 -48 0 -54Q20 -48 22 -30Z" fill="#7E5A8E"/><path d="M0 -54L${22 * Ls(cx)} -30H0Z" fill="#000" fill-opacity=".14"/><path d="M-24 -30H24" stroke="#F4F1EA" stroke-width="2.4"/><path d="M0 -54V-62" stroke="#3A3226" stroke-width="1.4"/><circle cx="0" cy="-63" r="2" fill="${BRASS}"/>`);
+        let flowers = ''; for (let i = 0; i < 46; i++) { const a = RN2() * Math.PI * 2, rr = 194 + RN2() * 20, x = cx + rr * Math.cos(a), y = cy + rr * .32 * Math.sin(a); flowers += `<circle cx="${f2(x)}" cy="${f2(y - 4)}" r="${f2(2 + RN2() * 1.6)}" fill="${['#D8453A', '#F4ECDD', '#8E5FA3', '#E3A33B', '#E89BB5'][i % 5]}"/>`; }
+        add(gnd + backH + gz + frontH + flowers + `<path d="M${cx - 60} ${BOT + 10}Q${cx - 30} ${cy + 80} ${cx - 2} ${cy + ry(184) - 2}" stroke="${mixHex(LD.path, '#FFFFFF', .2)}" stroke-width="16" fill="none"/>` + groundDetail({ y: () => BOT - 40 }, 640, 900, 14, 1.4, 1), .35);
+        if (NIGHT || DAYB) addLit(at(cx, cy, 1, glow(0, -20, 30, .8)), 1.6);
+      } else if (mi === 5) { // Messidoro: si naviga davvero. Dal ponte della nave: il timone che corregge la rotta, la chiesuola con la bussola, la prua che punta alla costa del grano
+        const SY = 214; backdrop(SY);
+        const coast = ridge([[-20, 222], [520, 216], [760, 212], [880, 218], [960, 224]], 3, 30, 224);
+        add(fill(coast, landCol(.4)) + patches(coast, 500, 950, .4, 2) + forest(coast, 560, 940, 6, .3, .4), .2);
+        const VP = [905, 236], yb = 264;
+        const xl = (y) => VP[0] - (y - VP[1]) * 1.15, xr = (y) => VP[0] + (y - VP[1]) * 1.15, D = '#8A5E3B', DL = '#A97A50';
+        let deck = `<path d="M${f2(xl(yb))} ${yb}L${f2(xr(yb))} ${yb}L${f2(xr(BOT + 40))} ${BOT + 40}L${f2(xl(BOT + 40))} ${BOT + 40}Z" fill="${DL}"/>`;
+        for (let k = -12; k <= 12; k++) { const x0 = VP[0] + k * 6; deck += `<path d="M${f2(VP[0] + (x0 - VP[0]) * ((yb - VP[1]) / 6))} ${yb}L${f2(VP[0] + (x0 - VP[0]) * ((BOT + 40 - VP[1]) / 6))} ${BOT + 40}" stroke="${D}" stroke-opacity=".5" stroke-width="1"/>`; }
+        for (let k = 1; k < 8; k++) { const y = yb + Math.pow(k / 8, 1.8) * (BOT - yb); deck += `<path d="M${f2(xl(y))} ${f2(y)}H${f2(xr(y))}" stroke="${D}" stroke-opacity=".25" stroke-width="${f2(.5 + k * .2)}"/>`; }
+        const wall = (side) => { const xs = side < 0 ? xl : xr, h = (y) => (y - VP[1]) * .32; let o = `<path d="M${f2(xs(yb))} ${yb}L${f2(xs(BOT + 40))} ${BOT + 40}L${f2(xs(BOT + 40))} ${f2(BOT + 40 - h(BOT + 40))}L${f2(xs(yb))} ${f2(yb - h(yb))}Z" fill="#6E4A30"/>`
+          + `<path d="M${f2(xs(yb))} ${f2(yb - h(yb))}L${f2(xs(BOT + 40))} ${f2(BOT + 40 - h(BOT + 40))}" stroke="#C99A5E" stroke-width="${f2(4)}"/>`;
+          for (let k = 0; k < 6; k++) { const y = yb + Math.pow(k / 6, 1.5) * (BOT - yb); o += `<path d="M${f2(xs(y))} ${f2(y)}V${f2(y - h(y))}" stroke="#4E3220" stroke-width="${f2(1 + k * .6)}"/>`; } return o; };
+        const bow = `<path d="M${f2(xl(yb))} ${f2(yb - (yb - VP[1]) * .32)}L${VP[0]} ${VP[1] + 6}L${f2(xr(yb))} ${f2(yb - (yb - VP[1]) * .32)}" fill="none" stroke="#C99A5E" stroke-width="3"/><path d="M${VP[0]} ${VP[1] + 8}L${VP[0] - 26} ${VP[1] - 4}" stroke="#6E4A30" stroke-width="3" stroke-linecap="round"/>`;
+        const mast = [VP[0] + 40, 120], ropes = `<path d="M${VP[0] - 26} ${VP[1] - 4}L${mast[0]} ${mast[1]}M${f2(xl(BOT - 40))} ${f2(BOT - 40 - (BOT - 40 - VP[1]) * .32)}L${mast[0]} ${mast[1]}M${f2(xr(BOT - 40))} ${f2(BOT - 40 - (BOT - 40 - VP[1]) * .32)}L${mast[0]} ${mast[1]}" stroke="#5A4632" stroke-width="1.2" stroke-opacity=".6"/>`
+          + `<path d="M${mast[0]} ${BOT + 40}L${mast[0] - 3} ${mast[1] - 40}" stroke="#6E4A30" stroke-width="7"/>`;
+        const WX = 1060, WY = BOT - 76, wr = 44;
+        let wheel = `<path d="M${WX - 14} ${BOT + 10}L${WX - 8} ${WY + 8}H${WX + 8}L${WX + 14} ${BOT + 10}Z" fill="#5E3D25"/><g><animateTransform attributeName="transform" type="rotate" values="-8 ${WX} ${WY};9 ${WX} ${WY};-8 ${WX} ${WY}" dur="7s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/>`;
+        for (let j = 0; j < 8; j++) { const a = j * Math.PI / 4, c = Math.cos(a), sn = Math.sin(a); wheel += `<path d="M${WX} ${WY}L${f2(WX + c * (wr + 14))} ${f2(WY + sn * (wr + 14))}" stroke="#7A4E2E" stroke-width="5" stroke-linecap="round"/><circle cx="${f2(WX + c * (wr + 14))}" cy="${f2(WY + sn * (wr + 14))}" r="4" fill="#8A5E3B"/>`; }
+        wheel += `<circle cx="${WX}" cy="${WY}" r="${wr}" fill="none" stroke="#8A5E3B" stroke-width="8"/><circle cx="${WX}" cy="${WY}" r="${wr - 6}" fill="none" stroke="#6E4A30" stroke-width="1.6"/><circle cx="${WX}" cy="${WY}" r="10" fill="${BRASS}"/><circle cx="${WX}" cy="${WY}" r="4" fill="${BRASS_D}"/></g>`;
+        const BX = 960, BY = BOT - 24;
+        const binn = `<path d="M${BX - 16} ${BY}L${BX - 12} ${BY - 50}H${BX + 12}L${BX + 16} ${BY}Z" fill="#7A4E2E"/><path d="M${BX - 22} ${BY - 50}Q${BX - 22} ${BY - 76} ${BX} ${BY - 78}Q${BX + 22} ${BY - 76} ${BX + 22} ${BY - 50}Z" fill="${BRASS}"/><path d="M${BX - 14} ${BY - 58}Q${BX} ${BY - 74} ${BX + 14} ${BY - 58}V${BY - 52}H${BX - 14}Z" fill="#CFE2E6" fill-opacity=".85"/>`
+          + `<ellipse cx="${BX}" cy="${BY - 55}" rx="10" ry="3" fill="#F2ECDC"/><path d="M${BX - 7} ${BY - 55}L${BX + 7} ${BY - 55}" stroke="#B23A2E" stroke-width="1.4"/><circle cx="${BX - 28}" cy="${BY - 60}" r="7" fill="#2E4E7A"/><circle cx="${BX + 28}" cy="${BY - 60}" r="7" fill="#B23A2E"/><path d="M${BX - 22} ${BY - 60}H${BX - 21}M${BX + 21} ${BY - 60}H${BX + 22}" stroke="${BRASS_D}" stroke-width="2"/>`;
+        add(deck + wall(-1) + wall(1) + bow + ropes + `<path d="M${f2(xl(BOT) + 60)} ${BOT - 4}q20 -14 44 -2q-20 10 -44 2z" fill="#B9A27A"/>` + binn + wheel, .35);
+        if (NIGHT || DAYB) addLit(glow(BX, BY - 58, 40, .7) + `<rect x="${VP[0] - 30}" y="${VP[1] - 14}" width="6" height="6" rx="1" fill="#FF7A6A"/>` + glow(VP[0] - 27, VP[1] - 11, 14), 1.5);
+      } else { // Estiario: l'osservatorio sulla scogliera: la cupola si apre, il telescopio punta il cielo d'agosto; si naviga con le stelle
+        const SY = 220; backdrop(SY);
+        const hd = ridge([[620, 233], [700, 214], [780, 206], [840, 214], [880, 233]], 3, 30, 233);
+        add(fill(hd, landCol(.3)) + `<path d="M772 ${f2(hd.y(772))}L775 ${f2(hd.y(772) - 30)}H783L786 ${f2(hd.y(786))}Z" fill="${haze('#FFFFFF', .3)}"/><rect x="773" y="${f2(hd.y(772) - 36)}" width="12" height="6" fill="${haze('#3A2E14', .3)}"/>`, .2);
+        if (NIGHT) addLit(`<rect class="sc-beam" x="775.5" y="${f2(hd.y(772) - 35)}" width="7" height="4" fill="#FFF1BE"/>` + glow(779, hd.y(772) - 33, 16), 1.3);
+        add(mirror(fill(hd, landCol(.3)), 233, .3)); waves(SY);
+        const cliff = ridge([[920, BOT], [950, 300], [1000, 262], [1060, 248], [1140, 244], [1220, 248]], 2);
+        const X = 1110, y = cliff.y(X) + 2, L = Ls(X), slit = NIGHT ? .6 : .25;
+        let obs = `<rect x="-40" y="-46" width="80" height="46" fill="#F2EEE6"/><rect x="${L > 0 ? 6 : -40}" y="-46" width="34" height="46" fill="#000" fill-opacity=".1"/><rect x="-42" y="-48" width="84" height="5" fill="#E2DCD0"/>`
+          + `<path d="M-38 -48A38 34 0 0 1 38 -48Z" fill="#E9E4DA"/><path d="M0 -82A38 34 0 0 1 38 -48H0Z" fill="#000" fill-opacity=".1"/>`
+          + `<path d="M-6 -48L-8 -81Q0 -83 8 -81L6 -48Z" fill="#1E2438"/><g transform="translate(0 -56) rotate(${NIGHT ? -32 : -18})"><rect x="-4" y="-5" width="44" height="10" rx="2" fill="#C9C4BA"/><rect x="38" y="-6" width="6" height="12" rx="1" fill="#9A958C"/></g>`
+          + `<rect x="-8" y="-24" width="14" height="24" fill="${WOOD_D}"/><rect x="16" y="-34" width="12" height="10" fill="#3E4652"/>` + `<path d="M-38 -48A38 34 0 0 1 38 -48" stroke="#C9C2B4" stroke-width="1.2" fill="none"/>`;
+        let agave = ''; [[1020, 1.2], [1196, 1]].forEach(([ax, k]) => { const ay = cliff.y(ax) + 4; for (let j = 0; j < 7; j++) { const a = -Math.PI / 2 + (j - 3) * .36; agave += `<path d="M${ax} ${f2(ay)}Q${f2(ax + Math.cos(a) * 10 * k)} ${f2(ay + Math.sin(a) * 14 * k)} ${f2(ax + Math.cos(a) * 22 * k)} ${f2(ay + Math.sin(a) * 26 * k)}" stroke="#6E8F6A" stroke-width="${f2(3 * k)}" fill="none" stroke-linecap="round"/>`; } });
+        add(fill(cliff, LD.near) + `<path d="M1000 300Q1060 280 1120 276M1010 330Q1080 316 1160 312" stroke="${LD.front}" stroke-opacity=".5" stroke-width="2" fill="none"/>` + agave + shadowAt(X, y, 44) + at(X, y, 1.25, obs) + groundDetail(cliff, 1000, 1220, 8, 1.3, 1), .35);
+        if (NIGHT || DAYB) addLit(win(X + 16 * 1.25, y - 34 * 1.25, 12 * 1.25, 10 * 1.25, .4) + at(X, y, 1.25, `<path d="M-4 -50L-6 -80Q0 -82 6 -80L4 -50Z" fill="#F6C76E" opacity="${slit}"/>`), 1.6);
+        if (NIGHT) { let mw = ''; for (let i = 0; i < 90; i++) { const t = RN2(), x = 760 + t * 440, yy = -T + 20 + t * (T + 120) * .7 + (RN2() - .5) * 60; mw += `<circle cx="${f2(x)}" cy="${f2(yy)}" r="${f2(.4 + RN2() * .7)}" fill="#E9ECF6" fill-opacity="${f2(.3 + RN2() * .5)}"/>`; }
+          addLit(`<path d="M760 ${-T + 20}L1200 ${f2(-T + 20 + (T + 120) * .7)}" stroke="#C9D2EE" stroke-opacity=".08" stroke-width="70" stroke-linecap="round"/>` + mw, .4); }
       }
-      add(terr + `<g>${bal}</g>` + deco + shadowAt(X, fy, 30) + at(X, fy, 1.4, armillary(snowy)), .35); if (decoLit) s.push(decoLit);
-      if (NIGHT) { const S = 1.4, cx = X + ARM_AX[0] * 34 * S, cy = fy - 84 * S + ARM_AX[1] * 34 * S, py = -T + 40, t = (cy - py) / -ARM_AX[1], px = cx + ARM_AX[0] * t;
-        addLit(`<path d="M${f2(cx)} ${f2(cy)}L${f2(px)} ${f2(py)}" stroke="#E9ECF6" stroke-opacity=".16" stroke-width="1" stroke-dasharray="2 6"/><g transform="translate(${f2(px)} ${f2(py)})"><circle class="sc-glow" r="26" fill="url(#${u}g)"/><path class="sc-twinkle" style="--td:3.6s" d="M0 -12L2 -2L12 0L2 2L0 12L-2 2L-12 0L-2 -2Z" fill="#FFFFFF"/><circle r="2" fill="#FFFFFF"/></g>`
-          + [[-34, 14], [-58, 22], [-74, 40], [-98, 44], [-92, 64], [-66, 60]].map(([a, b], i) => `<circle class="sc-twinkle" style="--td:${f2(2.4 + i * .3)}s" cx="${f2(px + a)}" cy="${f2(py + b)}" r="1.5" fill="#E9ECF6"/>`).join(''), 1.2); }
       break;
     }
     case 4: { // Automatizzare: il borgo del luogo sul colle (toscano, lombardo, baite, pastello, a graticcio, bianco, ligure), la torre dell'orologio in mezzo, la strada coi lampioni
@@ -1207,58 +1461,158 @@ function sceneSVG(mi, opts = {}) {
       add(fill(fr, shade(LD.front, .1)) + groundDetail(fr, 650, 880, 12, 1.5, 1), .5);
       break;
     }
-    case 5: { // Remare automatizzato: il fiume scende dai colli, fa la curva e passa davanti al mulino; la ruota sta nella corrente, allineata al fiume, e gira nel verso dell'acqua
-      backdrop();
-      const back = ridge([[-20, 232], [600, 226], [860, 230], [1220, 228]], 3);
-      add(fill(back, landCol(.4)) + patches(back, 400, 1200, .4) + forest(back, 560, 1200, 14, .32, .4), .2);
-      const C0 = [[914, 233], [894, 250], [860, 272], [868, 296], [960, 318], [1080, 328], [1240, 334]], W0 = [3, 9, 20, 34, 48, 56, 62];
-      const Cs = crSample(C0, 4), cum = (P) => { const o = [0]; for (let i = 1; i < P.length; i++) o.push(o[i - 1] + Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1])); return o; };
-      const lc = cum(C0), ls = cum(Cs), wAt = (l) => { for (let i = 0; i < lc.length - 1; i++) if (l <= lc[i + 1]) return W0[i] + (W0[i + 1] - W0[i]) * (l - lc[i]) / (lc[i + 1] - lc[i]); return W0[W0.length - 1]; };
-      const Pn = [], Mf = [];
-      Cs.forEach(([x, y], i) => { const a = Cs[Math.max(0, i - 1)], b = Cs[Math.min(Cs.length - 1, i + 1)], dx = b[0] - a[0], dy = b[1] - a[1], n = Math.hypot(dx, dy) || 1, nx = -dy / n, ny = dx / n, w = wAt(ls[i]) / 2;
-        Pn.push([x + nx * w, y + ny * w]); Mf.push([x - nx * w, y - ny * w]); });
-      const PL = Pn[Pn.length - 1], ML = Mf[Mf.length - 1];
-      const nearD = `M-20 244L600 240Q820 236 ${f2(Pn[0][0])} ${f2(Pn[0][1])}` + Pn.map(([x, y]) => `L${f2(x)} ${f2(y)}`).join('') + `L1240 ${f2(PL[1])}L1240 ${BOT + 40}L-20 ${BOT + 40}Z`;
-      const farD = ptsD(Mf) + `L1240 ${f2(ML[1])}L1240 240Q1040 232 ${f2(Mf[0][0])} ${f2(Mf[0][1])}Z`;
-      const riverD = ptsD(Pn) + Mf.slice().reverse().map(([x, y]) => `L${f2(x)} ${f2(y)}`).join('') + 'Z';
+    case 5: { // Remare automatizzato: ogni mese una macchina che l'acqua fa andare da sola, ciascuna messa per il verso della corrente
+      const RM = rng(seed + 63);
       const grad = (id, y0, y1, c0, c1) => `<defs><linearGradient id="${u}${id}" x1="0" y1="${y0}" x2="0" y2="${y1}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${c0}"/><stop offset="1" stop-color="${c1}"/></linearGradient></defs>`;
-      add(grad('fb', 232, 334, landCol(.42), landCol(.74)) + `<path d="${farD}" fill="url(#${u}fb)"/>` + patches({ y: (x) => 240 + (x - 900) * .02 }, 960, 1200, .5, 1), .25);
-      s.push(water(233, -20, -19)); s.push(`<path d="${riverD}" fill="url(#${wId})"/>`);
-      const edgeC = shade(landCol(.8), .35);
-      let flow = ''; for (let i = 0; i < 26; i++) { const j = 4 + Math.floor(R() * (Cs.length - 6)), [x, y] = Cs[j], b = Cs[j + 1], dx = b[0] - x, dy = b[1] - y, n = Math.hypot(dx, dy) || 1, w = wAt(ls[j]), off = (R() - .5) * w * .6, len = 4 + w * .25;
-        const hx = Math.abs(dx) > Math.abs(dy); flow += `<path class="${hx ? 'sc-flowx' : 'sc-flow'}" style="--fwd:${f2(2.2 + R() * 1.4)}s;--fwl:${f2(-R() * 3)}s" d="M${f2(x - dy / n * off)} ${f2(y + dx / n * off)}l${f2(dx / n * len)} ${f2(dy / n * len)}" stroke="#FFFFFF" stroke-opacity="${f2(.25 + w / 120)}" stroke-width="${f2(.8 + w / 40)}" stroke-linecap="round"/>`; }
-      add(`<path d="${ptsD(Mf)}" stroke="${edgeC}" stroke-width="2" fill="none" stroke-opacity=".55"/>` + flow + (snowy ? `<path d="${ptsD(Pn)}" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-opacity=".85"/><path d="${ptsD(Mf)}" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-opacity=".8"/>` : ''), .3);
-      /* il mulino sulla riva di là, la ruota davanti alla facciata, mezza nella corrente */
-      const bank = Mf.filter(([x]) => x > 940), hx = 1134, hy = interpY(bank, hx) - 2, k = 1.12, Lh = Ls(hx), wx = 1082, wr = 30, wl = interpY(bank, wx) + 5, wy = wl - 4;
-      const MW = ['#D9C3A0', '#A9A59C', '#ECE8E0', '#EBD8C8', '#EFE4D0', '#E8D8B0', '#F4F1EA'][mi], roofM = STY[mi].roof;
-      let house = `<path d="M-32 0V-52H32V0Z" fill="${MW}"/><path d="M${Lh > 0 ? 8 : -32} 0V-52H${Lh > 0 ? 32 : -8}V0Z" fill="#000" fill-opacity=".12"/>`;
-      for (let j = 1; j < 6; j++) house += `<path d="M-32 ${-j * 9}H32" stroke="${shade(MW, .2)}" stroke-opacity=".4" stroke-width=".8"/>`;
-      if (mi === 2) house += `<rect x="-32" y="-52" width="64" height="24" fill="#7A5236"/>`;
-      house += `<path d="M-38 -50L0 -78L38 -50Z" fill="${roofM}"/><path d="M0 -78L${38 * Lh} -50H0Z" fill="#000" fill-opacity=".15"/>`
-        + (snowy ? `<path d="M-40 -50L0 -80L40 -50L30 -47L0 -71L-30 -47Z" fill="#FFFFFF"/>` + [-28, -18, 18, 28].map((x) => `<path d="M${x} -49l1.2 6l1.2 -6" fill="#DDEBF2"/>`).join('') : '')
-        + `<rect x="2" y="-24" width="12" height="24" fill="${WOOD_D}"/><rect x="18" y="-40" width="9" height="9" fill="#4E5866"/><rect x="-20" y="-40" width="9" height="9" fill="#4E5866"/><rect x="18" y="-72" width="6" height="14" fill="${shade(roofM, .3)}"/>`
-        + (mi === 4 ? `<rect x="16" y="-31" width="13" height="3" fill="#8A5E3B"/><rect x="-22" y="-31" width="13" height="3" fill="#8A5E3B"/>` + [17, 20, 23, 26, -21, -18, -15, -12].map((x, i) => `<circle cx="${x}" cy="-32" r="1.8" fill="${['#D8453A', '#8E5FA3', '#E3A33B'][i % 3]}"/>`).join('') : '')
-        + (mi === 5 ? `<path d="M36 0q-2 -12 6 -14q8 2 6 14z" fill="#E6D3A0"/><path d="M44 0q-2 -10 5 -12q7 2 5 12z" fill="#D9C38A"/>` : '');
-      let wh = `<g><animateTransform attributeName="transform" type="rotate" from="0 ${wx} ${f2(wy)}" to="-360 ${wx} ${f2(wy)}" dur="14s" repeatCount="indefinite"/><circle cx="${wx}" cy="${f2(wy)}" r="${wr - 3}" fill="none" stroke="${WOOD_D}" stroke-width="3.6"/><circle cx="${wx}" cy="${f2(wy)}" r="${wr - 11}" fill="none" stroke="${WOOD}" stroke-width="1.8"/>`;
-      for (let j = 0; j < 8; j++) { const an = j * Math.PI / 4; wh += `<path d="M${wx} ${f2(wy)}L${f2(wx + Math.cos(an) * (wr - 4))} ${f2(wy + Math.sin(an) * (wr - 4))}" stroke="${WOOD}" stroke-width="2.2"/>`; }
-      for (let j = 0; j < 16; j++) { const an = j * Math.PI / 8, c = Math.cos(an), s2 = Math.sin(an); wh += `<path d="M${f2(wx + c * (wr - 5))} ${f2(wy + s2 * (wr - 5))}L${f2(wx + c * (wr + 3))} ${f2(wy + s2 * (wr + 3))}" stroke="${WOOD_D}" stroke-width="4"/>`; }
-      wh += `</g><circle cx="${wx}" cy="${f2(wy)}" r="4.4" fill="#3E2A1A"/><circle cx="${wx}" cy="${f2(wy)}" r="1.6" fill="${BRASS}"/>`;
-      const foam = `<path d="M${wx + wr - 2} ${f2(wl + 2)}q8 -4 16 0q6 -3 12 1M${wx + wr + 4} ${f2(wl + 7)}q10 -3 20 1" stroke="#FFFFFF" stroke-opacity=".85" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
-      let drops = ''; for (let j = 0; j < 5; j++) drops += `<path class="sc-rain" style="--rd:${f2(.9 + j * .2)}s;--rdl:${f2(-j * .3)}s;--ro:.7" d="M${f2(wx - wr + 2 + j * 4)} ${f2(wy - 6 - j * 4)}l1 6" stroke="#E4F2F6" stroke-width="1.3" stroke-linecap="round"/>`;
-      const extra = mi === 3 ? treeBlossom(1200, interpY(bank, 1200) + 2, 1.05, ['#F4C9D8', '#FFFFFF', '#E89BB5'], '#5B4130', R, p) : mi === 0 ? treeRound(1200, interpY(bank, 1200) + 2, 1.05, '#D8792E', '#5B4130', Ls(1200)) + `<path d="M1172 ${f2(interpY(bank, 1172))}h18v-8h-18z" fill="#8A5E3B"/><path d="M1172 ${f2(interpY(bank, 1172) - 4)}h18" stroke="#5E3D25"/>` : mi === 6 ? treeRound(1204, interpY(bank, 1204) + 2, .8, '#5E8A44', '#5B4130', Ls(1204)) + [[-6, -22], [4, -26], [8, -18], [-10, -16]].map(([a, b]) => `<circle cx="${1204 + a}" cy="${f2(interpY(bank, 1204) + b)}" r="3" fill="#E58AB0"/>`).join('') : veg(1204, interpY(bank, 1204) + 2, .9, .75);
-      add(shadowAt(hx, hy, 40) + at(hx, hy, k, house) + extra + wh + drops + frontWater(wx, wl, 84, 20) + foam + ripRings(wx + 20, wl + 4, 3, 22), .35);
-      if (NIGHT || DAYB) addLit(win(hx + 18 * k, hy - 40 * k, 9 * k, 9 * k, .4) + win(hx - 20 * k, hy - 40 * k, 9 * k, 9 * k, 2), 1.6);
-      if (!NIGHT && mi <= 2) for (let i = 0; i < 3; i++) add(`<circle class="sc-puff2" style="--pfd:7s;--pfl:${f2(-i * 2.3)}s" cx="${f2(hx + 21 * k)}" cy="${f2(hy - 74 * k)}" r="${4 + i}" fill="#FFFFFF" fill-opacity=".6"/>`);
-      /* la riva di qua: erba, canne lungo l'acqua */
-      let nb = grad('nb', 240, BOT, landCol(.52), landCol(1)) + `<path d="${nearD}" fill="url(#${u}nb)"/><path d="${ptsD(Pn)}" stroke="${edgeC}" stroke-width="2.4" fill="none" stroke-opacity=".5"/>`;
-      for (let i = 0; i < 12; i++) { const x = 900 + i * 26 + R() * 10, yy = interpY(Pn.filter(([px]) => px > 880), x) + 6 + R() * 6; nb += snowy ? `<path d="M${f2(x)} ${f2(yy)}q2 -10 0 -18" stroke="#7A6A58" stroke-width="1.3" fill="none"/>` : reed(x, yy, .9 + R() * .4, shade(LD.front, .1)); }
-      add(nb + groundDetail({ y: () => BOT - 60 }, 640, 1220, 16, 1.4, 1), .5);
-      if (mi === 1) add(mist(wl - 14, 30, DAYB ? .8 : .3, 22, 50), .4);
+      /* la ruota a pale: dir -1 = antioraria (la corrente va a destra e spinge in basso), +1 = oraria */
+      const wheel = (wx, wy, wr, dir, dur = 14, buckets = false) => { let w = `<g><animateTransform attributeName="transform" type="rotate" from="0 ${f2(wx)} ${f2(wy)}" to="${dir * 360} ${f2(wx)} ${f2(wy)}" dur="${dur}s" repeatCount="indefinite"/><circle cx="${f2(wx)}" cy="${f2(wy)}" r="${f2(wr - 3)}" fill="none" stroke="${WOOD_D}" stroke-width="3.6"/><circle cx="${f2(wx)}" cy="${f2(wy)}" r="${f2(wr - 11)}" fill="none" stroke="${WOOD}" stroke-width="1.8"/>`;
+        for (let j = 0; j < 8; j++) { const an = j * Math.PI / 4; w += `<path d="M${f2(wx)} ${f2(wy)}L${f2(wx + Math.cos(an) * (wr - 4))} ${f2(wy + Math.sin(an) * (wr - 4))}" stroke="${WOOD}" stroke-width="2.2"/>`; }
+        const n = buckets ? 12 : 16; for (let j = 0; j < n; j++) { const an = j * 2 * Math.PI / n, c = Math.cos(an), sn = Math.sin(an);
+          w += buckets ? `<g transform="translate(${f2(wx + c * wr)} ${f2(wy + sn * wr)}) rotate(${f2(an * 180 / Math.PI + 90)})"><path d="M-5 -4h10l-2 9h-6z" fill="#B0643F"/><path d="M-5 -4h10" stroke="#7E4426" stroke-width="1"/></g>` : `<path d="M${f2(wx + c * (wr - 5))} ${f2(wy + sn * (wr - 5))}L${f2(wx + c * (wr + 3))} ${f2(wy + sn * (wr + 3))}" stroke="${WOOD_D}" stroke-width="4"/>`; }
+        return w + `</g><circle cx="${f2(wx)}" cy="${f2(wy)}" r="4.4" fill="#3E2A1A"/><circle cx="${f2(wx)}" cy="${f2(wy)}" r="1.6" fill="${BRASS}"/>`; };
+      const flowOn = (pts, wAt0, n, cls = 'sc-flowx') => { let o = ''; for (let i = 0; i < n; i++) { const j = 2 + Math.floor(RM() * (pts.length - 4)), [x, y] = pts[j], b = pts[j + 1], dx = b[0] - x, dy = b[1] - y, l = Math.hypot(dx, dy) || 1, w = wAt0(j), off = (RM() - .5) * w * .6, len = 4 + w * .25;
+        o += `<path class="${Math.abs(dx) > Math.abs(dy) ? cls : 'sc-flow'}" style="--fwd:${f2(2.2 + RM() * 1.4)}s;--fwl:${f2(-RM() * 3)}s" d="M${f2(x - dy / l * off)} ${f2(y + dx / l * off)}l${f2(dx / l * len)} ${f2(dy / l * len)}" stroke="#FFFFFF" stroke-opacity="${f2(.25 + w / 120)}" stroke-width="${f2(.8 + w / 40)}" stroke-linecap="round"/>`; } return o; };
+      /* il fiume: linea di mezzo e larghezze; Pn = riva di qua, Mf = riva di là */
+      const riverGeo = (C0, W0) => { const Cs = crSample(C0, 4), cum = (P) => { const o = [0]; for (let i = 1; i < P.length; i++) o.push(o[i - 1] + Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1])); return o; };
+        const lc = cum(C0), ls = cum(Cs), wAt = (l) => { for (let i = 0; i < lc.length - 1; i++) if (l <= lc[i + 1]) return W0[i] + (W0[i + 1] - W0[i]) * (l - lc[i]) / (lc[i + 1] - lc[i]); return W0[W0.length - 1]; };
+        const Pn = [], Mf = []; Cs.forEach(([x, y], i) => { const a = Cs[Math.max(0, i - 1)], b = Cs[Math.min(Cs.length - 1, i + 1)], dx = b[0] - a[0], dy = b[1] - a[1], n = Math.hypot(dx, dy) || 1, nx = -dy / n, ny = dx / n, w = wAt(ls[i]) / 2; Pn.push([x + nx * w, y + ny * w]); Mf.push([x - nx * w, y - ny * w]); });
+        return { Cs, Pn, Mf, w: (j) => wAt(ls[j]), riverD: ptsD(Pn) + Mf.slice().reverse().map(([x, y]) => `L${f2(x)} ${f2(y)}`).join('') + 'Z', farAt: (x) => interpY(Mf.filter(([px]) => px > 930), x), nearAt: (x) => interpY(Pn.filter(([px]) => px > 880), x) }; };
+      const drawRiver = (G, top) => { s.push(water(top, -20, -19)); s.push(`<path d="${G.riverD}" fill="url(#${wId})"/>`);
+        add(`<path d="${ptsD(G.Mf)}" stroke="${shade(landCol(.8), .35)}" stroke-width="2" fill="none" stroke-opacity=".55"/>` + flowOn(G.Cs, G.w, 26) + (snowy ? `<path d="${ptsD(G.Pn)}" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-opacity=".85"/><path d="${ptsD(G.Mf)}" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-opacity=".8"/>` : ''), .3); };
+      const nearBank = (G, extra = '') => { const PL = G.Pn[G.Pn.length - 1];
+        const d = `M-20 244L600 240Q820 236 ${f2(G.Pn[0][0])} ${f2(G.Pn[0][1])}` + G.Pn.map(([x, y]) => `L${f2(x)} ${f2(y)}`).join('') + `L1240 ${f2(PL[1])}L1240 ${BOT + 40}L-20 ${BOT + 40}Z`;
+        let nb = grad('nb', 240, BOT, landCol(.52), landCol(1)) + `<path d="${d}" fill="url(#${u}nb)"/><path d="${ptsD(G.Pn)}" stroke="${shade(landCol(.8), .35)}" stroke-width="2.4" fill="none" stroke-opacity=".5"/>`;
+        for (let i = 0; i < 12; i++) { const x = 900 + i * 26 + RM() * 10, yy = G.nearAt(x) + 6 + RM() * 6; nb += snowy ? `<path d="M${f2(x)} ${f2(yy)}q2 -10 0 -18" stroke="#7A6A58" stroke-width="1.3" fill="none"/>` : reed(x, yy, .9 + RM() * .4, shade(LD.front, .1)); }
+        add(nb + extra + groundDetail({ y: () => BOT - 60 }, 640, 1220, 16, 1.4, 1), .5); };
+      const farBank = (G, extra = '') => { const ML = G.Mf[G.Mf.length - 1];
+        add(grad('fb', 232, 334, landCol(.42), landCol(.74)) + `<path d="${ptsD(G.Mf)}L1240 ${f2(ML[1])}L1240 240Q1040 232 ${f2(G.Mf[0][0])} ${f2(G.Mf[0][1])}Z" fill="url(#${u}fb)"/>` + extra, .25); };
+      /* la casa del mulino, nello stile del luogo (origine alla base, al centro) */
+      const millHouse = (style, L) => { if (style === 'toscano') { let h = `<path d="M-34 0V-50H34V0Z" fill="#D9C3A0"/>`; for (let r = 0; r < 7; r++) for (let c = 0; c < 6; c++) h += `<rect x="${-34 + c * 11.4 + (r % 2) * 5}" y="${-7 - r * 7}" width="10" height="6" fill="#000" fill-opacity="${f2(.03 + ((r * 7 + c * 3) % 5) * .012)}"/>`;
+          h += `<path d="M${L > 0 ? 8 : -34} 0V-50H${L > 0 ? 34 : -8}V0Z" fill="#000" fill-opacity=".12"/><path d="M-40 -48L-26 -64H26L40 -48Z" fill="#B05A36"/>` + Array.from({ length: 9 }, (_, j) => `<path d="M${-24 + j * 6} -62v12" stroke="#000" stroke-opacity=".12" stroke-width=".8"/>`).join('')
+            + `<path d="M8 0V-18Q16 -28 24 -18V0ZM-6 -30V-40Q0 -46 6 -40V-30Z" fill="#3A3026"/><rect x="-26" y="-38" width="9" height="10" fill="#4E5866"/><rect x="-27.6" y="-38" width="1.6" height="10" fill="#4E6B4A"/><rect x="-17" y="-38" width="1.6" height="10" fill="#4E6B4A"/><rect x="14" y="-74" width="6" height="12" fill="#8E4A2E"/>`;
+          return h; }
+        if (style === 'mediterraneo') return `<path d="M-32 0V-46H32V0Z" fill="#F6F3EC"/><path d="M${L > 0 ? 8 : -32} 0V-46H${L > 0 ? 32 : -8}V0Z" fill="#000" fill-opacity=".08"/><path d="M-36 -44L0 -66L36 -44Z" fill="#B85A36"/>`
+          + `<path d="M-32 -2L-48 -2L-32 -24" fill="#ECE6DA"/><path d="M-46 -2H-32M-43 -6H-32M-40 -10H-32M-37 -14H-32M-34 -18H-32" stroke="#D9D0C0" stroke-width="1.4"/><rect x="2" y="-24" width="12" height="24" fill="#2F6E9A"/><rect x="-22" y="-36" width="9" height="9" fill="#3E4652"/><rect x="-24" y="-36" width="2" height="9" fill="#2F6E9A"/><rect x="-13" y="-36" width="2" height="9" fill="#2F6E9A"/><rect x="18" y="-36" width="9" height="9" fill="#3E4652"/>`;
+        return ''; };
+      if (mi === 0 || mi === 5) { // Foliaio: il mulino di pietra con la loggia, il carro della vendemmia · Messidoro: il mulino bianco tra il grano, coi sacchi di farina e i covoni
+        backdrop();
+        const back = ridge([[-20, 232], [600, 226], [860, 230], [1220, 228]], 3);
+        let vines = ''; if (mi === 0) for (let k = 0; k < 4; k++) { let d = ''; for (let x = 600; x <= 1200; x += 8) d += `${x === 600 ? 'M' : 'L'}${x} ${f2(back.y(x) + 4 + k * 5)}`; vines += `<path d="${d}" stroke="${haze('#6E5A2E', .4)}" stroke-width="1.4" stroke-dasharray="1 4" fill="none"/>`; }
+        add(fill(back, landCol(.4)) + patches(back, 400, 1200, .4) + vines + forest(back, 560, 1200, 12, .32, .4), .2);
+        const G = riverGeo([[914, 233], [894, 250], [860, 272], [868, 296], [960, 318], [1080, 328], [1240, 334]], [3, 9, 20, 34, 48, 56, 62]);
+        let fb = ''; if (mi === 5) for (let i = 0; i < 7; i++) { const x = 960 + i * 38 + RM() * 10, yy = 254 + RM() * 12 + (x - 960) * .1; fb += `<path d="M${f2(x - 6)} ${f2(yy)}l3 -14h6l3 14z" fill="${haze('#D8B24A', .55)}"/><path d="M${f2(x - 4)} ${f2(yy - 9)}h8" stroke="${haze('#A9822A', .55)}" stroke-width="1.2"/>`; }
+        else fb += patches({ y: (x) => 240 + (x - 900) * .02 }, 960, 1200, .5, 1);
+        farBank(G, fb); drawRiver(G, 233);
+        const hx = 1138, hy = G.farAt(hx) - 2, k = 1.14, L = Ls(hx), wx = 1082, wr = 30, wl = G.farAt(wx) + 5, wy = wl - 4;
+        let extra = '';
+        if (mi === 0) { const cx = 1206, cy = G.farAt(1206) - 1; extra = `<path d="M${cx - 18} ${cy - 8}h36v-12h-36z" fill="#8A5E3B"/><path d="M${cx - 18} ${cy - 14}h36" stroke="#5E3D25"/>` + [-10, 0, 10].map((x) => `<ellipse cx="${cx + x}" cy="${cy - 22}" rx="5" ry="4" fill="#5A2E5E"/>`).join('') + `<circle cx="${cx - 12}" cy="${cy - 3}" r="6" fill="none" stroke="#3E2A1A" stroke-width="2"/><circle cx="${cx + 12}" cy="${cy - 3}" r="6" fill="none" stroke="#3E2A1A" stroke-width="2"/><path d="M${cx - 18} ${cy - 10}l-14 6" stroke="#5E3D25" stroke-width="2"/>`
+          + treeRound(1196, G.farAt(1196) - 20, .9, '#D8792E', '#5B4130', Ls(1196)); }
+        else { const cx = 1200, cy = G.farAt(1200) - 1; extra = `<path d="M${cx - 14} ${cy}q-2 -12 6 -14q8 2 6 14zM${cx - 2} ${cy}q-2 -10 5 -12q7 2 5 12zM${cx + 8} ${cy}q-2 -11 5 -13q7 2 5 13z" fill="#ECE2C8"/><path d="M${cx - 13} ${cy - 7}h8M${cx - 1} ${cy - 6}h8" stroke="#C9B48A" stroke-width=".8"/>`; }
+        add(shadowAt(hx, hy, 40) + at(hx, hy, k, millHouse(mi === 0 ? 'toscano' : 'mediterraneo', L)) + extra + wheel(wx, wy, wr, -1) + frontWater(wx, wl, 84, 20) + `<path d="M${wx + wr - 2} ${f2(wl + 2)}q8 -4 16 0q6 -3 12 1M${wx + wr + 4} ${f2(wl + 7)}q10 -3 20 1" stroke="#FFFFFF" stroke-opacity=".85" stroke-width="1.6" fill="none" stroke-linecap="round"/>` + ripRings(wx + 20, wl + 4, 3, 22), .35);
+        if (NIGHT || DAYB) addLit(win(hx - 26 * k, hy - 38 * k, 9 * k, 10 * k, .4) + win(hx + 18 * k, hy - 36 * k, 9 * k, 9 * k, 2), 1.6);
+        if (!NIGHT && mi === 0) add([0, 1, 2].map((j) => `<circle class="sc-puff2" style="--pfd:7s;--pfl:${f2(-j * 2.3)}s" cx="${f2(hx + 17 * k)}" cy="${f2(hy - 76 * k)}" r="${4 + j}" fill="#FFFFFF" fill-opacity=".6"/>`).join(''), .6);
+        let nbx = ''; if (mi === 5) for (let i = 0; i < 6; i++) { const x = 680 + i * 50 + RM() * 20, yy = BOT - 50 - RM() * 30; nbx += `<path d="M${f2(x - 12)} ${f2(yy)}q12 -40 24 0z" fill="#D8B24A"/><path d="M${f2(x - 8)} ${f2(yy - 12)}h16" stroke="#A9822A" stroke-width="1.6"/>`; }
+        nearBank(G, nbx);
+      } else if (mi === 1) { // Brumale: il mulino natante sul fiume largo, come sull'Adige: la ruota tra due scafi, nella corrente, legato alla riva con le catene; nebbia sull'acqua
+        backdrop();
+        const WL = 236, sh = ridge([[-20, 224], [500, 220], [760, 224], [880, 216], [1000, 222], [1220, 216]], 3);
+        const shore = fill(sh, landCol(.34)) + forest(sh, 500, 1200, 22, .34, .34, () => true, 3);
+        add(shore, .25); s.push(water(WL)); add(mirror(shore, WL, .38) + ripplesOn(WL, 300, 1200, 40)); s.push(glitter(WL));
+        let cur = ''; for (let i = 0; i < 30; i++) { const t = Math.pow(RM(), .8), y = WL + 8 + t * (BOT - WL - 10), w = 6 + t * 30; cur += `<path class="sc-flowx" style="--fwd:${f2(2.6 + RM() * 1.6)}s;--fwl:${f2(-RM() * 3)}s" d="M${f2(700 + RM() * 520)} ${f2(y)}h${f2(w)}" stroke="#FFFFFF" stroke-opacity="${f2(.15 + t * .2)}" stroke-width="${f2(.8 + t)}" stroke-linecap="round"/>`; }
+        add(cur, .3);
+        const X = 1060, Y = 304, k = 1.1;
+        const hull = (x0, x1, h, c) => `<path d="M${x0} -6Q${x0 + 6} ${h} ${x0 + 20} ${h + 2}H${x1 - 20}Q${x1 - 6} ${h} ${x1} -6Z" fill="${c}"/><path d="M${x0} -6H${x1}" stroke="#7A6450" stroke-width="2"/>`;
+        let fm = hull(-30, 96, 12, '#3A2E26') + `<path d="M-14 -6V-50H80V-6Z" fill="#6A5644"/>` + Array.from({ length: 14 }, (_, j) => `<path d="M${-14 + j * 7} -6V-50" stroke="#4A3A2E" stroke-width="1"/>`).join('')
+          + `<path d="M-22 -48L33 -80L88 -48Z" fill="#4E5662"/><path d="M33 -80L88 -48H33Z" fill="#000" fill-opacity=".15"/><rect x="40" y="-38" width="10" height="10" fill="#2E2218"/><rect x="10" y="-30" width="12" height="24" fill="#2E2218"/><path d="M80 -40h10v6" stroke="#2E2A26" stroke-width="1.4" fill="none"/><rect x="87" y="-34" width="6" height="8" rx="1" fill="#2E2A26"/>`;
+        const wx = -60, wy = -12, wr = 34;
+        fm += `<path d="M-30 -14H-96" stroke="#4A3A2E" stroke-width="3"/>` + wheel(wx, wy, wr, -1, 12) + hull(-110, -76, 8, '#2E2622') + `<path d="M-30 -14L-96 -14" stroke="#4A3A2E" stroke-width="2"/>`;
+        const bt = at(X, Y, k, fm);
+        add(mirror(bt, Y, .3) + bt + frontWater(X - 30, Y, 280, 18) + ripRings(X + (wx + 20) * k, Y + 2, 4, 30) + `<path d="M${f2(X + 96 * k)} ${f2(Y - 4)}Q${X + 150} ${Y + 6} ${X + 170} ${Y - 30}" stroke="#5E5B56" stroke-width="1.6" fill="none"/><path d="M${X + 170} ${Y + 20}V${Y - 40}" stroke="#3E3128" stroke-width="5"/>`, .45);
+        addLit(at(X, Y, k, `<rect x="88" y="-33" width="4" height="6" fill="#F6C76E"/>` + glow(90, -30, NIGHT || DAYB ? 30 : 12)) + (NIGHT || DAYB ? win(X + 40 * k, Y - 38 * k, 10 * k, 10 * k, .8) : ''), 1.6);
+        add(mist(Y - 20, 30, DAYB ? .8 : .35, 22, 50), .5);
+      } else if (mi === 2) { // Ianuario: la segheria veneziana nella gola: la cascata mezza gelata, la gora coi ghiaccioli porta l'acqua sopra la ruota, i tronchi sotto la neve
+        backdrop();
+        const rk = '#8E979E', rkd = '#6E777E';
+        const lc = ridge([[-20, 236], [600, 232], [760, 236], [840, 252], [890, 280], [915, 320], [925, BOT]], 6);
+        const rc = ridge([[960, 226], [1020, 210], [1140, 200], [1220, 190]], 4);
+        add(fill(rc, haze(rk, .5)) + snowCap(rc, 230, 14), .2);
+        const fx = 960, ft = 222, fb2 = 288;
+        let fall = `<path d="M${fx - 16} ${ft}Q${fx - 18} ${(ft + fb2) / 2} ${fx - 22} ${fb2}H${fx + 22}Q${fx + 18} ${(ft + fb2) / 2} ${fx + 16} ${ft}Z" fill="#E6F2F6"/>`;
+        for (let i = 0; i < 7; i++) fall += `<path class="sc-flow" style="--fwd:${f2(.9 + RM() * .6)}s;--fwl:${f2(-RM())}s" d="M${f2(fx - 14 + i * 4.6)} ${f2(ft + 10 + RM() * 30)}v${f2(14 + RM() * 10)}" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>`;
+        fall += [-18, -10, 12, 19].map((x) => `<path d="M${fx + x} ${ft + 4}l2 ${f2(16 + RM() * 18)}l2 ${f2(-16 - RM() * 18)}" fill="#CFE4EE"/>`).join('');
+        add(fall, .25);
+        const G = riverGeo([[fx, 290], [970, 304], [990, 330], [960, 370], [900, BOT + 10]], [30, 34, 44, 62, 90]);
+        s.push(water(286, -20, -19)); s.push(`<ellipse cx="${fx}" cy="292" rx="40" ry="8" fill="url(#${wId})"/><path d="${G.riverD}" fill="url(#${wId})"/>`);
+        add(`<path d="${ptsD(G.Pn)}" stroke="#FFFFFF" stroke-width="5" fill="none"/><path d="${ptsD(G.Mf)}" stroke="#FFFFFF" stroke-width="4" fill="none"/>` + flowOn(G.Cs, G.w, 16, 'sc-flowx') + `<ellipse cx="${fx}" cy="290" rx="34" ry="5" fill="#FFFFFF" fill-opacity=".6"/>`, .3);
+        add(fill(lc, '#EEF4F7') + `<path d="M${f2(lc.y(880) > 0 ? 880 : 880)} ${f2(lc.y(880) + 6)}l14 22" stroke="${rkd}" stroke-opacity=".4" stroke-width="2" fill="none"/>` + forest(lc, 700, 900, 7, .8, .7, () => true, 4), .3);
+        const ground = ridge([[1020, BOT], [1040, 330], [1100, 318], [1220, 314]], 2);
+        const hx = 1146, hy = ground.y(hx) + 2, k = 1.08, L = Ls(hx);
+        let saw = `<path d="M-46 0V-14H46V0Z" fill="#9A938A"/><path d="M-42 -14V-48H42V-14Z" fill="#7A5236"/>` + Array.from({ length: 12 }, (_, j) => `<path d="M${-42 + j * 7.6} -14V-48" stroke="#5A3A26" stroke-width="1"/>`).join('')
+          + `<path d="M${L > 0 ? 6 : -42} -14V-48H${L > 0 ? 42 : -6}V-14Z" fill="#000" fill-opacity=".14"/><rect x="-8" y="-42" width="16" height="28" fill="#2E2218"/><path d="M-54 -46L0 -74L54 -46Z" fill="#4E4A48"/><path d="M-58 -45L0 -78L58 -45L48 -41L0 -66L-48 -41Z" fill="#FFFFFF"/>`
+          + Array.from({ length: 12 }, (_, j) => `<path d="M${-48 + j * 8.6} -42l1.4 ${6 + (j % 3) * 3}l1.4 ${-6 - (j % 3) * 3}" fill="#DDEBF2"/>`).join('') + `<path d="M-6 -36h12" stroke="#B9C4CC" stroke-width="2"/><path d="M-6 -34l2 -2l2 2l2 -2l2 2l2 -2" stroke="#B9C4CC" stroke-width="1" fill="none"/>`;
+        const wx = hx - 62 * k - 26, wr = 28, wy = hy - 34, f0 = [fx + 18, ft + 4], f1 = [wx - 4, wy - wr - 6];
+        let fl = ''; [.4, .75].forEach((q) => { const x = f0[0] + (f1[0] - f0[0]) * q, y = f0[1] + (f1[1] - f0[1]) * q; fl += `<path d="M${f2(x - 6)} ${f2(y + 50)}L${f2(x)} ${f2(y + 2)}L${f2(x + 6)} ${f2(y + 50)}" stroke="${WOOD_D}" stroke-width="2" fill="none"/>`; });
+        fl += `<path d="M${f0[0]} ${f0[1]}L${f2(f1[0])} ${f2(f1[1])}" stroke="${WOOD_D}" stroke-width="6"/><path d="M${f0[0]} ${f0[1] - 3}L${f2(f1[0])} ${f2(f1[1] - 3)}" stroke="#FFFFFF" stroke-width="2.4"/>` + [.2, .45, .7, .9].map((q) => `<path d="M${f2(f0[0] + (f1[0] - f0[0]) * q)} ${f2(f0[1] + (f1[1] - f0[1]) * q + 3)}l1.2 7l1.2 -7" fill="#DDEBF2"/>`).join('')
+          + `<path d="M${f2(f1[0])} ${f2(f1[1])}q4 3 5 10" stroke="#DDEEF2" stroke-width="2.6" fill="none"/>`;
+        let logs = ''; for (let r = 0; r < 3; r++) for (let c = 0; c < 4 - r; c++) { const lx = 1196 + c * 9 + r * 4.5 - 18, ly = ground.y(1196) - 4 - r * 8; logs += `<circle cx="${f2(lx)}" cy="${f2(ly)}" r="4.4" fill="#A27A54" stroke="#6A4A34" stroke-width="1"/><circle cx="${f2(lx)}" cy="${f2(ly)}" r="1.4" fill="#C9A27A"/>`; }
+        logs += `<path d="M1176 ${f2(ground.y(1196) - 28)}q22 -8 40 0z" fill="#FFFFFF"/>`;
+        add(fill(ground, '#F4F8FA') + fl + shadowAt(hx, hy, 50) + at(hx, hy, k, saw) + wheel(wx, wy, wr, 1, 12) + logs + `<path d="M${f2(wx - wr)} ${f2(wy + 4)}a${wr} ${wr} 0 0 0 ${2 * wr} 0" stroke="#DDEBF2" stroke-width="2" fill="none" stroke-dasharray="2 3"/>` + forest(ground, 1206, 1220, 1, 1, .9), .35);
+        if (NIGHT || DAYB) addLit(win(hx - 8 * k, hy - 42 * k, 16 * k, 10 * k, .6), 1.6);
+        add(groundDetail({ y: () => BOT - 50 }, 640, 1000, 12, 1.4, 1), .5);
+      } else if (mi === 3) { // Germinale: la noria. Il canale scorre davanti, la ruota coi vasi di coccio raccoglie l'acqua e la versa in alto nell'acquedotto che va ai frutteti in fiore
+        backdrop();
+        const mid = ridge([[-20, 238], [600, 232], [860, 228], [1220, 234]], 3);
+        add(fill(mid, landCol(.42)) + patches(mid, 300, 1200, .42, 3) + forest(mid, 560, 1200, 18, .3, .42), .25);
+        const far = ridge([[-20, 270], [700, 266], [1000, 268], [1220, 266]], 2), cTop = 316, cBot = 352;
+        let orch = ''; for (let r = 0; r < 2; r++) for (let i = 0; i < 9; i++) { const x = 760 + i * 52 + r * 24 + RM() * 10, y = far.y(x) + 10 + r * 18; if (x > 980 && x < 1060) continue; orch += treeBlossom(x, y, .8 + r * .25, ['#F4C9D8', '#FFFFFF', '#E89BB5'], '#6B5040', R, p); }
+        add(fill(far, landCol(.7)) + `<path d="M-20 ${cTop - 2}H1240" stroke="${shade(landCol(.8), .3)}" stroke-width="3"/>` + orch, .3);
+        s.push(water(cTop, -20, 1240)); add(flowOn([[-20, (cTop + cBot) / 2], [400, (cTop + cBot) / 2], [800, (cTop + cBot) / 2], [1240, (cTop + cBot) / 2]].flatMap((pt, i, A) => i < A.length - 1 ? Array.from({ length: 10 }, (_, j) => [pt[0] + (A[i + 1][0] - pt[0]) * j / 10, pt[1] + (RM() - .5) * 20]) : []), () => 34, 30), .3);
+        const wx = 1010, wr = 52, wy = cTop - 8, ty = wy - wr - 12;
+        let aq = `<path d="M${wx + 14} ${ty}H1240" stroke="#8A5E3B" stroke-width="8"/><path d="M${wx + 14} ${ty - 3}H1240" stroke="${mixHex(WTh[0], '#FFFFFF', .35)}" stroke-width="2.4"/>`;
+        [1070, 1140, 1210].forEach((x) => { aq += `<path d="M${x - 7} ${cTop - 2}L${x - 5} ${ty + 4}H${x + 5}L${x + 7} ${cTop - 2}Z" fill="#B9B0A0"/><path d="M${x - 5} ${ty + 4}H${x + 5}" stroke="#9A938A" stroke-width="2"/>`; });
+        let pour = ''; for (let j = 0; j < 5; j++) pour += `<path class="sc-rain" style="--rd:${f2(.7 + j * .15)}s;--rdl:${f2(-j * .2)}s;--ro:.8" d="M${f2(wx + 10 + j * 2)} ${f2(ty - 10)}l1 6" stroke="#E4F2F6" stroke-width="1.6" stroke-linecap="round"/>`;
+        const post = `<path d="M${wx - 6} ${cBot}L${wx - 2} ${wy}H${wx + 2}L${wx + 6} ${cBot}Z" fill="#6E5236"/>`;
+        add(aq + post + wheel(wx, wy, wr, -1, 18, true) + pour + frontWater(wx, cTop + 2, 130, 26) + ripRings(wx + 30, cTop + 6, 3, 24), .35);
+        add(grad('nb', cBot, BOT, landCol(.85), landCol(1)) + `<path d="M-20 ${cBot}H1240V${BOT + 40}H-20Z" fill="url(#${u}nb)"/><path d="M-20 ${cBot}H1240" stroke="${shade(landCol(.8), .3)}" stroke-width="3"/>` + groundDetail({ y: () => cBot + 6 }, 640, 1220, 24, 1.2, 1), .45);
+      } else if (mi === 4) { // Floreale: il traghetto di Leonardo: la chiatta appesa al cavo attraversa il fiume da sola, la corrente la spinge
+        backdrop();
+        const mid = ridge([[-20, 238], [600, 232], [860, 228], [1220, 234]], 3);
+        add(fill(mid, landCol(.42)) + patches(mid, 300, 1200, .42, 3) + forest(mid, 560, 1200, 16, .3, .42), .25);
+        const far = ridge([[-20, 280], [700, 276], [1000, 278], [1220, 276]], 2), cTop = 300, cBot = 360;
+        let fl = ''; for (let i = 0; i < 60; i++) { const x = 600 + RM() * 640, y = far.y(x) + 4 + RM() * 16; fl += `<circle cx="${f2(x)}" cy="${f2(y)}" r="${f2(1.4 + RM())}" fill="${['#D8453A', '#F4ECDD', '#8E5FA3', '#E3A33B'][i % 4]}"/>`; }
+        const p1 = [1000, 196], p2 = [1188, BOT - 140];
+        add(fill(far, landCol(.7)) + fl + `<path d="M${p1[0]} ${far.y(p1[0]) + 4}V${p1[1]}" stroke="#6E5236" stroke-width="5"/><path d="M${p1[0] - 8} ${p1[1] + 4}h16" stroke="#6E5236" stroke-width="2"/>` + cottage(940, far.y(940) + 4, .7, '#EFE2CC', '#8A4A3A', Ls(940)) + `<path d="M-20 ${cTop - 2}H1240" stroke="${shade(landCol(.8), .3)}" stroke-width="3"/>`, .3);
+        s.push(water(cTop, -20, 1240)); add(flowOn(Array.from({ length: 40 }, (_, i) => [-20 + i * 32, cTop + 8 + RM() * (cBot - cTop - 16)]), () => 40, 30) + mirror(fill(far, landCol(.7)), cTop, .25), .3);
+        const fx = 1076, fy = 328, cx = p1[0] + (p2[0] - p1[0]) * .42, cy = p1[1] + (p2[1] - p1[1]) * .42;
+        let fe = `<path d="M-60 0H58L52 8H-54Z" fill="#5A3A26"/><path d="M-62 -6H60V0H-62Z" fill="#8A6A48"/>` + Array.from({ length: 13 }, (_, j) => `<path d="M${-60 + j * 10} -6V0" stroke="#5A3A26" stroke-width=".8"/>`).join('')
+          + `<path d="M-60 -6V-20M-30 -6V-20M0 -6V-20M30 -6V-20M58 -6V-20M-60 -18H58" stroke="#6E5236" stroke-width="1.6"/><path d="M14 -6V-34H40V-6Z" fill="#E6D8C2"/><path d="M10 -34L27 -46L44 -34Z" fill="#7E5A8E"/><rect x="20" y="-28" width="7" height="7" fill="#3E4652"/>`
+          + `<path d="M-20 -6V-60" stroke="#6E5236" stroke-width="2.4"/><circle cx="-20" cy="-60" r="2.4" fill="${BRASS}"/>`;
+        const fer = at(fx, fy, 1.1, `<g class="sc-bob2">${fe}</g>`);
+        add(`<path d="M${p1[0]} ${p1[1]}Q${f2((p1[0] + p2[0]) / 2)} ${f2((p1[1] + p2[1]) / 2 + 20)} ${p2[0]} ${p2[1]}" stroke="#3A3026" stroke-width="1.6" fill="none"/>` + mirror(fer, fy, .3) + fer + `<path d="M${f2(fx - 22)} ${f2(fy - 66)}L${f2(cx)} ${f2(cy + 10)}" stroke="#3A3026" stroke-width="1" fill="none"/>` + frontWater(fx, fy, 160, 14) + ripRings(fx - 70, fy + 2, 3, 26), .4);
+        if (NIGHT || DAYB) addLit(win(fx + 20 * 1.1, fy - 28 * 1.1, 7 * 1.1, 7 * 1.1, .5), 1.6);
+        add(grad('nb', cBot, BOT, landCol(.85), landCol(1)) + `<path d="M-20 ${cBot}H1240V${BOT + 40}H-20Z" fill="url(#${u}nb)"/><path d="M-20 ${cBot}H1240" stroke="${shade(landCol(.8), .3)}" stroke-width="3"/>`
+          + `<path d="M${p2[0]} ${BOT + 10}V${p2[1]}" stroke="#6E5236" stroke-width="7"/><path d="M${p2[0] - 10} ${p2[1] + 6}h20" stroke="#6E5236" stroke-width="3"/>` + groundDetail({ y: () => cBot + 6 }, 640, 1220, 26, 1.3, 1), .45);
+      } else { // Estiario: il mulino a marea. Il canale di pietra porta la marea dalla laguna al mare; la ruota gira sotto l'arco; barche da pesca ormeggiate
+        backdrop(214);
+        const qT = 306, qB = 350;
+        const quay = `<path d="M-20 286H1240V${qT}H-20Z" fill="#CDB78F"/><path d="M-20 286H1240" stroke="#E2D2B0" stroke-width="3"/>` + Array.from({ length: 30 }, (_, j) => `<path d="M${-20 + j * 44} 288V${qT}" stroke="#A8936E" stroke-width="1"/>`).join('');
+        add(quay, .25);
+        s.push(water(qT, -20, 1240)); add(flowOn(Array.from({ length: 40 }, (_, i) => [-20 + i * 32, qT + 6 + RM() * (qB - qT - 12)]), () => 36, 30), .3);
+        const hx = 1110, hy = 290, k = 1.1, L = Ls(hx);
+        let tm = `<path d="M-60 0V-56H60V0Z" fill="#F4F1EA"/><path d="M${L > 0 ? 12 : -60} 0V-56H${L > 0 ? 60 : -12}V0Z" fill="#000" fill-opacity=".08"/><path d="M-66 -54L0 -80L66 -54Z" fill="#C0392B"/><path d="M0 -80L${66 * L} -54H0Z" fill="#000" fill-opacity=".14"/>`
+          + `<path d="M-44 16V-4Q-30 -22 -16 -4V16ZM16 16V-4Q30 -22 44 -4V16Z" fill="#3A3832"/><path d="M-50 16V0H-46M50 16V0H46" stroke="#A8936E" stroke-width="2"/>` + [-36, -12, 12, 36].map((x) => `<rect x="${x - 4}" y="-44" width="8" height="10" fill="#2F6E9A"/>`).join('') + `<rect x="-4" y="-22" width="8" height="22" fill="#2F6E9A"/>`;
+        const wx = hx + 30 * k, wy = hy + 14, wr = 24;
+        let boats = ''; [[880, 312, '#3E86B8'], [960, 318, '#C0392B']].forEach(([bx, by, c]) => { boats += at(bx, by, .7, `<path d="M-40 -8Q-36 0 -24 2H28Q38 0 42 -8Q40 4 28 8H-26Q-38 5 -40 -8Z" fill="#F4F1EA"/><path d="M-38 -2Q0 4 40 -2" stroke="${c}" stroke-width="2.4" fill="none"/><path d="M-40 -8l-3 -8M42 -8l2 -7" stroke="#C99A5E" stroke-width="2.4"/>`); });
+        add(shadowAt(hx, hy, 60) + at(hx, hy, k, tm) + wheel(wx, wy, wr, -1, 12) + frontWater(wx, qT + 6, 70, 18) + boats + frontWater(920, 314, 160, 10) + ripRings(wx + 18, qT + 8, 3, 20), .35);
+        if (NIGHT || DAYB) addLit([-36, 12].map((x) => win(hx + (x - 4) * k, hy - 44 * k, 8 * k, 10 * k, .5)).join(''), 1.6);
+        add(grad('nb', qB, BOT, '#C9B48E', '#A8936E') + `<path d="M-20 ${qB}H1240V${BOT + 40}H-20Z" fill="url(#${u}nb)"/><path d="M-20 ${qB}H1240" stroke="#E2D2B0" stroke-width="4"/>` + Array.from({ length: 16 }, (_, j) => `<path d="M${-20 + j * 80} ${qB + 2}V${BOT + 40}" stroke="#8E7A58" stroke-width="1.2" stroke-opacity=".5"/>`).join('')
+          + `<circle cx="760" cy="${qB + 14}" r="6" fill="#3A3836"/><path d="M760 ${qB + 14}Q840 ${qT + 20} 880 ${qT + 6}" stroke="#C9B48A" stroke-width="1.4" fill="none"/>`, .45);
+      }
       break;
     }
     default: { // Validare: in vetta. L'ometto e la bandiera sulla roccia, con quello che si trova lassù in quel mese; sotto, il mare di nuvole; il sentiero che abbiamo fatto
       const fr0 = ridge([[-20, 190], [400, 170], [640, 140], [760, 104], [860, 150], [980, 122], [1100, 160], [1220, 140]], 8);
-      add(fill(fr0, haze(LD.far, 0)) + snowCap(fr0, snowy ? 168 : 132, 24), .1);
+      add(fill(fr0, haze(LD.far, 0)) + (mi >= 1 && mi <= 4 ? snowCap(fr0, snowy ? 168 : 132, 24) : ''), .1);
       const cl = NIGHT ? mixHex('#4A5672', '#C9D2E6', moonL) : low > .3 ? mixHex('#FFFFFF', '#F7D3A8', .35) : '#FBFCFD', cs = NIGHT ? mixHex('#2E3750', '#8E9AB8', moonL) : low > .3 ? '#E4BC94' : '#D5DCE5';
       const layer = (y0, r, d, gid) => { const RB = rng(seed + Math.round(y0)); let dd = `M-20 ${f2(y0 + r)}`, x = -20;
         while (x < SW + 20) { const rr = r * (.6 + RB() * .8), h = rr * (.55 + RB() * .5); dd += `Q${f2(x + rr * .1)} ${f2(y0 - h)} ${f2(x + rr)} ${f2(y0 - h)}Q${f2(x + rr * 1.9)} ${f2(y0 - h)} ${f2(x + rr * 2)} ${f2(y0 + RB() * r * .3)}`; x += rr * 2; }
@@ -1266,16 +1620,19 @@ function sceneSVG(mi, opts = {}) {
         const c0 = mixHex(cl, hzC, (1 - d) * .35), c1 = mixHex(cs, hzC, (1 - d) * .35);
         return `<defs><linearGradient id="${u}${gid}" x1="0" y1="${f2(y0 - r)}" x2="0" y2="${f2(y0 + r * 2.2)}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${rgb(c0)}"/><stop offset=".55" stop-color="${rgb(c0)}"/><stop offset="1" stop-color="${rgb(c1)}"/></linearGradient></defs><path d="${dd}" fill="url(#${u}${gid})"/>`; };
       const pk = (cx, top, w, d) => { const r = ridge([[cx - w, 250], [cx - w * .5, top + 30], [cx - w * .12, top + 6], [cx, top], [cx + w * .2, top + 10], [cx + w * .55, top + 34], [cx + w, 250]], 2, 12); return fill(r, haze(LD.rock, d)) + (snowy || top < 210 ? snowCap(r, top + 16, 12) : ''); };
-      add(layer(204, 10, .1, 'c1'), .15);
-      add(pk(780, 168, 64, .25) + pk(900, 196, 44, .3) + layer(228, 16, .35, 'c2'), .2);
-      add(layer(256, 26, .6, 'c3'), .25);
+      const below = mi === 0 ? 'colli' : mi === 5 ? 'piana' : mi === 6 ? 'mare' : 'nuvole';
+      if (below === 'nuvole') { add(layer(204, 10, .1, 'c1'), .15); add(pk(780, 168, 64, .25) + pk(900, 196, 44, .3) + layer(228, 16, .35, 'c2'), .2); add(layer(256, 26, .6, 'c3'), .25); }
+      else if (below === 'mare') { backdrop(214); waves(214); }
+      else { /* Foliaio: i colli delle vigne con la nebbia nelle valli · Messidoro: la piana del grano che tremola nel caldo */
+        [[226, .25], [252, .45], [280, .65]].forEach(([y0, d], i) => { const rg2 = ridge([[-20, y0 + 6], [500, y0], [760, y0 - 6], [900, y0 + 4], [1060, y0 - 4], [1220, y0 + 2]], 5);
+          add(fill(rg2, landCol(d)) + patches(rg2, 300, 1220, d, 3) + (below === 'colli' ? forest(rg2, 600, 1200, 10, .3 + d * .4, d) : hedge(rg2, 300, 1200, 18, d)) + mist(y0 + 4, 22, below === 'colli' ? .7 : .35, 28 + i * 4, 40), .15 + i * .05); }); }
       const rock = ridge([[860, BOT], [920, 340], [990, 300], [1050, 278], [1100, 270], [1150, 276], [1220, 300]], 3);
       const rc = mi === 2 ? '#E9F0F4' : mixHex(LD.rock, LD.near, .3);
       const X = 1100, y = rock.y(X) + 3;
       const cracks = `<path d="M1000 300l20 14l-6 18M1060 286l-10 22l14 20M1140 282l12 26" stroke="${shade(rc, .25)}" stroke-width="2" fill="none" stroke-linecap="round"/>`;
       const path = `<path d="${ptsD(crSample([[920, BOT], [980, 360], [930, 340], [1010, 318], [1050, 300], [X - 20, y]], 4))}" stroke="${LD.path}" stroke-opacity=".7" stroke-width="2.6" fill="none" stroke-dasharray="1 5" stroke-linecap="round"/>`;
       add(fill(rock, rc) + `<path d="M1100 270L1220 300V${BOT + 40}H1100Z" fill="#000" fill-opacity="${Ls(1150) > 0 ? .1 : 0}"/>` + cracks + path + (snowy ? '' : groundDetail(rock, 960, 1220, 10, .9, .9)) + shadowAt(X, y, 36) + at(X, y, 1.25, cairn(mi)), .35);
-      s.push(`<g class="sc-fade" style="--d:.5s"><g class="sc-fog" opacity=".9" style="--fgd:40s;--fgx:20px">${layer(BOT - 34, 58, 1, 'c4')}</g></g>`);
+      if (below === 'nuvole') s.push(`<g class="sc-fade" style="--d:.5s"><g class="sc-fog" opacity=".9" style="--fgd:40s;--fgx:20px">${layer(BOT - 34, 58, 1, 'c4')}</g></g>`);
       break;
     }
   }
@@ -1289,19 +1646,29 @@ function sceneSVG(mi, opts = {}) {
       let w = ''; [[232, 3, 150], [262, 3, 190], [300, 2, 230], [BOT - 46, 2, 260]].forEach(([y0, n, rx]) => { for (let i = 0; i < n; i++) { const x = 700 + RW() * 520, y = y0 + RW() * 14;
         w += `<ellipse class="sc-wisp" style="--wsd:${f2(30 + RW() * 22)}s;--wsl:${f2(-RW() * 30)}s;--wsx:${f2((RW() < .5 ? -1 : 1) * (60 + RW() * 90))}px;--wo0:.45;--wo1:.85" cx="${f2(x)}" cy="${f2(y)}" rx="${f2(rx * (.7 + RW() * .5))}" ry="${f2(16 + RW() * 14)}" fill="url(#${u}wsp)"/>`; } });
       s.push(`<g class="sc-fade" style="--d:.9s"><g opacity="${f2(DAYB ? .55 : .12 + moonL * .3)}">${w}</g></g>`); break; }
-    case 2: if (!opts.prot) { let sn = ''; for (let i = 0; i < 34; i++) { const big = RW() < .35; sn += `<circle class="sc-fall2" style="--fd:${f2(big ? 7 + RW() * 3 : 11 + RW() * 5)}s;--fdl:${f2(-RW() * 14)}s;--fx:${f2((RW() - .5) * 40)}px" cx="${f2(720 + RW() * 500)}" cy="${f2(-T + RW() * 80)}" r="${f2(big ? 1.8 + RW() : .9 + RW() * .6)}" fill="#FFFFFF" fill-opacity="${big ? .95 : .7}"/>`; } add(sn, .8); } break;
-    case 3: if (!NIGHT && (wkx === 1 || wkx === 4)) { let dr = ''; for (let i = 0; i < 60; i++) { const x = 720 + RW() * 500, y = -T + RW() * (T + 240), l = 9 + RW() * 6;
-        dr += `<path class="sc-rain" style="--rd:${f2(.9 + RW() * .5)}s;--rdl:${f2(-RW() * 1.6)}s;--ro:${f2(.2 + RW() * .2)}" d="M${f2(x)} ${f2(y)}l${f2(-l * .19)} ${f2(l)}" stroke="#8FA6B8" stroke-width="1" stroke-linecap="round"/>`; } s.push(`<g class="sc-fade" style="--d:.4s">${dr}</g>`); }
+    case 2: break;
+    case 3: if (RAINW) { /* la pioggia la disegna il blocco della pioggia */ }
       else if (!opts.prot) add(Array.from({ length: 8 }, (_, i) => `<ellipse class="sc-fall2" style="--fd:${f2(9 + RW() * 4)}s;--fdl:${f2(-RW() * 12)}s;--fx:${f2(-50 - RW() * 50)}px" cx="${f2(800 + RW() * 420)}" cy="${f2(-T * .2 + RW() * 120)}" rx="3" ry="1.8" fill="${['#F4C9D8', '#FFFFFF', '#E89BB5'][i % 3]}"/>`).join(''), 1); break;
     case 4: if (!NIGHT) { if (!opts.prot) add([['#F2A23A', '#F2C230'], ['#8E5FA3', '#B58AC8']].map(([a, b], i) => butterfly(f2(760 + RW() * 180 + i * 200), f2(170 + RW() * 90), a, b, RW)).join(''), 1.4);
         add(Array.from({ length: 14 }, () => `<circle class="sc-twinkle" style="--td:${f2(2 + RW() * 3)}s;--tdl:${f2(RW() * 3)}s" cx="${f2(740 + RW() * 460)}" cy="${f2(150 + RW() * 180)}" r="${f2(.8 + RW() * .8)}" fill="#FFF6C8"/>`).join(''), 1.2); }
       else s.push(lit(Array.from({ length: 16 }, () => { const x = 740 + RW() * 460, y = 270 + RW() * (BOT - 300); return `<g class="sc-twinkle" style="--td:${f2(1.6 + RW() * 2.4)}s;--tdl:${f2(RW() * 3)}s"><circle cx="${f2(x)}" cy="${f2(y)}" r="6" fill="url(#${u}l)"/><circle cx="${f2(x)}" cy="${f2(y)}" r="1.5" fill="#F4FFB4"/></g>`; }).join(''), 1.6)); break;
     case 5: case 6: if (!NIGHT && !opts.prot) add(gull(860, 120 - T * .2, .9, '#3B3012', RW) + gull(1130, 80 - T * .3, .7, '#3B3012', RW), 1); break;
   }
-  /* Brumale di giorno: la pioggerella fitta e sottile */
-  if (DAYB) { let dr = ''; for (let i = 0; i < 90 + Math.round(T / 3); i++) { const x = 360 + R() * 860, y = -30 - T + R() * (300 + T), l = 8 + R() * 6;
-    dr += `<path class="sc-rain" style="--rd:${f2(.85 + R() * .6)}s;--rdl:${f2(-R() * 1.6)}s;--ro:${f2(.25 + R() * .3)}" d="M${f2(x)} ${f2(y)}l${f2(-l * .19)} ${f2(l)}" stroke="#65758D" stroke-width="1.05" stroke-linecap="round"/>`; }
-    s.push(`<g class="sc-fade" style="--d:.4s">${dr}</g>`); }
+  /* 3.0: la pioggia vera: righe oblique fitte (più lunghe davanti), cerchi che si aprono sull'acqua, schizzi a terra */
+  if (RAIN) { const RR = rng(seed + 7), n = (RAINW ? 170 : 120) + Math.round(T / 2); let dr = '', fr = '';
+    for (let i = 0; i < n; i++) { const near = RR() < .3, x = 700 + RR() * 540, y = -40 - T + RR() * (BOT + T), l = near ? 18 + RR() * 10 : 9 + RR() * 7;
+      const str = `<path class="sc-rain" style="--rd:${f2(near ? .55 + RR() * .3 : .8 + RR() * .5)}s;--rdl:${f2(-RR() * 1.6)}s;--ro:${f2(NIGHT ? .16 + RR() * .18 : near ? .4 + RR() * .25 : .22 + RR() * .25)}" d="M${f2(x)} ${f2(y)}l${f2(-l * .22)} ${f2(l)}" stroke="${NIGHT ? '#B4C0D8' : near ? '#5E6E84' : '#7A8A9E'}" stroke-width="${near ? 1.4 : 1}" stroke-linecap="round"/>`;
+      if (near) fr += str; else dr += str; }
+    s.push(`<g class="sc-fade" style="--d:.4s">${dr}</g>`);
+    let rings = ''; waterTops.forEach(([top, x0, x1]) => { for (let i = 0; i < 26; i++) { const t = Math.pow(RR(), .7), y = top + 6 + t * (BOT - top - 8), w = 3 + t * 12, x = Math.max(x0, 700) + RR() * (Math.min(x1, 1220) - Math.max(x0, 700));
+      rings += `<ellipse class="sc-ripple" style="--rpd:${f2(1.2 + RR() * .8)}s;--rpl:${f2(-RR() * 2)}s" cx="${f2(x)}" cy="${f2(y)}" rx="${f2(w)}" ry="${f2(w * .2)}" fill="none" stroke="#FFFFFF" stroke-opacity=".7" stroke-width="${f2(.6 + t * .6)}"/>`; } });
+    if (!waterTops.length) for (let i = 0; i < 16; i++) { const x = 700 + RR() * 520, y = BOT - 70 + RR() * 60; rings += `<ellipse class="sc-ripple" style="--rpd:${f2(1 + RR() * .8)}s;--rpl:${f2(-RR() * 2)}s" cx="${f2(x)}" cy="${f2(y)}" rx="5" ry="1.2" fill="none" stroke="#FFFFFF" stroke-opacity=".5" stroke-width=".8"/>`; }
+    s.push(`<g class="sc-fade" style="--d:.6s">${rings}${fr}</g>`); }
+  /* 3.0: in Ianuario la neve cade su tre piani: fiocchi minuti lontani, medi, grandi e lenti davanti */
+  if (snowy && !opts.prot) { const RS = rng(seed + 9); let sn = '';
+    for (let i = 0; i < 70 + Math.round(T / 4); i++) { const layer = RS() < .45 ? 0 : RS() < .7 ? 1 : 2, r = [.7, 1.4, 2.6][layer] + RS() * [.4, .6, 1.2][layer];
+      sn += `<circle class="sc-fall2" style="--fd:${f2([16, 11, 8][layer] + RS() * 4)}s;--fdl:${f2(-RS() * 16)}s;--fx:${f2((RS() - .3) * [30, 50, 80][layer])}px" cx="${f2(700 + RS() * 540)}" cy="${f2(-T - 20 + RS() * (T + 120))}" r="${f2(r)}" fill="#FFFFFF" fill-opacity="${[.6, .85, .95][layer]}"/>`; }
+    s.push(tone(`<g class="sc-fade" style="--d:.8s">${sn}</g>`)); }
   return `<svg class="scene${NIGHT ? ' night' : ''}" viewBox="0 ${-T} ${SW} ${SH + T + B}" preserveAspectRatio="xMaxYMax slice" aria-hidden="true" focusable="false">${defs}<g class="sc-enter">${s.join('')}</g></svg>`;
 }
 
@@ -1500,5 +1867,5 @@ function seasonFx(motif, accent, W, H, seed) {
 
 /* fase della luna (0 = nuova, 0,5 = piena) alle 22 del giorno dato, dal novilunio del 6/1/2000 18:14 UTC; errore di qualche ora */
 function moonPhase(iso) { const [y, m, d] = iso.split('-').map(Number), t = Date.UTC(y, m - 1, d, 21, 0) - Date.UTC(2000, 0, 6, 18, 14), f = (t / 864e5) / 29.530588853; return f - Math.floor(f); }
-window.ORN = { version: '2.9', moonPhase, MONTHS, LETTER_META, metaKeyFor, dayBg, illusFor, sceneSVG, hasVariants, themeFor, patternURI, ornamentSVG, playAll, seasonFx, setToday: (s) => { todayStr = s; } };
+window.ORN = { version: '3.0', moonPhase, MONTHS, LETTER_META, metaKeyFor, dayBg, illusFor, sceneSVG, hasVariants, themeFor, patternURI, ornamentSVG, playAll, seasonFx, setToday: (s) => { todayStr = s; } };
 })();
