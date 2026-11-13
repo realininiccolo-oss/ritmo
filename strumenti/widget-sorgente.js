@@ -182,7 +182,11 @@ async function main() {
   S.cfg = data.cfg || null; S.nerina = data.nerina || {}; S.file = data.eventi || [];
   if (st0) { S.giorni = st0.giorni || {}; S.miei = st0.miei || []; S.nascosti = st0.nascosti || []; S.pref = st0.pref || {}; }
   rebuildEvents();
-  try { NOTI = await syncNotifiche(promemoria(Date.now(), 7, !!st0)); } catch (e) { NOTI = { err: e.message }; }
+  // dentro il widget iOS dà pochi secondi: le notifiche non devono mai bloccare il disegno
+  let tm = null;
+  try { const lim = config.runsInWidget ? 2500 : 15000; NOTI = await Promise.race([syncNotifiche(promemoria(Date.now(), 7, !!st0)), new Promise((_, no) => { tm = Timer.schedule(lim, false, () => no(new Error('tempo scaduto'))); })]); }
+  catch (e) { NOTI = { err: e.message }; }
+  if (tm) tm.invalidate();
   const L = nowLogical(), d = L.date, o = settale(d), m = dayModel(d);
   let f = feedback(d, L);
   if (!st0 && f.act) f = { ...f, sub: 'Collega l\'andamento da Ritmo per vedere i piani' };
@@ -256,7 +260,7 @@ async function avvisoNotifiche(prova) {
     const pend = (await Notification.allPending()).filter((n) => String(n.identifier || '').startsWith('ritmo:')).sort((x, y) => x.nextTriggerDate - y.nextTriggerDate);
     const df = new DateFormatter(); df.locale = 'it_IT'; df.dateFormat = 'EEE HH:mm';
     a.title = pend.length ? `Notifiche pronte: ${pend.length}` : 'Nessuna notifica nei prossimi 7 giorni';
-    a.message = pend.slice(0, 4).map((n) => `${df.string(n.nextTriggerDate)} · ${n.title}`).join('\n') + (prova ? '\n\nTra 5 secondi arriva una notifica di prova.' : '\n\nPuoi tornare su Ritmo.');
+    a.message = pend.slice(0, 4).map((n) => `${df.string(n.nextTriggerDate)} · ${n.title}`).join('\n') + (prova ? '\n\nTra 5 secondi arriva una notifica di prova.' : '\n\nAnche il widget ora vede gli impegni di Ritmo. Puoi tornare su Ritmo.');
   }
   a.addAction('OK'); await a.presentAlert();
 }

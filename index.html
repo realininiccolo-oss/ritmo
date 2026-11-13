@@ -1674,13 +1674,13 @@ function openSettings() {
     const seSel = h('select', { class: 'in sm', 'aria-label': 'Promemoria della sera', onchange: () => { S.pref = { ...S.pref, sera: seSel.value }; saveState(); drawNoti(); } },
       [['', 'Niente'], ['20:30', 'alle 20:30'], ['21:00', 'alle 21:00'], ['21:30', 'alle 21:30'], ['22:00', 'alle 22:00'], ['22:30', 'alle 22:30']].map(([v, t]) => h('option', { value: v, text: t, selected: (pp.sera || '') === v })));
     const n = promemoria(Date.now(), 7, true), nx = n[0];
-    const send = h('a', { class: 'btn sm pri', href: '#', style: { textDecoration: 'none' }, onclick: (e) => { e.preventDefault(); location.href = scriptableURL(); } }, h('span', { class: 'ih', html: ic('campana') }), 'Manda le notifiche al telefono');
+    const send = h('a', { class: 'btn sm pri', href: '#', style: { textDecoration: 'none' }, onclick: (e) => { e.preventDefault(); location.href = scriptableURL(); } }, h('span', { class: 'ih', html: ic('campana') }), 'Aggiorna widget e notifiche');
     notiBox.replaceChildren(h('b', { text: 'Notifiche' }),
       h('div', { class: 'row sp' }, h('span', { text: 'Prima di ogni impegno' }), avSel),
       h('div', { class: 'row sp' }, h('span', { text: 'La sera, se domani è da pianificare' }), seSel),
       h('span', { class: 'muted', style: { fontSize: '13.5px' }, text: nx ? `Prossima: ${new Date(nx.at).toLocaleString('it-IT', { weekday: 'short', hour: '2-digit', minute: '2-digit' })} · ${nx.title}` : 'Nessuna notifica nei prossimi 7 giorni.' }),
       send,
-      h('span', { class: 'faint', style: { fontSize: '13px' }, text: cc ? 'Le manda Scriptable, la stessa app del widget. Con l\'andamento collegato si aggiornano da sole quando il widget si rinfresca; il pulsante serve per averle subito.' : 'Le manda Scriptable, la stessa app del widget. Finché l\'andamento non è collegato, dopo aver aggiunto o spostato impegni tocca questo pulsante: Scriptable si apre un attimo, programma le notifiche e puoi tornare qui.' }));
+      h('span', { class: 'faint', style: { fontSize: '13px' }, text: cc ? 'Le manda Scriptable, la stessa app del widget. Con l\'andamento collegato si aggiornano da sole quando il widget si rinfresca; il pulsante serve per averle subito.' : 'Le manda Scriptable, la stessa app del widget. Finché l\'andamento non è collegato, il widget e le notifiche non vedono gli impegni messi qui: dopo averne aggiunti o spostati tocca questo pulsante (Scriptable si apre un attimo e torni qui), oppure collega l\'andamento qui sotto e si aggiorna tutto da solo.' }));
   };
   drawNoti();
   const ver = S.versione ? `dati ${S.versione}` : 'senza dati';
