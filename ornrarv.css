@@ -285,3 +285,15 @@ html.has-layer main * { animation-play-state: paused !important; }
 .scene .sc-flagw2 { transform-origin: 100% 50%; }
 .scene.play .sc-flagw2 { animation: sc-flagw 1.5s ease-in-out infinite alternate; }
 .scene.static .sc-flow, .scene.static .sc-fall2 { opacity: .6; } .scene.static .sc-puff2 { opacity: .5; }
+/* 2.9: l'acqua del fiume che scorre di traverso, i lampi di calore, il fascio del faro che gira attorno alla lanterna */
+.scene :is(.sc-flowx, .sc-flash, .sc-cone2) { transform-box: fill-box; }
+.scene .sc-flowx { opacity: 0; }
+.scene.play .sc-flowx { animation: sc-flowx var(--fwd, 3s) linear var(--fwl, 0s) infinite; }
+@keyframes sc-flowx { 0% { opacity: 0; transform: translateX(-8px); } 30% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; transform: translateX(14px); } }
+.scene .sc-flash { opacity: 0; }
+.scene.play .sc-flash { animation: sc-flash var(--fld, 9s) linear var(--fll, 0s) infinite; }
+@keyframes sc-flash { 0%, 90%, 100% { opacity: 0; } 91% { opacity: .9; } 92% { opacity: .15; } 93.5% { opacity: .7; } 95.5% { opacity: 0; } }
+.scene .sc-cone2 { transform-origin: 0% 50%; }
+.scene.play .sc-cone2 { animation: sc-cone2 8s ease-in-out infinite alternate; }
+@keyframes sc-cone2 { 0% { transform: rotate(7deg); opacity: .18; } 50% { opacity: .42; } 100% { transform: rotate(-6deg); opacity: .22; } }
+.scene.static .sc-flowx { opacity: .6; } .scene.static .sc-cone2 { opacity: .3; }
