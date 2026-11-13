@@ -1,4 +1,4 @@
-// RITMO-WIDGET v2.5 · widget e notifiche di Ritmo per Scriptable (iPhone). Generato da strumenti/costruisci_widget.py: non modificare ritmo-widget.js a mano.
+// RITMO-WIDGET v2.6 · widget e notifiche di Ritmo per Scriptable (iPhone). Generato da strumenti/costruisci_widget.py: non modificare ritmo-widget.js a mano.
 // Mostra gli impegni del giorno, la data settale e il messaggio di feedback, calcolati con lo stesso nucleo dell'app.
 // Senza «Andamento nel widget» vede solo gli impegni del file dei dati; collegato, vede anche quelli messi nell'app, le spunte e i piani.
 const BASE = 'https://realininiccolo-oss.github.io/ritmo/';
@@ -69,11 +69,12 @@ const CATS = {
   karate: { n: 'Karate', ic: 'karate', min: 120, sym: 'figure.martial.arts' },
   altro: { n: 'Altro', ic: 'impegno', min: 60, sym: 'calendar' },
   scadenza: { n: 'Scadenza', ic: 'bandiera', min: 0, sym: 'flag' },
-  festa: { n: 'Festa', ic: 'festa', min: 0, sym: 'sparkles' }
+  festa: { n: 'Festa', ic: 'festa', min: 0, sym: 'sparkles' },
+  ricorrenza: { n: 'Ricorrenza', ic: 'regalo', min: 0, sym: 'gift' }
 };
 const NEW_CATS = ['uni', 'nerina', 'network', 'social', 'palestra', 'karate'];
-const CAT_COL = { uni: '#4A6FA5', nerina: '#3E8A63', network: '#7A62AD', social: '#C05A7D', palestra: '#B5832B', karate: '#2E8A8C', altro: '#6E85B8', scadenza: '#E2603F', festa: '#D08A2E' };
-const CAT_COL_DARK = { uni: '#8DB0EC', nerina: '#74CC9C', network: '#B29DF0', social: '#F293B6', palestra: '#EBBE66', karate: '#62CFCF', altro: '#A3B6E6', scadenza: '#FF8C6B', festa: '#F2B45E' };
+const CAT_COL = { uni: '#4A6FA5', nerina: '#3E8A63', network: '#7A62AD', social: '#C05A7D', palestra: '#B5832B', karate: '#2E8A8C', altro: '#6E85B8', scadenza: '#E2603F', festa: '#D08A2E', ricorrenza: '#A0559A' };
+const CAT_COL_DARK = { uni: '#8DB0EC', nerina: '#74CC9C', network: '#B29DF0', social: '#F293B6', palestra: '#EBBE66', karate: '#62CFCF', altro: '#A3B6E6', scadenza: '#FF8C6B', festa: '#F2B45E', ricorrenza: '#E3A0D8' };
 /* Vecchi tipi della v1 riportati alle categorie nuove */
 const LEGACY = { scuola: 'uni', studio: 'uni', lavoro: 'nerina', sociale: 'social', persone: 'social', promemoria: 'scadenza' };
 const catOf = (e) => { const t = LEGACY[e.tipo] || e.tipo; return CATS[t] ? t : 'altro'; };
@@ -83,7 +84,10 @@ const isAllDay = (e) => !e.inizio && !e.flessibile;
 const S = { file: [], miei: [], nascosti: [], giorni: {}, nerina: {}, cfg: null, versione: null, eventi: [], pref: {}, soldi: { base: 0, mov: [] } };
 const PREF0 = { sveglia: '08:30', letto: '00:00', paesaggio: 'auto', avviso: 10, sera: '21:30' };
 const pref = () => ({ ...PREF0, ...((S.cfg && S.cfg.sonno) || {}), ...S.pref });
-const rebuildEvents = () => { const hid = new Set(S.nascosti); S.eventi = [...S.file.filter((e) => !hid.has(e.id)).map((e) => ({ ...e, src: 'file' })), ...S.miei.map((e) => ({ ...e, src: 'mio' }))]; };
+/* 2.6: ricorrenze e feste messe dal telefono con «ogni anno» (ogni: 'anno') compaiono anche nei tre anni dopo; le copie hanno orig = id dell'originale */
+const yearly = (e) => { if (e.ogni !== 'anno') return [e]; const [y, m, d] = e.data.split('-').map(Number);
+  return [0, 1, 2, 3].map((k) => { const dd = m === 2 && d === 29 && (y + k) % 4 ? 28 : d; return k ? { ...e, data: `${y + k}-${pad(m)}-${pad(dd)}`, id: e.id + '~' + (y + k), orig: e.id } : e; }); };
+const rebuildEvents = () => { const hid = new Set(S.nascosti); S.eventi = [...S.file.filter((e) => !hid.has(e.id)).map((e) => ({ ...e, src: 'file' })), ...S.miei.flatMap(yearly).map((e) => ({ ...e, src: 'mio' }))]; };
 const evKey = (e) => 'e:' + e.id;
 const dayRec = (d) => S.giorni[d] || {};
 const isPlanned = (d) => !!dayRec(d).pianificato;
@@ -312,7 +316,7 @@ function look(o) {
 async function background(o, k, fam) {
   if (!o) return null;
   const f = fam === 'large' ? 'l' : fam === 'small' ? 's' : 'm', name = `${o.mi}-${o.wi}-${f}${o.mi === 1 ? (k.v === 'giorno' ? '-g' : '') : (k.v === 'notte' ? '-n' : '')}.jpg`;
-  const path = fm.joinPath(fm.documentsDirectory(), 'ritmo5-img-' + name);
+  const path = fm.joinPath(fm.documentsDirectory(), 'ritmo6-img-' + name);
   if (fm.fileExists(path)) return fm.readImage(path);
   try { const img = await new Request(BASE + 'widget-img/' + name).loadImage(); fm.writeImage(path, img); return img; } catch (e) { return null; }
 }

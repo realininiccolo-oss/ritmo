@@ -433,7 +433,7 @@ function sailboat(x, y, s, hull, sail) {
 const WOOD = '#8A5E3B', WOOD_D = '#5E3D25', WOOD_L = '#B98A5C', BRASS = '#C9973A', BRASS_L = '#EBC77A', BRASS_D = '#7A5520';
 const MONTH_OBJ = ['Il cannocchiale', 'Il pontile con la barca e la lanterna', 'Il segnavia e la stella polare', 'La barca a vela col capitano, tra le boe', 'Il mulino a vento', 'Il battello a ruota', 'Il forziere trovato'];
 const WEEK_OBJ = ['La vedetta di legno', 'L\'anatra che si guarda intorno', 'Lo stormo di oche in formazione', 'La barca a vela col capitano', 'L\'alveare con le api', 'La coccinella sulla foglia, portata dalla corrente', 'Lo stambecco in cima alla roccia'];
-const DAY_OBJ = ['il binocolo', 'i remi incrociati', 'la bussola', 'la manica a vento', 'la girandola', 'il metronomo', 'la bandierina con la spunta'];
+const DAY_OBJ = ['il binocolo', 'i remi incrociati', 'la bussola', 'la manica a vento', 'la meridiana', 'il metronomo', 'la bandierina con la spunta'];
 /* dove stanno: W = protagonista o animale, D = particolare del giorno, ACQ = acqua per le settimane di Remare */
 const SLOT = [{ W: 1108, D: 1016 }, { W: 1122, D: 1058 }, { W: 1110, D: 1022 }, { W: 1104, D: 1022 }, { W: 1092, D: 1018 }, { W: 1102, D: 1016 }, { W: 1084, D: 1036 }];
 const sailBoat = (pen) => `<path d="M-1 -90V-4" stroke="#4A3A2A" stroke-width="2.2"/>`
@@ -500,13 +500,13 @@ function decorFor(mi, o, C) {
           jet += `<path d="M60 -3L-14 -3" stroke="${WOOD}" stroke-width="4.4" stroke-linecap="square"/><path d="M60 -1L-14 -1" stroke="${WOOD_D}" stroke-width="1"/>`;
           [-10, 12, 34, 56].forEach((px) => { jet += `<path d="M${px} -5V10" stroke="${WOOD_D}" stroke-width="3" stroke-linecap="round"/>`; });
           jet += `<path d="M-9 -4V-60h-13" stroke="${WOOD_D}" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
-          jet += `<g class="sc-hang" style="--sd:4s"><path d="M-22 -60v5" stroke="#3A3A3A" stroke-width="1"/><g transform="translate(-22 -45)"><path d="M-6 -10L6 -10L3.5 -13.5L-3.5 -13.5Z" fill="#3A3A3A"/><rect x="-5" y="-10" width="10" height="12" rx="1.2" fill="#3A3A3A"/><rect x="-3.4" y="-8.4" width="6.8" height="8.6" fill="#F6C76E"/><path d="M-6 2H6" stroke="#3A3A3A" stroke-width="1.8"/></g></g>`;
+          jet += `<g><path d="M-22 -60v5" stroke="#3A3A3A" stroke-width="1"/><g transform="translate(-22 -45)"><path d="M-6 -10L6 -10L3.5 -13.5L-3.5 -13.5Z" fill="#3A3A3A"/><rect x="-5" y="-10" width="10" height="12" rx="1.2" fill="#3A3A3A"/><rect x="-3.4" y="-8.4" width="6.8" height="8.6" fill="#F6C76E"/><path d="M-6 2H6" stroke="#3A3A3A" stroke-width="1.8"/></g></g>`;
           const boat = `<g class="sc-bob"><g transform="translate(14 13)"><path d="M-26 -8L24 -8Q22 2 13 3L-18 3Q-24 1 -26 -8Z" fill="#7C4A34"/><path d="M-26 -8L24 -8L23 -5.6L-25 -5.6Z" fill="#E9E2D3"/>`
             + `<path d="M-18 -10.5L16 -12.5" stroke="${WOOD_L}" stroke-width="1.8" stroke-linecap="round"/><ellipse cx="18" cy="-12.6" rx="5" ry="1.6" fill="${WOOD_L}"/><path d="M-14 -8.5V-6M10 -8.5V-6" stroke="${WOOD_D}" stroke-width="1.4"/>`
             + `<path d="M24 -7Q30 -12 37 -4" stroke="#C9B48A" stroke-width="1" fill="none"/></g></g>`;
           return dark(at(X, y, K, jet + boat) + ripples(X + 14 * K, y + 18 * K, 3, 30)); });
         push('near', (g) => { const y = ly(g), on = DARK1 || NIGHT, lx = X - 22 * K, lyy = y - 49 * K;
-          return lit(`<circle class="sc-glow" cx="${f2(lx)}" cy="${f2(lyy)}" r="${on ? 56 : 36}" fill="url(#${u}l)"/><ellipse class="sc-twinkle" style="--td:3.2s" cx="${f2(lx)}" cy="${f2(y + 9 * K)}" rx="${on ? 16 : 10}" ry="2.4" fill="#F6C76E" fill-opacity="${on ? .7 : .45}"/>`, 1.7); });
+          return lit(`<circle class="sc-window" style="--wdl:.4s" cx="${f2(lx)}" cy="${f2(lyy)}" r="${on ? 56 : 36}" fill="url(#${u}l)"/><ellipse class="sc-twinkle" style="--td:3.2s" cx="${f2(lx)}" cy="${f2(y + 9 * K)}" rx="${on ? 16 : 10}" ry="2.4" fill="#F6C76E" fill-opacity="${on ? .7 : .45}"/>`, 1.7); });
         break;
       }
       case 2: { // Navigare: il segnavia nella neve con la rosa dei venti, e di notte la stella polare
@@ -533,7 +533,7 @@ function decorFor(mi, o, C) {
         push('near', (g) => { const y = g.mid(1100) + 22;
           const buoy = (x, col) => `<g class="sc-bob"><g transform="translate(${x} ${f2(y - 2)}) scale(1.4)"><path d="M-6 2L-4 -14L4 -14L6 2Z" fill="${col}"/><rect x="-4.4" y="-9" width="8.8" height="3.5" fill="#FFFFFF"/><path d="M0 -14V-22" stroke="#3A3A3A" stroke-width="1.6"/><circle cx="0" cy="-23" r="2.4" fill="${col}"/></g></g>`;
           return buoy(984, '#D8453A') + buoy(1182, '#3E8F5A') + `<path d="M1040 ${f2(y + 3)}l-30 3M1040 ${f2(y + 6)}l-24 6" stroke="#FFFFFF" stroke-opacity=".75" stroke-width="1.3"/>`
-            + `<g class="sc-glide" style="--gd:9s;--gx:14px"><g class="sc-bob">${at(1084, y, 1.55, sailBoat('#E3A33B'))}</g></g>`; });
+            + `<g class="sc-bob">${at(1084, y, 1.55, sailBoat('#E3A33B'))}</g>`; });
         break;
       }
       case 4: { // Automatizzare: il mulino a vento che gira da solo tra i fiori
@@ -619,7 +619,7 @@ function decorFor(mi, o, C) {
       case 3: // Remare orientato: la barca a vela col capitano al timone, che tiene la rotta
         push(layer, (g) => { const x = (sea ? WX : X) - 4, y = wy(g) + 1;
           return dark(`<path d="M${f2(x - 52)} ${f2(y + 4)}l-26 3M${f2(x - 50)} ${f2(y + 8)}l-20 6" stroke="#FFFFFF" stroke-opacity=".75" stroke-width="1.2"/>`
-            + `<g class="sc-glide" style="--gd:9s;--gx:12px"><g class="sc-bob">${at(x, y, 1.35, sailBoat('#D8453A'))}</g></g>`); });
+            + `<g class="sc-bob">${at(x, y, 1.35, sailBoat('#D8453A'))}</g>`); });
         break;
       case 4: // Automatizzare: l'alveare di paglia, le api lavorano da sole (d'inverno quasi tutte dentro)
         push(layer, (g) => { const y = g.near(X) + 3;
@@ -640,7 +640,7 @@ function decorFor(mi, o, C) {
           const leaf = `<path d="M-26 0Q-8 -12 24 -3Q10 7 -26 0Z" fill="${lc}"/><path d="M-26 0Q0 -3 22 -3" stroke="${mixHex(lc, '#000000', .3)}" stroke-width="1.2" fill="none"/><path d="M24 -3q5 -1 7 -5" stroke="${mixHex(lc, '#000000', .3)}" stroke-width="1.4" fill="none"/>`
             + `<g transform="translate(-1 -5)"><path d="M-7 0A7 7 0 0 1 7 0Z" fill="#D8453A"/><path d="M0 -7V0" stroke="#1E1A14" stroke-width="1"/><circle cx="-3.5" cy="-3" r="1.3" fill="#1E1A14"/><circle cx="3.2" cy="-2.4" r="1.3" fill="#1E1A14"/><circle cx="-1.2" cy="-5.2" r="1" fill="#1E1A14"/><path d="M7 0A3 3 0 0 0 10 -2.6Q11 -.5 10 0Z" fill="#1E1A14"/></g>`;
           const flow = [0, 1, 2].map((i) => `<path class="sc-wave" style="--wl:-24px;--wd:${f2(2.4 + i * .6)}s" d="${waveD(x - 70 + i * 10, x + 50, y + 4 + i * 3, 24, 1.6)}" fill="none" stroke="#FFFFFF" stroke-opacity="${f2(.6 - i * .15)}" stroke-width="1.1"/>`).join('');
-          return dark(flow + `<g class="sc-glide" style="--gd:8s;--gx:-26px"><g class="sc-bob">${at(x + 8, y, 2.1, leaf)}</g></g>`); });
+          return dark(flow + `<g class="sc-bob">${at(x + 8, y, 2.1, leaf)}</g>`); });
         break;
       case 6: // Validare: lo stambecco in cima alla roccia, la meta raggiunta
         push(layer, (g) => { const y = g.near(X) + 4;
@@ -669,8 +669,11 @@ function decorFor(mi, o, C) {
           + `<g class="sc-needle"><path d="M0 -33L2.4 -24L-2.4 -24Z" fill="#B23A2E"/><path d="M0 -15L2.4 -24L-2.4 -24Z" fill="#2F5A63"/><circle cx="0" cy="-24" r="2" fill="${BRASS_D}"/></g>`; break;
         case 3: it = `<path d="M0 2V-58" stroke="#5A5048" stroke-width="2.4" stroke-linecap="round"/><g transform="translate(0 -54)"><g class="sc-sock"><path d="M0 -6L-34 -3.5L-34 3.5L0 6Z" fill="#FFFFFF"/>`
           + `<path d="M0 -6L-9 -5.4L-9 5.4L0 6ZM-17 -4.8L-25 -4.2L-25 4.2L-17 4.8Z" fill="#E2603F"/><path d="M-34 -3.5L-34 3.5" stroke="#C44A2E" stroke-width="1"/></g></g>` + cap(0, -58, 6); break;
-        case 4: { let bl = ''; ['#E2603F', '#3E8F9A', '#F2C230', '#8E5FA3'].forEach((c, k) => { bl += `<path transform="rotate(${k * 90})" d="M0 0L0 -13Q8 -11 9 -4Z" fill="${c}"/>`; });
-          it = `<path d="M0 2V-40" stroke="${WOOD_D}" stroke-width="2.4" stroke-linecap="round"/><g transform="translate(0 -42)"><g class="sc-rot" style="--rtd:2.4s">${bl}<circle r="13.5" fill="none"/></g><circle r="2" fill="#FFFFFF"/></g>`; break; }
+        case 4: it = `<path d="M-9 -2L-7 -24H7L9 -2Z" fill="#B8B2A6"/><path d="M-9 -2H9" stroke="#8C877C" stroke-width="2"/><path d="M-7 -24H7" stroke="#8C877C" stroke-width="1.4"/>`  // la meridiana: il sole segna l'ora da solo
+          + `<ellipse cx="0" cy="-27" rx="17" ry="6" fill="#D9D3C4"/><ellipse cx="0" cy="-27.6" rx="14.5" ry="4.8" fill="#EDE7D8"/>`
+          + [0, 1, 2, 3, 4, 5, 6].map((k) => { const a = Math.PI * (1 + k / 6); return `<path d="M${f2(Math.cos(a) * 11)} ${f2(-27.6 + Math.sin(a) * 3.7)}L${f2(Math.cos(a) * 13.6)} ${f2(-27.6 + Math.sin(a) * 4.5)}" stroke="#8C877C" stroke-width="1"/>`; }).join('')
+          + `<g transform="translate(0 -27.6) scale(1 .34)"><g class="sc-shadow"><path d="M0 0L12.5 0" stroke="#6E685C" stroke-opacity=".55" stroke-width="5.5" stroke-linecap="round"/></g></g>`
+          + `<path d="M0 -27.6L-9 -27.6L0 -39Z" fill="${BRASS}"/><path d="M0 -27.6L0 -39" stroke="${BRASS_D}" stroke-width="1.2"/>` + cap(0, -33, 30); break;
         case 5: it = `<ellipse cx="0" cy="-3" rx="16" ry="5.5" fill="#8C8A84"/><path d="M-12 -6L-6 -42L6 -42L12 -6Z" fill="${WOOD}"/><path d="M-6 -42L6 -42L4 -46L-4 -46Z" fill="${WOOD_D}"/><path d="M-8 -16H8" stroke="${WOOD_D}" stroke-width="2"/>`
           + `<g transform="translate(0 -14)"><g class="sc-tick"><path d="M0 0V-30" stroke="${BRASS_D}" stroke-width="1.8"/><rect x="-3" y="-23" width="6" height="5" fill="${BRASS}"/></g></g>` + cap(0, -46, 12); break;
         case 6: it = `<path d="M0 2V-56" stroke="#3A2E14" stroke-width="2.4" stroke-linecap="round"/><circle cx="0" cy="-57" r="2" fill="${BRASS}"/><g transform="translate(1 -54)"><g class="sc-flagw"><path d="M0 0Q14 -4 28 1L28 19Q14 14 0 18Z" fill="#4B8F5A"/>`
@@ -877,7 +880,7 @@ function sceneSVG(mi, opts = {}) {
           else c += `<circle cx="${f2(cx)}" cy="${f2(cy)}" r="${f2(1.6 * k)}" fill="#8FB05A"/>`; }
         return c;
       };
-      [[700, 1], [1015, 1.05]].forEach(([x, k], i) => s.push(grow(sw(blossomTree(x, yAt(mid, x) + 4, k), 1.2), .45 + i * .1)));
+      [[700, 1], [1015, 1.05]].forEach(([x, k], i) => { const t = grow(sw(blossomTree(x, yAt(mid, x) + 4, k), 1.2), .45 + i * .1); if (ok(x)) s.push(t); });
       H('mid');
       s.push(hill(near, P.near, .34, 40));
       [[860, 1.25], [1150, 1.3]].forEach(([x, k], i) => { const t = grow(sw(blossomTree(x, yAt(near, x) + 4, k), 1.2), .6 + i * .1); if (ok(x)) s.push(t); });
@@ -1170,5 +1173,5 @@ function seasonFx(motif, accent, W, H, seed) {
 
 /* fase della luna (0 = nuova, 0,5 = piena) alle 22 del giorno dato, dal novilunio del 6/1/2000 18:14 UTC; errore di qualche ora */
 function moonPhase(iso) { const [y, m, d] = iso.split('-').map(Number), t = Date.UTC(y, m - 1, d, 21, 0) - Date.UTC(2000, 0, 6, 18, 14), f = (t / 864e5) / 29.530588853; return f - Math.floor(f); }
-window.ORN = { version: '2.5', moonPhase, MONTHS, LETTER_META, metaKeyFor, dayBg, illusFor, sceneSVG, hasVariants, themeFor, patternURI, ornamentSVG, playAll, seasonFx, setToday: (s) => { todayStr = s; } };
+window.ORN = { version: '2.6', moonPhase, MONTHS, LETTER_META, metaKeyFor, dayBg, illusFor, sceneSVG, hasVariants, themeFor, patternURI, ornamentSVG, playAll, seasonFx, setToday: (s) => { todayStr = s; } };
 })();

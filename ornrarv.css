@@ -1,5 +1,6 @@
 /* ORNRARV · animazioni di paesaggi e illustrazioni delle lettere (dal kit grafico, copiate senza modifiche) */
 :root{--ease-out:cubic-bezier(.2,.75,.18,1)}
+/* =====================================================================
    LANDSCAPE SCENES — entry on .play, then ambient loops
    ===================================================================== */
 .scene :is(.sc-rise, .sc-sunrise, .sc-grow, .sc-pop, .sc-fade, .sc-sway, .sc-drift, .sc-fog, .sc-wave, .sc-twinkle, .sc-glow, .sc-fall, .sc-flap, .sc-gull, .sc-flut, .sc-fly, .sc-bob, .sc-window, .sc-beam, .sc-hang, .sc-rain, .sc-wisp, .sc-ripple, .sc-ffly, .sc-ffx, .sc-cone, .sc-shoot, .sc-hover) { transform-box: fill-box; }
@@ -263,3 +264,8 @@ html.has-layer main * { animation-play-state: paused !important; }
 .scene.play .sc-enter { animation: sc-enter 1.6s var(--ease-out) forwards; }
 @keyframes sc-enter { to { transform: none; } }
 .scene.static .sc-enter { transform: none; }
+
+/* ---------- Ritmo 2.6: ombra della meridiana che gira piano; niente più barche che scivolano ---------- */
+.scene .sc-shadow { transform-box: fill-box; transform-origin: 0% 50%; }
+.scene.play .sc-shadow { animation: sc-shadow 14s ease-in-out infinite alternate; }
+@keyframes sc-shadow { from { transform: rotate(-200deg); } to { transform: rotate(20deg); } }
