@@ -89,10 +89,19 @@ const dayRec = (d) => S.giorni[d] || {};
 const isPlanned = (d) => !!dayRec(d).pianificato;
 const isDone = (d, e) => !!(dayRec(d).fatti || {})[evKey(e)];
 /* Sveglia e ora di andare a letto del giorno (si possono cambiare per un giorno solo mentre lo si pianifica) */
+/* Il sonno vero: S.giorni[n].sonno = { s: quando sei andato a letto la notte di n, e: quando ti sei svegliato (null = dormi ancora), stima: ora di letto stimata }.
+   Come i blocchi: la sveglia vera sposta l'inizio della giornata dopo, l'ora vera di letto ne sposta la fine; finché dormi la notte si allunga con l'orologio. */
+const SLEEP_MAX = 16 * 3600e3;
+const sleepOn = (n) => { const z = dayRec(n).sonno; return z && z.s ? z : null; };
+const sleepRun = (z) => !!(z && !z.e && Date.now() - z.s < SLEEP_MAX);
 function dayBounds(d) {
-  const p = pref(), r = dayRec(d);
-  const wake = toMin(r.sveglia || p.sveglia), bed0 = toMin(r.letto || p.letto);
-  return { wake, bed: bed0 <= wake ? bed0 + 1440 : bed0 };
+  const p = pref(), r = dayRec(d), pv = sleepOn(addDays(d, -1)), sl = sleepOn(d);
+  let wake = toMin(r.sveglia || p.sveglia); const bed0 = toMin(r.letto || p.letto);
+  let bed = bed0 <= wake ? bed0 + 1440 : bed0;
+  const nowM = msMin(d, Date.now());
+  if (pv && pv.e) wake = msMin(d, pv.e); else if (sleepRun(pv) && nowM > 0) wake = Math.max(wake, nowM);
+  if (sl) bed = Math.max(wake + 30, msMin(d, sl.s));
+  return { wake, bed, wakeReal: !!(pv && pv.e), sleptMin: pv && pv.e ? Math.round((pv.e - pv.s) / 60000) : null, stima: !!(pv && pv.stima), asleepAM: sleepRun(pv), bedReal: !!sl, asleepPM: sleepRun(sl) };
 }
 /* Iniziato / terminato: i tempi veri di un impegno, in S.giorni[d].corso[chiave] = { s: quando è iniziato, e: quando è finito (null = in corso) }.
    Finché è in corso il blocco parte dall'ora vera e si allunga con l'orologio; quando lo termini resta con la durata vera. */
@@ -113,7 +122,7 @@ function dayModel(d) {
   const A0 = Math.min(B.wake, ...timed.map((t) => t.start)), B0 = Math.max(B.bed, ...timed.map((t) => t.end));
   const free = freeWindows(timed, B.wake, B.bed);
   const busy = timed.reduce((a, t) => a + Math.max(0, Math.min(t.end, B.bed) - Math.max(t.start, B.wake)), 0);
-  return { date: d, timed, allDay, todo, wake: B.wake, bed: B.bed, A: A0, B: B0, free, busy, freeMin: free.reduce((a, [x, y]) => a + y - x, 0), nerina: S.nerina[d] || null, rec: dayRec(d) };
+  return { date: d, timed, allDay, todo, wake: B.wake, bed: B.bed, sonno: B, A: A0, B: B0, free, busy, freeMin: free.reduce((a, [x, y]) => a + y - x, 0), nerina: S.nerina[d] || null, rec: dayRec(d) };
 }
 function freeWindows(timed, a, b, from) {
   const out = []; let cur = Math.max(a, from || a);
@@ -135,12 +144,17 @@ function feedback(d, L) {
     const head = t.length ? `${t.length === 1 ? '1 impegno' : t.length + ' impegni'}, il primo alle ${fmt(t[0].start)}` : 'Nessun impegno fissato';
     return isPlanned(d) ? { sym: 'checkmark.circle', ic: 'check', tone: 'ok', text: head, sub: `Pianificata · ${dur(m.freeMin)} libere` } : { sym: 'square.and.pencil', ic: 'matita', tone: 'acc', text: head, sub: `Da pianificare · ${dur(m.freeMin)} libere`, act: 'pianifica' };
   }
+  const B = dayBounds(d), pv = sleepOn(addDays(d, -1)), sl = sleepOn(d);
+  if (sleepRun(sl)) return { sym: 'moon.zzz', ic: 'luna', tone: 'calm', text: 'Buonanotte', sub: `A letto dalle ${fmt(msMin(d, sl.s))} · quando ti svegli tocca «Sveglio»`, go: { a: 'sveglio' } };
+  if (sleepRun(pv)) return { sym: 'sun.horizon', ic: 'sole', tone: 'acc', text: 'Buongiorno', sub: `Dormi dalle ${fmt(msMin(addDays(d, -1), pv.s))} · segna la sveglia`, go: { a: 'sveglio' } };
+  if (!pv && L.min < B.wake + 150 && L.min >= B.wake - 120) return { sym: 'sun.horizon', ic: 'sole', tone: 'acc', text: 'Buongiorno', sub: 'Segna la sveglia: l\'ora di letto la stimo dal tuo orario', go: { a: 'sveglio' } };
   const run = t.find((x) => x.run);
   if (run) { const el = Math.max(1, L.min - run.start), over = run.plan ? el - (run.plan[1] - run.plan[0]) : 0;
     return { sym: 'timer', ic: 'play', tone: 'acc', text: `In corso: ${run.title}`, sub: `da ${dur(el)} · iniziato alle ${fmt(run.start)}${over >= 5 ? ` · ${dur(over)} oltre il previsto` : ''}`, go: { a: 'termina', key: run.key } }; }
   const now = t.find((x) => x.start <= L.min && x.end > L.min && !x.done && !x.real), next = t.find((x) => x.start > L.min && !x.done && !x.real);
   const missed = t.filter((x) => x.end <= L.min && !x.done).length;
   if (now) return { sym: 'play.circle', ic: 'play', tone: 'acc', text: `Adesso: ${now.title}`, sub: `fino alle ${fmt(now.end)}${tail(now)}${next ? ` · poi ${next.title} alle ${fmt(next.start)}` : ''}`, go: { a: 'inizia', key: now.key } };
+  if (!sl && L.min >= B.bed - 45) return { sym: 'bed.double', ic: 'luna', tone: 'acc', text: L.min >= B.bed ? 'È ora di dormire' : `Tra ${dur(B.bed - L.min)} a letto`, sub: `Orario: ${fmt(B.bed)} · tocca quando vai a dormire`, go: { a: 'dormo' } };
   if (next && next.start - L.min <= 90) return { sym: 'clock', ic: 'orologio', tone: 'acc', text: `Tra ${dur(next.start - L.min)}: ${next.title}`, sub: `alle ${fmt(next.start)}${tail(next)}`, go: next.start - L.min <= 20 ? { a: 'inizia', key: next.key } : null };
   if (L.min >= 19 * 60 && !isPlanned(tom)) { const mt = dayModel(tom).timed; return { sym: 'square.and.pencil', ic: 'matita', tone: 'acc', text: 'Domani è ancora da pianificare', sub: mt.length ? `Hai già ${mt.length === 1 ? '1 impegno' : mt.length + ' impegni'}, il primo alle ${fmt(mt[0].start)}` : 'Per ora è tutto libero', act: 'pianifica-domani' }; }
   if (missed && L.min >= 17 * 60) return { sym: 'checklist', ic: 'check', tone: 'acc', text: missed === 1 ? '1 impegno da segnare' : `${missed} impegni da segnare`, sub: `Hai fatto ${doneN} di ${t.length}?` };
@@ -287,7 +301,7 @@ async function menu() {
 function addSym(st, n, size, color) { const s2 = SFSymbol.named(n) || SFSymbol.named('circle'); s2.applyFont(Font.semiboldSystemFont(size)); const i = st.addImage(s2.image); i.imageSize = new Size(size + 2, size + 2); i.tintColor = color; return i; }
 const THEMES = [['#F2E4D5', '#3B2418'], ['#232B3B', '#E7E9F2'], ['#EEF3F5', '#233238'], ['#EAF3E7', '#2A3B29'], ['#F1F8EC', '#2E3B22'], ['#FBF2D9', '#3B3012'], ['#F7E9CE', '#3A2E14']];
 /* di notte (Ritmo 2.2): Brumale ha il suo disegno notturno come base; gli altri mesi hanno la versione blu notte */
-const THEMES_N = [['#221E30', '#F1E6DA'], ['#232B3B', '#E7E9F2'], ['#16223A', '#E8F0F6'], ['#1A2236', '#E9F1E6'], ['#192134', '#EEF5E8'], ['#152038', '#F5EEDB'], ['#151C38', '#F6EEDC']];
+const THEMES_N = [['#2A1F26', '#F1E6DA'], ['#232B3B', '#E7E9F2'], ['#122339', '#E8F0F6'], ['#15261F', '#E9F1E6'], ['#221C33', '#EEF5E8'], ['#0E2630', '#F5EEDB'], ['#221B2F', '#F6EEDC']];
 const ACC = '#E2603F', ACC_DARK = '#FF8C6B';
 function look(o) {
   const mi = o ? o.mi : 1, v = variantFor(mi, new Date(), pref().paesaggio);

@@ -281,12 +281,12 @@ const MOON = ['#F6DBA6', '#E8ECF7', '#F2F5FF', '#EEF0F8', '#F3F1E4', '#F4EFD8', 
 const NIGHT_K = [.62, 0, .46, .6, .6, .58, .58];
 const NIGHT_INK = '#111933';
 const THEMES_N = [
-  { bg: '#221E30', bg2: '#2E2738', ink: '#F1E6DA', accent: '#E0935F', line: '#3A3346', motif: 'leaves' }, null,
-  { bg: '#16223A', bg2: '#1E2D48', ink: '#E8F0F6', accent: '#8FC3DA', line: '#2A3A56', motif: 'frost' },
-  { bg: '#1A2236', bg2: '#232C44', ink: '#E9F1E6', accent: '#A9C98F', line: '#2E3850', motif: 'sprout' },
-  { bg: '#192134', bg2: '#232B42', ink: '#EEF5E8', accent: '#C3A0D6', line: '#2D364E', motif: 'petals' },
-  { bg: '#152038', bg2: '#1C2A48', ink: '#F5EEDB', accent: '#7FC4CE', line: '#283656', motif: 'waves' },
-  { bg: '#151C38', bg2: '#1E2848', ink: '#F6EEDC', accent: '#E2B464', line: '#2A3358', motif: 'horizon' }];
+  { bg: '#2A1F26', bg2: '#36282F', ink: '#F1E6DA', accent: '#E0935F', line: '#3A3346', motif: 'leaves' }, null,
+  { bg: '#122339', bg2: '#1A2F4A', ink: '#E8F0F6', accent: '#8FC3DA', line: '#2A3A56', motif: 'frost' },
+  { bg: '#15261F', bg2: '#1D3329', ink: '#E9F1E6', accent: '#A9C98F', line: '#2E3850', motif: 'sprout' },
+  { bg: '#221C33', bg2: '#2D2542', ink: '#EEF5E8', accent: '#C3A0D6', line: '#2D364E', motif: 'petals' },
+  { bg: '#0E2630', bg2: '#16333F', ink: '#F5EEDB', accent: '#7FC4CE', line: '#283656', motif: 'waves' },
+  { bg: '#221B2F', bg2: '#2D243D', ink: '#F6EEDC', accent: '#E2B464', line: '#2A3358', motif: 'horizon' }];
 const hasVariants = () => true;
 const themeFor = (mi, variant) => mi === 1 ? (variant === 'giorno' ? THEME_BRUMALE_GIORNO : THEMES[1]) : (variant === 'notte' ? THEMES_N[mi] : THEMES[mi]);
 const hex6 = (c) => c.length === 4 ? '#' + c[1] + c[1] + c[2] + c[2] + c[3] + c[3] : c;
@@ -872,5 +872,5 @@ function seasonFx(motif, accent, W, H, seed) {
   return { svg, total: end + 150, run() { anims.forEach(([e, kf, o]) => e.animate(kf, Object.assign({ fill: 'both', easing: 'linear' }, o))); } };
 }
 
-window.ORN = { MONTHS, LETTER_META, metaKeyFor, dayBg, illusFor, sceneSVG, hasVariants, themeFor, patternURI, ornamentSVG, playAll, seasonFx, setToday: (s) => { todayStr = s; } };
+window.ORN = { version: '2.3', MONTHS, LETTER_META, metaKeyFor, dayBg, illusFor, sceneSVG, hasVariants, themeFor, patternURI, ornamentSVG, playAll, seasonFx, setToday: (s) => { todayStr = s; } };
 })();

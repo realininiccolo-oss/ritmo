@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="ornrarv.css">
+<link rel="stylesheet" href="ornrarv.css?v=2.3">
 <style>
 :root {
   /* Ritmo 2.1 · palette «Alba»: carta chiara, inchiostro blu notte al posto del nero, accento corallo vivo; di sera un blu notte al posto del grigio antracite */
@@ -94,7 +94,7 @@ h1, h2, h3 { margin: 0; font-weight: 500; }
 .seg button[aria-pressed="true"] { background: var(--card); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.1); }
 
 /* ---------- struttura ---------- */
-#app { min-height: 100vh; padding-bottom: calc(96px + var(--safe-b)); }
+#app { min-height: 100vh; padding-bottom: calc(96px + var(--safe-b)); overflow-x: hidden; overflow-x: clip; }
 #view { display: flex; flex-direction: column; will-change: transform; }
 .wrap { padding: 0 16px; display: flex; flex-direction: column; gap: 14px; }
 .card { background: var(--card); border: 1px solid var(--line2); border-radius: var(--r); box-shadow: var(--shadow); }
@@ -103,17 +103,20 @@ h1, h2, h3 { margin: 0; font-weight: 500; }
 .sect-h small { color: var(--ink3); font-size: 13px; }
 
 /* ---------- testata con il paesaggio del mese ---------- */
-.hero { position: relative; height: calc(196px + var(--safe-t)); overflow: hidden; background: var(--h-bg, #232B3B); color: var(--h-ink, #fff); }
-.hero.short { height: calc(150px + var(--safe-t)); }
+/* il disegno sfuma nel colore della pagina: niente stacco netto tra la testata e il pannello sotto (2.3) */
+.hero { position: relative; height: calc(236px + var(--safe-t)); overflow: hidden; background: var(--bg); color: var(--h-ink, #fff); margin-bottom: -6px; }
+.hero.short { height: calc(190px + var(--safe-t)); }
+.hero .scene, .hero::after, .hero::before { -webkit-mask-image: linear-gradient(180deg, #000 0, #000 calc(100% - 58px), rgba(0,0,0,.55) calc(100% - 26px), transparent 100%); mask-image: linear-gradient(180deg, #000 0, #000 calc(100% - 58px), rgba(0,0,0,.55) calc(100% - 26px), transparent 100%); }
+.hero::before { content: ''; position: absolute; inset: 0; background: var(--h-bg, #232B3B); }
 .hero .scene { position: absolute; inset: 0; width: 100%; height: 100%; }
-.hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, var(--h-scrim) 0%, transparent 62%), linear-gradient(0deg, var(--h-scrim2) 0%, transparent 46%); pointer-events: none; }
+.hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, var(--h-scrim) 0%, transparent 62%), linear-gradient(0deg, var(--h-scrim2) 22%, transparent 58%); pointer-events: none; }
 .hero .bar { position: absolute; top: calc(8px + var(--safe-t)); left: 12px; right: 12px; display: flex; align-items: center; gap: 8px; z-index: 2; }
 .hero .bar .sp { flex: 1; }
 .hbtn { height: 34px; min-width: 34px; padding: 0 12px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-size: 14px; font-weight: 600;
   background: color-mix(in srgb, var(--h-bg) 55%, transparent); color: var(--h-ink); -webkit-backdrop-filter: blur(12px) saturate(1.4); backdrop-filter: blur(12px) saturate(1.4); border: 1px solid color-mix(in srgb, var(--h-ink) 14%, transparent); }
 .hbtn .ic { font-size: 17px; }
 .hbtn.round { padding: 0; width: 34px; }
-.hero .ht { position: absolute; left: 18px; right: 18px; bottom: 14px; z-index: 2; display: flex; flex-direction: column; gap: 2px; text-shadow: 0 1px 12px var(--h-scrim); }
+.hero .ht { position: absolute; left: 18px; right: 18px; bottom: 52px; z-index: 2; display: flex; flex-direction: column; gap: 2px; text-shadow: 0 1px 12px var(--h-scrim); }
 .hero .kick { font-size: 13px; font-weight: 600; letter-spacing: .02em; opacity: .85; }
 .hero h1 { font-family: var(--serif); font-size: 38px; line-height: 1.04; letter-spacing: -.015em; font-weight: 500; }
 .hero.short h1 { font-size: 30px; }
@@ -194,7 +197,18 @@ h1, h2, h3 { margin: 0; font-weight: 500; }
 .grid { position: relative; margin: 0 0 0 46px; touch-action: pan-y; }
 .grid .hr { position: absolute; left: -46px; right: 0; height: 0; border-top: 1px solid var(--line2); }
 .grid .hr span { position: absolute; left: 0; top: -8px; width: 38px; text-align: right; font-size: 11.5px; color: var(--ink3); font-variant-numeric: tabular-nums; }
-.grid .night { position: absolute; left: 0; right: 0; background: repeating-linear-gradient(135deg, var(--line2) 0 4px, transparent 4px 10px); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--ink3); font-size: 12.5px; gap: 6px; pointer-events: none; }
+.grid .night { position: absolute; left: 0; right: 0; background: repeating-linear-gradient(135deg, var(--line2) 0 4px, transparent 4px 10px); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--ink3); font-size: 12.5px; gap: 6px; z-index: 1; }
+.grid .night.real { background: color-mix(in srgb, var(--sel) 9%, transparent); border: 1px solid color-mix(in srgb, var(--sel) 22%, transparent); color: var(--ink2); font-weight: 600; }
+.grid .night.run { background: color-mix(in srgb, var(--sel) 14%, transparent); border: 1.5px solid color-mix(in srgb, var(--sel) 45%, transparent); color: var(--ink); animation: runpulse 2.4s ease-in-out infinite; }
+.oblist { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.oblist button { display: flex; align-items: flex-start; gap: 8px; text-align: left; width: 100%; padding: 4px 0; color: var(--ink2); font-size: 14px; line-height: 1.3; }
+.oblist .ob-i { width: 16px; height: 16px; flex: none; display: grid; place-items: center; margin-top: 1px; }
+.oblist .ob-i::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--k, var(--ink2)); }
+.oblist .done .ob-i { border-radius: 50%; background: var(--ok); color: #fff; }
+.oblist .done .ob-i::before { display: none; }
+.oblist .done .ob-i .ic { font-size: 12px; stroke-width: 3; }
+.oblist .done span:last-child { color: var(--ink3); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--ink3) 60%, transparent); }
+.oblist small { color: var(--ink3); }
 .grid .gap { position: absolute; left: 0; right: 0; display: flex; align-items: center; justify-content: center; gap: 6px; color: var(--ink3); font-size: 13px; border-radius: 10px; transition: background .15s, color .15s; }
 .grid .gap:active, .grid .gap.hot { background: var(--acc-soft); color: var(--acc); }
 .grid .gap .ic { font-size: 15px; }
@@ -285,6 +299,10 @@ body.dragging #view { touch-action: none; }
 .gchip::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--k); }
 
 /* ---------- mese settale ---------- */
+#app.mtheme { background-color: var(--bg); background-image: var(--mpat); background-size: 220px 220px; color: var(--ink); min-height: 100vh; }
+#app.mtheme .mgrid .mh { color: var(--acc); }
+#app.mtheme .mcell:not([aria-pressed="true"]):active { background: var(--sunk); }
+#app.mtheme .mtag { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; color: var(--acc); letter-spacing: .02em; }
 .mgrid { display: grid; grid-template-columns: 22px repeat(7, 1fr); gap: 3px; padding: 10px 8px; }
 .mgrid .mh { text-align: center; font-size: 12px; font-weight: 700; color: var(--ink3); letter-spacing: .04em; padding-bottom: 4px; }
 .mgrid .mw { display: grid; place-items: center; font-size: 11px; font-weight: 700; color: var(--ink3); }
@@ -535,7 +553,7 @@ body.dragging .fab, body.dragging .fab2, body.dragging .tabbar { opacity: .3; po
 <div id="dragLayer"></div><div id="dragHold" aria-hidden="true"></div>
 <div class="edge l" id="edgeL"><span>‹ Giorno prima</span></div><div class="edge r" id="edgeR"><span>Giorno dopo ›</span></div>
 
-<script src="ornrarv-lib.js"></script>
+<script src="ornrarv-lib.js?v=2.3"></script>
 <script>
 (() => {
 'use strict';
@@ -620,10 +638,19 @@ const dayRec = (d) => S.giorni[d] || {};
 const isPlanned = (d) => !!dayRec(d).pianificato;
 const isDone = (d, e) => !!(dayRec(d).fatti || {})[evKey(e)];
 /* Sveglia e ora di andare a letto del giorno (si possono cambiare per un giorno solo mentre lo si pianifica) */
+/* Il sonno vero: S.giorni[n].sonno = { s: quando sei andato a letto la notte di n, e: quando ti sei svegliato (null = dormi ancora), stima: ora di letto stimata }.
+   Come i blocchi: la sveglia vera sposta l'inizio della giornata dopo, l'ora vera di letto ne sposta la fine; finché dormi la notte si allunga con l'orologio. */
+const SLEEP_MAX = 16 * 3600e3;
+const sleepOn = (n) => { const z = dayRec(n).sonno; return z && z.s ? z : null; };
+const sleepRun = (z) => !!(z && !z.e && Date.now() - z.s < SLEEP_MAX);
 function dayBounds(d) {
-  const p = pref(), r = dayRec(d);
-  const wake = toMin(r.sveglia || p.sveglia), bed0 = toMin(r.letto || p.letto);
-  return { wake, bed: bed0 <= wake ? bed0 + 1440 : bed0 };
+  const p = pref(), r = dayRec(d), pv = sleepOn(addDays(d, -1)), sl = sleepOn(d);
+  let wake = toMin(r.sveglia || p.sveglia); const bed0 = toMin(r.letto || p.letto);
+  let bed = bed0 <= wake ? bed0 + 1440 : bed0;
+  const nowM = msMin(d, Date.now());
+  if (pv && pv.e) wake = msMin(d, pv.e); else if (sleepRun(pv) && nowM > 0) wake = Math.max(wake, nowM);
+  if (sl) bed = Math.max(wake + 30, msMin(d, sl.s));
+  return { wake, bed, wakeReal: !!(pv && pv.e), sleptMin: pv && pv.e ? Math.round((pv.e - pv.s) / 60000) : null, stima: !!(pv && pv.stima), asleepAM: sleepRun(pv), bedReal: !!sl, asleepPM: sleepRun(sl) };
 }
 /* Iniziato / terminato: i tempi veri di un impegno, in S.giorni[d].corso[chiave] = { s: quando è iniziato, e: quando è finito (null = in corso) }.
    Finché è in corso il blocco parte dall'ora vera e si allunga con l'orologio; quando lo termini resta con la durata vera. */
@@ -644,7 +671,7 @@ function dayModel(d) {
   const A0 = Math.min(B.wake, ...timed.map((t) => t.start)), B0 = Math.max(B.bed, ...timed.map((t) => t.end));
   const free = freeWindows(timed, B.wake, B.bed);
   const busy = timed.reduce((a, t) => a + Math.max(0, Math.min(t.end, B.bed) - Math.max(t.start, B.wake)), 0);
-  return { date: d, timed, allDay, todo, wake: B.wake, bed: B.bed, A: A0, B: B0, free, busy, freeMin: free.reduce((a, [x, y]) => a + y - x, 0), nerina: S.nerina[d] || null, rec: dayRec(d) };
+  return { date: d, timed, allDay, todo, wake: B.wake, bed: B.bed, sonno: B, A: A0, B: B0, free, busy, freeMin: free.reduce((a, [x, y]) => a + y - x, 0), nerina: S.nerina[d] || null, rec: dayRec(d) };
 }
 function freeWindows(timed, a, b, from) {
   const out = []; let cur = Math.max(a, from || a);
@@ -666,12 +693,17 @@ function feedback(d, L) {
     const head = t.length ? `${t.length === 1 ? '1 impegno' : t.length + ' impegni'}, il primo alle ${fmt(t[0].start)}` : 'Nessun impegno fissato';
     return isPlanned(d) ? { sym: 'checkmark.circle', ic: 'check', tone: 'ok', text: head, sub: `Pianificata · ${dur(m.freeMin)} libere` } : { sym: 'square.and.pencil', ic: 'matita', tone: 'acc', text: head, sub: `Da pianificare · ${dur(m.freeMin)} libere`, act: 'pianifica' };
   }
+  const B = dayBounds(d), pv = sleepOn(addDays(d, -1)), sl = sleepOn(d);
+  if (sleepRun(sl)) return { sym: 'moon.zzz', ic: 'luna', tone: 'calm', text: 'Buonanotte', sub: `A letto dalle ${fmt(msMin(d, sl.s))} · quando ti svegli tocca «Sveglio»`, go: { a: 'sveglio' } };
+  if (sleepRun(pv)) return { sym: 'sun.horizon', ic: 'sole', tone: 'acc', text: 'Buongiorno', sub: `Dormi dalle ${fmt(msMin(addDays(d, -1), pv.s))} · segna la sveglia`, go: { a: 'sveglio' } };
+  if (!pv && L.min < B.wake + 150 && L.min >= B.wake - 120) return { sym: 'sun.horizon', ic: 'sole', tone: 'acc', text: 'Buongiorno', sub: 'Segna la sveglia: l\'ora di letto la stimo dal tuo orario', go: { a: 'sveglio' } };
   const run = t.find((x) => x.run);
   if (run) { const el = Math.max(1, L.min - run.start), over = run.plan ? el - (run.plan[1] - run.plan[0]) : 0;
     return { sym: 'timer', ic: 'play', tone: 'acc', text: `In corso: ${run.title}`, sub: `da ${dur(el)} · iniziato alle ${fmt(run.start)}${over >= 5 ? ` · ${dur(over)} oltre il previsto` : ''}`, go: { a: 'termina', key: run.key } }; }
   const now = t.find((x) => x.start <= L.min && x.end > L.min && !x.done && !x.real), next = t.find((x) => x.start > L.min && !x.done && !x.real);
   const missed = t.filter((x) => x.end <= L.min && !x.done).length;
   if (now) return { sym: 'play.circle', ic: 'play', tone: 'acc', text: `Adesso: ${now.title}`, sub: `fino alle ${fmt(now.end)}${tail(now)}${next ? ` · poi ${next.title} alle ${fmt(next.start)}` : ''}`, go: { a: 'inizia', key: now.key } };
+  if (!sl && L.min >= B.bed - 45) return { sym: 'bed.double', ic: 'luna', tone: 'acc', text: L.min >= B.bed ? 'È ora di dormire' : `Tra ${dur(B.bed - L.min)} a letto`, sub: `Orario: ${fmt(B.bed)} · tocca quando vai a dormire`, go: { a: 'dormo' } };
   if (next && next.start - L.min <= 90) return { sym: 'clock', ic: 'orologio', tone: 'acc', text: `Tra ${dur(next.start - L.min)}: ${next.title}`, sub: `alle ${fmt(next.start)}${tail(next)}`, go: next.start - L.min <= 20 ? { a: 'inizia', key: next.key } : null };
   if (L.min >= 19 * 60 && !isPlanned(tom)) { const mt = dayModel(tom).timed; return { sym: 'square.and.pencil', ic: 'matita', tone: 'acc', text: 'Domani è ancora da pianificare', sub: mt.length ? `Hai già ${mt.length === 1 ? '1 impegno' : mt.length + ' impegni'}, il primo alle ${fmt(mt[0].start)}` : 'Per ora è tutto libero', act: 'pianifica-domani' }; }
   if (missed && L.min >= 17 * 60) return { sym: 'checklist', ic: 'check', tone: 'acc', text: missed === 1 ? '1 impegno da segnare' : `${missed} impegni da segnare`, sub: `Hai fatto ${doneN} di ${t.length}?` };
@@ -988,10 +1020,12 @@ function focusCard(d) {
   const L = nowLogical(), f = feedback(d, L), rec = dayRec(d), gev = f.go ? S.eventi.find((e) => evKey(e) === f.go.key) : null;
   const act = gev && f.go.a === 'termina' ? h('button', { class: 'btn pri sm', type: 'button', onclick: () => stopEv(d, gev) }, icEl('stop'), 'Terminato')
     : gev && f.go.a === 'inizia' ? h('button', { class: 'btn pri sm', type: 'button', onclick: () => startEv(d, gev) }, icEl('play'), 'Iniziato')
+    : f.go && f.go.a === 'dormo' ? h('button', { class: 'btn pri sm', type: 'button', onclick: goSleep }, icEl('luna'), 'Vado a dormire')
+    : f.go && f.go.a === 'sveglio' ? h('button', { class: 'btn pri sm', type: 'button', onclick: wakeUp }, icEl('sole'), 'Sveglio')
     : f.act === 'pianifica' ? h('button', { class: 'btn pri sm', type: 'button', onclick: () => openPlan(d) }, 'Pianifica')
     : f.act === 'pianifica-domani' ? h('button', { class: 'btn pri sm', type: 'button', onclick: () => openPlan(addDays(d, 1)) }, 'Pianifica')
       : d >= L.date && isPlanned(d) ? h('button', { class: 'btn line sm', type: 'button', onclick: () => openPlan(d) }, 'Ripianifica') : null;
-  return h('div', { class: 'card focus' + (f.go && f.go.a === 'termina' ? ' live' : '') }, h('div', { class: 'fi', 'data-tone': f.tone, html: ic(f.ic) }),
+  return h('div', { class: 'card focus' + (f.go && (f.go.a === 'termina' || (f.go.a === 'sveglio' && f.ic === 'luna')) ? ' live' : '') }, h('div', { class: 'fi', 'data-tone': f.tone, html: ic(f.ic) }),
     h('div', { class: 'ft' }, h('b', { text: f.text }), h('span', { text: rec.intento ? `«${rec.intento}»` : f.sub })), act);
 }
 function viewGiorno() {
@@ -1070,12 +1104,65 @@ function previewCard(d, m) {
   const places = [...new Set(m.timed.map((t) => t.dove).filter(Boolean))];
   if (places.length) rows.push(h('div', { class: 'pv-row' }, h('span', { class: 'ih', html: ic('luogo') }), h('div', {}, h('b', { text: 'Dove devi andare: ' }), places.join(', '))));
   if (m.rec.intento) rows.push(h('div', { class: 'pv-row' }, h('span', { class: 'ih', html: ic('stelle') }), h('div', {}, h('b', { text: 'La cosa più importante: ' }), m.rec.intento)));
-  if (m.nerina) rows.push(h('div', { class: 'pv-row', 'data-cat': 'nerina' }, h('span', { class: 'ih', style: { color: 'var(--k)' }, html: ic('nerina') }), h('div', {}, h('b', { text: `Nerina: ${m.nerina.titolo}` }), m.nerina.ob && m.nerina.ob.length ? h('ul', {}, m.nerina.ob.map((x) => h('li', { text: x }))) : null)));
+  if (m.nerina) rows.push(nerinaRow(d, m.nerina));
   const soon = S.eventi.filter((e) => (e.tipo === 'scadenza') && e.data > d && dayDiff(d, e.data) <= 7).sort((a, b) => a.data < b.data ? -1 : 1).slice(0, 2);
   soon.forEach((e) => rows.push(h('div', { class: 'pv-row' }, h('span', { class: 'ih', html: ic('bandiera') }), h('div', {}, h('b', { text: `Tra ${dayDiff(d, e.data)} ${dayDiff(d, e.data) === 1 ? 'giorno' : 'giorni'}: ` }), e.titolo))));
   if (rows.length) inn.append(h('div', { class: 'pv-list' }, rows));
   card.append(head, h('div', { class: 'pv-b' }, h('div', {}, inn)));
   return card;
+}
+
+/* ---------- l'elenco del lavoro del giorno: pallino pieno = da fare, spunta = fatto (S.giorni[d].ob[i] = quando l'hai segnato) ---------- */
+function nerinaRow(d, n) {
+  const ob = n.ob || [], cnt = h('small', {});
+  const upd = () => { const f = dayRec(d).ob || {}, k = ob.filter((_, i) => f[i]).length; cnt.textContent = ob.length ? ` · ${k}/${ob.length}` : ''; };
+  const list = h('ul', { class: 'oblist' }, ob.map((x, i) => {
+    const b = h('button', { type: 'button', 'aria-pressed': 'false' }, h('span', { class: 'ob-i', html: '' }), h('span', { text: x }));
+    const paint1 = () => { const on = !!(dayRec(d).ob || {})[i]; b.classList.toggle('done', on); b.setAttribute('aria-pressed', String(on)); b.firstChild.innerHTML = on ? ic('check') : ''; b.setAttribute('aria-label', (on ? 'Fatto: ' : 'Da fare: ') + x); };
+    b.addEventListener('click', (e) => { e.stopPropagation(); const r = { ...dayRec(d) }, f = { ...(r.ob || {}) }; if (f[i]) delete f[i]; else f[i] = Date.now(); S.giorni[d] = { ...r, ob: f }; saveState(); paint1(); upd(); });
+    paint1(); return h('li', {}, b);
+  }));
+  upd();
+  return h('div', { class: 'pv-row', 'data-cat': 'nerina' }, h('span', { class: 'ih', style: { color: 'var(--k)' }, html: ic('nerina') }), h('div', { style: { flex: 1 } }, h('b', { text: `Nerina: ${n.titolo}` }), cnt, ob.length ? list : null));
+}
+
+/* ---------- la notte: vado a dormire, sveglio ---------- */
+const sleepDayNow = () => { const L = nowLogical(); return [L.date, addDays(L.date, -1)].find((x) => sleepRun(sleepOn(x))) || null; };
+function goSleep() {
+  const L = nowLogical(), s0 = snapshot(), now = Date.now(), r = { ...dayRec(L.date) }, c = { ...(r.corso || {}) }, f = { ...(r.fatti || {}) };
+  for (const [k, v] of Object.entries(c)) if (!v.e) { c[k] = { ...v, e: now }; f[k] = { t: now }; }
+  S.giorni[L.date] = { ...r, corso: c, fatti: f, sonno: { s: now, e: null } }; saveState(); render();
+  undoable(`Buonanotte · a letto alle ${fmt(L.min)}`, s0);
+}
+function wakeUp() {
+  const L = nowLogical(), s0 = snapshot(), now = Date.now();
+  let n = sleepDayNow(), stima = false;
+  if (!n) { n = addDays(L.date, -1); stima = true; }
+  const r = { ...dayRec(n) }, z = r.sonno && r.sonno.s ? r.sonno : { s: parseISO(n).getTime() + dayBounds(n).bed * 60000, stima: true };
+  if (z.s >= now) z.s = now - 60000;
+  S.giorni[n] = { ...r, sonno: { ...z, e: now, stima: stima || !!z.stima } }; saveState(); render();
+  undoable(`Buongiorno · hai dormito ${stima || z.stima ? 'circa ' : ''}${dur(Math.round((now - z.s) / 60000))}`, s0);
+}
+/* La notte n va dalla sera del giorno n alla mattina dopo: qui si correggono gli orari a mano. */
+function openNight(n) {
+  const L = nowLogical(), z = dayRec(n).sonno || null, Bn = dayBounds(n), Bm = dayBounds(addDays(n, 1)), base = parseISO(n).getTime();
+  const bedM = z && z.s ? msMin(n, z.s) : Bn.bed, wakeM = z && z.e ? msMin(n, z.e) : Bm.wake + 1440;
+  const bi = h('input', { class: 'in sm', type: 'time', step: 300, value: hm(bedM), 'aria-label': 'A letto' }), wi = h('input', { class: 'in sm', type: 'time', step: 300, value: hm(wakeM), 'aria-label': 'Sveglia' });
+  const run = sleepRun(z), info = h('div', { class: 'muted', style: { fontSize: '14px' } });
+  const calc = () => { const b0 = toMin(bi.value), w0 = toMin(wi.value); if (b0 == null || w0 == null) return null; const b = b0 < 12 * 60 ? b0 + 1440 : b0; let w = w0 + 1440; if (w <= b) w += 1440; return w - b > 20 * 60 ? null : [b, w]; };
+  const upd = () => { const c = calc(); info.textContent = c ? `${run ? 'Se ti svegli alle ' + wi.value + ': ' : ''}${dur(c[1] - c[0])} di sonno` : 'Controlla gli orari'; };
+  bi.addEventListener('input', upd); wi.addEventListener('input', upd);
+  const go = (fn) => () => { closeSheet(); fn(); };
+  openSheet([shHead(`Notte di ${dTitle(n)}`, `${cap(WD[dowOf(n)])} ${greg(n)} → ${WD[dowOf(addDays(n, 1))]} ${greg(addDays(n, 1))}`),
+    run ? h('button', { class: 'btn pri wide', type: 'button', onclick: go(wakeUp) }, icEl('sole'), `Sveglio · dormi dalle ${fmt(msMin(n, z.s))}`)
+      : !z && n === L.date ? h('button', { class: 'btn pri wide', type: 'button', onclick: go(goSleep) }, icEl('luna'), 'Vado a dormire adesso')
+        : !z && n === addDays(L.date, -1) ? h('button', { class: 'btn pri wide', type: 'button', onclick: go(wakeUp) }, icEl('sole'), 'Sveglio adesso') : null,
+    h('div', { class: 'card', style: { padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '10px' } },
+      h('div', { class: 'row sp' }, h('span', { text: 'A letto' }), bi), h('div', { class: 'row sp' }, h('span', { text: 'Sveglia' }), wi), info),
+    h('button', { class: 'btn line wide', type: 'button', onclick: () => { const c = calc(); if (!c) { toast('Controlla gli orari'); return; } const s0 = snapshot(), r = { ...dayRec(n) }; S.giorni[n] = { ...r, sonno: { s: base + c[0] * 60000, e: Math.min(Date.now(), base + c[1] * 60000) } }; saveState(); closeSheet(); render(); undoable(`Notte salvata · ${dur(c[1] - c[0])}`, s0); } }, icEl('check'), 'Salva questi orari'),
+    z ? h('button', { class: 'btn ghost wide', type: 'button', style: { color: 'var(--bad)' }, onclick: () => { const s0 = snapshot(), r = { ...dayRec(n) }; delete r.sonno; S.giorni[n] = r; saveState(); closeSheet(); render(); undoable('Notte tolta', s0); } }, icEl('cestino'), 'Togli gli orari veri') : null,
+    h('p', { class: 'faint', style: { margin: 0, fontSize: '13px', textAlign: 'center' }, text: 'Come per gli impegni: l\'ora vera di letto chiude la giornata, la sveglia vera apre quella dopo.' })]);
+  upd();
 }
 
 /* ---------- orario in scala ---------- */
@@ -1090,11 +1177,14 @@ function gridEl(d, m) {
   const L = nowLogical(), today = d === L.date;
   /* oggi le ore già passate e vuote non servono: l'orario parte da un'ora fa (o dal primo impegno, se è prima) */
   const A0 = Math.floor(Math.min(m.wake, m.A) / 60) * 60;
-  const A = today ? Math.max(A0, Math.floor(Math.min(L.min - 60, ...m.timed.map((t) => t.start)) / 60) * 60) : A0, B = Math.max(A + 120, Math.ceil(Math.max(m.bed, m.B) / 60) * 60);
+  const A = today ? Math.max(A0, Math.floor(Math.min(L.min - 60, ...m.timed.map((t) => t.start)) / 60) * 60) : A0, B = Math.max(A + 120, Math.ceil(Math.max(m.bed + 45, m.B) / 60) * 60);
   const g = h('div', { class: 'grid', 'data-a': A, 'data-b': B, 'data-d': d, style: { height: (B - A) * PX + 'px' } });
   for (let t = A; t <= B; t += 60) g.append(h('div', { class: 'hr', style: { top: (t - A) * PX + 'px' } }, h('span', { text: t === B && t % 1440 === 0 ? '24' : String(Math.floor((t % 1440) / 60)) })));
-  if (m.wake > A) g.append(h('div', { class: 'night', style: { top: '0px', height: (m.wake - A) * PX + 'px' } }, h('span', { class: 'ih', html: ic('sole') }), `sveglia ${fmt(m.wake)}`));
-  if (B > m.bed) g.append(h('div', { class: 'night', style: { top: (m.bed - A) * PX + 'px', height: (B - m.bed) * PX + 'px' } }, h('span', { class: 'ih', html: ic('luna') }), `a letto ${fmt(m.bed)}`));
+  const Z = m.sonno;
+  if (m.wake > A) g.append(h('button', { type: 'button', class: 'night' + (Z.wakeReal ? ' real' : '') + (Z.asleepAM ? ' run' : ''), style: { top: '0px', height: (m.wake - A) * PX + 'px' }, onclick: () => openNight(addDays(d, -1)) },
+    h('span', { class: 'ih', html: ic(Z.asleepAM ? 'luna' : 'sole') }), Z.asleepAM ? 'stai dormendo' : Z.wakeReal ? `sveglia ${fmt(m.wake)} · dormito ${dur(Z.sleptMin)}${Z.stima ? ' circa' : ''}` : `sveglia ${fmt(m.wake)}`));
+  if (B > m.bed) g.append(h('button', { type: 'button', class: 'night' + (Z.bedReal ? ' real' : '') + (Z.asleepPM ? ' run' : ''), style: { top: (m.bed - A) * PX + 'px', height: (B - m.bed) * PX + 'px' }, onclick: () => openNight(d) },
+    h('span', { class: 'ih', html: ic('luna') }), Z.asleepPM ? `dormi dalle ${fmt(m.bed)}` : Z.bedReal ? `a letto alle ${fmt(m.bed)}` : `a letto ${fmt(m.bed)} · tocca per segnare`));
   /* finestre libere: si toccano per aggiungere lì */
   const fw = today ? freeWindows(m.timed, m.wake, m.bed, Math.ceil(L.min / 15) * 15) : m.free;
   for (const [a, b] of fw) {
@@ -1288,6 +1378,33 @@ function dropWeek() {
   undoable(`${W.t.title} → ${dLetter(W.T)} ${dTitle(W.T)}`, snap0);
 }
 
+/* ---------- tema stagionale della pagina Mese: i colori e il motivo del mese, di giorno o di notte (alba e tramonto di oggi) ---------- */
+const hexRGB = (c) => [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16));
+const mixC = (a, b, t) => '#' + hexRGB(a).map((x, i) => Math.round(x + (hexRGB(b)[i] - x) * t).toString(16).padStart(2, '0')).join('');
+const rgbaC = (c, a) => `rgba(${hexRGB(c).join(', ')}, ${a})`;
+const lumC = (c) => { const [r, g, b] = hexRGB(c); return (r * .299 + g * .587 + b * .114) / 255; };
+const MVARS = ['--bg', '--bg2', '--card', '--sunk', '--line', '--line2', '--ink', '--ink2', '--ink3', '--sel', '--sel-ink', '--acc', '--acc2', '--acc-soft', '--acc-ink', '--ok', '--shadow', '--mpat', ...Object.keys(CAT_COL).map((k) => '--k-' + k)];
+function monthVars(mi) {
+  const vr = variantFor(mi, new Date(), pref().paesaggio), th = ORN.themeFor(mi, vr), dark = lumC(th.bg) < .4;
+  const acc = dark ? mixC(th.accent, '#ffffff', .12) : th.accent, cols = dark ? CAT_COL_DARK : CAT_COL;
+  const o = { '--bg': th.bg, '--bg2': th.bg2, '--card': dark ? mixC(th.bg, '#ffffff', .075) : mixC(th.bg, '#ffffff', .6), '--sunk': mixC(th.bg, th.ink, dark ? .13 : .07),
+    '--line': rgbaC(th.ink, .16), '--line2': rgbaC(th.ink, .08), '--ink': th.ink, '--ink2': mixC(th.ink, th.bg, .26), '--ink3': mixC(th.ink, th.bg, .46),
+    '--sel': th.ink, '--sel-ink': th.bg, '--acc': acc, '--acc2': mixC(acc, th.ink, .2), '--acc-soft': rgbaC(acc, .15), '--acc-ink': lumC(acc) > .6 ? th.bg : '#FFFFFF',
+    '--ok': dark ? '#7DD3A0' : '#3F9163', '--shadow': dark ? '0 1px 2px rgba(0,0,0,.25), 0 4px 14px rgba(0,0,0,.2)' : `0 1px 2px ${rgbaC(th.ink, .05)}, 0 4px 14px ${rgbaC(th.ink, .07)}`,
+    '--mpat': ORN.patternURI(mi, th.ink, dark ? .07 : .06) };
+  for (const [k, c] of Object.entries(cols)) o['--k-' + k] = c;
+  return { o, dark, th, vr };
+}
+let MT = null;
+function monthTheme(o) {
+  const app = $('#app'), key = o && window.ORN ? o.mi + ':' + variantFor(o.mi, new Date(), pref().paesaggio) : null;
+  if (key === MT) return; MT = key;
+  if (!key) { app.classList.remove('mtheme'); MVARS.forEach((k) => app.style.removeProperty(k)); document.documentElement.style.background = ''; document.body.style.background = ''; return; }
+  const { o: vars, th } = monthVars(o.mi);
+  for (const [k, v] of Object.entries(vars)) app.style.setProperty(k, v);
+  app.classList.add('mtheme'); document.documentElement.style.background = th.bg; document.body.style.background = th.bg;
+}
+
 /* ---------- vista Mese (mese settale: 7 settimane x 7 giorni) ---------- */
 function viewMese() {
   const L = nowLogical(), o = settale(monthSel);
@@ -1314,7 +1431,9 @@ function viewMese() {
     h('div', { class: 'row' }, h('button', { class: 'btn sm', type: 'button', onclick: () => { dayD = monthSel; select('giorno'); } }, 'Apri il giorno'),
       monthSel >= L.date ? h('button', { class: 'btn sm line', type: 'button', onclick: () => openPlan(monthSel) }, isPlanned(monthSel) ? 'Ripianifica' : 'Pianifica') : null,
       h('button', { class: 'btn sm ghost', type: 'button', onclick: () => openEvent(null, { data: monthSel }) }, h('span', { class: 'ih', html: ic('piu') }), 'Impegno')));
-  out.push(h('div', { class: 'wrap', style: { marginTop: '4px', gap: '10px' } }, h('div', { class: 'card', style: { padding: '0' } }, grid), panel));
+  const vr = variantFor(o.mi, new Date(), pref().paesaggio), [sa, sb] = sunTimes(L.date);
+  const tag = h('div', { class: 'mtag', style: { padding: '0 2px' } }, h('span', { class: 'ih', html: ic(vr === 'notte' ? 'luna' : 'sole') }), `${o.mese} ${vr === 'notte' ? 'di notte' : 'di giorno'} · oggi alba ${fmt(sa)}, tramonto ${fmt(sb)}`);
+  out.push(h('div', { class: 'wrap', style: { marginTop: '4px', gap: '10px' } }, tag, h('div', { class: 'card', style: { padding: '0' } }, grid), panel));
   return out;
 }
 
@@ -1327,6 +1446,7 @@ function render() {
 function paint() {
   const v = $('#view'), nodes = tab === 'settimana' ? viewSettimana() : tab === 'mese' ? viewMese() : viewGiorno();
   v.replaceChildren(...nodes.filter(Boolean));
+  monthTheme(tab === 'mese' ? settale(monthSel) : null);
   requestAnimationFrame(() => { $$('#view .pv.open .lil').forEach((x) => x.classList.add('play')); const f = $('#view .blk.flash'); if (f) { const r = f.getBoundingClientRect(); if (r.top < 60 || r.bottom > innerHeight - 100) scrollBy({ top: r.top - innerHeight / 2.6, behavior: 'smooth' }); } });
 }
 
@@ -1946,7 +2066,7 @@ function openPlan(d) {
       body.append(fixed.length ? h('div', { class: 'card list' }, fixed.map((t) => h('div', { class: 'li', 'data-cat': t.cat }, h('span', { class: 'ih', style: { color: 'var(--k)' }, html: catIc(t.cat) }), h('span', { text: t.title }), h('small', { text: `${fmt(t.start)}–${fmt(t.end)}` }))))
         : h('div', { class: 'okline' }, h('span', { class: 'ih', html: ic('check') }), 'Nessun impegno fissato: la giornata è tutta tua'));
       if (m.allDay.length) body.append(h('div', { class: 'allday' }, m.allDay.map((a) => h('span', { class: 'adchip', 'data-cat': a.cat }, h('span', { class: 'ih', html: catIc(a.cat) }), a.title))));
-      if (m.nerina) body.append(h('div', { class: 'pv-row', 'data-cat': 'nerina' }, h('span', { class: 'ih', style: { color: 'var(--k)' }, html: ic('nerina') }), h('div', {}, h('b', { text: `Nerina: ${m.nerina.titolo}` }), h('ul', {}, (m.nerina.ob || []).map((x) => h('li', { text: x }))))));
+      if (m.nerina) body.append(nerinaRow(d, m.nerina));
       body.append(h('div', { class: 'row sp' }, h('div', { class: 'field' }, h('span', { class: 'lab', text: 'Sveglia' }), timeIn(wake, (v) => { wake = v; })), h('div', { class: 'field' }, h('span', { class: 'lab', text: 'A letto' }), timeIn(bed, (v) => { bed = v <= wake ? v + 1440 : v; }))));
       nav.replaceChildren(h('button', { class: 'btn pri wide', type: 'button', onclick: () => { stepN = 2; draw(); } }, 'Avanti'));
     } else if (stepN === 2) {
@@ -2095,6 +2215,8 @@ setInterval(() => { if (!$('#sheet').hidden || DRAG || RS || WDRAG) return; cons
 document.addEventListener('visibilitychange', () => { if (!document.hidden) { if ($('#sheet').hidden && !DRAG) { heroKey = ''; render(); } refresh(true); } });
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => render());
 
+/* se il telefono ha tenuto una grafica vecchia insieme all'app nuova, svuoto la cache e ricarico (una volta) */
+if (window.ORN && ORN.version !== '2.3') { try { if (!sessionStorage.getItem('ritmo:rl')) { sessionStorage.setItem('ritmo:rl', '1'); (window.caches ? caches.keys().then((ks) => Promise.all(ks.map((k) => caches.delete(k)))) : Promise.resolve()).then(() => location.reload()); } } catch (e) { /* niente */ } }
 loadState(); loadCachedData(); rebuildEvents();
 if (lsGet(LS.pass) === null) showWelcome(); else { showMain(); refresh(true); }
 if ('serviceWorker' in navigator) {

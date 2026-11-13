@@ -122,7 +122,7 @@ async function menu() {
 function addSym(st, n, size, color) { const s2 = SFSymbol.named(n) || SFSymbol.named('circle'); s2.applyFont(Font.semiboldSystemFont(size)); const i = st.addImage(s2.image); i.imageSize = new Size(size + 2, size + 2); i.tintColor = color; return i; }
 const THEMES = [['#F2E4D5', '#3B2418'], ['#232B3B', '#E7E9F2'], ['#EEF3F5', '#233238'], ['#EAF3E7', '#2A3B29'], ['#F1F8EC', '#2E3B22'], ['#FBF2D9', '#3B3012'], ['#F7E9CE', '#3A2E14']];
 /* di notte (Ritmo 2.2): Brumale ha il suo disegno notturno come base; gli altri mesi hanno la versione blu notte */
-const THEMES_N = [['#221E30', '#F1E6DA'], ['#232B3B', '#E7E9F2'], ['#16223A', '#E8F0F6'], ['#1A2236', '#E9F1E6'], ['#192134', '#EEF5E8'], ['#152038', '#F5EEDB'], ['#151C38', '#F6EEDC']];
+const THEMES_N = [['#2A1F26', '#F1E6DA'], ['#232B3B', '#E7E9F2'], ['#122339', '#E8F0F6'], ['#15261F', '#E9F1E6'], ['#221C33', '#EEF5E8'], ['#0E2630', '#F5EEDB'], ['#221B2F', '#F6EEDC']];
 const ACC = '#E2603F', ACC_DARK = '#FF8C6B';
 function look(o) {
   const mi = o ? o.mi : 1, v = variantFor(mi, new Date(), pref().paesaggio);
