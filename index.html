@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Ritmo</title>
-<meta name="theme-color" content="#FAF9F5" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#262624" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FAF9F6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1F2845" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -18,17 +18,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="ornrarv.css">
 <style>
-/* ---------- Ritmo v2 · stile: carta calda, inchiostro, un solo accento terracotta (come Claude) ---------- */
 :root {
+  /* Ritmo 2.1 · palette «Alba»: carta chiara, inchiostro blu notte al posto del nero, accento corallo vivo; di sera un blu notte al posto del grigio antracite */
   color-scheme: light dark;
-  --bg: #FAF9F5; --bg2: #F2F0E8; --card: #FFFFFF; --sunk: #F0EEE6;
-  --line: rgba(31, 30, 29, .12); --line2: rgba(31, 30, 29, .06);
-  --ink: #141413; --ink2: #5E5D59; --ink3: #8F8D86;
-  --acc: #C96442; --acc2: #B4552F; --acc-soft: rgba(201, 100, 66, .11); --acc-ink: #FFFFFF;
-  --ok: #4C8A5E; --bad: #B5452F;
-  --shadow: 0 1px 2px rgba(20, 20, 19, .05), 0 4px 14px rgba(20, 20, 19, .05);
-  --shadow2: 0 10px 30px rgba(20, 20, 19, .16), 0 2px 6px rgba(20, 20, 19, .08);
-  --k-uni: #4A6FA5; --k-nerina: #3E8A63; --k-network: #7A62AD; --k-social: #C05A7D; --k-palestra: #B5832B; --k-karate: #2E8A8C; --k-altro: #8A8780; --k-scadenza: #C96442; --k-festa: #8A8780;
+  --bg: #FAF9F6; --bg2: #F1F1EC; --card: #FFFFFF; --sunk: #EEF0F2;
+  --line: rgba(30, 42, 74, .13); --line2: rgba(30, 42, 74, .065);
+  --ink: #1E2A4A; --ink2: #56617D; --ink3: #8B93A8;
+  --sel: #2E4277; --sel-ink: #FFFFFF;
+  --acc: #E2603F; --acc2: #CC4F30; --acc-soft: rgba(226, 96, 63, .11); --acc-ink: #FFFFFF;
+  --ok: #3F9163; --bad: #C8304E;
+  --shadow: 0 1px 2px rgba(30, 42, 74, .05), 0 4px 14px rgba(30, 42, 74, .06);
+  --shadow2: 0 10px 30px rgba(30, 42, 74, .16), 0 2px 6px rgba(30, 42, 74, .08);
+  --k-uni: #4A6FA5; --k-nerina: #3E8A63; --k-network: #7A62AD; --k-social: #C05A7D; --k-palestra: #B5832B; --k-karate: #2E8A8C; --k-altro: #6E85B8; --k-scadenza: #E2603F; --k-festa: #D08A2E;
   --serif: 'Source Serif 4', 'Iowan Old Style', 'Palatino', Georgia, serif;
   --sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, 'Segoe UI', Roboto, sans-serif;
   --r: 14px; --r2: 10px;
@@ -37,14 +38,15 @@
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #262624; --bg2: #2C2C2A; --card: #30302E; --sunk: #2A2A28;
-    --line: rgba(250, 249, 245, .13); --line2: rgba(250, 249, 245, .06);
-    --ink: #F5F4EE; --ink2: #C3C1B8; --ink3: #8F8D86;
-    --acc: #D97757; --acc2: #E58A6B; --acc-soft: rgba(217, 119, 87, .16); --acc-ink: #1F1E1D;
-    --ok: #74B888; --bad: #E07A62;
-    --shadow: 0 1px 2px rgba(0, 0, 0, .25), 0 4px 14px rgba(0, 0, 0, .2);
-    --shadow2: 0 12px 34px rgba(0, 0, 0, .5), 0 2px 6px rgba(0, 0, 0, .3);
-    --k-uni: #86A6DA; --k-nerina: #6FBF94; --k-network: #A994D9; --k-social: #E68DAD; --k-palestra: #DDB060; --k-karate: #5FC0C1; --k-altro: #A8A59D; --k-scadenza: #D97757; --k-festa: #A8A59D;
+    --bg: #1F2845; --bg2: #242E4E; --card: #2A3558; --sunk: #232C4B;
+    --line: rgba(214, 224, 255, .14); --line2: rgba(214, 224, 255, .07);
+    --ink: #F3F5FC; --ink2: #C3CBE3; --ink3: #8E98B8;
+    --sel: #DCE4FF; --sel-ink: #1F2845;
+    --acc: #FF8C6B; --acc2: #FFA287; --acc-soft: rgba(255, 140, 107, .17); --acc-ink: #1F2238;
+    --ok: #7DD3A0; --bad: #FF7F93;
+    --shadow: 0 1px 2px rgba(6, 10, 30, .25), 0 4px 14px rgba(6, 10, 30, .22);
+    --shadow2: 0 12px 34px rgba(6, 10, 30, .5), 0 2px 6px rgba(6, 10, 30, .3);
+    --k-uni: #8DB0EC; --k-nerina: #74CC9C; --k-network: #B29DF0; --k-social: #F293B6; --k-palestra: #EBBE66; --k-karate: #62CFCF; --k-altro: #A3B6E6; --k-scadenza: #FF8C6B; --k-festa: #F2B45E;
   }
 }
 *, *::before, *::after { box-sizing: border-box; }
@@ -85,7 +87,7 @@ h1, h2, h3 { margin: 0; font-weight: 500; }
 .btn[disabled] { opacity: .4; pointer-events: none; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip { min-height: 36px; padding: 0 13px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; transition: background .15s, border-color .15s, color .15s; }
-.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip[aria-pressed="true"] { background: var(--sel); color: var(--sel-ink); border-color: var(--sel); }
 .chip.free { border-style: dashed; }
 .seg { display: flex; background: var(--sunk); border-radius: 11px; padding: 3px; gap: 2px; }
 .seg button { flex: 1; min-height: 34px; border-radius: 9px; font-size: 14px; font-weight: 600; color: var(--ink2); }
@@ -127,7 +129,7 @@ h1, h2, h3 { margin: 0; font-weight: 500; }
 .wstrip .d { height: 5px; display: flex; gap: 2px; }
 .wstrip .d i { width: 5px; height: 5px; border-radius: 50%; background: var(--k); }
 .wstrip button.today .n { color: var(--acc); font-weight: 600; }
-.wstrip button[aria-pressed="true"] .n { background: var(--ink); color: var(--bg); }
+.wstrip button[aria-pressed="true"] .n { background: var(--sel); color: var(--sel-ink); }
 .wstrip button.today[aria-pressed="true"] .n { background: var(--acc); color: var(--acc-ink); }
 .wstrip button.past .n { color: var(--ink3); }
 
@@ -231,7 +233,7 @@ h1, h2, h3 { margin: 0; font-weight: 500; }
 .dghost::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--k); }
 .dghost b { font-weight: 600; font-size: 14.5px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .dghost.bad { border-color: var(--bad); box-shadow: var(--shadow2), 0 0 0 2px var(--bad); }
-.tbadge { position: absolute; left: 0; top: 0; padding: 4px 9px; border-radius: 8px; background: var(--ink); color: var(--bg); font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; box-shadow: var(--shadow2); will-change: transform; }
+.tbadge { position: absolute; left: 0; top: 0; padding: 4px 9px; border-radius: 8px; background: var(--sel); color: var(--sel-ink); font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; box-shadow: var(--shadow2); will-change: transform; }
 .tbadge.bad { background: var(--bad); color: #fff; }
 .edge { position: fixed; top: 0; bottom: 0; width: 54px; z-index: 59; pointer-events: none; display: flex; align-items: center; opacity: 0; transition: opacity .2s; }
 .edge.l { left: 0; justify-content: flex-start; background: linear-gradient(90deg, var(--acc-soft), transparent); }
@@ -286,7 +288,7 @@ body.dragging #view { touch-action: none; }
 .mcell.past b { color: var(--ink3); }
 .mcell.today b { color: var(--acc); font-weight: 600; }
 .mcell[aria-pressed="true"] { background: var(--sunk); }
-.mcell[aria-pressed="true"] b { background: var(--ink); color: var(--bg); }
+.mcell[aria-pressed="true"] b { background: var(--sel); color: var(--sel-ink); }
 .mcell.today[aria-pressed="true"] b { background: var(--acc); color: var(--acc-ink); }
 .mcell .pl { position: absolute; top: 4px; right: 5px; width: 5px; height: 5px; border-radius: 50%; background: var(--ok); }
 .dpanel { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
@@ -309,7 +311,7 @@ body.dragging .fab, body.dragging .tabbar { opacity: .3; pointer-events: none; }
 
 /* ---------- foglio dal basso ---------- */
 .sheet-wrap { position: fixed; inset: 0; z-index: 50; }
-.scrim { position: absolute; inset: 0; background: rgba(20, 20, 19, .38); animation: fadein .2s ease; }
+.scrim { position: absolute; inset: 0; background: rgba(16, 22, 44, .4); animation: fadein .2s ease; }
 .sheet { position: absolute; left: 0; right: 0; bottom: 0; max-height: calc(100vh - var(--safe-t) - 24px); overflow-y: auto; overscroll-behavior: contain; background: var(--bg); border-radius: 20px 20px 0 0;
   padding: 8px 18px calc(22px + var(--safe-b)); box-shadow: 0 -10px 40px rgba(0,0,0,.18); animation: sheetin .32s var(--ease); max-width: 640px; margin: 0 auto; }
 .sheet.out { animation: sheetout .22s ease-in forwards; }
@@ -340,9 +342,9 @@ body.dragging .fab, body.dragging .tabbar { opacity: .3; pointer-events: none; }
 .daypick button b { font-family: var(--serif); font-size: 19px; font-weight: 500; line-height: 1.1; }
 .daypick button em { font-style: normal; font-size: 10px; color: var(--ink3); font-weight: 600; }
 .daypick button .d { display: flex; gap: 2px; height: 4px; } .daypick button .d i { width: 4px; height: 4px; border-radius: 50%; background: var(--ink3); }
-.daypick button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
-.daypick button[aria-pressed="true"] small, .daypick button[aria-pressed="true"] em { color: color-mix(in srgb, var(--bg) 75%, transparent); }
-.daypick button[aria-pressed="true"] .d i { background: var(--bg); }
+.daypick button[aria-pressed="true"] { background: var(--sel); border-color: var(--sel); color: var(--sel-ink); }
+.daypick button[aria-pressed="true"] small, .daypick button[aria-pressed="true"] em { color: color-mix(in srgb, var(--sel-ink) 75%, transparent); }
+.daypick button[aria-pressed="true"] .d i { background: var(--sel-ink); }
 .daypick .mlab { flex: none; writing-mode: vertical-rl; transform: rotate(180deg); font-size: 11px; font-weight: 700; color: var(--acc); align-self: center; letter-spacing: .05em; }
 .mini { position: relative; height: 34px; border-radius: 9px; background: var(--sunk); overflow: hidden; touch-action: pan-x; }
 .mini i { position: absolute; top: 5px; bottom: 5px; border-radius: 5px; background: color-mix(in srgb, var(--k) 70%, transparent); }
@@ -352,6 +354,62 @@ body.dragging .fab, body.dragging .tabbar { opacity: .3; pointer-events: none; }
 .mini-l { display: flex; justify-content: space-between; font-size: 11px; color: var(--ink3); margin-top: 3px; font-variant-numeric: tabular-nums; }
 .warn { display: flex; gap: 8px; align-items: flex-start; font-size: 13.5px; color: var(--bad); font-weight: 500; }
 .okline { display: flex; gap: 8px; align-items: flex-start; font-size: 13.5px; color: var(--ok); font-weight: 500; }
+.tiles .tile { min-height: 54px; flex-direction: row; gap: 7px; font-size: 14px; }
+.tiles .tile .ic { font-size: 19px; }
+/* nuovo impegno: titolo con scrittura veloce, orario, giornata da trascinare */
+.tblock { display: flex; flex-direction: column; gap: 6px; }
+.qp { font-size: 13px; color: var(--ink3); min-height: 18px; }
+.qp .ok { color: var(--ok); font-weight: 600; display: inline-flex; gap: 6px; align-items: flex-start; }
+.sug { display: flex; flex-direction: column; }
+.sug:empty { display: none; }
+.sg { display: flex; align-items: center; gap: 10px; padding: 10px 4px; border-bottom: 1px solid var(--line2); text-align: left; font-size: 15px; font-weight: 500; }
+.sg .ic { color: var(--k); font-size: 18px; } .sg span:not(.ih) { flex: 1; } .sg small { color: var(--ink3); font-size: 13px; }
+.odate { position: relative; display: inline-flex; gap: 6px; align-items: center; font-size: 13.5px; font-weight: 600; color: var(--acc); }
+.odate .ic { font-size: 16px; }
+.tin { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; border: 0; padding: 0; margin: 0; font-size: 16px; -webkit-appearance: none; appearance: none; cursor: pointer; }
+.dline { display: flex; flex-direction: column; gap: 1px; margin-top: -4px; }
+.dline b { font-size: 15px; font-weight: 600; } .dline small { color: var(--ink3); font-size: 13px; }
+.tcard { padding: 14px 0 12px; display: flex; flex-direction: column; gap: 10px; }
+.tcard > :not(.rt) { margin: 0 14px; }
+.trow { display: grid; grid-template-columns: 1fr auto 1.1fr auto 1fr; align-items: end; gap: 4px; }
+.tf { position: relative; display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border-radius: 12px; background: var(--sunk); min-width: 0; }
+.tf small, .tdur small { font-size: 11.5px; font-weight: 700; color: var(--ink3); letter-spacing: .02em; text-transform: uppercase; }
+.tv { font-family: var(--serif); font-size: 27px; font-weight: 500; line-height: 1.1; font-variant-numeric: lining-nums tabular-nums; color: var(--ink); }
+.tf.off .tv { color: var(--ink3); }
+.tf:active { background: color-mix(in srgb, var(--acc) 12%, var(--sunk)); }
+.tarr { color: var(--ink3); font-size: 15px; padding-bottom: 14px; }
+.tdur { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 0; }
+.tdur-c { display: flex; align-items: center; gap: 2px; }
+.tdur b { font-size: 16px; font-weight: 700; min-width: 50px; text-align: center; font-variant-numeric: tabular-nums; }
+.tdb { width: 32px; height: 32px; border-radius: 50%; background: var(--sunk); font-size: 19px; font-weight: 600; color: var(--ink2); display: grid; place-items: center; line-height: 1; }
+.tdb:active { background: var(--acc-soft); color: var(--acc); }
+.rt { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; touch-action: pan-x; -webkit-overflow-scrolling: touch; padding: 0 14px; }
+.rt::-webkit-scrollbar { display: none; }
+.rt-in { position: relative; height: 96px; margin-right: 14px; }
+.rt-h { position: absolute; top: 0; font-size: 11px; font-weight: 600; color: var(--ink3); transform: translateX(-50%); font-variant-numeric: tabular-nums; }
+.rt-h::after { content: ''; position: absolute; left: 50%; top: 16px; height: 76px; border-left: 1px solid var(--line2); }
+.rt-sl { position: absolute; top: 18px; bottom: 2px; background: repeating-linear-gradient(135deg, var(--line) 0 3px, transparent 3px 8px); border-radius: 6px; }
+.rt-e { position: absolute; top: 20px; height: 30px; border-radius: 7px; background: color-mix(in srgb, var(--k) 22%, var(--card)); border: 1px solid color-mix(in srgb, var(--k) 45%, transparent); overflow: hidden; padding: 0 6px; display: flex; align-items: center; }
+.rt-e span { font-size: 11.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink2); }
+.rt-e.bad { border-color: var(--bad); box-shadow: inset 0 0 0 1px var(--bad); }
+.rt-now { position: absolute; top: 16px; bottom: 0; border-left: 2px solid var(--acc); opacity: .7; }
+.rt-b { position: absolute; top: 55px; height: 36px; border-radius: 9px; background: var(--k); color: #fff; display: flex; align-items: center; justify-content: center; touch-action: none; cursor: grab; box-shadow: 0 2px 8px color-mix(in srgb, var(--k) 40%, transparent); transition: box-shadow .15s, transform .15s; }
+.rt-b.lift { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 20px color-mix(in srgb, var(--k) 45%, transparent); }
+.rt-b.bad { background: var(--bad); }
+.rt-lab { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; pointer-events: none; }
+.rt-b.narrow .rt-lab { position: absolute; left: 50%; top: -18px; transform: translateX(-50%); color: var(--ink); font-size: 11.5px; background: var(--card); padding: 0 4px; border-radius: 4px; }
+.rt-hl, .rt-hr { position: absolute; top: -4px; bottom: -4px; width: 26px; touch-action: none; }
+.rt-hl { left: -13px; } .rt-hr { right: -13px; }
+.rt-hl::after, .rt-hr::after { content: ''; position: absolute; left: 11px; top: 12px; bottom: 12px; width: 4px; border-radius: 2px; background: #fff; box-shadow: 0 0 0 1.5px var(--k); }
+.rt-tip { font-size: 12.5px; color: var(--ink3); }
+.tcard.nt .rt-b { display: none; } .tcard.nt .trow { opacity: .55; }
+.ntb { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--ink2); text-align: left; padding-top: 2px; }
+.ntb i { flex: none; width: 38px; height: 23px; border-radius: 12px; background: var(--line); position: relative; transition: background .15s; }
+.ntb i::after { content: ''; position: absolute; left: 2px; top: 2px; width: 19px; height: 19px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2); transition: transform .18s var(--ease); }
+.ntb[aria-checked="true"] i { background: var(--acc); } .ntb[aria-checked="true"] i::after { transform: translateX(15px); }
+.rsel { max-width: 62%; }
+.savebar { position: sticky; bottom: calc(-22px - var(--safe-b)); margin: 0 -18px calc(-22px - var(--safe-b)); padding: 12px 18px calc(14px + var(--safe-b)); background: linear-gradient(to bottom, transparent, var(--bg) 26%); z-index: 3; }
+.savebar .btn span:last-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .row { display: flex; gap: 10px; align-items: center; }
 .row.sp { justify-content: space-between; }
 .stepper { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
@@ -377,11 +435,11 @@ body.dragging .fab, body.dragging .tabbar { opacity: .3; pointer-events: none; }
 .prop span { font-weight: 600; font-size: 14.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .prop.out { background: var(--sunk); border-style: dashed; border-color: var(--line); }
 .mood { display: flex; gap: 8px; } .mood button { flex: 1; height: 46px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); font-size: 13px; font-weight: 600; color: var(--ink2); }
-.mood button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.mood button[aria-pressed="true"] { background: var(--sel); color: var(--sel-ink); border-color: var(--sel); }
 .codebox { font: 600 13px/1.4 ui-monospace, Menlo, monospace; background: var(--sunk); border-radius: 10px; padding: 10px 12px; word-break: break-all; -webkit-user-select: all; user-select: all; }
 
 /* ---------- avvisi ---------- */
-.toast { position: fixed; left: 50%; bottom: calc(150px + var(--safe-b)); transform: translate(-50%, 20px); z-index: 70; background: var(--ink); color: var(--bg); padding: 10px 10px 10px 16px; border-radius: 13px; font-size: 14.5px; font-weight: 500;
+.toast { position: fixed; left: 50%; bottom: calc(150px + var(--safe-b)); transform: translate(-50%, 20px); z-index: 70; background: var(--sel); color: var(--sel-ink); padding: 10px 10px 10px 16px; border-radius: 13px; font-size: 14.5px; font-weight: 500;
   box-shadow: var(--shadow2); opacity: 0; pointer-events: none; transition: opacity .2s, transform .25s var(--ease); display: flex; gap: 12px; align-items: center; width: max-content; max-width: calc(100vw - 32px); }
 .toast.on { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
 .toast button { color: var(--acc2); font-weight: 700; padding: 6px 8px; }
@@ -447,7 +505,7 @@ const FASI = { O: 'Osservare', R: 'Remare', N: 'Navigare', A: 'Automatizzare', V
 function settale(date) {
   const n = dayDiff(ORN_START, date); if (n < 0 || n >= 343) return null;
   const mi = Math.floor(n / 49), r = n % 49, wi = Math.floor(r / 7), di = r % 7;
-  return { n, mi, wi, di, num: r + 1, mese: MESI[mi], l: SEQ[di], wl: SEQ[wi], ml: SEQ[mi], code: `${SEQ[mi]}.${SEQ[wi]}.${SEQ[di]}`, fase: FASI[SEQ[di]],
+  return { n, mi, wi, di, num: r + 1, mese: MESI[mi], l: SEQ[di], wl: SEQ[wi], ml: SEQ[mi], code: `${SEQ[mi]}.${SEQ[wi]}.${SEQ[di]}`, fase: FASI[SEQ[di]], sett: FASI[SEQ[wi]],
     first: addDays(ORN_START, mi * 49), weekStart: addDays(ORN_START, mi * 49 + wi * 7) };
 }
 const gWD = ['D', 'L', 'M', 'M', 'G', 'V', 'S'];
@@ -472,8 +530,8 @@ const CATS = {
   festa: { n: 'Festa', ic: 'festa', min: 0, sym: 'sparkles' }
 };
 const NEW_CATS = ['uni', 'nerina', 'network', 'social', 'palestra', 'karate'];
-const CAT_COL = { uni: '#4A6FA5', nerina: '#3E8A63', network: '#7A62AD', social: '#C05A7D', palestra: '#B5832B', karate: '#2E8A8C', altro: '#8A8780', scadenza: '#C96442', festa: '#8A8780' };
-const CAT_COL_DARK = { uni: '#86A6DA', nerina: '#6FBF94', network: '#A994D9', social: '#E68DAD', palestra: '#DDB060', karate: '#5FC0C1', altro: '#A8A59D', scadenza: '#D97757', festa: '#A8A59D' };
+const CAT_COL = { uni: '#4A6FA5', nerina: '#3E8A63', network: '#7A62AD', social: '#C05A7D', palestra: '#B5832B', karate: '#2E8A8C', altro: '#6E85B8', scadenza: '#E2603F', festa: '#D08A2E' };
+const CAT_COL_DARK = { uni: '#8DB0EC', nerina: '#74CC9C', network: '#B29DF0', social: '#F293B6', palestra: '#EBBE66', karate: '#62CFCF', altro: '#A3B6E6', scadenza: '#FF8C6B', festa: '#F2B45E' };
 /* Vecchi tipi della v1 riportati alle categorie nuove */
 const LEGACY = { scuola: 'uni', studio: 'uni', lavoro: 'nerina', sociale: 'social', persone: 'social', promemoria: 'scadenza' };
 const catOf = (e) => { const t = LEGACY[e.tipo] || e.tipo; return CATS[t] ? t : 'altro'; };
@@ -481,7 +539,7 @@ const isAllDay = (e) => !e.inizio && !e.flessibile;
 
 /* Stato: S.file = dati del file cifrato, S.miei = impegni aggiunti sul telefono, S.giorni = spunte, piano e umore per giorno */
 const S = { file: [], miei: [], nascosti: [], giorni: {}, nerina: {}, cfg: null, versione: null, eventi: [], pref: {} };
-const PREF0 = { sveglia: '08:30', letto: '00:00', paesaggio: 'auto' };
+const PREF0 = { sveglia: '08:30', letto: '00:00', paesaggio: 'auto', avviso: 10, sera: '21:30' };
 const pref = () => ({ ...PREF0, ...((S.cfg && S.cfg.sonno) || {}), ...S.pref });
 const rebuildEvents = () => { const hid = new Set(S.nascosti); S.eventi = [...S.file.filter((e) => !hid.has(e.id)).map((e) => ({ ...e, src: 'file' })), ...S.miei.map((e) => ({ ...e, src: 'mio' }))]; };
 const evKey = (e) => 'e:' + e.id;
@@ -541,9 +599,32 @@ function feedback(d, L) {
   if (isPlanned(tom)) return { sym: 'moon.stars', ic: 'luna', tone: 'ok', text: 'Domani è già pianificato', sub: (() => { const mt = dayModel(tom).timed; return mt.length ? `Si parte alle ${fmt(mt[0].start)} con ${mt[0].title}` : 'Nessun impegno fissato'; })() };
   return { sym: 'sun.max', ic: 'sole', tone: 'calm', text: 'Niente altro per oggi', sub: doneN ? `${doneN} di ${t.length} fatti` : 'Giornata libera' };
 }
+/* Notifiche: i promemoria dei prossimi giorni, calcolati qui e programmati da Scriptable sul telefono.
+   Un avviso prima di ogni impegno con orario (pref().avviso minuti prima, 0 = niente) e, la sera, «domani è da pianificare» (pref().sera, '' = niente). */
+function promemoria(nowMs, days, conSera) {
+  const p = pref(), L = nowLogical(), out = [], av = Number(p.avviso) || 0;
+  const at = (d, min) => { const x = parseISO(d); x.setMinutes(min); return x.getTime(); };
+  for (let i = 0; i < (days || 3); i++) {
+    const d = addDays(L.date, i), m = dayModel(d), o = settale(d);
+    if (av > 0) for (const t of m.timed) {
+      if (t.done) continue;
+      const when = at(d, t.start - av); if (when <= nowMs + 30e3) continue;
+      out.push({ id: `ritmo:${d}:${t.ev.id}:${t.start}:${t.end}:${av}:${t.title}`, at: when, title: `${av >= 60 ? 'Tra ' + dur(av) : 'Tra ' + av + ' min'} · ${t.title}`,
+        body: `${fmt(t.start)}–${fmt(t.end)}${t.dove ? ' · ' + t.dove : ''}${o ? ' · ' + o.num + ' ' + o.mese : ''}` });
+    }
+    if (p.sera && conSera && i < 2) {
+      const tom = addDays(d, 1), when = at(d, toMin(p.sera));
+      if (when > nowMs + 30e3 && !isPlanned(tom)) {
+        const mt = dayModel(tom).timed;
+        out.push({ id: `ritmo:${d}:sera:${p.sera}:${mt.length}`, at: when, title: 'Domani è da pianificare', body: mt.length ? `${mt.length === 1 ? '1 impegno' : mt.length + ' impegni'}, il primo alle ${fmt(mt[0].start)}. Apri Ritmo e tocca Pianifica.` : 'Per ora è tutto libero. Apri Ritmo e tocca Pianifica.' });
+      }
+    }
+  }
+  return out.sort((a, b) => a.at - b.at).slice(0, 48);
+}
 /* ==== FINE NUCLEO ==== */
 
-if (typeof document === 'undefined') { globalThis.__ritmo = { S, dayModel, feedback, settale, rebuildEvents }; return; }
+if (typeof document === 'undefined') { globalThis.__ritmo = { S, dayModel, feedback, settale, rebuildEvents, promemoria }; return; }
 
 /* ---------- DOM ---------- */
 const $ = (q, r) => (r || document).querySelector(q);
@@ -581,6 +662,7 @@ const IP = {
   luna: '<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/>',
   sole: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',
   piu: '<path d="M12 5v14M5 12h14"/>',
+  campana: '<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20.5a2 2 0 0 0 4 0"/>',
   x: '<path d="M6 6l12 12M18 6L6 18"/>',
   meno: '<path d="M5 12h14"/>',
   chev: '<path d="M9 5l7 7-7 7"/>',
@@ -651,6 +733,8 @@ function statePayload() {
   for (const d of Object.keys(S.giorni)) if (d >= a && d <= b) g[d] = S.giorni[d];
   return JSON.stringify({ v: 2, t: Date.now(), giorni: g, miei: S.miei.filter((e) => e.data >= a && e.data <= addDays(L.date, 60)), nascosti: S.nascosti, pref: S.pref });
 }
+/* Notifiche: Ritmo passa a Scriptable lo stato (impegni, piani, preferenze); lo script «Ritmo» programma le notifiche sul telefono. */
+const scriptableURL = () => 'scriptable:///run/Ritmo?notifiche=1&stato=' + encodeURIComponent(statePayload());
 async function gistFile() { return { files: { 'ritmo-stato.json': { content: JSON.stringify(await wEncrypt(statePayload(), S.wk)) } } }; }
 let syncT = null;
 function scheduleSync(now) { const c = syncCfg(); if (!c || !S.wk) return; clearTimeout(syncT); syncT = setTimeout(pushSync, now ? 0 : 2500); }
@@ -872,7 +956,7 @@ function previewCard(d, m) {
   if (o && window.ORN) {
     const key = ORN.metaKeyFor(o.l, o.di), mt = ORN.LETTER_META[key];
     inn.append(h('div', { class: 'phase' }, h('div', { class: 'lilw', html: ORN.illusFor(o.l, key, mt.color) }),
-      h('div', {}, h('b', { text: `Giorno ${o.l} · ${o.fase}` }), h('span', { text: PHASE_TIP[o.l] + ` Settimana ${o.wl} di ${o.mese}.` }))));
+      h('div', {}, h('b', { text: `Giorno ${o.l} · ${o.fase}` }), h('span', { text: PHASE_TIP[o.l] + ` ${o.sett}, in ${o.mese}.` }))));
   }
   /* cose da sapere */
   const rows = [];
@@ -1048,8 +1132,8 @@ document.addEventListener('click', (e) => { if (SEL && !e.target.closest('.blk.s
 /* ---------- vista Settimana ---------- */
 function viewSettimana() {
   const L = nowLogical(), mon = weekM, o = settale(mon);
-  const out = [heroFor(mon, true, o ? `Settimana ${o.wl}` : 'Settimana', o ? `${o.mese} · ${dNum(mon)}–${dNum(addDays(mon, 6))}` : `${greg(mon)} – ${greg(addDays(mon, 6))}`,
-    o ? [codeEl(o, 2), h('span', { text: FASI[o.wl] })] : null)];
+  const out = [heroFor(mon, true, o ? o.sett : 'Settimana', o ? `${o.mese} · ${dNum(mon)}–${dNum(addDays(mon, 6))}` : `${greg(mon)} – ${greg(addDays(mon, 6))}`,
+    o ? [codeEl(o, 2), h('span', { text: `${greg(mon)}–${greg(addDays(mon, 6))}` })] : null)];
   const days = [...Array(7)].map((_, i) => addDays(mon, i)), models = days.map(dayModel);
   const nEv = models.reduce((a, m) => a + m.timed.length, 0), busy = models.reduce((a, m) => a + m.busy, 0), planned = days.filter(isPlanned).length;
   const w = h('div', { class: 'wrap', style: { marginTop: '14px' } });
@@ -1181,49 +1265,234 @@ function miniBar(d, mark, exclude, onTap) {
   if (onTap) bar.addEventListener('click', (e) => { const r = bar.getBoundingClientRect(); onTap(Math.round((A + (e.clientX - r.left) / r.width * (B - A)) / 15) * 15); });
   return { el: h('div', {}, bar, h('div', { class: 'mini-l' }, [A, A + (B - A) / 4, A + (B - A) / 2, A + (B - A) * 3 / 4, B].map((x) => h('span', { text: fmt(Math.round(x / 30) * 30) })))), clash };
 }
-const durChips = (len, onPick, opts0 = [30, 45, 60, 90, 120, 180]) => { const opts = [...new Set([...opts0, len])].sort((a, b) => a - b); const box = h('div', { class: 'chips' }, opts.map((m) => h('button', { class: 'chip', type: 'button', 'data-m': m, 'aria-pressed': String(m === len), text: dur(m), onclick: (e) => { pick(box, e.currentTarget); onPick(m); } }))); return box; };
+/* ---------- scrittura veloce: «palestra domani dalle 18 alle 19:30» ---------- */
+const WDN = [['domenica', 'domenica', 'dom'], ['lunedi', 'lunedì', 'lun'], ['martedi', 'martedì', 'mar'], ['mercoledi', 'mercoledì', 'mer'], ['giovedi', 'giovedì', 'gio'], ['venerdi', 'venerdì', 'ven'], ['sabato', 'sabato', 'sab']];
+const MESI_G = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
+const CAT_WORDS = [
+  ['karate', /\b(karate|kata|kumite|dojo)\b/i], ['palestra', /\b(palestra|gym|pesi|allenamento|corsa|nuoto)\b/i],
+  ['uni', /\b(uni|universit[aà]|lezione|lezioni|esame|esami|studio|studiare|calculus|analisi|fisica|logica|krr|aima|lab|laboratorio|ricevimento)\b/i],
+  ['nerina', /\b(nerina)\b/i], ['network', /\b(network|networking|call|colloquio|riunione|meeting|incontro con|investitor\w*)\b/i],
+  ['social', /\b(cena|pranzo|aperitivo|aperi|amici|amico|amica|festa|pizza|uscita|cinema|compleanno|ragazza)\b/i]
+];
+function parseQuick(raw, today) {
+  let s = ' ' + raw + ' ';
+  const got = {}, cut = (re) => { s = s.replace(re, ' '); };
+  const early = (dayBounds(today).wake || 510) - 60, hh = (h, m, bare) => { let x = Number(h); if (bare && x >= 1 && x * 60 < early) x += 12; return x * 60 + (Number(m) || 0); };
+  let r;
+  // giorni
+  if ((r = s.match(/\s(dopodomani)\s/i))) { got.data = addDays(today, 2); cut(r[0]); }
+  else if ((r = s.match(/\s(domani)\s/i))) { got.data = addDays(today, 1); cut(r[0]); }
+  else if ((r = s.match(/\s(oggi|stasera|stamattina)\s/i))) { got.data = today; cut(r[0].replace(/stasera|stamattina/i, '')); }
+  if (!got.data && (r = s.match(/\s(?:il\s|di\s|questo\s|prossimo\s)?(\d{1,2})\s?\/\s?(\d{1,2})(?:\s?\/\s?(\d{2,4}))?\s/i))) {
+    const t = parseISO(today), y = r[3] ? (r[3].length === 2 ? 2000 + Number(r[3]) : Number(r[3])) : t.getFullYear();
+    let d = iso(new Date(y, Number(r[2]) - 1, Number(r[1]))); if (!r[3] && d < today) d = iso(new Date(y + 1, Number(r[2]) - 1, Number(r[1])));
+    if (Number(r[2]) >= 1 && Number(r[2]) <= 12 && Number(r[1]) >= 1 && Number(r[1]) <= 31) { got.data = d; cut(r[0]); }
+  }
+  if (!got.data && (r = s.match(new RegExp(`\\s(?:il\\s)?(\\d{1,2})\\s(${MESI_G.join('|')})\\s`, 'i')))) {
+    const t = parseISO(today), mo = MESI_G.indexOf(r[2].toLowerCase()); let d = iso(new Date(t.getFullYear(), mo, Number(r[1]))); if (d < today) d = iso(new Date(t.getFullYear() + 1, mo, Number(r[1])));
+    got.data = d; cut(r[0]);
+  }
+  if (!got.data && (r = s.match(new RegExp(`\\s(?:il\\s)?(\\d{1,2})\\s(${MESI.join('|')})\\s`, 'i')))) {
+    const mi = MESI.findIndex((x) => x.toLowerCase() === r[2].toLowerCase()), n = Number(r[1]);
+    if (n >= 1 && n <= 49) { got.data = addDays(ORN_START, mi * 49 + n - 1); cut(r[0]); }
+  }
+  if (!got.data) for (let i = 0; i < 7; i++) {
+    const re = new RegExp(`\\s(?:(questo|prossimo)\\s)?(${WDN[i].join('|')})\\s`, 'i');
+    if ((r = s.match(re))) { let k = (i - dowOf(today) + 7) % 7; if (k === 0) k = 7; got.data = addDays(today, k); cut(r[0]); break; }
+  }
+  // orari: «dalle 18 alle 19:30», «18-19:30», «alle 18», «ore 18.30», «18:30»
+  const T = '(\\d{1,2})(?:[:.](\\d{2}))?';
+  const endOf = (h2, m2, st0) => { const x = Number(h2) * 60 + (Number(m2) || 0); return !m2 && Number(h2) <= 12 && x < st0 && x + 720 > st0 ? x + 720 : x; };
+  if ((r = s.match(new RegExp(`\\s(?:dalle|da)\\s${T}\\s(?:alle|a)\\s${T}\\s`, 'i')))) { got.s = hh(r[1], r[2], !r[2]); got.e = endOf(r[3], r[4], got.s); cut(r[0]); }
+  else if ((r = s.match(/\s(\d{1,2})(?:[:.](\d{2}))?\s?[-–]\s?(\d{1,2})(?:[:.](\d{2}))?\s/)) && (r[2] || r[4])) { got.s = hh(r[1], r[2]); got.e = hh(r[3], r[4]); cut(r[0]); }
+  else if ((r = s.match(new RegExp(`\\s(?:alle|ore|h|verso le|per le)\\s${T}\\s`, 'i')))) { got.s = hh(r[1], r[2], !r[2]); cut(r[0]); }
+  else if ((r = s.match(/\s(\d{1,2})[:.](\d{2})\s/))) { got.s = hh(r[1], r[2]); cut(r[0]); }
+  if (got.s != null && (got.s >= 1440 || Number.isNaN(got.s))) delete got.s;
+  if (got.e != null) { if (got.s == null || Number.isNaN(got.e)) delete got.e; else { if (got.e <= got.s) got.e += 1440; if (got.e - got.s > 16 * 60) delete got.e; } }
+  // durata: «per 2 ore», «per un'ora», «per mezz'ora», «1h30», «90 min»
+  if ((r = s.match(/\s(?:per\s)?(un'ora e mezza|un'ora|mezz'ora|un quarto d'ora)\s/i))) { got.len = { "un'ora e mezza": 90, "un'ora": 60, "mezz'ora": 30, "un quarto d'ora": 15 }[r[1].toLowerCase()]; cut(r[0]); }
+  else if ((r = s.match(/\s(?:per\s)?(\d{1,2})\s?h\s?(\d{2})?\s/i))) { got.len = Number(r[1]) * 60 + (Number(r[2]) || 0); cut(r[0]); }
+  else if ((r = s.match(/\s(?:per\s)?(\d{1,2}(?:[.,]5)?)\s?(?:ore|ora)\s/i))) { got.len = Math.round(Number(r[1].replace(',', '.')) * 60); cut(r[0]); }
+  else if ((r = s.match(/\s(?:per\s)?(\d{1,3})\s?(?:min|minuti|')\s/i))) { got.len = Number(r[1]); cut(r[0]); }
+  if (got.len != null && (got.len < 5 || got.len > 16 * 60)) delete got.len;
+  if (got.e != null) got.len = got.e - got.s;
+  for (const [c, re] of CAT_WORDS) if (re.test(raw)) { got.cat = c; break; }
+  const title = s.replace(/\s(il|di|alle|dalle|per|a|da|ore)\s*$/i, ' ').replace(/^\s*(il|di|alle|dalle|per)\s/i, ' ').replace(/\s+/g, ' ').trim();
+  got.title = cap(title);
+  got.any = got.data != null || got.s != null || got.len != null;
+  return got;
+}
+
+/* ---------- l'orario: inizio, durata e fine, più la giornata da trascinare ---------- */
+function timeField(label, onSet) {
+  const big = h('b', { class: 'tv' }), inp = h('input', { class: 'tin', type: 'time', step: 300, 'aria-label': label });
+  const go = () => { if (inp.value) onSet(toMin(inp.value)); };
+  inp.addEventListener('input', go); inp.addEventListener('change', go);
+  const el = h('label', { class: 'tf' }, h('small', { text: label }), big, inp);
+  return { el, set(v, off) { big.textContent = v == null ? '––:––' : fmt(v); el.classList.toggle('off', !!off); if (document.activeElement !== inp) inp.value = v == null ? '' : hm(v); } };
+}
+const RPX = 1.1; // pixel per minuto nella giornata da trascinare
+function rangeTrack(st, onChange) {
+  const box = h('div', { class: 'rt' }), inner = h('div', { class: 'rt-in' });
+  box.append(inner);
+  let A = 0, B = 0, blk = null, lab = null;
+  const x = (m) => (m - A) * RPX;
+  function placeBlock() {
+    if (!blk) return;
+    blk.hidden = st.noTime; blk.style.left = x(st.s) + 'px'; blk.style.width = Math.max(14, st.len * RPX) + 'px';
+    lab.textContent = `${fmt(st.s)}–${fmt(st.s + st.len)}`; blk.classList.toggle('narrow', st.len * RPX < 92);
+    const clash = st.others.filter((t) => t.start < st.s + st.len && st.s < t.end);
+    blk.classList.toggle('bad', !st.noTime && clash.length > 0);
+    $$('.rt-e', inner).forEach((e) => e.classList.toggle('bad', !st.noTime && clash.some((c) => c.key === e.dataset.k)));
+  }
+  function draw(center) {
+    const m = st.model;
+    A = Math.floor(Math.min(6 * 60, m.wake - 60, ...st.others.map((t) => t.start), st.noTime ? 1e9 : st.s) / 60) * 60;
+    B = Math.ceil(Math.max(24 * 60, m.bed + 60, ...st.others.map((t) => t.end), st.noTime ? 0 : st.s + st.len) / 60) * 60;
+    inner.replaceChildren(); inner.style.width = (B - A) * RPX + 'px';
+    inner.append(h('i', { class: 'rt-sl', style: { left: '0', width: x(m.wake) + 'px' } }), h('i', { class: 'rt-sl', style: { left: x(m.bed) + 'px', right: '0' } }));
+    for (let t = A; t <= B; t += 60) inner.append(h('span', { class: 'rt-h', style: { left: x(t) + 'px' }, text: String((t / 60) % 24) }));
+    for (const t of st.others) inner.append(h('div', { class: 'rt-e', 'data-cat': t.cat, 'data-k': t.key, style: { left: x(t.start) + 'px', width: Math.max(6, (t.end - t.start) * RPX) + 'px' } }, h('span', { text: t.title })));
+    const L = nowLogical();
+    if (st.data === L.date && L.min > A && L.min < B) inner.append(h('i', { class: 'rt-now', style: { left: x(L.min) + 'px' } }));
+    lab = h('span', { class: 'rt-lab' });
+    blk = h('div', { class: 'rt-b', 'data-cat': st.cat }, h('i', { class: 'rt-hl', 'data-h': 'l' }), lab, h('i', { class: 'rt-hr', 'data-h': 'r' }));
+    inner.append(blk); placeBlock();
+    if (center) requestAnimationFrame(() => { box.scrollLeft = Math.max(0, x(st.noTime ? Math.max(m.wake, 8 * 60) : st.s) - 70); });
+  }
+  // gesti: trascina il blocco per spostarlo, le maniglie per cambiare inizio o fine, tocca la giornata per metterlo lì
+  let G = null;
+  inner.addEventListener('pointerdown', (e) => {
+    const hd = e.target.closest('[data-h]'), onB = e.target.closest('.rt-b');
+    G = { id: e.pointerId, x0: e.clientX, y0: e.clientY, s0: st.s, len0: st.len, mode: hd ? hd.dataset.h : onB ? 'm' : 'tap', moved: false, sl: box.scrollLeft };
+    if (G.mode !== 'tap') { e.preventDefault(); inner.setPointerCapture(e.pointerId); blk.classList.add('lift'); if (navigator.vibrate) navigator.vibrate(8); }
+  });
+  inner.addEventListener('pointermove', (e) => {
+    if (!G || e.pointerId !== G.id) return;
+    const dxp = e.clientX - G.x0; if (Math.abs(dxp) > 6 || Math.abs(e.clientY - G.y0) > 6) G.moved = true;
+    if (G.mode === 'tap') return;
+    const r = box.getBoundingClientRect(); if (e.clientX < r.left + 28) box.scrollLeft -= 8; else if (e.clientX > r.right - 28) box.scrollLeft += 8;
+    const dm = Math.round((dxp + box.scrollLeft - G.sl) / RPX / 5) * 5;
+    if (G.mode === 'm') st.s = Math.max(A, Math.min(B - st.len, G.s0 + dm));
+    else if (G.mode === 'l') { const end = G.s0 + G.len0; st.s = Math.max(A, Math.min(end - 10, G.s0 + dm)); st.len = end - st.s; }
+    else st.len = Math.max(10, Math.min(B - st.s, G.len0 + dm));
+    placeBlock(); onChange(false);
+  });
+  const up = (e) => {
+    if (!G || e.pointerId !== G.id) return; const g = G; G = null; blk.classList.remove('lift');
+    if (g.mode === 'tap' && e.type === 'pointerup' && !g.moved && Math.abs(box.scrollLeft - g.sl) < 4) {
+      const rr = inner.getBoundingClientRect(), t = A + (e.clientX - rr.left) / RPX;
+      st.s = Math.max(A, Math.min(B - st.len, Math.floor(t / 15) * 15)); st.noTime = false;
+    }
+    if (st.s >= 1440) st.s -= 1440;
+    onChange(true);
+  };
+  inner.addEventListener('pointerup', up); inner.addEventListener('pointercancel', up);
+  return { el: box, draw, placeBlock };
+}
 
 /* ---------- nuovo impegno / modifica ---------- */
 function openEvent(ev, pre = {}) {
   const L = nowLogical(), isNew = !ev;
   const last = [...S.miei].reverse().find((x) => NEW_CATS.includes(catOf(x)));
-  let cat = ev ? catOf(ev) : (pre.cat || (last ? catOf(last) : 'uni'));
-  let data = ev ? ev.data : (pre.data || L.date), ini = ev ? (ev.inizio || '') : (pre.inizio || ''), len = ev ? (ev.inizio && ev.fine ? toMin(ev.fine, toMin(ev.inizio)) - toMin(ev.inizio) : Number(ev.durata) || 60) : (pre.durata || CATS[cat].min || 60), rip = 1;
-  let noTime = ev ? !ev.inizio : false;
-  const title = h('input', { class: 'bigin', type: 'text', value: ev ? ev.titolo : '', placeholder: 'Cosa devi fare?', autocomplete: 'off', enterkeyhint: 'done' });
+  const st = { cat: ev ? catOf(ev) : (pre.cat || (last ? catOf(last) : 'uni')), data: ev ? ev.data : (pre.data || L.date), s: null, len: 60, noTime: false, others: [], model: null };
+  st.len = ev ? (ev.inizio && ev.fine ? toMin(ev.fine, toMin(ev.inizio)) - toMin(ev.inizio) : Number(ev.durata) || 60) : (pre.durata || CATS[st.cat].min || 60);
+  st.noTime = ev ? !ev.inizio : false;
+  const touched = new Set(ev ? ['data', 'time', 'len', 'cat'] : [...(pre.data ? ['data'] : []), ...(pre.inizio ? ['time'] : []), ...(pre.cat ? ['cat'] : [])]);
+  let rip = 1, parsed = null;
+  const firstFree = (len) => {
+    const m = dayModel(st.data), from = st.data === L.date ? Math.ceil((L.min + 5) / 15) * 15 : null;
+    const fw = freeWindows(m.timed.filter((t) => !ev || t.key !== evKey(ev)), m.wake, m.bed, from).find(([a, b]) => b - a >= len);
+    return fw ? Math.ceil(fw[0] / 15) * 15 : (from != null ? Math.min(from, 23 * 60) : Math.max(m.wake, 9 * 60));
+  };
+  st.s = ev && ev.inizio ? toMin(ev.inizio) : pre.inizio ? toMin(pre.inizio) : firstFree(st.len);
+  const base = { cat: st.cat, data: st.data, len: st.len, s: st.s };
+
+  const title = h('input', { class: 'bigin', type: 'text', value: ev ? ev.titolo : '', placeholder: 'Cosa devi fare?', autocomplete: 'off', autocapitalize: 'sentences', enterkeyhint: 'done' });
   title.addEventListener('keydown', (x) => { if (x.key === 'Enter') { x.preventDefault(); title.blur(); } });
-  const recent = isNew ? [...new Map([...S.miei].reverse().filter((x) => x.titolo).map((x) => [x.titolo.toLowerCase(), x])).values()].slice(0, 6) : [];
-  const recentBox = recent.length ? h('div', { class: 'chips' }, recent.map((x) => h('button', { class: 'chip', type: 'button', 'data-cat': catOf(x), onclick: () => { title.value = x.titolo; cat = NEW_CATS.includes(catOf(x)) ? catOf(x) : cat; len = x.inizio && x.fine ? toMin(x.fine, toMin(x.inizio)) - toMin(x.inizio) : (x.durata || len); if (x.dove) where.value = x.dove; pick(tiles, tiles.querySelector(`[data-c="${cat}"]`)); lenBox.replaceWith(lenBox = durChips(len, setLen)); upd(); } }, h('span', { class: 'ih', style: { color: 'var(--k)' }, html: catIc(catOf(x)) }), x.titolo))) : null;
-  const tiles = h('div', { class: 'tiles' }, NEW_CATS.map((c) => h('button', { class: 'tile', type: 'button', 'data-cat': c, 'data-c': c, 'aria-pressed': String(c === cat), onclick: (e) => { const was = cat; cat = c; pick(tiles, e.currentTarget); if (isNew && len === (CATS[was].min || 60)) { len = CATS[c].min; lenBox.replaceWith(lenBox = durChips(len, setLen)); } upd(); } }, h('span', { class: 'ih', html: catIc(c) }), CATS[c].n)));
-  const dp = dayPicker(data, 42, (d) => { data = d; upd(); }, data < L.date ? data : L.date);
-  const other = h('input', { class: 'in sm', type: 'date', value: data, 'aria-label': 'Altra data', onchange: () => { if (other.value) { data = other.value; pick(dp, dp.querySelector(`[data-d="${data}"]`)); upd(); } } });
-  const prev = h('div', {}), timeBox = h('div', { class: 'chips' });
-  const tIn = h('input', { class: 'in sm', type: 'time', value: ini, step: 300, 'aria-label': 'Ora', onchange: () => { ini = tIn.value; noTime = !ini; upd(); } });
-  const setLen = (m) => { len = m; upd(); };
-  let lenBox = durChips(len, setLen);
-  const ripBox = isNew ? h('div', { class: 'chips' }, [[1, 'Una volta'], [4, '4 settimane'], [8, '8 settimane'], [12, '12 settimane']].map(([n, t]) => h('button', { class: 'chip', type: 'button', 'aria-pressed': String(n === rip), text: t, onclick: (e) => { rip = n; pick(ripBox, e.currentTarget); upd(); } }))) : null;
+  const hint = h('div', { class: 'qp' }), sug = h('div', { class: 'sug' });
+  const recent = [...new Map([...S.miei].reverse().filter((x) => x.titolo).map((x) => [x.titolo.toLowerCase(), x])).values()].slice(0, 40);
+  const tiles = h('div', { class: 'tiles' }, NEW_CATS.map((c) => h('button', { class: 'tile', type: 'button', 'data-cat': c, 'data-c': c, 'aria-pressed': String(c === st.cat), onclick: (e) => { setCat(c, true); } }, h('span', { class: 'ih', html: catIc(c) }), CATS[c].n)));
+  function setCat(c, byHand) {
+    const was = st.cat; st.cat = c; if (byHand) touched.add('cat');
+    pick(tiles, tiles.querySelector(`[data-c="${c}"]`));
+    if (isNew && !touched.has('len') && st.len === (CATS[was].min || 60)) st.len = CATS[c].min || 60;
+    upd(true);
+  }
+  let dp = null;
+  const mkDp = () => dayPicker(st.data, 42, (d) => { st.data = d; touched.add('data'); if (isNew && !touched.has('time')) st.s = firstFree(st.len); upd(true); }, st.data < L.date ? st.data : L.date);
+  dp = mkDp();
+  const other = h('input', { class: 'tin', type: 'date', value: st.data, 'aria-label': 'Altra data', onchange: () => { if (other.value) { st.data = other.value; touched.add('data'); const n = mkDp(); dp.replaceWith(n); dp = n; upd(true); } } });
+  const otherBtn = h('label', { class: 'odate' }, h('span', { class: 'ih', html: ic('calendario') }), h('span', { text: 'Altra data' }), other);
+  const dayLine = h('div', { class: 'dline' });
+
+  const fS = timeField('Inizio', (v) => { st.s = v; st.noTime = false; touched.add('time'); upd(false, true); });
+  const fE = timeField('Fine', (v) => { let e = v; if (e <= st.s) e += 1440; if (e - st.s <= 16 * 60) { st.len = e - st.s; st.noTime = false; touched.add('len'); upd(false, true); } });
+  const lenTxt = h('b', {});
+  const stepLen = (d) => { const step = st.len + d <= 30 || (d < 0 && st.len <= 30) ? 5 : 15; st.len = Math.max(5, Math.min(16 * 60, d > 0 ? Math.floor(st.len / step) * step + step : Math.ceil(st.len / step) * step - step)); st.noTime = false; touched.add('len'); upd(false, true); };
+  const lenBox = h('div', { class: 'tdur' }, h('small', { text: 'Durata' }), h('div', { class: 'tdur-c' },
+    h('button', { type: 'button', class: 'tdb', 'aria-label': 'Meno', text: '−', onclick: () => stepLen(-1) }), lenTxt, h('button', { type: 'button', class: 'tdb', 'aria-label': 'Più', text: '+', onclick: () => stepLen(1) })));
+  const track = rangeTrack(st, (final) => { touched.add('time'); touched.add('len'); upd(false, final); });
+  const warn = h('div', {});
+  const noTimeBtn = h('button', { class: 'ntb', type: 'button', role: 'switch', onclick: () => { st.noTime = !st.noTime; upd(true); } }, h('i'), h('span', { text: 'Senza un orario fisso (va in «Da fissare»)' }));
+  const timeCard = h('div', { class: 'card tcard' }, h('div', { class: 'trow' }, fS.el, h('span', { class: 'tarr', html: ic('freccia') }), lenBox, h('span', { class: 'tarr', html: ic('freccia') }), fE.el),
+    track.el, h('div', { class: 'rt-tip', text: 'Trascina il blocco per spostarlo, i bordi per allungarlo. Tocca la giornata per metterlo lì.' }), warn, noTimeBtn);
+
+  const ripSel = isNew ? h('select', { class: 'in sm rsel', 'aria-label': 'Ripeti', onchange: () => { rip = Number(ripSel.value); upd(); } },
+    [[1, 'Una volta'], [2, 'Ogni settimana, per 2 settimane'], [4, 'Ogni settimana, per 4 settimane'], [8, 'Ogni settimana, per 8 settimane'], [12, 'Ogni settimana, per 12 settimane']].map(([n, t]) => h('option', { value: n, text: t }))) : null;
   const where = h('input', { class: 'in', type: 'text', value: ev ? ev.dove || '' : '', placeholder: 'Dove (se serve)' });
   const note = h('textarea', { class: 'in', rows: 2, placeholder: 'Nota' }); note.value = ev ? ev.nota || '' : '';
-  const save = h('button', { class: 'btn pri wide', type: 'button', style: { minHeight: '50px' }, onclick: () => submit() });
-  const whenBox = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } });
-  function upd() {
-    const s0 = ini && !noTime ? toMin(ini) : null, mark = s0 != null ? [s0, s0 + len] : null;
-    const mb = miniBar(data, mark, ev ? evKey(ev) : null, (m) => { ini = hm(m); noTime = false; tIn.value = ini; upd(); });
-    const m = dayModel(data), from = data === L.date ? Math.ceil((L.min + 5) / 15) * 15 : null;
-    const fw = freeWindows(m.timed.filter((t) => !ev || t.key !== evKey(ev)), m.wake, m.bed, from);
-    const sug = [...new Set(fw.filter(([a, b]) => b - a >= len).map(([a]) => Math.ceil(a / 15) * 15))].slice(0, 4);
-    prev.replaceChildren(h('div', { class: 'row sp', style: { marginBottom: '8px' } }, h('b', { style: { fontSize: '14.5px' }, text: `${dLetter(data)} · ${dTitle(data)}` }), h('small', { class: 'faint', text: `${cap(WD[dowOf(data)])} ${greg(data)} · ${m.timed.length ? m.timed.length + ' impegni' : 'libero'}` })), mb.el,
-      mb.clash.length ? h('div', { class: 'warn', style: { marginTop: '8px' } }, h('span', { class: 'ih', html: ic('avviso') }), `Si sovrappone a ${mb.clash.map((c) => `${c.title} (${fmt(c.start)}–${fmt(c.end)})`).join(', ')}`) : '');
-    timeBox.replaceChildren(...sug.map((x) => h('button', { class: 'chip free', type: 'button', 'aria-pressed': String(!noTime && ini === hm(x)), text: fmt(x), onclick: () => { ini = hm(x); noTime = false; tIn.value = ini; upd(); } })), tIn,
-      h('button', { class: 'chip', type: 'button', 'aria-pressed': String(noTime), text: 'Senza orario', onclick: () => { noTime = !noTime; upd(); } }));
-    save.innerHTML = `${ic(isNew ? 'piu' : 'check')}<span>${isNew ? 'Aggiungi' : 'Salva'} · ${dLetter(data)} ${dTitle(data)}${!noTime && ini ? ' · ' + fmt(toMin(ini)) : ''}${rip > 1 ? ` · ${rip} volte` : ''}</span>`;
+  const save = h('button', { class: 'btn pri wide', type: 'button', style: { minHeight: '52px' }, onclick: () => submit() });
+
+  function applyParse() {
+    const raw = title.value; parsed = raw.trim() && (isNew || raw !== ev.titolo) ? parseQuick(raw, L.date) : null;
+    // quello che non hai toccato a mano segue la frase; se togli una parte, torna com'era
+    const P = parsed || {};
+    if (!touched.has('cat')) { st.cat = P.cat || base.cat; pick(tiles, tiles.querySelector(`[data-c="${st.cat}"]`)); }
+    if (!touched.has('data')) { const d = P.data || base.data; if (d !== st.data) { st.data = d; const n = mkDp(); dp.replaceWith(n); dp = n; } }
+    if (!touched.has('len')) st.len = P.len || (st.cat !== base.cat ? CATS[st.cat].min || 60 : base.len);
+    if (!touched.has('time')) { if (P.s != null) { st.s = P.s; st.noTime = false; } else st.s = st.data !== base.data || st.len !== base.len ? firstFree(st.len) : base.s; }
+    const bits = parsed && parsed.any ? [parsed.data ? `${relWord(parsed.data, L.date)} ${dTitle(parsed.data)}` : null, parsed.s != null ? (parsed.e != null || parsed.len ? `${fmt(parsed.s)}–${fmt(parsed.s + (parsed.len || st.len))}` : `alle ${fmt(parsed.s)}`) : parsed.len ? dur(parsed.len) : null].filter(Boolean) : [];
+    hint.replaceChildren(bits.length ? h('span', { class: 'ok' }, h('span', { class: 'ih', html: ic('check') }), `Capito: «${parsed.title || CATS[st.cat].n}» · ${bits.join(' · ')}`)
+      : h('span', { text: isNew ? 'Puoi scrivere anche quando: «palestra domani dalle 18 alle 19:30»' : '' }));
+    // suggerimenti dagli impegni già messi (solo mentre scrivi)
+    const q = (parsed && parsed.title ? parsed.title : raw).trim().toLowerCase();
+    const hits = isNew && q.length >= 2 ? recent.filter((x) => x.titolo.toLowerCase().includes(q) && x.titolo.toLowerCase() !== q).slice(0, 3) : [];
+    sug.replaceChildren(...hits.map((x) => { const xl = x.inizio && x.fine ? toMin(x.fine, toMin(x.inizio)) - toMin(x.inizio) : (Number(x.durata) || 60);
+      return h('button', { type: 'button', class: 'sg', 'data-cat': catOf(x), onclick: () => {
+        const rest = parsed && parsed.any ? ' ' + raw.replace(new RegExp(parsed.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'), '').trim() : '';
+        title.value = x.titolo + rest; if (NEW_CATS.includes(catOf(x))) { st.cat = catOf(x); touched.add('cat'); pick(tiles, tiles.querySelector(`[data-c="${st.cat}"]`)); }
+        if (!(parsed && parsed.len)) { st.len = xl; touched.add('len'); } if (x.dove && !where.value) { where.value = x.dove; moreOpen = true; moreBox.style.display = 'flex'; }
+        applyParse(); upd(true); } }, h('span', { class: 'ih', html: catIc(catOf(x)) }), h('span', { text: x.titolo }), h('small', { text: dur(xl) })); }));
   }
-  whenBox.append(h('span', { class: 'lab', text: 'Ora' }), timeBox, h('span', { class: 'lab', text: 'Durata' }));
+  title.addEventListener('input', () => { applyParse(); upd(true); });
+
+  function upd(redraw, final) {
+    if (st.s >= 1440) st.s -= 1440;
+    st.model = dayModel(st.data); st.others = st.model.timed.filter((t) => !ev || t.key !== evKey(ev));
+    tiles.style.setProperty('--k', `var(--k-${st.cat})`);
+    if (redraw !== false || final) track.draw(redraw === true); else track.placeBlock();
+    const o = settale(st.data), m = st.model;
+    dayLine.replaceChildren(h('b', { text: `${relWord(st.data, L.date)} · ${dLetter(st.data)} ${dTitle(st.data)}` }), h('small', { text: `${cap(WD[dowOf(st.data)])} ${greg(st.data)}${o ? ' · ' + o.sett : ''} · ${st.others.length ? st.others.length + (st.others.length === 1 ? ' impegno' : ' impegni') : 'libero'}` }));
+    fS.set(st.noTime ? null : st.s, st.noTime); fE.set(st.noTime ? null : st.s + st.len, st.noTime);
+    lenTxt.textContent = dur(st.len);
+    timeCard.classList.toggle('nt', st.noTime); noTimeBtn.setAttribute('aria-checked', String(st.noTime));
+    const clash = st.noTime ? [] : st.others.filter((t) => t.start < st.s + st.len && st.s < t.end);
+    if (clash.length) {
+      const fw = freeWindows(st.others, st.model.wake, st.model.bed, st.data === L.date ? Math.ceil((L.min + 5) / 15) * 15 : null).filter(([a, b]) => b - a >= st.len)
+        .map(([a, b]) => Math.round(Math.max(a, Math.min(b - st.len, st.s)) / 5) * 5).filter((x) => !st.others.some((t) => t.start < x + st.len && x < t.end));
+      const ff = fw.length ? fw.sort((a, b) => Math.abs(a - st.s) - Math.abs(b - st.s))[0] : firstFree(st.len);
+      warn.replaceChildren(h('div', { class: 'warn' }, h('span', { class: 'ih', html: ic('avviso') }), h('span', { text: `Si sovrappone a ${clash.map((c) => `${c.title} (${fmt(c.start)}–${fmt(c.end)})`).join(', ')}` })),
+        h('button', { class: 'btn sm line', type: 'button', style: { marginTop: '8px' }, onclick: () => { st.s = ff; upd(true); } }, `Spostalo alle ${fmt(ff)}, nello spazio libero più vicino`));
+    } else warn.replaceChildren();
+    const ttl = (parsed && parsed.any ? parsed.title : title.value.trim()) || CATS[st.cat].n;
+    save.replaceChildren(icEl(isNew ? 'piu' : 'check'), h('span', { text: `${isNew ? 'Aggiungi' : 'Salva'} · ${ttl.length > 18 ? ttl.slice(0, 17) + '…' : ttl} · ${dLetter(st.data)} ${dNum(st.data)}${!st.noTime ? ' · ' + fmt(st.s) : ''}${rip > 1 ? ` · ${rip} volte` : ''}` }));
+  }
   const submit = () => {
-    const t = title.value.trim() || CATS[cat].n;
-    const obj = { titolo: t, tipo: cat, data, durata: len, dove: where.value.trim() || undefined, nota: note.value.trim() || undefined };
-    if (!noTime && ini) { obj.inizio = ini; obj.fine = hm(toMin(ini) + len); obj.flessibile = undefined; } else { obj.inizio = undefined; obj.fine = undefined; obj.flessibile = true; }
-    const snap0 = snapshot();
+    const t = cap((parsed && parsed.any ? parsed.title : title.value.trim()) || CATS[st.cat].n);
+    const obj = { titolo: t, tipo: st.cat, data: st.data, durata: st.len, dove: where.value.trim() || undefined, nota: note.value.trim() || undefined };
+    if (!st.noTime) { obj.inizio = hm(st.s); obj.fine = hm(st.s + st.len); obj.flessibile = undefined; } else { obj.inizio = undefined; obj.fine = undefined; obj.flessibile = true; }
+    const snap0 = snapshot(), data = st.data;
     if (isNew) {
       const serie = rip > 1 ? 'r' + Date.now().toString(36) : undefined, ids = [];
       for (let i = 0; i < rip; i++) { const id = newId() + i; ids.push(id); S.miei.push({ ...obj, data: addDays(data, 7 * i), serie, id }); }
@@ -1234,14 +1503,15 @@ function openEvent(ev, pre = {}) {
       const id = patchEvent(ev, obj); saveState(); closeSheet(); FLASH = 'e:' + id; render(); FLASH = null; undoable('Salvato', snap0);
     }
   };
-  upd();
   let moreOpen = !!(ev && (ev.dove || ev.nota));
   const moreBox = h('div', { style: { display: moreOpen ? 'flex' : 'none', flexDirection: 'column', gap: '10px' } }, where, note);
   const moreBtn = h('button', { class: 'more', type: 'button', onclick: () => { moreOpen = !moreOpen; moreBox.style.display = moreOpen ? 'flex' : 'none'; moreBtn.querySelector('.lbl').textContent = moreOpen ? 'Meno dettagli' : 'Dove e nota'; } }, h('span', { class: 'ih', html: ic('luogo') }), h('span', { class: 'lbl', text: moreOpen ? 'Meno dettagli' : 'Dove e nota' }));
-  openSheet([shHead(isNew ? 'Nuovo impegno' : 'Modifica'), title, recentBox, tiles,
-    h('span', { class: 'lab', text: 'Quando' }), dp, h('div', { class: 'row' }, h('span', { class: 'faint', style: { fontSize: '13px' }, text: 'Altra data' }), other), prev, whenBox, lenBox,
-    isNew ? h('span', { class: 'lab', text: 'Ripeti ogni settimana' }) : null, ripBox, moreBtn, moreBox, save,
-    !isNew ? h('button', { class: 'btn ghost wide', type: 'button', style: { color: 'var(--bad)' }, onclick: () => { const s0 = snapshot(); removeEvent(ev); saveState(); closeSheet(); render(); undoable('Eliminato', s0); } }, h('span', { class: 'ih', html: ic('cestino') }), 'Elimina') : null]);
+  openSheet([shHead(isNew ? 'Nuovo impegno' : 'Modifica'), h('div', { class: 'tblock' }, title, sug, hint), tiles,
+    h('div', { class: 'row sp' }, h('span', { class: 'lab', text: 'Quando' }), otherBtn), dp, dayLine, timeCard,
+    isNew ? h('div', { class: 'row sp' }, h('span', { class: 'lab', text: 'Ripeti' }), ripSel) : null, moreBtn, moreBox,
+    !isNew ? h('button', { class: 'btn ghost wide', type: 'button', style: { color: 'var(--bad)' }, onclick: () => { const s0 = snapshot(); removeEvent(ev); saveState(); closeSheet(); render(); undoable('Eliminato', s0); } }, h('span', { class: 'ih', html: ic('cestino') }), 'Elimina') : null,
+    h('div', { class: 'savebar' }, save)]);
+  applyParse(); upd(true);
   if (isNew && !pre.inizio) setTimeout(() => title.focus(), 330);
 }
 
@@ -1396,10 +1666,28 @@ function openSettings() {
     }
   };
   drawSync();
+  const notiBox = h('div', { class: 'card', style: { padding: '14px', display: 'flex', flexDirection: 'column', gap: '12px' } });
+  const drawNoti = () => {
+    const pp = pref(), cc = syncCfg();
+    const avSel = h('select', { class: 'in sm', 'aria-label': 'Avviso prima degli impegni', onchange: () => { S.pref = { ...S.pref, avviso: Number(avSel.value) }; saveState(); drawNoti(); } },
+      [[0, 'Niente'], [5, '5 min prima'], [10, '10 min prima'], [15, '15 min prima'], [30, '30 min prima'], [60, '1 ora prima']].map(([v, t]) => h('option', { value: v, text: t, selected: Number(pp.avviso) === v })));
+    const seSel = h('select', { class: 'in sm', 'aria-label': 'Promemoria della sera', onchange: () => { S.pref = { ...S.pref, sera: seSel.value }; saveState(); drawNoti(); } },
+      [['', 'Niente'], ['20:30', 'alle 20:30'], ['21:00', 'alle 21:00'], ['21:30', 'alle 21:30'], ['22:00', 'alle 22:00'], ['22:30', 'alle 22:30']].map(([v, t]) => h('option', { value: v, text: t, selected: (pp.sera || '') === v })));
+    const n = promemoria(Date.now(), 7, true), nx = n[0];
+    const send = h('a', { class: 'btn sm pri', href: '#', style: { textDecoration: 'none' }, onclick: (e) => { e.preventDefault(); location.href = scriptableURL(); } }, h('span', { class: 'ih', html: ic('campana') }), 'Manda le notifiche al telefono');
+    notiBox.replaceChildren(h('b', { text: 'Notifiche' }),
+      h('div', { class: 'row sp' }, h('span', { text: 'Prima di ogni impegno' }), avSel),
+      h('div', { class: 'row sp' }, h('span', { text: 'La sera, se domani è da pianificare' }), seSel),
+      h('span', { class: 'muted', style: { fontSize: '13.5px' }, text: nx ? `Prossima: ${new Date(nx.at).toLocaleString('it-IT', { weekday: 'short', hour: '2-digit', minute: '2-digit' })} · ${nx.title}` : 'Nessuna notifica nei prossimi 7 giorni.' }),
+      send,
+      h('span', { class: 'faint', style: { fontSize: '13px' }, text: cc ? 'Le manda Scriptable, la stessa app del widget. Con l\'andamento collegato si aggiornano da sole quando il widget si rinfresca; il pulsante serve per averle subito.' : 'Le manda Scriptable, la stessa app del widget. Finché l\'andamento non è collegato, dopo aver aggiunto o spostato impegni tocca questo pulsante: Scriptable si apre un attimo, programma le notifiche e puoi tornare qui.' }));
+  };
+  drawNoti();
   const ver = S.versione ? `dati ${S.versione}` : 'senza dati';
   openSheet([shHead('Impostazioni', `Ritmo 2 · ${ver}`),
     h('span', { class: 'lab', text: 'La tua giornata tipo' }),
     h('div', { class: 'card', style: { padding: '12px 14px' } }, h('div', { class: 'row sp' }, h('span', { text: 'Sveglia' }), sv), h('div', { class: 'row sp', style: { marginTop: '10px' } }, h('span', { text: 'A letto' }), lt)),
+    notiBox,
     h('span', { class: 'lab', text: 'Paesaggio di Brumale' }), seg,
     h('p', { class: 'faint', style: { margin: '-6px 0 0', fontSize: '13px' }, text: 'Automatico: di giorno dalle 7 alle 17, di notte il resto.' }),
     syncBox,

@@ -1,4 +1,4 @@
-// RITMO-WIDGET v2 · widget di Ritmo per Scriptable (iPhone). Generato da strumenti/costruisci_widget.py: non modificare ritmo-widget.js a mano.
+// RITMO-WIDGET v2.1 · widget e notifiche di Ritmo per Scriptable (iPhone). Generato da strumenti/costruisci_widget.py: non modificare ritmo-widget.js a mano.
 // Mostra gli impegni del giorno, la data settale e il messaggio di feedback, calcolati con lo stesso nucleo dell'app.
 // Senza «Andamento nel widget» vede solo gli impegni del file dei dati; collegato, vede anche quelli messi nell'app, le spunte e i piani.
 const BASE = 'https://realininiccolo-oss.github.io/ritmo/';
@@ -6,6 +6,7 @@ const KEYNAME = 'ritmo-widget-chiave';
 const fm = FileManager.local();
 const cacheP = fm.joinPath(fm.documentsDirectory(), 'ritmo-widget-dati.json');
 const STATO = 'ritmo-widget-stato', statoP = fm.joinPath(fm.documentsDirectory(), 'ritmo-widget-stato.json');
+const appP = fm.joinPath(fm.documentsDirectory(), 'ritmo-stato-app.json'); // lo stato mandato da Ritmo con «Manda le notifiche al telefono»
 
 /*NUCLEO*/
 
@@ -88,9 +89,29 @@ async function loadStato(key) {
     const txt = decryptPkg(JSON.parse(f.content), key); fm.writeString(statoP, txt); return JSON.parse(txt);
   } catch (e) { return fm.fileExists(statoP) ? JSON.parse(fm.readString(statoP)) : null; }
 }
+/* lo stato più recente tra l'andamento (gist) e quello mandato direttamente dall'app */
+function stateFromApp() { try { return fm.fileExists(appP) ? JSON.parse(fm.readString(appP)) : null; } catch (e) { return null; } }
+function newest(a, b) { if (!a) return b; if (!b) return a; return (Number(b.t) || 0) > (Number(a.t) || 0) ? b : a; }
+
+/* ---------- notifiche: le programma iOS, anche ad app chiusa ---------- */
+async function syncNotifiche(list) {
+  let pend = [];
+  try { pend = await Notification.allPending(); } catch (e) { pend = []; }
+  const mine = pend.filter((n) => String(n.identifier || '').startsWith('ritmo:'));
+  const want = new Set(list.map((x) => x.id)), have = new Set(mine.map((n) => n.identifier));
+  const stale = mine.map((n) => n.identifier).filter((id) => !want.has(id));
+  if (stale.length) await Notification.removePending(stale);
+  let nuove = 0;
+  for (const x of list) {
+    if (have.has(x.id)) continue;
+    const n = new Notification(); n.identifier = x.id; n.title = x.title; n.body = x.body; n.threadIdentifier = 'ritmo'; n.sound = 'default';
+    n.setTriggerDate(new Date(x.at)); await n.schedule(); nuove++;
+  }
+  return { tot: list.length, nuove, tolte: stale.length };
+}
 async function menu() {
   const a = new Alert(); a.title = 'Ritmo'; a.addAction('Anteprima grande'); a.addAction('Anteprima media'); a.addAction('Anteprima piccola');
-  a.addAction(Keychain.contains(STATO) ? 'Cambia il codice dell\'andamento' : 'Collega l\'andamento'); a.addAction('Cambia la chiave'); a.addCancelAction('Chiudi');
+  a.addAction(Keychain.contains(STATO) ? 'Cambia il codice dell\'andamento' : 'Collega l\'andamento'); a.addAction('Cambia la chiave'); a.addAction('Notifiche: prova e aggiorna'); a.addCancelAction('Chiudi');
   const r = await a.presentSheet();
   if (r === 3) { const b = new Alert(); b.title = 'Codice dell\'andamento'; b.message = 'Lo trovi in Ritmo, Impostazioni, Andamento nel widget.'; b.addTextField('codice'); b.addAction('Salva'); b.addCancelAction('Annulla'); if (await b.presentAlert() === 0) { const c = b.textFieldValue(0).trim(); if (/^[0-9a-f]{20,}$/i.test(c)) Keychain.set(STATO, c); } }
   if (r === 4 && Keychain.contains(KEYNAME)) Keychain.remove(KEYNAME);
@@ -100,7 +121,7 @@ async function menu() {
 /* ---------- disegno ---------- */
 function addSym(st, n, size, color) { const s2 = SFSymbol.named(n) || SFSymbol.named('circle'); s2.applyFont(Font.semiboldSystemFont(size)); const i = st.addImage(s2.image); i.imageSize = new Size(size + 2, size + 2); i.tintColor = color; return i; }
 const THEMES = [['#F2E4D5', '#3B2418'], ['#232B3B', '#E7E9F2'], ['#EEF3F5', '#233238'], ['#EAF3E7', '#2A3B29'], ['#F1F8EC', '#2E3B22'], ['#FBF2D9', '#3B3012'], ['#F7E9CE', '#3A2E14']];
-const ACC = '#C96442', ACC_DARK = '#E58A6B';
+const ACC = '#E2603F', ACC_DARK = '#FF8C6B';
 function look(o) {
   const mi = o ? o.mi : 1, v = variantFor(mi, new Date().getHours(), pref().paesaggio);
   const [bg, ink] = mi === 1 && v === 'giorno' ? ['#E6EAEF', '#1E2733'] : THEMES[mi];
@@ -151,16 +172,17 @@ function evRow(st, t, k, size, L) {
 }
 const whenDate = (date, min) => { const d = parseISO(date); d.setMinutes(min); return d; };
 
-let FAM = 'large';
+let FAM = 'large', NOTI = null;
 async function main() {
   const fam = config.widgetFamily || FAM;
   const w = new ListWidget();
   const key = await getKey();
-  if (!key) { w.backgroundColor = new Color('#262624'); T(w, 'Ritmo', 16, Color.white(), 'h'); w.addSpacer(4); T(w, 'Apri lo script in Scriptable e incolla la chiave.', 12, new Color('#F5F4EE', .8), 'm', 3); return w; }
-  const data = await loadData(key), st0 = await loadStato(key);
+  if (!key) { w.backgroundColor = new Color('#1F2845'); T(w, 'Ritmo', 16, Color.white(), 'h'); w.addSpacer(4); T(w, 'Apri lo script in Scriptable e incolla la chiave.', 12, new Color('#F3F5FC', .8), 'm', 3); return w; }
+  const data = await loadData(key), st0 = newest(await loadStato(key), stateFromApp());
   S.cfg = data.cfg || null; S.nerina = data.nerina || {}; S.file = data.eventi || [];
   if (st0) { S.giorni = st0.giorni || {}; S.miei = st0.miei || []; S.nascosti = st0.nascosti || []; S.pref = st0.pref || {}; }
   rebuildEvents();
+  try { NOTI = await syncNotifiche(promemoria(Date.now(), 7, !!st0)); } catch (e) { NOTI = { err: e.message }; }
   const L = nowLogical(), d = L.date, o = settale(d), m = dayModel(d);
   let f = feedback(d, L);
   if (!st0 && f.act) f = { ...f, sub: 'Collega l\'andamento da Ritmo per vedere i piani' };
@@ -227,17 +249,41 @@ async function main() {
   return w;
 }
 
+async function avvisoNotifiche(prova) {
+  const a = new Alert();
+  if (!NOTI || NOTI.err) { a.title = 'Notifiche non programmate'; a.message = (NOTI && NOTI.err) || 'Qualcosa non è andato.'; }
+  else {
+    const pend = (await Notification.allPending()).filter((n) => String(n.identifier || '').startsWith('ritmo:')).sort((x, y) => x.nextTriggerDate - y.nextTriggerDate);
+    const df = new DateFormatter(); df.locale = 'it_IT'; df.dateFormat = 'EEE HH:mm';
+    a.title = pend.length ? `Notifiche pronte: ${pend.length}` : 'Nessuna notifica nei prossimi 7 giorni';
+    a.message = pend.slice(0, 4).map((n) => `${df.string(n.nextTriggerDate)} · ${n.title}`).join('\n') + (prova ? '\n\nTra 5 secondi arriva una notifica di prova.' : '\n\nPuoi tornare su Ritmo.');
+  }
+  a.addAction('OK'); await a.presentAlert();
+}
 try {
   let r = 0;
+  const q = args.queryParameters || {};
+  if (q.notifiche) {
+    // aperto da Ritmo: salvo lo stato che arriva dall'app, programmo le notifiche e basta
+    if (q.stato) { try { const st = JSON.parse(q.stato); if (st && st.v === 2) fm.writeString(appP, JSON.stringify(st)); } catch (e) { /* stato non leggibile: uso quello che ho */ } }
+    await main(); await avvisoNotifiche(false); Script.complete(); return;
+  }
+  if (config.runsWithSiri) { await main(); Script.complete(); return; } // da Comandi: aggiorna in silenzio le notifiche
   if (!config.runsInWidget && !config.runsInAccessoryWidget && Keychain.contains(KEYNAME)) r = await menu();
+  if (r === 5) {
+    await main();
+    const n = new Notification(); n.identifier = 'ritmo-prova'; n.title = 'Ritmo · prova'; n.body = 'Le notifiche funzionano: arriveranno prima degli impegni.'; n.threadIdentifier = 'ritmo'; n.sound = 'default';
+    n.setTriggerDate(new Date(Date.now() + 5000)); await n.schedule();
+    await avvisoNotifiche(true); Script.complete(); return;
+  }
   if (r === -1) { Script.complete(); return; }
   if (r === 1) FAM = 'medium'; if (r === 2) FAM = 'small';
   const widget = await main();
   if (config.runsInWidget) Script.setWidget(widget); else if (FAM === 'medium') await widget.presentMedium(); else if (FAM === 'small') await widget.presentSmall(); else await widget.presentLarge();
 } catch (e) {
-  const w = new ListWidget(); w.backgroundColor = new Color('#262624');
+  const w = new ListWidget(); w.backgroundColor = new Color('#1F2845');
   const t = w.addText(e.message === 'chiave' ? 'Chiave sbagliata: riapri lo script e incollala di nuovo.' : 'Ritmo non riesce a caricare i dati. ' + e.message);
-  t.font = Font.systemFont(12); t.textColor = new Color('#F5F4EE');
+  t.font = Font.systemFont(12); t.textColor = new Color('#F3F5FC');
   if (config.runsInWidget) Script.setWidget(w); else await w.presentLarge();
 }
 Script.complete();
