@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="ornrarv.css?v=2.6.1">
+<link rel="stylesheet" href="ornrarv.css?v=2.7">
 <style>
 :root {
   /* Ritmo 2.1 · palette «Alba»: carta chiara, inchiostro blu notte al posto del nero, accento corallo vivo; di sera un blu notte al posto del grigio antracite */
@@ -553,7 +553,7 @@ body.dragging .fab, body.dragging .fab2, body.dragging .tabbar { opacity: .3; po
 <div id="dragLayer"></div><div id="dragHold" aria-hidden="true"></div>
 <div class="edge l" id="edgeL"><span>‹ Giorno prima</span></div><div class="edge r" id="edgeR"><span>Giorno dopo ›</span></div>
 
-<script src="ornrarv-lib.js?v=2.6.1"></script>
+<script src="ornrarv-lib.js?v=2.7"></script>
 <script>
 (() => {
 'use strict';
@@ -1013,7 +1013,7 @@ function heroFor(d, short, title, kick, subs, scn) {
     h('button', { class: 'hbtn round', type: 'button', 'aria-label': 'Avanti', html: ic('chev'), onclick: () => go(1) }),
     h('button', { class: 'hbtn round', type: 'button', 'aria-label': 'Impostazioni', html: ic('gear'), onclick: openSettings }),
     h('button', { class: 'hbtn round', type: 'button', 'aria-label': 'Portafoglio', html: ic('portafoglio'), onclick: () => { WV.ref = null; openWallet(); } })));
-  heroEl.append(h('div', { class: 'ht' }, h('span', { class: 'kick', text: kick }), h('h1', { text: title }), subs ? h('div', { class: 'hs' }, subs) : null));
+  heroEl.append(h('div', { class: 'ht' }, kick ? h('span', { class: 'kick', text: kick }) : null, h('h1', { text: title }), subs ? h('div', { class: 'hs' }, subs) : null));
   return heroEl;
 }
 const codeEl = (o, parts = 3) => { const L = [o.ml, o.wl, o.l].slice(0, parts); const el = h('span', { class: 'code' }); L.forEach((l, i) => { if (i) el.append(h('i', { text: '.' })); el.append(l); }); return el; };
@@ -1427,7 +1427,7 @@ function viewMese() {
   const L = nowLogical(), o = settale(monthSel);
   if (!o) return [heroFor(monthSel, true, 'Fuori dal calendario', '', null), h('div', { class: 'wrap', style: { marginTop: '14px' } }, h('p', { class: 'muted', text: 'Il calendario settale va dal 21 settembre 2026 al 29 agosto 2027.' }))];
   const first = o.first, last = addDays(first, 48);
-  const out = [heroFor(monthSel, true, o.mese, `Mese ${o.mi + 1} di 7 · ${FASI[o.ml]}`, [h('span', { text: `${greg(first)} – ${greg(last)}` })], { prot: true })];
+  const out = [heroFor(monthSel, true, o.mese, '', [h('span', { text: `${greg(first)} – ${greg(last)}` })], { prot: true })];
   const grid = h('div', { class: 'mgrid' }, h('span'), [...SEQ].map((l) => h('span', { class: 'mh', text: l })));
   for (let wi = 0; wi < 7; wi++) {
     grid.append(h('span', { class: 'mw', text: SEQ[wi] }));
@@ -1653,7 +1653,7 @@ function openEvent(ev, pre = {}) {
   st.s = ev && ev.inizio ? toMin(ev.inizio) : pre.inizio ? toMin(pre.inizio) : firstFree(st.len);
   const base = { cat: st.cat, data: st.data, len: st.len, s: st.s };
 
-  const title = h('input', { class: 'bigin', type: 'text', value: ev ? ev.titolo : pre.testo || '', placeholder: 'Cosa devi fare?', autocomplete: 'off', autocapitalize: 'sentences', enterkeyhint: 'done' });
+  const title = h('input', { class: 'bigin', type: 'text', value: ev ? ev.titolo : pre.testo || '', placeholder: pre.voce ? 'Detta o scrivi…' : 'Cosa devi fare?', autocomplete: 'off', autocapitalize: 'sentences', enterkeyhint: 'done' });
   title.addEventListener('keydown', (x) => { if (x.key === 'Enter') { x.preventDefault(); title.blur(); } });
   const hint = h('div', { class: 'qp' }), sug = h('div', { class: 'sug' });
   const recent = [...new Map([...S.miei].reverse().filter((x) => x.titolo).map((x) => [x.titolo.toLowerCase(), x])).values()].slice(0, 40);
@@ -1690,7 +1690,7 @@ function openEvent(ev, pre = {}) {
   const save = h('button', { class: 'btn pri wide', type: 'button', style: { minHeight: '52px' }, onclick: () => submit() });
 
   function applyParse() {
-    const raw = title.value; parsed = raw.trim() && (isNew || raw !== ev.titolo) ? parseQuick(raw, L.date) : null;
+    const raw = title.value; parsed = raw.trim() && (isNew || raw !== ev.titolo) ? parseQuick(pre.voce ? normVoice(raw) : raw, L.date) : null;
     // quello che non hai toccato a mano segue la frase; se togli una parte, torna com'era
     const P = parsed || {};
     if (!touched.has('cat')) { st.cat = P.cat || base.cat; pick(tiles, tiles.querySelector(`[data-c="${st.cat}"]`)); }
@@ -1699,7 +1699,7 @@ function openEvent(ev, pre = {}) {
     if (!touched.has('time')) { if (P.s != null) { st.s = P.s; st.noTime = false; } else st.s = st.data !== base.data || st.len !== base.len ? firstFree(st.len) : base.s; }
     const bits = parsed && parsed.any ? [parsed.data ? `${relWord(parsed.data, L.date)} ${dTitle(parsed.data)}` : null, parsed.s != null ? (parsed.e != null || parsed.len ? `${fmt(parsed.s)}–${fmt(parsed.s + (parsed.len || st.len))}` : `alle ${fmt(parsed.s)}`) : parsed.len ? dur(parsed.len) : null].filter(Boolean) : [];
     hint.replaceChildren(bits.length ? h('span', { class: 'ok' }, h('span', { class: 'ih', html: ic('check') }), `Capito: «${parsed.title || CATS[st.cat].n}» · ${bits.join(' · ')}`)
-      : h('span', { text: isNew ? 'Puoi scrivere anche quando: «palestra domani dalle 18 alle 19:30»' : '' }));
+      : h('span', { text: pre.voce ? 'Tocca il microfono della tastiera e parla: «palestra domani dalle 18 alle 19 e 30», «speso 12 euro di treno»' : isNew ? 'Puoi scrivere anche quando: «palestra domani dalle 18 alle 19:30»' : '' }));
     // suggerimenti dagli impegni già messi (solo mentre scrivi)
     const q = (parsed && parsed.title ? parsed.title : raw).trim().toLowerCase();
     const hits = isNew && q.length >= 2 ? recent.filter((x) => x.titolo.toLowerCase().includes(q) && x.titolo.toLowerCase() !== q).slice(0, 3) : [];
@@ -1734,6 +1734,9 @@ function openEvent(ev, pre = {}) {
     save.replaceChildren(icEl(isNew ? 'piu' : 'check'), h('span', { text: `${isNew ? 'Aggiungi' : 'Salva'} · ${ttl.length > 18 ? ttl.slice(0, 17) + '…' : ttl} · ${dLetter(st.data)} ${dNum(st.data)}${!st.noTime ? ' · ' + fmt(st.s) : ''}${rip > 1 ? ` · ${rip} volte` : ''}` }));
   }
   const submit = () => {
+    if (pre.voce && isNew && title.value.trim()) { const vt = normVoice(title.value), money = voiceMoney(vt), parts = splitVoice(vt);
+      if (money) { closeSheet(); openMov(null, { ...money, voce: true }); return; }
+      if (parts.length > 1) { closeSheet(); openVoiceList(parts); return; } }
     const t = cap((parsed && parsed.any ? parsed.title : title.value.trim()) || CATS[st.cat].n);
     const obj = { titolo: t, tipo: st.cat, data: st.data, durata: st.len, dove: where.value.trim() || undefined, nota: note.value.trim() || undefined };
     if (!st.noTime) { obj.inizio = hm(st.s); obj.fine = hm(st.s + st.len); obj.flessibile = undefined; } else { obj.inizio = undefined; obj.fine = undefined; obj.flessibile = true; }
@@ -1757,7 +1760,7 @@ function openEvent(ev, pre = {}) {
     !isNew ? h('button', { class: 'btn ghost wide', type: 'button', style: { color: 'var(--bad)' }, onclick: () => { const s0 = snapshot(); removeEvent(ev); saveState(); closeSheet(); render(); undoable('Eliminato', s0); } }, h('span', { class: 'ih', html: ic('cestino') }), 'Elimina') : null,
     h('div', { class: 'savebar' }, save)]);
   applyParse(); upd(true);
-  if (isNew && !pre.inizio && !pre.testo) setTimeout(() => title.focus(), 330);
+  if (pre.voce) title.focus(); else if (isNew && !pre.inizio && !pre.testo) setTimeout(() => title.focus(), 330);
 }
 
 /* ---------- 2.6: ricorrenze e feste del giorno (tutto il giorno: non sono blocchi, non occupano ore, non contano negli impegni) ---------- */
@@ -2022,7 +2025,7 @@ function voiceMoney(t) {
 let VOICE = null;
 function startVoice() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition, L = nowLogical();
-  const fallback = (why) => { stopVoiceUI(); openEvent(null, { data: L.date }); toast(why || 'Qui la dettatura diretta non c\'è: usa il microfono della tastiera'); };
+  const fallback = (why) => { stopVoiceUI(); openEvent(null, { data: L.date, voce: true }); toast(why || 'Qui la dettatura diretta non c\'è: usa il microfono della tastiera'); };
   if (!SR) { fallback(); return; }
   const vt = h('div', { class: 'vt', text: 'Ti ascolto…' }), vh = h('div', { class: 'vh', text: 'Rilascia quando hai finito. Es. «palestra domani dalle 18 alle 19 e 30», «esame il 7 di Ianuario alle 9», «speso 12 euro di treno».' });
   const ov = h('div', { class: 'voice', id: 'voice' }, h('div', { class: 'vc' }, h('div', { class: 'vm', html: ic('mic') }), vt, vh,
@@ -2064,13 +2067,21 @@ function openVoiceList(parts) {
     } }, icEl('piu'), `Aggiungi tutti e ${items.length}`))]);
 }
 window.__ritmoProva = { normVoice, splitVoice, voiceMoney, parseQuick, handleVoice };
+/* 2.7: nelle app aggiunte alla Home dell'iPhone il riconoscimento vocale di Safari non c'è (limite di WebKit: dà «service-not-allowed»).
+   Lì tenere premuto il + apre «Nuovo impegno» con la tastiera già aperta: si detta col microfono della tastiera e la frase si capisce come quella detta a voce. */
+const IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const STANDALONE = navigator.standalone === true || !!(window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+const NO_SR = IOS && STANDALONE;
+const fabDate = () => tab === 'giorno' ? dayD : tab === 'mese' ? monthSel : (dayD >= weekM && dayD <= addDays(weekM, 6) ? dayD : weekM);
 (() => {
-  const fab = $('#fab'); let t = null, long = false;
-  fab.addEventListener('pointerdown', (e) => { if (e.button > 0) return; long = false; clearTimeout(t); t = setTimeout(() => { long = true; startVoice(); }, 450); });
-  const up = () => { clearTimeout(t); if (long) releaseVoice(); };
+  const fab = $('#fab'); let t = null, long = false, opened = false;
+  fab.addEventListener('pointerdown', (e) => { if (e.button > 0) return; long = false; opened = false; clearTimeout(t); t = setTimeout(() => { long = true; if (NO_SR) fab.classList.add('listening'); else startVoice(); }, 450); });
+  const up = () => { clearTimeout(t); if (!long) return; if (NO_SR) { fab.classList.remove('listening'); if (!opened) { opened = true; openEvent(null, { soft: true, data: fabDate(), voce: true }); } } else releaseVoice(); };
+  /* sul touchend (gesto vero: la tastiera si apre); preventDefault toglie il clic che altrimenti toccherebbe il velo del foglio appena aperto e lo chiuderebbe */
+  fab.addEventListener('touchend', (e) => { if (long && NO_SR && e.cancelable) e.preventDefault(); up(); }, { passive: false });
   fab.addEventListener('pointerup', up); fab.addEventListener('pointercancel', up);
   fab.addEventListener('contextmenu', (e) => e.preventDefault());
-  fab.addEventListener('click', (e) => { if (long) { long = false; e.preventDefault(); return; } openEvent(null, { soft: true, data: tab === 'giorno' ? dayD : tab === 'mese' ? monthSel : (dayD >= weekM && dayD <= addDays(weekM, 6) ? dayD : weekM) }); });
+  fab.addEventListener('click', (e) => { if (long) { long = false; e.preventDefault(); return; } openEvent(null, { soft: true, data: fabDate() }); });
 })();
 
 /* ---------- pianificare una giornata ---------- */
@@ -2271,7 +2282,7 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden) { if
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => render());
 
 /* se il telefono ha tenuto una grafica vecchia insieme all'app nuova, svuoto la cache e ricarico (una volta) */
-if (window.ORN && ORN.version !== '2.6.1') { try { if (!sessionStorage.getItem('ritmo:rl')) { sessionStorage.setItem('ritmo:rl', '1'); (window.caches ? caches.keys().then((ks) => Promise.all(ks.map((k) => caches.delete(k)))) : Promise.resolve()).then(() => location.reload()); } } catch (e) { /* niente */ } }
+if (window.ORN && ORN.version !== '2.7') { try { if (!sessionStorage.getItem('ritmo:rl')) { sessionStorage.setItem('ritmo:rl', '1'); (window.caches ? caches.keys().then((ks) => Promise.all(ks.map((k) => caches.delete(k)))) : Promise.resolve()).then(() => location.reload()); } } catch (e) { /* niente */ } }
 loadState(); loadCachedData(); rebuildEvents();
 if (lsGet(LS.pass) === null) showWelcome(); else { showMain(); refresh(true); }
 if ('serviceWorker' in navigator) {
