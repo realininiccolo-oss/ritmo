@@ -269,3 +269,19 @@ html.has-layer main * { animation-play-state: paused !important; }
 .scene .sc-shadow { transform-box: fill-box; transform-origin: 0% 50%; }
 .scene.play .sc-shadow { animation: sc-shadow 14s ease-in-out infinite alternate; }
 @keyframes sc-shadow { from { transform: rotate(-200deg); } to { transform: rotate(20deg); } }
+/* 2.8: animazioni dei paesaggi nuovi (niente che si sposta: solo cose che scorrono, cadono o oscillano dove stanno) */
+.scene :is(.sc-flow, .sc-fall2, .sc-puff2, .sc-bob2, .sc-flagw2) { transform-box: fill-box; }
+.scene .sc-flow { opacity: 0; }
+.scene.play .sc-flow { animation: sc-flow var(--fwd, 3s) linear var(--fwl, 0s) infinite; }
+@keyframes sc-flow { 0% { opacity: 0; transform: translateY(-6px); } 30% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; transform: translateY(10px); } }
+.scene .sc-fall2 { opacity: 0; }
+.scene.play .sc-fall2 { animation: sc-fall2 var(--fd, 9s) linear var(--fdl, 0s) infinite; }
+@keyframes sc-fall2 { 0% { opacity: 0; transform: translate(0, 0); } 10% { opacity: .9; } 85% { opacity: .9; } 100% { opacity: 0; transform: translate(var(--fx, 0px), 300px); } }
+.scene .sc-puff2 { opacity: 0; transform-origin: 50% 50%; }
+.scene.play .sc-puff2 { animation: sc-puff2 var(--pfd, 5s) ease-out var(--pfl, 0s) infinite; }
+@keyframes sc-puff2 { 0% { opacity: 0; transform: translate(0, 0) scale(.5); } 15% { opacity: .9; } 100% { opacity: 0; transform: translate(40px, -40px) scale(2.1); } }
+.scene.play .sc-bob2 { animation: sc-bob2 4.5s ease-in-out infinite alternate; }
+@keyframes sc-bob2 { to { transform: translateY(1.2px); } }
+.scene .sc-flagw2 { transform-origin: 100% 50%; }
+.scene.play .sc-flagw2 { animation: sc-flagw 1.5s ease-in-out infinite alternate; }
+.scene.static .sc-flow, .scene.static .sc-fall2 { opacity: .6; } .scene.static .sc-puff2 { opacity: .5; }

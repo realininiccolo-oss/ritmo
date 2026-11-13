@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="ornrarv.css?v=2.7">
+<link rel="stylesheet" href="ornrarv.css?v=2.8">
 <style>
 :root {
   /* Ritmo 2.1 · palette «Alba»: carta chiara, inchiostro blu notte al posto del nero, accento corallo vivo; di sera un blu notte al posto del grigio antracite */
@@ -106,6 +106,43 @@ h1, h2, h3 { margin: 0; font-weight: 500; }
 /* il disegno sfuma nel colore della pagina: niente stacco netto tra la testata e il pannello sotto (2.3) */
 .hero { position: relative; height: max(calc(280px + var(--safe-t)), 44vh); overflow: hidden; background: var(--bg); color: var(--h-ink, #fff); margin-bottom: -6px; }
 .hero.short { height: max(calc(280px + var(--safe-t)), 44vh); }
+/* 2.8: in Giorno e Settimana il disegno prende i 2/3 dello schermo (sopra la barra in basso); il terzo che resta racconta la giornata o la settimana */
+:root { --nav-h: calc(62px + var(--safe-b)); }
+.hero.tall { height: max(calc(320px + var(--safe-t)), calc((100vh - var(--nav-h)) * 2 / 3)); }
+.hero.tall .ht { bottom: 30px; }
+.glance { min-height: calc((100vh - var(--nav-h)) / 3 + 6px); box-sizing: border-box; padding: 10px 16px 10px; display: flex; flex-direction: column; justify-content: center; gap: 12px; position: relative; z-index: 1; }
+.glance .card.focus { margin: 0; }
+.glance .gl-low { margin-right: 66px; }
+.glance .ft b { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.gl-rib { position: relative; height: 26px; border-radius: 9px; background: var(--sunk); overflow: hidden; }
+.gl-rib i { position: absolute; top: 4px; bottom: 4px; border-radius: 5px; background: var(--k); }
+.gl-rib i.done { opacity: .45; }
+.gl-rib i.past { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 0; background: color-mix(in srgb, var(--ink) 8%, transparent); }
+.gl-rib i.now { top: 0; bottom: 0; width: 2px; border-radius: 1px; background: var(--acc); box-shadow: 0 0 0 2px color-mix(in srgb, var(--acc) 25%, transparent); }
+.gl-rib b { position: absolute; top: 50%; transform: translateY(-50%); font-size: 11px; font-weight: 700; color: #fff; padding-left: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+.gl-ax { display: flex; justify-content: space-between; font-size: 11px; color: var(--ink3); margin-top: 4px; font-variant-numeric: tabular-nums; }
+.gl-chips { display: flex; gap: 6px; flex-wrap: nowrap; overflow: hidden; }
+.gl-chips .gl-chip { min-width: 0; flex: 0 1 auto; } .gl-chips .gl-chip:first-child { flex: none; }
+.gl-chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 13px; font-weight: 600; max-width: 100%; }
+.gl-chip span:last-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gl-chip .ih { color: var(--k, var(--ink3)); }
+.gl-week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.gl-week button { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 4px 0; border-radius: 12px; }
+.gl-week button.today { background: color-mix(in srgb, var(--acc) 14%, transparent); }
+.gl-week .l { font-size: 11px; font-weight: 700; color: var(--ink3); letter-spacing: .04em; }
+.gl-week .n { font-family: var(--serif); font-size: 17px; line-height: 1; }
+.gl-week .col { position: relative; width: 14px; height: 46px; border-radius: 6px; background: var(--sunk); overflow: hidden; }
+.gl-week .col i { position: absolute; left: 0; right: 0; background: var(--k); border-radius: 2px; }
+.gl-week .col i.now { height: 2px; background: var(--acc); border-radius: 1px; }
+.gl-week .ok { width: 6px; height: 6px; border-radius: 50%; background: var(--ok); }
+.gl-week .no { width: 6px; height: 6px; border-radius: 50%; border: 1.5px solid var(--line); box-sizing: border-box; }
+.planmode { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.planmode button { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; padding: 14px; border-radius: 14px; background: var(--card); border: 1.5px solid var(--line); }
+.planmode button b { font-size: 15px; } .planmode button small { font-size: 13px; color: var(--ink3); line-height: 1.3; }
+.planmode button[aria-pressed="true"] { border-color: var(--acc); background: color-mix(in srgb, var(--acc) 10%, var(--card)); }
+.mrow { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); }
+.mrow .pi { color: var(--k); display: grid; } .mrow .t { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .mrow small { display: block; color: var(--ink3); font-size: 12px; font-weight: 500; }
+.mrow.clash { border-color: var(--k-scadenza); } .mrow.clash small { color: var(--k-scadenza); }
 .hero .scene, .hero::after, .hero::before { -webkit-mask-image: linear-gradient(180deg, #000 0, #000 calc(100% - 70px), rgba(0,0,0,.55) calc(100% - 30px), transparent 100%); mask-image: linear-gradient(180deg, #000 0, #000 calc(100% - 70px), rgba(0,0,0,.55) calc(100% - 30px), transparent 100%); }
 .hero::before { content: ''; position: absolute; inset: 0; background: var(--h-bg, #232B3B); }
 .hero .scene { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -553,7 +590,7 @@ body.dragging .fab, body.dragging .fab2, body.dragging .tabbar { opacity: .3; po
 <div id="dragLayer"></div><div id="dragHold" aria-hidden="true"></div>
 <div class="edge l" id="edgeL"><span>‹ Giorno prima</span></div><div class="edge r" id="edgeR"><span>Giorno dopo ›</span></div>
 
-<script src="ornrarv-lib.js?v=2.7"></script>
+<script src="ornrarv-lib.js?v=2.8"></script>
 <script>
 (() => {
 'use strict';
@@ -980,28 +1017,33 @@ let LP = null, DRAG = null, RS = null, WDRAG = null;
 })();
 
 const safeTop = () => { try { return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-t')) || 0; } catch (e) { return 0; } };
-/* nella pagina Settimana il particolare del disegno è del giorno scelto, se è in quella settimana, poi di oggi, altrimenti del primo giorno */
+/* nella pagina Settimana la luna del disegno è del giorno scelto, se è in quella settimana, poi di oggi, altrimenti del primo giorno */
 function weekDayFocus(mon) { const end = addDays(mon, 6), t = nowLogical().date, pick = dayD >= mon && dayD <= end ? dayD : t >= mon && t <= end ? t : mon; const o = settale(pick); return o ? o.di : 0; }
 /* ---------- testata con il paesaggio (resta al suo posto tra un disegno e l'altro: niente animazioni ripetute) ---------- */
 let heroEl = null, heroKey = '';
-function heroFor(d, short, title, kick, subs, scn) {
+function heroFor(d, short, title, kick, subs, scn, tall) {
   const o = settale(d), L = nowLogical();
   const mi = o ? o.mi : 1, variant = variantFor(mi, new Date(), pref().paesaggio);
   const th = window.ORN ? ORN.themeFor(mi, variant) : { bg: '#232B3B', ink: '#E7E9F2' };
   const dark = parseInt(th.bg.slice(1, 3), 16) < 90;
   /* 2.4: testata alta poco meno di metà schermo; il disegno mostra ~480 unità di larghezza, con cielo in più sopra */
-  const W = Math.max(320, innerWidth), Hh = Math.max(280 + safeTop(), innerHeight * .44), Wv = Math.min(1200, Math.max(480, W * 1.23)), tot = Hh * Wv / W;
-  const B = Math.max(0, Math.min(40, tot - 340)), top = Math.max(0, tot - 340 - B);
-  const so = Object.assign({ p: o ? o.wi / 6 : 0, variant, top, bot: B }, o ? scn || {} : {});
-  const key = [mi, variant, o ? o.wi : 0, so.prot ? 'm' : '', so.wk ?? '', so.dy ?? '', so.moon == null ? '' : so.moon.toFixed(2), Math.round(top), Math.round(B)].join(':');
+  /* 2.8: in Giorno e Settimana la testata è alta 2/3 dello schermo sopra la barra in basso; il disegno mostra ~480 unità di larghezza, con cielo sopra e acqua o prato sotto */
+  const navH = ($('.tabbar') || {}).offsetHeight || 62;
+  const W = Math.max(320, innerWidth), Hh = tall ? Math.max(320 + safeTop(), (innerHeight - navH) * 2 / 3) : Math.max(280 + safeTop(), innerHeight * .44), Wv = Math.min(1200, Math.max(480, W * 1.23)), tot = Hh * Wv / W;
+  const ex = Math.max(0, tot - 340), B = Math.max(Math.min(30, ex), Math.min(160, ex * .4)), top = Math.max(0, ex - B);
+  /* sole e luna all'altezza dell'ora di adesso (alba e tramonto di oggi a Erbusco) */
+  const now = new Date(), hr = now.getHours() + now.getMinutes() / 60, [sa, sb] = sunTimes(iso(now));
+  const so = Object.assign({ p: o ? o.wi / 6 : 0, variant, top, bot: B, hour: hr, sun: [sa / 60, sb / 60] }, o ? scn || {} : {});
+  const key = [mi, variant, o ? o.wi : 0, so.prot ? 'm' : '', so.wk ?? '', so.moon == null ? '' : so.moon.toFixed(2), Math.round(top), Math.round(B), Math.floor(hr * 6)].join(':');
   if (!heroEl) heroEl = h('section', { class: 'hero' });
-  heroEl.className = 'hero' + (short ? ' short' : '');
+  heroEl.className = 'hero' + (short ? ' short' : '') + (tall ? ' tall' : '');
   heroEl.style.setProperty('--h-bg', th.bg); heroEl.style.setProperty('--h-ink', th.ink);
   heroEl.style.setProperty('--h-scrim', dark ? 'rgba(16,20,30,.55)' : `color-mix(in srgb, ${th.bg} 80%, transparent)`);
   heroEl.style.setProperty('--h-scrim2', dark ? 'rgba(16,20,30,.45)' : `color-mix(in srgb, ${th.bg} 70%, transparent)`);
   if (key !== heroKey && window.ORN) {
     heroKey = key; $$('.scene', heroEl).forEach((x) => x.remove());
     heroEl.insertAdjacentHTML('afterbegin', ORN.sceneSVG(mi, so));
+    try { $('.scene', heroEl).setCurrentTime(0); } catch (e) { /* le lancette dell'orologio partono dall'ora giusta */ }
     requestAnimationFrame(() => ORN.playAll(heroEl));
   }
   $$('.bar,.ht', heroEl).forEach((x) => x.remove());
@@ -1044,11 +1086,11 @@ function viewGiorno() {
   const d = dayD, L = nowLogical(), o = settale(d), m = dayModel(d);
   const kick = `${relWord(d, L.date)}${dayDiff(L.date, d) >= -1 && dayDiff(L.date, d) <= 1 ? ' · ' + WD[dowOf(d)] : ''}`;
   const subs = [o ? codeEl(o) : null, h('span', { text: o ? o.fase : '' }), h('span', { class: 'faint', style: { color: 'inherit', opacity: .75 }, text: greg(d) })];
-  const out = [heroFor(d, false, dTitle(d), kick, subs, o ? { wk: o.wi, dy: o.di, moon: ORN.moonPhase(d) } : null), weekStrip(d)];
+  const out = [heroFor(d, false, dTitle(d), kick, subs, o ? { wk: o.wi, moon: ORN.moonPhase(d) } : null, true), dayGlance(d, m), weekStrip(d)];
   const w = h('div', { class: 'wrap', style: { marginTop: '10px' } });
   const fx = m.allDay.filter((a) => a.cat === 'festa' || a.cat === 'ricorrenza');
   if (fx.length) w.append(h('div', { class: 'allday' }, fx.map((a) => h('button', { class: 'adchip', type: 'button', 'data-cat': a.cat, onclick: () => openItem(d, a.ev) }, h('span', { class: 'ih', html: catIc(a.cat) }), a.title))));
-  w.append(focusCard(d), previewCard(d, m));
+  w.append(previewCard(d, m));
   /* agenda */
   w.append(h('div', { class: 'sect-h' }, h('h2', { text: 'Agenda' }), h('small', { text: m.timed.length ? `${m.timed.length} ${m.timed.length === 1 ? 'impegno' : 'impegni'} · ${dur(m.busy)}` : 'niente di fissato' })));
   const adOther = m.allDay.filter((a) => a.cat !== 'festa' && a.cat !== 'ricorrenza');
@@ -1058,6 +1100,42 @@ function viewGiorno() {
   if (d < L.date || (d === L.date && L.min >= 18 * 60)) w.append(moodCard(d));
   out.push(w);
   return out;
+}
+/* ---------- 2.8: il terzo sotto il disegno, che racconta la giornata ---------- */
+function dayGlance(d, m) {
+  const L = nowLogical(), today = d === L.date, A = Math.min(m.wake, ...m.timed.map((t) => t.start)), B = Math.max(m.bed, ...m.timed.map((t) => t.end)), pc = (x) => ((Math.max(A, Math.min(B, x)) - A) / (B - A) * 100).toFixed(2) + '%';
+  const rib = h('div', { class: 'gl-rib', role: 'img', 'aria-label': m.timed.length ? m.timed.map((t) => `${fmt(t.start)} ${t.title}`).join(', ') : 'Nessun impegno' },
+    today && L.min > A ? h('i', { class: 'past', style: { width: pc(L.min) } }) : null,
+    m.timed.map((t) => h('i', { 'data-cat': t.cat, class: t.done ? 'done' : '', style: { left: pc(t.start), width: `max(4px, calc(${pc(t.end)} - ${pc(t.start)}))` } })),
+    m.timed.filter((t) => (t.end - t.start) / (B - A) > .16).map((t) => h('b', { style: { left: pc(t.start), maxWidth: `calc(${pc(t.end)} - ${pc(t.start)})` }, text: t.title })),
+    today && L.min > A && L.min < B ? h('i', { class: 'now', style: { left: pc(L.min) } }) : null);
+  const ax = h('div', { class: 'gl-ax' }, [0, 1, 2, 3, 4].map((k) => h('span', { text: fmt(Math.round((A + (B - A) * k / 4) / 30) * 30) })));
+  const free = today ? freeWindows(m.timed, m.wake, m.bed, L.min) : m.free, freeMin = free.reduce((a, [x, y]) => a + y - x, 0);
+  const chip = (icn, text, cat) => h('span', { class: 'gl-chip', 'data-cat': cat || null }, h('span', { class: 'ih', html: icn }), h('span', { text }));
+  const [sa, sb] = sunTimes(d); void freeMin;
+  const chips = [m.timed.length ? chip(ic('orologio'), `${m.timed.length} ${m.timed.length === 1 ? 'impegno' : 'impegni'} · ${dur(m.busy)}`) : chip(ic('sole'), `${fmt(sa)} → ${fmt(sb)}`)];
+  if (m.nerina) { const f = m.rec.ob || {}, ob = m.nerina.ob || [], k = ob.filter((_, i) => f[i]).length; chips.push(chip(catIc('nerina'), `${m.nerina.titolo}${ob.length ? ` · ${k}/${ob.length}` : ''}`, 'nerina')); }
+  else { const dl = S.eventi.filter((e) => e.tipo === 'scadenza' && e.data >= d).sort((a, b) => a.data < b.data ? -1 : 1)[0]; if (dl) chips.push(chip(ic('bandiera'), `${dl.data === d ? 'Oggi' : `Tra ${dayDiff(d, dl.data)} g`}: ${dl.titolo}`, 'scadenza')); }
+  return h('section', { class: 'glance' }, focusCard(d), h('div', { class: 'gl-low' }, rib, ax), h('div', { class: 'gl-chips gl-low' }, chips));
+}
+/* ---------- 2.8: il terzo sotto il disegno nella Settimana: i sette giorni in colonna, la prossima cosa, i numeri ---------- */
+function weekGlance(days, models, st) {
+  const L = nowLogical(), A = Math.min(...models.map((m) => m.wake)), B = Math.max(...models.map((m) => m.bed)), pc = (x) => ((Math.max(A, Math.min(B, x)) - A) / (B - A) * 100).toFixed(2) + '%';
+  const cols = h('div', { class: 'gl-week' }, days.map((d, i) => { const m = models[i];
+    return h('button', { type: 'button', class: d === L.date ? 'today' : '', 'aria-label': `${dTitle(d)}: ${m.timed.length} impegni`, onclick: () => { dayD = d; select('giorno'); } },
+      h('span', { class: 'l', text: dLetter(d) }), h('span', { class: 'n', text: String(dNum(d)) }),
+      h('span', { class: 'col' }, m.timed.map((t) => h('i', { 'data-cat': t.cat, style: { top: pc(t.start), height: `max(3px, calc(${pc(t.end)} - ${pc(t.start)}))` } })), d === L.date && L.min > A && L.min < B ? h('i', { class: 'now', style: { top: pc(L.min) } }) : null),
+      h('span', { class: isPlanned(d) ? 'ok' : 'no' })); }));
+  /* la prossima cosa della settimana, da adesso in poi */
+  let nx = null; days.forEach((d, i) => { if (nx || d < L.date) return; const t = models[i].timed.find((x) => d > L.date || x.start >= L.min); if (t) nx = { d, t }; });
+  const dl = !nx ? S.eventi.find((e) => e.tipo === 'scadenza' && e.data >= L.date && days.includes(e.data)) : null;
+  const nxt = days.find((d) => d >= L.date && !isPlanned(d));
+  const head = h('div', { class: 'card focus' }, h('div', { class: 'fi', 'data-tone': nx ? 'acc' : 'ok', html: ic(nx ? 'orologio' : 'check') }),
+    h('div', { class: 'ft' }, h('b', { text: nx ? `${relWord(nx.d, L.date)} alle ${fmt(nx.t.start)} · ${nx.t.title}` : dl ? `${relWord(dl.data, L.date)}: ${dl.titolo}` : 'Nessun altro impegno questa settimana' }),
+      h('span', { text: `${st.nEv} ${st.nEv === 1 ? 'impegno' : 'impegni'} · ${dur(st.busy)} fissate · ${st.planned}/7 pianificati` })),
+    nxt ? h('button', { class: 'btn pri sm', type: 'button', onclick: () => openPlan(nxt) }, 'Pianifica') : null);
+  cols.classList.add('gl-low');
+  return h('section', { class: 'glance' }, head, cols);
 }
 function moodCard(d) {
   const r = dayRec(d), opts = [['bene', 'Bene'], ['cosi', 'Così così'], ['pesante', 'Pesante']];
@@ -1346,14 +1424,11 @@ document.addEventListener('click', (e) => { if (SEL && !e.target.closest('.blk.s
 function viewSettimana() {
   const L = nowLogical(), mon = weekM, o = settale(mon);
   const out = [heroFor(mon, true, o ? o.sett : 'Settimana', o ? `${o.mese} · ${dNum(mon)}–${dNum(addDays(mon, 6))}` : `${greg(mon)} – ${greg(addDays(mon, 6))}`,
-    o ? [codeEl(o, 2), h('span', { text: `${greg(mon)}–${greg(addDays(mon, 6))}` })] : null, o ? { wk: o.wi, dy: weekDayFocus(mon), moon: ORN.moonPhase(addDays(mon, weekDayFocus(mon))) } : null)];
+    o ? [codeEl(o, 2), h('span', { text: `${greg(mon)}–${greg(addDays(mon, 6))}` })] : null, o ? { wk: o.wi, moon: ORN.moonPhase(addDays(mon, weekDayFocus(mon))) } : null, true)];
   const days = [...Array(7)].map((_, i) => addDays(mon, i)), models = days.map(dayModel);
   const nEv = models.reduce((a, m) => a + m.timed.length, 0), busy = models.reduce((a, m) => a + m.busy, 0), planned = days.filter(isPlanned).length;
-  const w = h('div', { class: 'wrap', style: { marginTop: '14px' } });
-  w.append(h('div', { class: 'wstats' },
-    h('div', { class: 'card wstat' }, h('small', { text: 'Impegni' }), h('b', { text: String(nEv) })),
-    h('div', { class: 'card wstat' }, h('small', { text: 'Ore fissate' }), h('b', { text: dur(busy) })),
-    h('div', { class: 'card wstat' }, h('small', { text: 'Pianificati' }), h('b', { text: `${planned}/7` }))));
+  out.push(weekGlance(days, models, { nEv, busy, planned }));
+  const w = h('div', { class: 'wrap', style: { marginTop: '6px' } });
   const list = h('div', { class: 'card wdays' });
   days.forEach((d, i) => {
     const m = models[i], A = m.wake, B = m.bed, pc = (x) => ((Math.max(A, Math.min(B, x)) - A) / (B - A) * 100).toFixed(2) + '%';
@@ -2108,6 +2183,7 @@ function propose(d, items, bounds) {
 function openPlan(d) {
   const L = nowLogical(), rec = dayRec(d), B0 = dayBounds(d);
   let stepN = 1, wake = B0.wake, bed = B0.bed, intento = rec.intento || '';
+  let modo = UI.pianoModo || null; const man = {};   // 2.8: 'auto' = proposta di Ritmo, 'mano' = orari scelti a mano (man[i] = minuti)
   let items = [];
   /* cose già pianificate da Ritmo quel giorno: si possono rifare */
   const already = S.miei.filter((e) => e.data === d && e.fonte === 'piano');
@@ -2153,31 +2229,54 @@ function openPlan(d) {
       const S0 = S.miei; S.miei = S.miei.filter((e) => !(e.data === d && e.fonte === 'piano')); rebuildEvents();
       const placed = propose(d, items, { wake, bed });
       S.miei = S0; rebuildEvents();
-      const ok = placed.filter((x) => x.s != null), out = placed.filter((x) => x.s == null);
-      body.append(h('div', { class: 'lab', text: 'La proposta' }));
-      const tmp = { ...dayModel(d) };
-      const A = Math.min(wake, 7 * 60), B = Math.max(bed, 1440), pc = (x) => ((Math.max(A, Math.min(B, x)) - A) / (B - A) * 100).toFixed(2) + '%';
+      /* 2.8: prima si chiede come organizzarla: con la proposta di Ritmo o a mano */
+      if (items.length) {
+        body.append(h('div', { class: 'lab', text: 'Come vuoi organizzarla?' }));
+        const pickM = (k) => { if (k === 'mano') items.forEach((it, i) => { if (!(i in man)) man[i] = it.at != null ? it.at : placed[i].s; }); modo = k; UI.pianoModo = k; saveUI(); draw(); };
+        body.append(h('div', { class: 'planmode' },
+          h('button', { type: 'button', 'aria-pressed': String(modo === 'auto'), onclick: () => pickM('auto') }, h('b', { text: 'Consigliata' }), h('small', { text: 'Ritmo mette tutto nelle ore libere, con 15 minuti tra una cosa e l\'altra' })),
+          h('button', { type: 'button', 'aria-pressed': String(modo === 'mano'), onclick: () => pickM('mano') }, h('b', { text: 'A mano' }), h('small', { text: 'Scegli tu a che ora fare ogni cosa' }))));
+        if (!modo) { nav.replaceChildren(h('button', { class: 'btn wide', type: 'button', onclick: () => { stepN = 2; draw(); } }, 'Indietro')); return; }
+      }
+      const hand = modo === 'mano' && items.length;
+      const final = hand ? items.map((it, i) => ({ ...it, s: man[i] == null ? null : man[i] })) : placed;
+      const ok = final.filter((x) => x.s != null), out = final.filter((x) => x.s == null);
+      body.append(h('div', { class: 'lab', text: hand ? 'Il tuo programma' : 'La proposta' }));
+      const A = Math.min(wake, 7 * 60, ...ok.map((t) => t.s)), B = Math.max(bed, 1440, ...ok.map((t) => t.s + t.len)), pc = (x) => ((Math.max(A, Math.min(B, x)) - A) / (B - A) * 100).toFixed(2) + '%';
       body.append(h('div', {}, h('div', { class: 'mini' }, h('i', { class: 'sleep', style: { left: '0', width: pc(wake) } }), h('i', { class: 'sleep', style: { left: pc(bed), right: '0' } }),
         fixed.map((t) => h('i', { 'data-cat': t.cat, style: { left: pc(t.start), width: `calc(${pc(t.end)} - ${pc(t.start)})`, opacity: .5 } })),
         ok.map((t) => h('i', { 'data-cat': t.cat, style: { left: pc(t.s), width: `calc(${pc(t.s + t.len)} - ${pc(t.s)})` } }))),
       h('div', { class: 'mini-l' }, [A, (A + B) / 2, B].map((x) => h('span', { text: fmt(Math.round(x / 30) * 30) })))));
-      void tmp;
-      const rows = [...fixed.map((t) => ({ s: t.start, e: t.end, cat: t.cat, title: t.title, fixed: true })), ...ok.map((t) => ({ s: t.s, e: t.s + t.len, cat: t.cat, title: t.title || CATS[t.cat].n }))].sort((a, b) => a.s - b.s);
-      body.append(h('div', { style: { display: 'flex', flexDirection: 'column', gap: '6px' } }, rows.map((r) => h('div', { class: 'prop', 'data-cat': r.cat, style: r.fixed ? { opacity: .7 } : null }, h('b', { text: `${fmt(r.s)}–${fmt(r.e)}` }), h('span', { text: r.title }), h('small', { class: 'faint', text: r.fixed ? 'fisso' : dur(r.e - r.s) }))),
-        out.map((t) => h('div', { class: 'prop out', 'data-cat': t.cat }, h('b', { text: 'non entra' }), h('span', { text: t.title || CATS[t.cat].n }), h('small', { class: 'faint', text: dur(t.len) })))));
-      if (out.length) body.append(h('div', { class: 'warn' }, h('span', { class: 'ih', html: ic('avviso') }), 'Non c\'è abbastanza tempo libero: accorcia qualcosa o lascialo da fissare.'));
+      if (hand) {
+        /* ogni cosa con il suo orario; se si accavalla con un impegno fisso, con un'altra cosa o col sonno, lo dice */
+        const clash = (t, i) => { if (t.s == null) return ''; const e = t.s + t.len;
+          const f = fixed.find((x) => t.s < x.end && e > x.start); if (f) return `si accavalla con ${f.title} (${fmt(f.start)}–${fmt(f.end)})`;
+          const o2 = ok.find((x, j) => x !== t && t.s < x.s + x.len && e > x.s); if (o2) return `si accavalla con ${o2.title || CATS[o2.cat].n}`;
+          if (t.s < wake || e > bed) return 'fuori dalle ore da sveglio'; return ''; };
+        body.append(h('div', { style: { display: 'flex', flexDirection: 'column', gap: '8px' } }, fixed.map((t) => h('div', { class: 'prop', 'data-cat': t.cat, style: { opacity: .7 } }, h('b', { text: `${fmt(t.start)}–${fmt(t.end)}` }), h('span', { text: t.title }), h('small', { class: 'faint', text: 'fisso' }))),
+          final.map((t, i) => { const c = clash(t, i), tin = h('input', { class: 'in sm', type: 'time', step: 900, value: t.s == null ? '' : hm(t.s), 'aria-label': `Ora di ${t.title || CATS[t.cat].n}` });
+            tin.addEventListener('change', () => { man[i] = tin.value ? toMin(tin.value) : null; draw(); });
+            return h('div', { class: 'mrow' + (c ? ' clash' : ''), 'data-cat': t.cat }, h('span', { class: 'pi ih', html: catIc(t.cat) }),
+              h('div', { style: { minWidth: 0 } }, h('div', { class: 't', text: t.title || CATS[t.cat].n }), h('small', { text: c || (t.s == null ? `${dur(t.len)} · da fissare` : `${dur(t.len)} · fino alle ${fmt(t.s + t.len)}`) })), tin); })));
+        if (out.length) body.append(h('p', { class: 'faint', style: { margin: 0, fontSize: '13px' }, text: 'Senza orario restano da fissare: le trovi nell\'Agenda.' }));
+      } else {
+        const rows = [...fixed.map((t) => ({ s: t.start, e: t.end, cat: t.cat, title: t.title, fixed: true })), ...ok.map((t) => ({ s: t.s, e: t.s + t.len, cat: t.cat, title: t.title || CATS[t.cat].n }))].sort((a, b) => a.s - b.s);
+        body.append(h('div', { style: { display: 'flex', flexDirection: 'column', gap: '6px' } }, rows.map((r) => h('div', { class: 'prop', 'data-cat': r.cat, style: r.fixed ? { opacity: .7 } : null }, h('b', { text: `${fmt(r.s)}–${fmt(r.e)}` }), h('span', { text: r.title }), h('small', { class: 'faint', text: r.fixed ? 'fisso' : dur(r.e - r.s) }))),
+          out.map((t) => h('div', { class: 'prop out', 'data-cat': t.cat }, h('b', { text: 'non entra' }), h('span', { text: t.title || CATS[t.cat].n }), h('small', { class: 'faint', text: dur(t.len) })))));
+        if (out.length) body.append(h('div', { class: 'warn' }, h('span', { class: 'ih', html: ic('avviso') }), 'Non c\'è abbastanza tempo libero: accorcia qualcosa o lascialo da fissare.'));
+      }
       const intIn = h('input', { class: 'in', type: 'text', value: intento, placeholder: 'La cosa più importante (facoltativa)' }); intIn.addEventListener('input', () => { intento = intIn.value; });
       body.append(intIn);
       nav.replaceChildren(h('button', { class: 'btn', type: 'button', onclick: () => { stepN = 2; draw(); } }, 'Indietro'),
         h('button', { class: 'btn pri', style: { flex: 1 }, type: 'button', onclick: () => {
           const s0 = snapshot();
           S.miei = S.miei.filter((e) => !(e.data === d && e.fonte === 'piano'));
-          for (const t of placed) {
+          for (const t of final) {
             const base = { id: newId(), titolo: (t.title || '').trim() || CATS[t.cat].n, tipo: t.cat, data: d, durata: t.len, fonte: 'piano' };
             if (t.s != null) S.miei.push({ ...base, inizio: hm(t.s), fine: hm(t.s + t.len) }); else S.miei.push({ ...base, flessibile: true });
           }
-          const p = dayBounds(d), r = { ...dayRec(d), pianificato: Date.now(), intento: intento.trim() || undefined };
-          r.sveglia = wake !== toMin(pref().sveglia) ? hm(wake) : undefined; r.letto = (bed % 1440) !== (toMin(pref().letto) % 1440) ? hm(bed) : undefined; void p;
+          const r = { ...dayRec(d), pianificato: Date.now(), intento: intento.trim() || undefined };
+          r.sveglia = wake !== toMin(pref().sveglia) ? hm(wake) : undefined; r.letto = (bed % 1440) !== (toMin(pref().letto) % 1440) ? hm(bed) : undefined;
           S.giorni[d] = r; rebuildEvents(); saveState(); closeSheet(); dayD = d; if (tab !== 'giorno') select('giorno'); else render();
           const st = planStreak(L.date); undoable(`${relWord(d, L.date)} è pianificato${st > 1 ? ` · ${st} giorni di fila` : ''}`, s0);
         } }, h('span', { class: 'ih', html: ic('check') }), 'Conferma'));
@@ -2282,7 +2381,7 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden) { if
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => render());
 
 /* se il telefono ha tenuto una grafica vecchia insieme all'app nuova, svuoto la cache e ricarico (una volta) */
-if (window.ORN && ORN.version !== '2.7') { try { if (!sessionStorage.getItem('ritmo:rl')) { sessionStorage.setItem('ritmo:rl', '1'); (window.caches ? caches.keys().then((ks) => Promise.all(ks.map((k) => caches.delete(k)))) : Promise.resolve()).then(() => location.reload()); } } catch (e) { /* niente */ } }
+if (window.ORN && ORN.version !== '2.8') { try { if (!sessionStorage.getItem('ritmo:rl')) { sessionStorage.setItem('ritmo:rl', '1'); (window.caches ? caches.keys().then((ks) => Promise.all(ks.map((k) => caches.delete(k)))) : Promise.resolve()).then(() => location.reload()); } } catch (e) { /* niente */ } }
 loadState(); loadCachedData(); rebuildEvents();
 if (lsGet(LS.pass) === null) showWelcome(); else { showMain(); refresh(true); }
 if ('serviceWorker' in navigator) {
