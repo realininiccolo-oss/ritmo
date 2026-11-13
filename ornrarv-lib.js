@@ -425,12 +425,269 @@ function sailboat(x, y, s, hull, sail) {
     + `<path d="M0 -1L0 -24L11 -2Z" fill="${sail}"/><path d="M-1 -3L-1 -20L-9 -3Z" fill="${sail}" fill-opacity=".8"/></g></g>`;
 }
 
+/* ===== Ritmo 2.4 · protagonisti dei disegni =====
+   Mese  → un oggetto protagonista che dice la fase del mese (paesaggio del mese intorno).
+   Settimana → un animale che fa il verbo della settimana, vestito con la stagione del mese.
+   Giorno → un piccolo particolare accanto all'animale, con il verbo del giorno.
+   O Osservare · R Remare (osservativo) · N Navigare · R Remare (orientato) · A Automatizzare · R Remare (automatizzato) · V Validare */
+const WOOD = '#8A5E3B', WOOD_D = '#5E3D25', WOOD_L = '#B98A5C', BRASS = '#C9973A', BRASS_L = '#EBC77A', BRASS_D = '#7A5520';
+const MONTH_OBJ = ['Il cannocchiale', 'Il pontile con la barca e la lanterna', 'Il segnavia e la stella polare', 'La canoa sul torrente, tra le boe', 'Il mulino a vento', 'Il battello a ruota', 'Il forziere trovato'];
+const WEEK_OBJ = ['La civetta sul paletto', 'L\'anatra che si guarda intorno', 'Lo stormo di oche in formazione', 'Il cigno con i piccoli in fila', 'L\'alveare con le api', 'La coccinella sulla foglia, portata dalla corrente', 'Lo stambecco in cima alla roccia'];
+const DAY_OBJ = ['il binocolo', 'i remi incrociati', 'la bussola', 'la manica a vento', 'la girandola', 'il metronomo', 'la bandierina con la spunta'];
+/* dove stanno: W = protagonista o animale, D = particolare del giorno, ACQ = acqua per le settimane di Remare */
+const SLOT = [{ W: 1108, D: 1016 }, { W: 1122, D: 1058 }, { W: 1110, D: 1022 }, { W: 1104, D: 1022 }, { W: 1092, D: 1018 }, { W: 1102, D: 1016 }, { W: 1084, D: 1036 }];
+const at = (x, y, k, inner, cls) => `<g transform="translate(${f2(x)} ${f2(y)}) scale(${k})"${cls ? ` class="${cls}"` : ''}>${inner}</g>`;
+
+function decorFor(mi, o, C) {
+  const { P, NIGHT, DARK1, lit, u } = C, RD = rng(mi * 71 + (o.wk ?? 9) * 13 + (o.dy ?? 9) * 5 + 11), sl = SLOT[mi];
+  const L = { sky: [], mid: [], near: [], top: [] }, excl = [];
+  const snowy = mi === 2;
+  const dark = (str) => DARK1 ? toneStr(str, .5) : str;           // Brumale di notte: il disegno originale è scuro
+  const push = (layer, fn) => L[layer].push(fn);
+  const pond = (x, y, rx) => {   // pozza o laghetto sulla collina vicina
+    const wc = [ '#9CC3CC', '#8D9BB0', '#CFE3EA', '#9CCFD0', '#93CCCF', '#7CC0C6', '#5AA7AE'][mi];
+    return `<ellipse cx="${f2(x)}" cy="${f2(y)}" rx="${rx}" ry="${f2(rx * .13)}" fill="${mixHex(wc, '#3A5A66', .25)}"/><ellipse cx="${f2(x)}" cy="${f2(y + 1)}" rx="${rx - 3}" ry="${f2(rx * .115)}" fill="${wc}"/>`
+      + `<path d="M${f2(x - rx * .55)} ${f2(y - 1)}h${f2(rx * .3)}M${f2(x + rx * .1)} ${f2(y + 3)}h${f2(rx * .38)}" stroke="#FFFFFF" stroke-opacity=".6" stroke-width="1.4" stroke-linecap="round"/>`
+      + (snowy ? `<path d="M${f2(x - rx)} ${f2(y)}q${f2(rx)} ${f2(-rx * .3)} ${f2(rx * 2)} 0" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round"/>` : '');
+  };
+  const ripples = (x, y, n, w) => { let r = ''; for (let i = 0; i < n; i++) r += `<ellipse class="sc-ripple" style="--rpd:${f2(2.6 + i * .5)}s;--rpl:${f2(-i * 1.1)}s" cx="${f2(x + (i - n / 2) * 6)}" cy="${f2(y + 1)}" rx="${w}" ry="${f2(w * .18)}" fill="none" stroke="#FFFFFF" stroke-opacity=".8" stroke-width="1"/>`; return r; };
+  /* la stagione ai piedi delle cose */
+  const base = (x, y, w) => {
+    switch (mi) {
+      case 0: return [0, 1, 2].map((i) => `<ellipse cx="${f2(x - w / 2 + i * w / 2 + (RD() - .5) * 8)}" cy="${f2(y + 1)}" rx="3.6" ry="1.8" transform="rotate(${f2(RD() * 180)} ${f2(x - w / 2 + i * w / 2)} ${f2(y + 1)})" fill="${P.extra[i % 4]}"/>`).join('');
+      case 2: return `<ellipse cx="${f2(x)}" cy="${f2(y + 1)}" rx="${f2(w * .7)}" ry="4.5" fill="#FFFFFF"/>`;
+      case 3: return sprout(x - w / 2, y + 2, 12, P.front, RD) + daisy(x + w / 2, y + 3, .7);
+      case 4: return poppy(x - w / 2, y + 3, .8, P.extra[0]) + daisy(x + w / 2, y + 3, .8);
+      case 6: return `<path d="M${f2(x - w / 2)} ${f2(y)}q-2 -9 -6 -12M${f2(x - w / 2)} ${f2(y)}q1 -9 3 -14M${f2(x + w / 2)} ${f2(y)}q2 -8 6 -10" stroke="#7E8F4E" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
+      default: return '';
+    }
+  };
+  const cap = (x, y, w) => snowy ? `<path d="M${f2(x - w / 2 - 1)} ${f2(y + 1)}q${f2(w / 2 + 1)} -7 ${f2(w + 2)} 0z" fill="#FFFFFF"/>` : '';
+
+  /* ---------------- MESE: oggetto protagonista ---------------- */
+  if (o.prot) {
+    const X = sl.W;
+    switch (mi) {
+      case 0: { // Osservare: il cannocchiale d'ottone sul treppiede, puntato lontano (di notte alle stelle)
+        const A = NIGHT ? 30 : 13, k = 1.18;
+        excl.push([1050, 1170]);
+        push('near', (g) => { const y = g.near(X) + 3;
+          const tube = `<g transform="translate(0 -100) rotate(${A})"><rect x="-30" y="-17" width="36" height="6" rx="2.5" fill="${BRASS_D}"/><path d="M-80 -9.5L44 -6.5L44 6.5L-80 9.5Z" fill="${BRASS}"/><path d="M-80 -6.5L44 -4.4L44 -2.2L-80 -3.2Z" fill="${BRASS_L}" fill-opacity=".8"/>`
+            + `<rect x="-98" y="-11.5" width="20" height="23" rx="2.5" fill="${BRASS_D}"/><rect x="-40" y="-10" width="5" height="20" fill="${BRASS_D}"/><rect x="16" y="-7.4" width="4" height="14.8" fill="${BRASS_D}"/>`
+            + `<rect x="44" y="-3.8" width="16" height="7.6" fill="#3A2E24"/><rect x="58" y="-5.5" width="6" height="11" rx="1.5" fill="#3A2E24"/><ellipse cx="-98" cy="0" rx="3" ry="10.5" fill="#CDE6EE"/></g>`;
+          const legs = `<path d="M0 -94L-30 0M0 -94L30 0M0 -94L6 6" stroke="${WOOD_D}" stroke-width="4.6" stroke-linecap="round" fill="none"/><path d="M-15 -47L15 -47" stroke="${WOOD}" stroke-width="2.2" stroke-linecap="round"/><rect x="-8" y="-104" width="16" height="12" rx="2" fill="#4A3A2E"/>`;
+          return dark(at(X, y, k, base(0, 0, 50) + legs + tube)); });
+        if (NIGHT) push('sky', () => { // la costellazione che il cannocchiale guarda
+          const ox = X - 118 * 1.18, oy = 0, st = [[ox - 150, oy + 20], [ox - 120, oy - 6], [ox - 86, oy + 12], [ox - 52, oy - 14], [ox - 20, oy + 4]];
+          return lit(`<path d="M${st.map((p) => p.map(f2).join(' ')).join('L')}" stroke="#E9ECF6" stroke-opacity=".35" stroke-width="1" fill="none" stroke-dasharray="3 4"/>`
+            + st.map(([x, y], i) => `<g transform="translate(${f2(x)} ${f2(y)})"><path class="sc-twinkle" style="--td:${f2(2.2 + i * .4)}s;--tdl:${f2(i * .3)}s" d="M0 -5L1.2 -1.2L5 0L1.2 1.2L0 5L-1.2 1.2L-5 0L-1.2 -1.2Z" fill="#FFF3D0"/></g>`).join(''), 1.4); });
+        else push('near', (g) => `<g class="sc-fade" style="--d:1.6s"><g transform="translate(${f2(X - 108)} ${f2(g.near(X) - 120)})"><path class="sc-twinkle" style="--td:3s" d="M0 -6L1.4 -1.4L6 0L1.4 1.4L0 6L-1.4 1.4L-6 0L-1.4 -1.4Z" fill="#FFFFFF" fill-opacity=".9"/></g></g>`);
+        break;
+      }
+      case 1: { // Remare osservativo: pontile nella nebbia, la barca a remi legata, la lanterna accesa
+        const X = sl.W - 26;
+        excl.push([1040, 1200]);
+        const K = 1.55, ly = (g) => g.near(X) - 1;
+        push('near', (g) => { const y = ly(g);
+          let jet = pond(0, 6, 74);
+          jet += `<path d="M60 -3L-14 -3" stroke="${WOOD}" stroke-width="4.4" stroke-linecap="square"/><path d="M60 -1L-14 -1" stroke="${WOOD_D}" stroke-width="1"/>`;
+          [-10, 12, 34, 56].forEach((px) => { jet += `<path d="M${px} -5V10" stroke="${WOOD_D}" stroke-width="3" stroke-linecap="round"/>`; });
+          jet += `<path d="M-9 -4V-60h-13" stroke="${WOOD_D}" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+          jet += `<g class="sc-hang" style="--sd:4s"><path d="M-22 -60v5" stroke="#3A3A3A" stroke-width="1"/><g transform="translate(-22 -45)"><path d="M-6 -10L6 -10L3.5 -13.5L-3.5 -13.5Z" fill="#3A3A3A"/><rect x="-5" y="-10" width="10" height="12" rx="1.2" fill="#3A3A3A"/><rect x="-3.4" y="-8.4" width="6.8" height="8.6" fill="#F6C76E"/><path d="M-6 2H6" stroke="#3A3A3A" stroke-width="1.8"/></g></g>`;
+          const boat = `<g class="sc-bob"><g transform="translate(14 13)"><path d="M-26 -8L24 -8Q22 2 13 3L-18 3Q-24 1 -26 -8Z" fill="#7C4A34"/><path d="M-26 -8L24 -8L23 -5.6L-25 -5.6Z" fill="#E9E2D3"/>`
+            + `<path d="M-6 -7L-22 5M5 -7L22 6" stroke="${WOOD_L}" stroke-width="2" stroke-linecap="round"/><ellipse cx="-23" cy="5.5" rx="3.4" ry="1.5" fill="${WOOD_L}"/><ellipse cx="23" cy="6.5" rx="3.4" ry="1.5" fill="${WOOD_L}"/>`
+            + `<path d="M24 -7Q30 -12 37 -4" stroke="#C9B48A" stroke-width="1" fill="none"/></g></g>`;
+          return dark(at(X, y, K, jet + boat) + ripples(X + 14 * K, y + 18 * K, 3, 30)); });
+        push('near', (g) => { const y = ly(g), on = DARK1 || NIGHT, lx = X - 22 * K, lyy = y - 49 * K;
+          return `<g data-lit="1"><circle class="sc-glow" cx="${f2(lx)}" cy="${f2(lyy)}" r="${on ? 56 : 36}" fill="url(#${u}l)"/><ellipse class="sc-twinkle" style="--td:3.2s" cx="${f2(lx)}" cy="${f2(y + 9 * K)}" rx="${on ? 16 : 10}" ry="2.4" fill="#F6C76E" fill-opacity="${on ? .7 : .45}"/></g>`; });
+        break;
+      }
+      case 2: { // Navigare: il segnavia nella neve con la rosa dei venti, e di notte la stella polare
+        excl.push([1068, 1160]);
+        push('near', (g) => { const y = g.near(X) + 4;
+          let sp = `<rect x="-4" y="-150" width="8" height="152" fill="${WOOD_D}"/>`;
+          const board = (yy, dir, len) => { const a = dir < 0 ? -6 : 6, e = a + dir * len, t = e + dir * 10;
+            return `<path d="M${a} ${yy - 9}L${e} ${yy - 9}L${t} ${yy}L${e} ${yy + 9}L${a} ${yy + 9}Z" fill="${WOOD}"/><path d="M${a + dir * 6} ${yy - 2}h${dir * (len - 14)}M${a + dir * 6} ${yy + 3}h${dir * (len - 24)}" stroke="${WOOD_D}" stroke-opacity=".55" stroke-width="1.6"/>`
+              + `<path d="M${a - dir * 1} ${yy - 9}L${e} ${yy - 9}L${t - dir * 3} ${yy - 4}" stroke="#FFFFFF" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`; };
+          sp += board(-118, -1, 50) + board(-92, 1, 46) + board(-66, -1, 36);
+          sp += `<circle cx="0" cy="-160" r="17" fill="#EFE7D2" stroke="${WOOD_D}" stroke-width="3"/><path d="M0 -174L3.5 -160L0 -146L-3.5 -160Z" fill="#B23A2E"/><path d="M0 -146L3.5 -160L0 -174" fill="#2F5A63" fill-opacity="0"/><path d="M0 -146L3.5 -160L-3.5 -160Z" fill="#2F5A63"/><path d="M-14 -160L0 -157L14 -160L0 -163Z" fill="#8A7B60"/><circle cx="0" cy="-160" r="2" fill="${WOOD_D}"/>`
+            + `<path d="M-15 -168Q0 -186 15 -168Q0 -176 -15 -168Z" fill="#FFFFFF"/>`;
+          return at(X, y, 1.04, `<ellipse cx="0" cy="2" rx="34" ry="6" fill="#FFFFFF"/>${sp}`); });
+        if (NIGHT) push('sky', () => lit(`<g transform="translate(944 26)"><circle class="sc-glow" r="34" fill="url(#${u}g)"/><path class="sc-twinkle" style="--td:3.6s" d="M0 -16L2.6 -2.6L16 0L2.6 2.6L0 16L-2.6 2.6L-16 0L-2.6 -2.6Z" fill="#FFFFFF"/><circle r="2.4" fill="#FFFFFF"/></g>`
+          + [[-52, 22], [-88, 30], [-112, 52], [-150, 56], [-138, 82], [-100, 78]].map(([x, y], i) => `<circle class="sc-twinkle" style="--td:${f2(2.4 + i * .3)}s" cx="${f2(944 + x)}" cy="${f2(26 + y)}" r="1.6" fill="#E9ECF6"/>`).join('')
+          + `<path d="M944 26L892 48L856 56L832 78L794 82L806 108L844 104L832 78" stroke="#E9ECF6" stroke-opacity=".25" stroke-width="1" fill="none" stroke-dasharray="3 4"/>`, 1.2));
+        break;
+      }
+      case 3: { // Remare orientato: il torrente di primavera, la canoa che rema verso le boe del percorso
+        excl.push([1030, 1200]);
+        push('mid', (g) => { const y0 = g.mid(1100) + 4;
+          return `<path class="sc-rise" style="--d:.28s;--rise:30px" d="M930 ${f2(y0 + 12)}Q1060 ${f2(y0 - 2)} 1210 ${f2(y0 + 2)}L1210 ${f2(y0 + 46)}L930 ${f2(y0 + 46)}Z" fill="#9CCFD0"/>`
+            + `<path d="M980 ${f2(y0 + 12)}h30M1090 ${f2(y0 + 8)}h44M1150 ${f2(y0 + 16)}h30" stroke="#FFFFFF" stroke-opacity=".7" stroke-width="1.5" stroke-linecap="round"/>`; });
+        push('near', (g) => { const y = g.mid(1100) + 17;
+          const buoy = (x, col) => `<g class="sc-bob"><g transform="translate(${x} ${f2(y - 2)}) scale(1.4)"><path d="M-6 2L-4 -14L4 -14L6 2Z" fill="${col}"/><rect x="-4.4" y="-9" width="8.8" height="3.5" fill="#FFFFFF"/><path d="M0 -14V-22" stroke="#3A3A3A" stroke-width="1.6"/><circle cx="0" cy="-23" r="2.4" fill="${col}"/></g></g>`;
+          const rower = `<circle cx="2" cy="-30" r="5.2" fill="#E0B48A"/><path d="M-5 -33Q2 -42 9 -33Z" fill="#E3C25A"/><path d="M-6 -12L-4 -26Q2 -30 8 -26L8 -12Z" fill="#3E6FA0"/>`;
+          const oar = (s) => `<g class="sc-row" style="--rwd:1.6s;--rwl:${s > 0 ? 0 : -.8}s"><path d="M2 -20L${-26} ${f2(4 * s + 6)}" stroke="${WOOD_L}" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="-27" cy="${f2(4 * s + 7)}" rx="5" ry="2" fill="${WOOD_L}"/></g>`;
+          const canoe = `<g class="sc-glide" style="--gd:7s;--gx:-18px"><g class="sc-bob"><g transform="translate(1084 ${f2(y + 2)}) scale(1.7)">${oar(1)}${rower}${oar(-1)}<path d="M-34 -12Q0 -8 36 -14Q32 0 16 2L-22 2Q-32 0 -34 -12Z" fill="#C0563A"/><path d="M-34 -12Q0 -8 36 -14L35 -11Q0 -5 -33 -9Z" fill="#F2D9B0"/>`
+            + `<path d="M-30 -12V-34" stroke="${WOOD_D}" stroke-width="1.4"/><path class="sc-flagw" d="M-30 -34L-16 -31L-30 -27Z" fill="#E3A33B"/></g></g></g>`;
+          return buoy(990, '#D8453A') + buoy(1178, '#3E8F5A') + `<path d="M1112 ${f2(y + 1)}l26 4M1112 ${f2(y + 4)}l22 7" stroke="#FFFFFF" stroke-opacity=".7" stroke-width="1.2"/>` + canoe; });
+        break;
+      }
+      case 4: { // Automatizzare: il mulino a vento che gira da solo tra i fiori
+        excl.push([1060, 1150]);
+        push('near', (g) => { const y = g.near(X) + 4;
+          let blades = '';
+          for (let k = 0; k < 4; k++) blades += `<g transform="rotate(${k * 90})"><path d="M0 0L0 -84" stroke="${WOOD_D}" stroke-width="3"/><path d="M2 -18L19 -18L19 -84L2 -84Z" fill="#F4ECDD" fill-opacity=".92" stroke="${WOOD_D}" stroke-width="1.4"/>`
+            + `<path d="M2 -34H19M2 -51H19M2 -68H19M10.5 -18V-84" stroke="${WOOD_D}" stroke-width="1" stroke-opacity=".7"/></g>`;
+          const tower = `<path d="M-32 0L-19 -140L19 -140L32 0Z" fill="#EFE6D6"/><path d="M0 0L0 -140L19 -140L32 0Z" fill="#DCCFB8"/><path d="M-26 -140Q0 -182 26 -140Z" fill="#A9502F"/>`
+            + `<rect x="-8" y="-26" width="16" height="26" rx="8" fill="${WOOD_D}"/><rect x="-6" y="-92" width="11" height="13" rx="1" fill="#5B6573"/><rect x="-5" y="-56" width="9" height="11" rx="1" fill="#5B6573"/><path d="M-33 0H33" stroke="#6E8F55" stroke-width="3"/>`;
+          return at(X, y, 1.06, base(-40, 0, 20) + tower + `<g transform="translate(0 -148)"><g class="sc-rot" style="--rtd:9s">${blades}<circle r="0.1" fill="none"/></g><circle r="6" fill="${WOOD_D}"/></g>`); });
+        if (NIGHT) push('near', (g) => { const y = g.near(X) + 4, k = 1.06; return lit(`<rect class="sc-window" x="${f2(X - 6 * k)}" y="${f2(y - 92 * k)}" width="${f2(11 * k)}" height="${f2(13 * k)}" fill="#F6C76E"/><circle cx="${f2(X)}" cy="${f2(y - 86 * k)}" r="22" fill="url(#${u}l)"/>`); });
+        break;
+      }
+      case 5: { // Remare automatizzato: il battello a ruota che rema da sé sul mare d'estate
+        excl.push([975, 1150]);
+        push('mid', () => { const x = 1062, y = 222, s0 = P.sea[0], s1 = P.sea[1], wc = mixHex(s0, s1, (y + 6 - 198) / 342);
+          let wheel = ''; for (let k = 0; k < 8; k++) wheel += `<g transform="rotate(${k * 45})"><path d="M0 0V-17" stroke="#3B3012" stroke-width="1.6"/><rect x="-4" y="-20" width="8" height="4" fill="#B23A2E"/></g>`;
+          let puffs = ''; for (let i = 0; i < 4; i++) puffs += `<g transform="translate(${x - 8 + (i % 2) * 28} ${y - 72})"><g class="sc-puff" style="--pfd:4.6s;--pfl:${f2(-i * 1.15)}s"><circle r="${5 + (i % 2) * 2}" fill="#FFFFFF" fill-opacity=".85"/></g></g>`;
+          const boat = `<g class="sc-bob"><g transform="translate(${x} ${y}) scale(1.25)">`
+            + `<path d="M-72 -14L76 -16L68 6L-64 6Z" fill="#8E2F26"/><path d="M-72 -14L76 -16L75 -11L-71 -9Z" fill="#FFFFFF"/>`
+            + `<rect x="-46" y="-32" width="74" height="18" rx="2" fill="#F4EEE0"/><path d="M-50 -32H32" stroke="#3B3012" stroke-width="2.4"/>`
+            + [-40, -28, -16, -4, 8, 20].map((wx) => `<rect x="${wx}" y="-28" width="6" height="6" rx="1" fill="#3E93A0"/>`).join('')
+            + `<rect x="-14" y="-56" width="10" height="24" fill="#B23A2E"/><rect x="-14" y="-56" width="10" height="5" fill="#2A2418"/><rect x="6" y="-52" width="10" height="20" fill="#B23A2E"/><rect x="6" y="-52" width="10" height="5" fill="#2A2418"/>`
+            + `<path d="M50 -16V-48" stroke="#3B3012" stroke-width="1.6"/><path class="sc-flagw" d="M50 -48L66 -44L50 -40Z" fill="#E3A33B"/>`
+            + `<path d="M-10 -12A24 24 0 0 1 38 -12Z" fill="#7A2620"/><g transform="translate(14 -4)"><g class="sc-rot" style="--rtd:3.2s">${wheel}<circle r="20" fill="none"/></g><circle r="3" fill="#3B3012"/></g></g></g>`;
+          return [puffs + boat, `<g data-lit="1"><path d="M${x - 80} ${y + 4}H${x + 84}V${y + 30}H${x - 80}Z" fill="${wc}"/></g>`,
+            `<path d="M${x + 40} ${y + 5}q20 2 40 -1M${x + 46} ${y + 10}q24 2 50 -2M${x - 74} ${y + 6}q-14 1 -26 -1" stroke="#FFFFFF" stroke-opacity=".8" stroke-width="1.5" fill="none" stroke-linecap="round"/>`,
+            (NIGHT ? lit([-40, -28, -16, -4, 8, 20].map((wx) => `<rect x="${x + wx}" y="${y - 28}" width="6" height="6" rx="1" fill="#F6C76E"/>`).join('') + `<circle cx="${x - 6}" cy="${y - 24}" r="40" fill="url(#${u}l)"/>`) : '')]; });
+        break;
+      }
+      case 6: { // Validare: il forziere trovato sulla scogliera, con la bandiera piantata
+        push('near', (g) => { const x = 1078, y = g.near(x) + 2;
+          let coins = ''; [[-14, -30], [-6, -33], [3, -31], [11, -33], [17, -29], [-9, -27], [8, -27]].forEach(([cx, cy]) => { coins += `<circle cx="${cx}" cy="${cy}" r="5" fill="#F2C230" stroke="#C68A2E" stroke-width="1"/>`; });
+          const chest = `<path d="M-26 -27L26 -27L22 -54L-22 -56Z" fill="${WOOD_D}"/><path d="M-22 -56L22 -54" stroke="${BRASS}" stroke-width="3"/>${coins}<rect x="-27" y="-28" width="54" height="28" rx="3" fill="${WOOD}"/>`
+            + `<path d="M-27 -16H27" stroke="${WOOD_D}" stroke-width="1.4"/><rect x="-20" y="-28" width="6" height="28" fill="${BRASS}"/><rect x="14" y="-28" width="6" height="28" fill="${BRASS}"/><rect x="-5" y="-22" width="10" height="11" rx="2" fill="${BRASS_L}"/><circle cx="0" cy="-17" r="1.8" fill="${WOOD_D}"/>`
+            + [[24, 4], [-34, 3], [32, 1]].map(([cx, cy]) => `<ellipse cx="${cx}" cy="${cy}" rx="4.6" ry="2.4" fill="#F2C230" stroke="#C68A2E" stroke-width=".8"/>`).join('');
+          const flag = `<path d="M-48 2V-78" stroke="#3A2E14" stroke-width="2.4" stroke-linecap="round"/><path class="sc-flagw" d="M-47 -78Q-32 -82 -18 -75Q-32 -68 -47 -64Z" fill="${P.extra[0]}"/>`;
+          const sp = [[-10, -44], [12, -46], [0, -52]].map(([sx, sy], i) => `<g transform="translate(${sx} ${sy})"><path class="sc-twinkle" style="--td:${f2(1.6 + i * .5)}s;--tdl:${f2(i * .4)}s" d="M0 -6L1.4 -1.4L6 0L1.4 1.4L0 6L-1.4 1.4L-6 0L-1.4 -1.4Z" fill="#FFF6D0"/></g>`).join('');
+          return [at(x, y, 1.35, flag + chest), lit(at(x, y, 1.35, `<circle cx="0" cy="-34" r="${NIGHT ? 38 : 26}" fill="url(#${u}l)"/>` + sp), 1.5)]; });
+        break;
+      }
+    }
+  }
+
+  /* ---------------- SETTIMANA: l'animale che fa il verbo ---------------- */
+  if (o.wk != null) {
+    const wk = o.wk, X = sl.W;
+    const water = wk === 1 || wk === 3 || wk === 5;
+    /* l'acqua: il mare per Messidoro ed Estiario, altrimenti una pozza sulla collina vicina */
+    const sea = mi === 5 || mi === 6, WX = mi === 6 ? 960 : X, wy = (g) => sea ? 238 : g.near(X) + 12;
+    if (water && !sea) push('near', (g) => dark(pond(X, wy(g), 84)));
+    if (wk !== 2) excl.push([X - 60, X + 60]);
+    const layer = water && sea ? 'mid' : 'near';
+    switch (wk) {
+      case 0: // Osservare: la civetta sul paletto, occhi grandi che sbattono (di notte si accendono)
+        push(layer, (g) => { const y = g.near(X) + 3;
+          const owl = `<path d="M-15 -78Q-19 -64 -12 -60L12 -60Q19 -64 15 -78Q12 -96 0 -97Q-12 -96 -15 -78Z" fill="#8A6A4A"/><path d="M-8 -62Q-10 -76 0 -80Q10 -76 8 -62Z" fill="#D9BE96"/>`
+            + `<path d="M-5 -72l2 2l2 -2M1 -67l2 2l2 -2M-5 -64l2 2l2 -2" stroke="#8A6A4A" stroke-width="1" fill="none"/>`
+            + `<path d="M-15 -80Q-20 -68 -13 -62Q-11 -72 -15 -80ZM15 -80Q20 -68 13 -62Q11 -72 15 -80Z" fill="#6E5236"/>`
+            + `<circle cx="0" cy="-104" r="13.5" fill="#8A6A4A"/><path d="M-12 -112L-15 -124L-6 -116ZM12 -112L15 -124L6 -116Z" fill="#6E5236"/>`
+            + `<circle cx="-6" cy="-104" r="7" fill="#E8D6B5"/><circle cx="6" cy="-104" r="7" fill="#E8D6B5"/>`
+            + `<g class="sc-blink"><circle cx="-6" cy="-104" r="4.2" fill="#F2C230"/><circle cx="6" cy="-104" r="4.2" fill="#F2C230"/><circle cx="-6" cy="-104" r="2.2" fill="#1E1A14"/><circle cx="6" cy="-104" r="2.2" fill="#1E1A14"/></g>`
+            + `<path d="M-2 -99L0 -95L2 -99Z" fill="#4A3A2E"/><path d="M-6 -60v3M-3 -60v3M3 -60v3M6 -60v3" stroke="#C9A04A" stroke-width="1.4" stroke-linecap="round"/>`;
+          const post = `<rect x="-6" y="-60" width="12" height="62" fill="${WOOD_D}"/><path d="M-6 -46H6M-6 -24H6" stroke="#3E2A1A" stroke-width="1"/><path d="M6 -40L40 -34M6 -18L40 -12" stroke="${WOOD_D}" stroke-width="3" stroke-linecap="round"/>`
+            + cap(0, -60, 12) + (mi === 4 || mi === 3 ? `<path d="M-6 -6Q-12 -18 -4 -30Q4 -38 -2 -48" stroke="#5E9446" stroke-width="1.6" fill="none"/>${daisy(-8, -22, .6)}` : '');
+          const eyes = NIGHT || DARK1 ? lit(at(X, y, 1.3, `<g class="sc-blink"><circle cx="-6" cy="-104" r="4.2" fill="#FFE07A"/><circle cx="6" cy="-104" r="4.2" fill="#FFE07A"/><circle cx="-6" cy="-104" r="2" fill="#1E1A14"/><circle cx="6" cy="-104" r="2" fill="#1E1A14"/></g>`), 1.2) : '';
+          return [dark(at(X, y, 1.3, base(0, 0, 40) + post + owl + (snowy ? cap(0, -116, 26) : ''))), eyes]; });
+        break;
+      case 1: // Remare osservativo: l'anatra sulla pozza, gira la testa a guardarsi intorno
+        push(layer, (g) => { const x = sea ? WX : X, y = wy(g) - 1;
+          const duck = `<path d="M-20 0Q-24 -6 -26 -14Q-16 -10 -10 -12Q2 -16 12 -12Q19 -9 18 -2Q16 2 8 3L-12 3Q-18 3 -20 0Z" fill="#9A968A"/><path d="M6 -12Q18 -12 18 -3Q16 2 8 3Z" fill="#7A4A32"/><path d="M-14 -8Q-2 -12 8 -8" stroke="#5E5A50" stroke-width="2" fill="none"/>`
+            + `<g class="sc-look"><path d="M10 -12Q9 -20 12 -24" stroke="#2E6B45" stroke-width="6" stroke-linecap="round"/><circle cx="13" cy="-27" r="6.4" fill="#2E6B45"/><path d="M8 -15Q12 -13 15 -15" stroke="#FFFFFF" stroke-width="1.6"/><path d="M18 -28Q26 -28 26 -25Q22 -24 18 -25Z" fill="#E5B238"/><circle cx="15" cy="-29" r="1.2" fill="#111"/></g>`;
+          return dark(`<g class="sc-bob">${at(x, y, 1.9, duck)}</g>` + ripples(x, y + 3, 3, 32)); });
+        break;
+      case 2: // Navigare: lo stormo di oche in formazione a V che attraversa il cielo
+        push('sky', () => { let b = '';
+          const gc = NIGHT ? '#1A2238' : '#3B3A40', goose = (x, y, k, i) => `<g transform="translate(${f2(x)} ${f2(y)}) scale(${k})"><ellipse cx="0" cy="-1" rx="9" ry="3.4" fill="${gc}"/><path d="M-8 -1L-14 1M7 -2Q12 -3 15 -6" stroke="${gc}" stroke-width="2.4" fill="none" stroke-linecap="round"/><circle cx="16" cy="-6.5" r="2.2" fill="${gc}"/><path class="sc-gull" style="animation-delay:${f2(-i * .13)}s" d="M-16 -9Q-6 -12 0 -1Q6 -12 16 -9" fill="none" stroke="${NIGHT ? '#1A2238' : '#3B3A40'}" stroke-width="2.4" stroke-linecap="round"/></g>`;
+          const lead = [868, 66];
+          for (let i = 0; i < 7; i++) { const r = Math.ceil(i / 2), side = i % 2 ? -1 : 1; b += goose(lead[0] + r * 30, lead[1] + side * r * 15, 1.35 - r * .06, i); }
+          return `<g class="sc-fade" style="--d:.8s"><g class="sc-hover" style="--hd:16s;--hdl:-3s;--hx:-60px">${b}</g></g>`; });
+        break;
+      case 3: // Remare orientato: la cigna davanti, i piccoli in fila dietro, tutti nella stessa direzione
+        push(layer, (g) => { const x = (sea ? WX : X) - 40, y = wy(g) - 1;
+          const swan = `<path d="M-22 0Q-30 -8 -26 -16Q-14 -12 -6 -14Q8 -18 14 -10Q18 -4 14 1L-14 2Q-20 2 -22 0Z" fill="#FFFFFF"/><path d="M-20 -6Q-4 -12 10 -6" stroke="#DCDCDC" stroke-width="2" fill="none"/>`
+            + `<path d="M8 -12Q16 -24 8 -32Q2 -40 10 -44" stroke="#FFFFFF" stroke-width="5.4" fill="none" stroke-linecap="round"/><ellipse cx="13" cy="-45" rx="5.5" ry="4" fill="#FFFFFF"/><path d="M17 -46L26 -43L17 -42Z" fill="#E98A3A"/><circle cx="16.5" cy="-44.5" r="1.6" fill="#222"/><circle cx="13" cy="-46" r=".9" fill="#222"/>`;
+          const cyg = (cx, i) => `<g class="sc-bob" style="animation-delay:${f2(-i * .7)}s"><g transform="translate(${cx} 0)"><path d="M-8 0Q-10 -7 -2 -7Q6 -8 7 -2Q7 1 4 1Z" fill="#B8B2A8"/><circle cx="5" cy="-10" r="3.6" fill="#B8B2A8"/><path d="M8 -10.5L11 -9.5L8 -8.5Z" fill="#5A5048"/></g></g>`;
+          return dark(`<g class="sc-glide" style="--gd:9s;--gx:-16px">${at(x, y, 1.65, swan + cyg(32, 0) + cyg(50, 1) + cyg(68, 2) + `<path d="M-24 3L-48 8M-24 5L-44 12" stroke="#FFFFFF" stroke-opacity=".7" stroke-width="1"/>`)}</g>`); });
+        break;
+      case 4: // Automatizzare: l'alveare di paglia, le api lavorano da sole (d'inverno quasi tutte dentro)
+        push(layer, (g) => { const y = g.near(X) + 3;
+          let rings = ''; for (let k = 0; k < 6; k++) { const yy = -18 - k * 8, w = 22 - k * k * .55; rings += `<path d="M${f2(-w)} ${yy}Q0 ${yy + 4} ${f2(w)} ${yy}" stroke="#A87A2A" stroke-width="1.6" fill="none"/>`; }
+          const hive = `<path d="M-22 -2V-14H22V-2" stroke="${WOOD_D}" stroke-width="3" fill="none"/><rect x="-26" y="-16" width="52" height="5" rx="1" fill="${WOOD}"/>`
+            + `<path d="M-22 -16Q-26 -52 0 -66Q26 -52 22 -16Z" fill="#D9A84A"/>${rings}<path d="M-22 -16Q0 -12 22 -16" stroke="#A87A2A" stroke-width="2" fill="none"/><ellipse cx="0" cy="-22" rx="6" ry="4" fill="#3A2A14"/>`
+            + (snowy ? `<path d="M-15 -52Q0 -70 15 -52Q0 -60 -15 -52Z" fill="#FFFFFF"/>` : '');
+          const n = NIGHT || DARK1 ? 0 : mi === 2 ? 1 : mi === 1 ? 2 : 7;
+          let bees = ''; for (let i = 0; i < n; i++) { const bx = (RD() - .5) * 90, by = -40 - RD() * 50;
+            bees += `<g transform="translate(${f2(bx)} ${f2(by)})"><g class="sc-ffx" style="--fxd:${f2(4 + RD() * 4)}s;--fxl:${f2(-RD() * 5)}s;--fx1:${f2((RD() - .5) * 40)}px;--fy1:${f2(-RD() * 24)}px;--fx2:${f2((RD() - .5) * 40)}px;--fy2:${f2(RD() * 24)}px;--fx3:${f2((RD() - .5) * 40)}px">`
+              + `<g class="sc-flap" style="animation-duration:.12s"><ellipse cx="-1" cy="-3.4" rx="2.4" ry="3" fill="#FFFFFF" fill-opacity=".8"/><ellipse cx="2" cy="-3.2" rx="2.2" ry="2.8" fill="#FFFFFF" fill-opacity=".7"/></g><ellipse rx="3.6" ry="2.5" fill="#F2C230"/><path d="M-.6 -2.4V2.4M1.6 -2.2V2.2" stroke="#2A2014" stroke-width="1.1"/></g></g>`; }
+          return [dark(at(X, y, 1.45, base(0, 0, 50) + hive) + `<g transform="translate(${X} ${f2(y)})">${bees}</g>`),
+            (NIGHT || DARK1 ? lit(`<ellipse cx="${X}" cy="${f2(y - 25)}" rx="5" ry="3.4" fill="#F6C76E" fill-opacity=".8"/><circle cx="${X}" cy="${f2(y - 25)}" r="16" fill="url(#${u}l)"/>`) : '')]; });
+        break;
+      case 5: // Remare automatizzato: la coccinella sulla foglia, che va da sola con la corrente
+        push(layer, (g) => { const x = sea ? WX : X, y = wy(g) - 1;
+          const lc = ['#D8792E', '#8C6A44', '#8C6A44', '#9CC46A', '#7DB060', '#B9B44A', '#6FA25A'][mi];
+          const leaf = `<path d="M-26 0Q-8 -12 24 -3Q10 7 -26 0Z" fill="${lc}"/><path d="M-26 0Q0 -3 22 -3" stroke="${mixHex(lc, '#000000', .3)}" stroke-width="1.2" fill="none"/><path d="M24 -3q5 -1 7 -5" stroke="${mixHex(lc, '#000000', .3)}" stroke-width="1.4" fill="none"/>`
+            + `<g transform="translate(-1 -5)"><path d="M-7 0A7 7 0 0 1 7 0Z" fill="#D8453A"/><path d="M0 -7V0" stroke="#1E1A14" stroke-width="1"/><circle cx="-3.5" cy="-3" r="1.3" fill="#1E1A14"/><circle cx="3.2" cy="-2.4" r="1.3" fill="#1E1A14"/><circle cx="-1.2" cy="-5.2" r="1" fill="#1E1A14"/><path d="M7 0A3 3 0 0 0 10 -2.6Q11 -.5 10 0Z" fill="#1E1A14"/></g>`;
+          const flow = [0, 1, 2].map((i) => `<path class="sc-wave" style="--wl:-24px;--wd:${f2(2.4 + i * .6)}s" d="${waveD(x - 70 + i * 10, x + 50, y + 4 + i * 3, 24, 1.6)}" fill="none" stroke="#FFFFFF" stroke-opacity="${f2(.6 - i * .15)}" stroke-width="1.1"/>`).join('');
+          return dark(flow + `<g class="sc-glide" style="--gd:8s;--gx:-26px"><g class="sc-bob">${at(x + 8, y, 2.1, leaf)}</g></g>`); });
+        break;
+      case 6: // Validare: lo stambecco in cima alla roccia, la meta raggiunta
+        push(layer, (g) => { const y = g.near(X) + 4;
+          const rock = `<path d="M-48 2L-38 -28L-22 -52L0 -64L20 -55L38 -28L50 2Z" fill="#9A968C"/><path d="M0 -64L20 -55L38 -28L50 2L8 2L4 -36Z" fill="#7E7A70"/><path d="M-22 -52L0 -64L-6 -44L-30 -20Z" fill="#B8B4AA"/>`
+            + (snowy ? `<path d="M-24 -50L0 -64L20 -55L10 -50L0 -56L-10 -48Z" fill="#FFFFFF"/>` : mi === 0 ? `<path d="M-40 -24q8 -6 14 0" stroke="#B84A26" stroke-width="3" fill="none"/>` : mi === 3 || mi === 4 ? `<path d="M-42 -14q6 -8 12 -2M30 -20q6 -6 10 0" stroke="#6E9A4A" stroke-width="3" fill="none" stroke-linecap="round"/>` : '');
+          const ibex = `<g transform="translate(0 -64)"><path d="M-10 -10L-12 0M-5 -10L-6 0M8 -10L9 0M12 -10L14 0" stroke="#6B5038" stroke-width="2.6" stroke-linecap="round"/><ellipse cx="1" cy="-15" rx="15" ry="8" fill="#8B6B4E"/><path d="M14 -18l4 -3" stroke="#6B5038" stroke-width="2.4" stroke-linecap="round"/>`
+            + `<path d="M-10 -18Q-14 -26 -16 -32" stroke="#8B6B4E" stroke-width="7" stroke-linecap="round"/><path d="M-22 -32Q-18 -38 -12 -34Q-12 -28 -18 -28Z" fill="#8B6B4E"/><path d="M-21 -29q-1 5 -3 6" stroke="#6B5038" stroke-width="1.4"/>`
+            + `<path d="M-14 -36Q-8 -54 6 -50Q10 -46 6 -42" stroke="#5A4636" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M-12 -35Q-4 -50 8 -45" stroke="#6B5038" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="-17" cy="-33" r="1" fill="#111"/></g>`;
+          return dark(at(X, y, 1.35, base(0, 0, 70) + rock + ibex)); });
+        break;
+    }
+  }
+
+  /* ---------------- GIORNO: il particolare ---------------- */
+  if (o.dy != null) {
+    const X = o.wk === 2 && o.prot !== true ? sl.D : sl.D, dy = o.dy;
+    excl.push([X - 30, X + 30]);
+    push('near', (g) => { const y = g.near(X) + 4;
+      let it = '';
+      switch (dy) {
+        case 0: it = `<ellipse cx="0" cy="-3" rx="16" ry="6" fill="#8C8A84"/><ellipse cx="-3" cy="-5" rx="9" ry="3" fill="#A8A6A0"/>`
+          + `<path d="M-3 -16H3" stroke="#2E3440" stroke-width="3"/><rect x="-13" y="-24" width="10" height="16" rx="3" fill="#2E3440"/><rect x="3" y="-24" width="10" height="16" rx="3" fill="#2E3440"/><ellipse cx="-8" cy="-24" rx="5" ry="2.2" fill="#9BC4D6"/><ellipse cx="8" cy="-24" rx="5" ry="2.2" fill="#9BC4D6"/><path d="M-13 -14H-3M3 -14H13" stroke="#59606E" stroke-width="1.2"/>`; break;
+        case 1: it = [-1, 1].map((s) => `<g transform="rotate(${s * 22})"><path d="M0 2V-44" stroke="${WOOD}" stroke-width="3.2" stroke-linecap="round"/><path d="M-4.6 -42Q0 -64 4.6 -42Q0 -36 -4.6 -42Z" fill="${WOOD_L}"/><path d="M-2 -6H2" stroke="${WOOD_D}" stroke-width="3"/></g>`).join('') + cap(-14, -52, 10) + cap(14, -52, 10); break;
+        case 2: it = `<ellipse cx="0" cy="-3" rx="15" ry="5.5" fill="#8C8A84"/><path d="M0 -6V-10" stroke="${BRASS_D}" stroke-width="3"/><circle cx="0" cy="-24" r="14" fill="${BRASS}"/><circle cx="0" cy="-24" r="11" fill="#F4EFE0"/>`
+          + `<path d="M0 -34V-31M0 -17V-14M-10 -24H-7M7 -24H10" stroke="#8A7B60" stroke-width="1.2"/><circle cx="0" cy="-39" r="2.4" fill="none" stroke="${BRASS_D}" stroke-width="1.4"/>`
+          + `<g class="sc-needle"><path d="M0 -33L2.4 -24L-2.4 -24Z" fill="#B23A2E"/><path d="M0 -15L2.4 -24L-2.4 -24Z" fill="#2F5A63"/><circle cx="0" cy="-24" r="2" fill="${BRASS_D}"/></g>`; break;
+        case 3: it = `<path d="M0 2V-58" stroke="#5A5048" stroke-width="2.4" stroke-linecap="round"/><g transform="translate(0 -54)"><g class="sc-sock"><path d="M0 -6L-34 -3.5L-34 3.5L0 6Z" fill="#FFFFFF"/>`
+          + `<path d="M0 -6L-9 -5.4L-9 5.4L0 6ZM-17 -4.8L-25 -4.2L-25 4.2L-17 4.8Z" fill="#E2603F"/><path d="M-34 -3.5L-34 3.5" stroke="#C44A2E" stroke-width="1"/></g></g>` + cap(0, -58, 6); break;
+        case 4: { let bl = ''; ['#E2603F', '#3E8F9A', '#F2C230', '#8E5FA3'].forEach((c, k) => { bl += `<path transform="rotate(${k * 90})" d="M0 0L0 -13Q8 -11 9 -4Z" fill="${c}"/>`; });
+          it = `<path d="M0 2V-40" stroke="${WOOD_D}" stroke-width="2.4" stroke-linecap="round"/><g transform="translate(0 -42)"><g class="sc-rot" style="--rtd:2.4s">${bl}<circle r="13.5" fill="none"/></g><circle r="2" fill="#FFFFFF"/></g>`; break; }
+        case 5: it = `<ellipse cx="0" cy="-3" rx="16" ry="5.5" fill="#8C8A84"/><path d="M-12 -6L-6 -42L6 -42L12 -6Z" fill="${WOOD}"/><path d="M-6 -42L6 -42L4 -46L-4 -46Z" fill="${WOOD_D}"/><path d="M-8 -16H8" stroke="${WOOD_D}" stroke-width="2"/>`
+          + `<g transform="translate(0 -14)"><g class="sc-tick"><path d="M0 0V-30" stroke="${BRASS_D}" stroke-width="1.8"/><rect x="-3" y="-23" width="6" height="5" fill="${BRASS}"/></g></g>` + cap(0, -46, 12); break;
+        case 6: it = `<path d="M0 2V-56" stroke="#3A2E14" stroke-width="2.4" stroke-linecap="round"/><circle cx="0" cy="-57" r="2" fill="${BRASS}"/><g transform="translate(1 -54)"><g class="sc-flagw"><path d="M0 0Q14 -4 28 1L28 19Q14 14 0 18Z" fill="#4B8F5A"/>`
+          + `<path d="M7 9L12 14L21 4" stroke="#FFFFFF" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></g>`; break;
+      }
+      const lights = (NIGHT || DARK1) && dy === 2 ? lit(`<circle cx="${X}" cy="${f2(y - 35)}" r="24" fill="url(#${u}l)"/>`, 1.3) : '';
+      return [dark(`<g class="sc-pop" style="--d:1.3s">${at(X, y, 1.45, base(0, 0, 34) + it)}</g>`), lights]; });
+  }
+  return { L, excl };
+}
+
 function sceneSVG(mi, opts = {}) {
   const G = !!opts.ground;               // ground variant: no sky, static
   const p = clamp(opts.p ?? monthP(mi), 0, 1);   // week-by-week progression
   const DAY = mi === 1 && opts.variant === 'giorno';
   const NIGHT = mi !== 1 && opts.variant === 'notte', NK = NIGHT_K[mi];
   const P = Object.assign({}, DAY ? PAL_BRUMALE_GIORNO : PAL[mi]), R = rng(mi * 131 + 7), RN = rng(mi * 977 + 3), u = 'sc' + (++sceneUid);
+  /* 2.4: testata più alta → cielo in più sopra (T) e un po' di terra sotto (B), così il disegno non si schiaccia */
+  const T = Math.max(0, Math.round(opts.top || 0)), B = Math.max(0, Math.round(opts.bot || 0));
   if (NIGHT) { P.sky = NIGHT_SKY[mi]; P.sun = MOON[mi]; P.fog = '#A9B8DE'; if (P.sea) P.sea = P.sea.map((c) => toneHex(c, NK - .06)); }
   const s = [];
   const sky = str => { if (!G) s.push(str); };
@@ -444,11 +701,11 @@ function sceneSVG(mi, opts = {}) {
     <linearGradient id="${u}b" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#FFF1BE" stop-opacity=".85"/><stop offset="1" stop-color="#FFF1BE" stop-opacity="0"/></linearGradient>
     <linearGradient id="${u}t" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF" stop-opacity="1"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>
   </defs>`;
-  sky(`<rect width="${SW}" height="${SH}" fill="url(#${u}k)"/>`);
-  if (mi === 6 && p > 0 && !NIGHT) sky(`<rect width="${SW}" height="${SH}" fill="#F08A4B" fill-opacity="${f2(p * .22)}"/>`);
-  if (mi === 2 && p > 0 && !NIGHT) sky(`<rect width="${SW}" height="${SH}" fill="#F3E3C0" fill-opacity="${f2(p * .18)}"/>`);
+  sky(`<rect y="${-T}" width="${SW}" height="${SH + T + B}" fill="url(#${u}k)"/>`);
+  if (mi === 6 && p > 0 && !NIGHT) sky(`<rect y="${-T}" width="${SW}" height="${SH + T}" fill="#F08A4B" fill-opacity="${f2(p * .22)}"/>`);
+  if (mi === 2 && p > 0 && !NIGHT) sky(`<rect y="${-T}" width="${SW}" height="${SH + T}" fill="#F3E3C0" fill-opacity="${f2(p * .18)}"/>`);
   /* di notte: stelle dietro le colline (RN: un caso a parte, così il paesaggio resta uguale tra giorno e notte) */
-  if (NIGHT && !G) { let st = ''; for (let i = 0; i < 40; i++) st += `<circle class="sc-twinkle" style="--td:${f2(2 + RN() * 3)}s;--tdl:${f2(RN() * 3)}s" cx="${f2(440 + RN() * 760)}" cy="${f2(8 + RN() * (mi === 2 ? 110 : 150))}" r="${f2(.6 + RN() * 1.3)}" fill="#E9ECF6"/>`;
+  if (NIGHT && !G) { let st = ''; for (let i = 0; i < 40 + Math.round(T / 6); i++) st += `<circle class="sc-twinkle" style="--td:${f2(2 + RN() * 3)}s;--tdl:${f2(RN() * 3)}s" cx="${f2(440 + RN() * 760)}" cy="${f2(8 - T + RN() * ((mi === 2 ? 110 : 150) + T))}" r="${f2(.6 + RN() * 1.3)}" fill="#E9ECF6"/>`;
     s.push(`<g data-lit="1" class="sc-fade" style="--d:.3s">${st}</g>`); }
   const moon = (x, y, r, d) => {
     const cres = mi === 3, occ = mixHex(P.sky[0], P.sky[1], .28);
@@ -476,12 +733,16 @@ function sceneSVG(mi, opts = {}) {
   const faller = (shape, x, y, fx, fy, fr, dur, dl) => `<g transform="translate(${f2(x)} ${f2(y)})"><g class="sc-fall" style="--fx:${f2(fx)}px;--fy:${f2(fy)}px;--fr:${f2(fr)}deg;--fd:${f2(dur)}s;--fdl:${f2(dl)}s">${shape}</g></g>`;
   const xsOn = (n, a, b) => Array.from({ length: n }, (_, i) => a + (b - a) * (i + .5) / n + (R() - .5) * (b - a) / n * .8);
   const far = hillPts(R, 222, 10, 70, .0055), mid = hillPts(R, 252, 12, 60, .007), near = hillPts(R, 284, 9, 45, .009), front = hillPts(R, 316, 6, 25, .012);
+  const DEC = decorFor(mi, { prot: !!opts.prot, wk: opts.wk, dy: opts.dy }, { P, NIGHT, DARK1: mi === 1 && !DAY, lit, u });
+  const GY = { mid: (x) => yAt(mid, x), near: (x) => yAt(near, x) };
+  const H = (layer) => DEC.L[layer].forEach((fn) => { const r = fn(GY); (Array.isArray(r) ? r : [r]).forEach((x) => { if (x) s.push(x); }); });
+  const ok = (x) => !DEC.excl.some(([a, b]) => x > a && x < b);
   const waves = (rows, col) => rows.forEach(([y, wl, w, o, x0], i) => s.push(`<g class="sc-fade" style="--d:${f2(.4 + i * .1)}s"><path class="sc-wave" style="--wl:${-wl}px;--wd:${3 + i}s" d="${waveD(x0, SW + wl * 2, y, wl, 3)}" fill="none" stroke="${col}" stroke-opacity="${o}" stroke-width="${w}" stroke-linecap="round"/></g>`));
 
   switch (mi) {
     case 0: { // Foliaio — vineyard hills, cypresses, autumn trees
       sky(sun(930, f2(112 + p * 40), 34));
-      sky(cloud(690, 70, 1.1, .5) + cloud(1070, 52, .8, .7));
+      sky(cloud(690, 70, 1.1, .5) + cloud(1070, 52, .8, .7)); H('sky');
       s.push(hill(far, P.far, .1, 20));
       s.push(hill(mid, P.mid, .22, 30));
       let vines = '';
@@ -490,9 +751,11 @@ function sceneSVG(mi, opts = {}) {
       s.push(`<g class="sc-rise" style="--d:.3s;--rise:30px">${vines}</g>`);
       [[826, 1], [848, .82]].forEach(([x, k], i) => { const y = yAt(mid, x) + 6; s.push(grow(`<ellipse cx="${x}" cy="${f2(y - 36 * k)}" rx="${f2(7 * k)}" ry="${f2(38 * k)}" fill="${P.front}"/>`, .5 + i * .1)); });
       { const hx = 742, hy = yAt(mid, hx) + 9; s.push(pop(house(hx, hy, '#EBD8BC', '#A9502F', .92), .55)); s.push(houseWins(hx, hy, .92)); }
+      H('mid');
       s.push(hill(near, P.near, .34, 40));
       const crowns = p < .3 ? ['#9FAA3F', '#C9A43A', '#B7B04A', '#D8792E'] : p < .7 ? ['#D8792E', '#E3A33B', '#C9A43A', '#B84A26'] : P.extra;
-      xsOn(6, 690, 1170).forEach((x, i) => { const y = yAt(near, x) + 4, k = 1 + R() * .6; s.push(grow(sw(roundTree(x, y, k, crowns, P.trunk, R, 1 - p * .75), 1.6), .6 + i * .08)); });
+      xsOn(6, 690, 1170).forEach((x, i) => { const y = yAt(near, x) + 4, k = 1 + R() * .6, t = grow(sw(roundTree(x, y, k, crowns, P.trunk, R, 1 - p * .75), 1.6), .6 + i * .08); if (ok(x)) s.push(t); });
+      H('near');
       s.push(hill(front, P.front, .46, 50));
       let fallen = '';
       for (let j = 0; j < Math.round(p * 46); j++) { const x = 440 + hsh(j, 1) * 750, y = yAt(front, x) + 4 + hsh(j, 2) * 16;
@@ -505,7 +768,7 @@ function sceneSVG(mi, opts = {}) {
     }
     case 1: if (DAY) { // Brumale di giorno (2.2): cielo coperto, sole velato, pioggerella, nebbia che scorre tra le colline, casa col camino
       sky(`<g class="sc-sunrise" style="--d:.1s" opacity=".5"><circle class="sc-glow" cx="930" cy="${f2(112 + p * 16)}" r="70" fill="url(#${u}g)"/><circle cx="930" cy="${f2(112 + p * 16)}" r="21" fill="${P.sun}" fill-opacity=".65"/></g>`);
-      sky(cloud(600, 60, 1.3, .3, '#D9DFE8', .85) + cloud(800, 44, 1.5, .4, '#CFD6E0', .85) + cloud(1010, 70, 1.4, .5, '#D6DCE5', .9) + cloud(1170, 40, 1.2, .6, '#CBD2DD', .85) + cloud(880, 104, .9, .7, '#E3E7ED', .8));
+      sky(cloud(600, 60, 1.3, .3, '#D9DFE8', .85) + cloud(800, 44, 1.5, .4, '#CFD6E0', .85) + cloud(1010, 70, 1.4, .5, '#D6DCE5', .9) + cloud(1170, 40, 1.2, .6, '#CBD2DD', .85) + cloud(880, 104, .9, .7, '#E3E7ED', .8)); H('sky');
       const fogD = (y, h, d, dur, dx) => `<g class="sc-fade" style="--d:${d}s"><g class="sc-fog" opacity="${f2(.6 + p * .3)}" style="--fgd:${dur}s;--fgx:${dx}px"><rect x="-200" y="${y}" width="${SW + 400}" height="${h}" fill="url(#${u}f)"/></g></g>`;
       const wisps = (n, y0, y1, d) => { if (G) return; let w = ''; for (let i = 0; i < n; i++) { const x = 380 + R() * 760, y = y0 + R() * (y1 - y0), rx = 140 + R() * 130;
           w += `<ellipse class="sc-wisp" style="--wsd:${f2(24 + R() * 22)}s;--wsl:${f2(-R() * 30)}s;--wsx:${f2((R() < .5 ? -1 : 1) * (90 + R() * 110))}px;--wo0:${f2(.35 + R() * .2)};--wo1:${f2(.7 + R() * .25)}" cx="${f2(x)}" cy="${f2(y)}" rx="${f2(rx)}" ry="${f2(9 + R() * 9)}" fill="url(#${u}w)"/>`; }
@@ -513,13 +776,14 @@ function sceneSVG(mi, opts = {}) {
       s.push(hill(far, P.far, .1, 20));
       s.push(fogD(156, 76, .5, 11, 90)); wisps(3, 178, 215, .6);
       s.push(hill(mid, P.mid, .22, 30));
-      [[690, .9], [880, 1.1], [1110, 1]].forEach(([x, k], i) => s.push(grow(bareTree(x, yAt(mid, x) + 4, k, P.trunk, R), .4 + i * .1)));
-      s.push(fogD(218, 70, .8, 9, -110)); wisps(3, 236, 262, .9);
+      [[690, .9], [880, 1.1], [1110, 1]].forEach(([x, k], i) => { const t = grow(bareTree(x, yAt(mid, x) + 4, k, P.trunk, R), .4 + i * .1); if (ok(x)) s.push(t); });
+      s.push(fogD(218, 70, .8, 9, -110)); wisps(3, 236, 262, .9); H('mid');
       s.push(hill(near, P.near, .34, 40));
       { const hx = 1010, hy = yAt(near, 1010) + 3;
         s.push(pop(house(hx, hy, P.extra[1], '#8C4B3A'), .7));
         if (!G) for (let i = 0; i < 4; i++) s.push(faller(`<circle r="${4 + i * 1.6}" fill="#FFFFFF" fill-opacity=".5"/>`, hx + 10, hy - 44, -(10 + R() * 12), -46, 0, 5.5, 1.6 + i * 1.4)); }
-      [[780, 1.35], [1150, 1.2]].forEach(([x, k], i) => s.push(grow(bareTree(x, yAt(near, x) + 4, k, P.trunk, R), .55 + i * .1)));
+      [[780, 1.35], [1150, 1.2]].forEach(([x, k], i) => { const t = grow(bareTree(x, yAt(near, x) + 4, k, P.trunk, R), .55 + i * .1); if (ok(x)) s.push(t); });
+      H('near');
       s.push(hill(front, P.front, .46, 50));
       if (p > .7) s.push(`<path class="sc-rise" style="--d:.5s;--rise:50px" d="${smoothPath(front).split('L' + (SW + 24))[0]}" fill="none" stroke="#FFFFFF" stroke-opacity="${f2((p - .7) * 2.6)}" stroke-width="4" stroke-linecap="round"/>`);
       /* pozzanghere: piccoli cerchi dove cade la pioggia */
@@ -528,34 +792,35 @@ function sceneSVG(mi, opts = {}) {
         s.push(`<g class="sc-fade" style="--d:1.2s">${rp}</g>`); }
       s.push(fogD(282, 64, 1, 10, 120)); wisps(3, 296, 326, 1.1);
       /* pioggerella fitta e sottile, che non si ferma mai */
-      { let dr = ''; for (let i = 0; i < 90; i++) { const x = 360 + R() * 860, y = -30 + R() * 280, l = 8 + R() * 6;
+      { let dr = ''; for (let i = 0; i < 90 + Math.round(T / 3); i++) { const x = 360 + R() * 860, y = -30 - T + R() * (280 + T), l = 8 + R() * 6;
           dr += `<path class="sc-rain" style="--rd:${f2(.85 + R() * .6)}s;--rdl:${f2(-R() * 1.6)}s;--ro:${f2(.3 + R() * .3)}" d="M${f2(x)} ${f2(y)}l${f2(-l * .19)} ${f2(l)}" stroke="#65758D" stroke-width="1.05" stroke-linecap="round"/>`; }
         s.push(`<g class="sc-fade" style="--d:.4s">${dr}</g>`); }
       break;
     } else { // Brumale — night, moon, fog banks, bare trees, lit house
-      if (!G) { let st = ''; for (let i = 0; i < 34; i++) st += `<circle class="sc-twinkle" style="--td:${f2(2 + R() * 3)}s;--tdl:${f2(R() * 3)}s" cx="${f2(470 + R() * 730)}" cy="${f2(10 + R() * 160)}" r="${f2(.7 + R() * 1.3)}" fill="#E7E9F2"/>`;
+      if (!G) { let st = ''; for (let i = 0; i < 34; i++) st += `<circle class="sc-twinkle" style="--td:${f2(2 + R() * 3)}s;--tdl:${f2(R() * 3)}s" cx="${f2(470 + R() * 730)}" cy="${f2(10 - T + R() * (160 + T))}" r="${f2(.7 + R() * 1.3)}" fill="#E7E9F2"/>`;
         s.push(`<g class="sc-fade" style="--d:.4s">${st}</g>`); }
-      sky(sun(960, 84, 24, .1) + `<g class="sc-fade" style="--d:.9s"><circle cx="953" cy="78" r="4" fill="#C9D2EE"/><circle cx="968" cy="93" r="3" fill="#C9D2EE"/><circle cx="962" cy="72" r="2" fill="#C9D2EE"/></g>`);
+      sky(sun(960, 84, 24, .1) + `<g class="sc-fade" style="--d:.9s"><circle cx="953" cy="78" r="4" fill="#C9D2EE"/><circle cx="968" cy="93" r="3" fill="#C9D2EE"/><circle cx="962" cy="72" r="2" fill="#C9D2EE"/></g>`); H('sky');
       const fog = (y, h, d, dur, dx) => `<g class="sc-fade" style="--d:${d}s"><g class="sc-fog" opacity="${f2(.4 + p * .6)}" style="--fgd:${dur}s;--fgx:${dx}px"><rect x="-140" y="${y}" width="${SW + 280}" height="${h}" fill="url(#${u}f)"/></g></g>`;
       s.push(hill(far, P.far, .1, 20));
       if (p > .25) s.push(fog(150, 70, .6, 18, 50));
       s.push(hill(mid, P.mid, .22, 30));
-      [[690, .9], [880, 1.1], [1110, 1]].forEach(([x, k], i) => s.push(grow(bareTree(x, yAt(mid, x) + 4, k, P.trunk, R), .4 + i * .1)));
-      s.push(fog(218, 70, .8, 14, -60));
+      [[690, .9], [880, 1.1], [1110, 1]].forEach(([x, k], i) => { const t = grow(bareTree(x, yAt(mid, x) + 4, k, P.trunk, R), .4 + i * .1); if (ok(x)) s.push(t); });
+      s.push(fog(218, 70, .8, 14, -60)); H('mid');
       s.push(hill(near, P.near, .34, 40));
       const hx = 1010, hy = yAt(near, 1010) + 3;
       s.push(pop(`<rect x="${hx - 17}" y="${f2(hy - 22)}" width="34" height="22" fill="${P.front}"/><path d="M${hx - 21} ${f2(hy - 21)}L${hx} ${f2(hy - 38)}L${hx + 21} ${f2(hy - 21)}Z" fill="${P.front}"/>`
         + `<rect x="${hx + 8}" y="${f2(hy - 40)}" width="5" height="12" fill="${P.front}"/><rect class="sc-window" x="${hx - 9}" y="${f2(hy - 16)}" width="7" height="7" fill="#F3C77A"/>`
         + `<rect class="sc-window" style="--wdl:2.7s" x="${hx + 3}" y="${f2(hy - 16)}" width="7" height="7" fill="${p > .45 ? '#F3C77A' : P.mid}"/>`, .7));
       if (!G) for (let i = 0; i < 3; i++) s.push(faller(`<circle r="${4 + i * 1.5}" fill="#C9D2EE" fill-opacity=".35"/>`, hx + 10, hy - 44, 12 + R() * 12, -46, 0, 4.5, 2 + i * 1.5));
-      [[780, 1.35], [1150, 1.2]].forEach(([x, k], i) => s.push(grow(bareTree(x, yAt(near, x) + 4, k, P.trunk, R), .55 + i * .1)));
+      [[780, 1.35], [1150, 1.2]].forEach(([x, k], i) => { const t = grow(bareTree(x, yAt(near, x) + 4, k, P.trunk, R), .55 + i * .1); if (ok(x)) s.push(t); });
+      H('near');
       s.push(hill(front, P.front, .46, 50));
       if (p > .7) s.push(`<path class="sc-rise" style="--d:.5s;--rise:50px" d="${smoothPath(front).split('L' + (SW + 24))[0]}" fill="none" stroke="#E7E9F2" stroke-opacity="${f2((p - .7) * 2.4)}" stroke-width="4" stroke-linecap="round"/>`);
       s.push(fog(282, 64, 1, 16, 70));
       break;
     }
     case 2: { // Ianuario — snowy peaks, pines, frozen lake, snowfall
-      sky(sun(990, f2(98 - p * 30), 24 + p * 4, .1));
+      sky(sun(990, f2(98 - p * 30), 24 + p * 4, .1)); H('sky');
       const mnt = (pts, fill, capFill, d, rise) => {
         const path = 'M' + pts.map(p => p.join(' ')).join('L') + `L${SW + 20} ${SH + 60}L-20 ${SH + 60}Z`;
         let caps = '';
@@ -571,21 +836,23 @@ function sceneSVG(mi, opts = {}) {
       };
       s.push(mnt([[-20, 262], [380, 256], [470, 205], [540, 228], [640, 150], [720, 205], [820, 126], [905, 196], [1000, 116], [1085, 190], [1160, 140], [1220, 170]], P.far, '#FFFFFF', .1, 24));
       s.push(mnt([[-20, 292], [520, 284], [600, 242], [680, 272], [770, 226], [860, 268], [950, 234], [1050, 272], [1130, 240], [1220, 262]], P.mid, '#F4F9FB', .25, 32));
+      H('mid');
       s.push(hill(near, P.near, .36, 40));
       const ly = yAt(near, 860) + 16;
       s.push(`<g class="sc-rise" style="--d:.45s;--rise:40px"><ellipse cx="860" cy="${f2(ly)}" rx="150" ry="8" fill="#BCD6E0"/><path d="M790 ${f2(ly - 1)}h30M870 ${f2(ly + 1)}h46" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></g>`);
       if (NIGHT) s.push(lit(`<ellipse class="sc-twinkle" style="--td:3.4s" cx="972" cy="${f2(ly)}" rx="16" ry="2.2" fill="${P.sun}" fill-opacity=".75"/><ellipse cx="940" cy="${f2(ly + 2.5)}" rx="9" ry="1.2" fill="${P.sun}" fill-opacity=".45"/>`, .9));
       { const hx = 704, hy = yAt(near, hx) + 6; s.push(pop(house(hx, hy, '#8A5A3C', '#F2F6F8', .9), .5)); s.push(houseWins(hx, hy, .9)); }
-      xsOn(14, 560, 1190).forEach((x, i) => { const k = .75 + R() * .7; s.push(grow(pine(x, yAt(near, x) + 5, k, P.extra[i % 2], p > .75 && hsh(x, 9) < (p - .7) * 2 ? P.extra[i % 2] : '#FFFFFF'), .55 + i * .05)); });
+      xsOn(14, 560, 1190).forEach((x, i) => { const k = .75 + R() * .7, t = grow(pine(x, yAt(near, x) + 5, k, P.extra[i % 2], p > .75 && hsh(x, 9) < (p - .7) * 2 ? P.extra[i % 2] : '#FFFFFF'), .55 + i * .05); if (ok(x)) s.push(t); });
+      H('near');
       s.push(hill(front, P.front, .5, 50));
-      if (!G) for (let i = 0; i < Math.round(30 - p * 20); i++) s.push(faller(`<circle r="${f2(1.2 + R() * 1.6)}" fill="#fff" stroke="${P.far}" stroke-width=".6"/>`, 460 + R() * 740, 10 + R() * 120, (R() - .5) * 40, 150 + R() * 120, 0, 7 + R() * 5, 1.5 + R() * 8));
+      if (!G) for (let i = 0; i < Math.round(30 - p * 20); i++) s.push(faller(`<circle r="${f2(1.2 + R() * 1.6)}" fill="#fff" stroke="${P.far}" stroke-width=".6"/>`, 460 + R() * 740, 10 - T + R() * (120 + T), (R() - .5) * 40, 150 + R() * 120, 0, 7 + R() * 5, 1.5 + R() * 8));
       break;
     }
     case 3: { // Germinale — blossom trees, growing meadow
       P.far = mixHex('#C9C79A', PAL[3].far, .4 + p * .6); P.mid = mixHex('#B3B27E', PAL[3].mid, .3 + p * .7);
       P.near = mixHex('#9B9A62', PAL[3].near, .2 + p * .8); P.front = mixHex('#7F7E4A', PAL[3].front, .2 + p * .8);
       sky(sun(950, 104, 30));
-      sky(cloud(720, 64, 1, .5) + cloud(1100, 48, .7, .7));
+      sky(cloud(720, 64, 1, .5) + cloud(1100, 48, .7, .7)); H('sky');
       s.push(hill(far, P.far, .1, 20));
       s.push(hill(mid, P.mid, .22, 30));
       const blossomTree = (x, y, k) => {
@@ -596,11 +863,13 @@ function sceneSVG(mi, opts = {}) {
         return c;
       };
       [[700, 1], [1015, 1.05]].forEach(([x, k], i) => s.push(grow(sw(blossomTree(x, yAt(mid, x) + 4, k), 1.2), .45 + i * .1)));
+      H('mid');
       s.push(hill(near, P.near, .34, 40));
-      [[860, 1.25], [1150, 1.3]].forEach(([x, k], i) => s.push(grow(sw(blossomTree(x, yAt(near, x) + 4, k), 1.2), .6 + i * .1)));
+      [[860, 1.25], [1150, 1.3]].forEach(([x, k], i) => { const t = grow(sw(blossomTree(x, yAt(near, x) + 4, k), 1.2), .6 + i * .1); if (ok(x)) s.push(t); });
       if (NIGHT) s.push(`<g class="sc-fade" style="--d:.9s"><g class="sc-fog" opacity=".45" style="--fgd:22s;--fgx:60px"><rect x="-140" y="250" width="${SW + 280}" height="56" fill="url(#${u}f)"/></g></g>`);
       xsOn(22, 460, 1190).forEach((x, i) => { const y = yAt(near, x) + 8 + R() * 12, h = (14 + R() * 16) * (.35 + p * .65), sp = sprout(x, y, h, P.front, R);
-        if (hsh(x, 5) < .4 + p * .6) s.push(grow(sw(sp, 5), .9 + i * .045)); });
+        if (hsh(x, 5) < .4 + p * .6 && ok(x)) s.push(grow(sw(sp, 5), .9 + i * .045)); });
+      H('near');
       s.push(hill(front, P.front, .5, 50));
       xsOn(9, 480, 1190).forEach((x, i) => { if (hsh(x, 7) < p * 1.4 - .4) s.push(pop(daisy(x, yAt(front, x) + 8, .85), 1.4 + i * .06)); });
       if (!G) for (let i = 0; i < 6; i++) s.push(faller(`<ellipse rx="3.4" ry="2" fill="${P.extra[i % 3]}" stroke="#E89BB5" stroke-width=".5"/>`, 680 + R() * 480, 150 + R() * 40, 40 + R() * 50, 90 + R() * 60, 360, 5 + R() * 3, 2.2 + i * 1.1));
@@ -608,15 +877,17 @@ function sceneSVG(mi, opts = {}) {
     }
     case 4: { // Floreale — flower meadow, butterflies
       sky(sun(1000, 98, 28));
-      sky(cloud(760, 60, .9, .5));
+      sky(cloud(760, 60, .9, .5)); H('sky');
       s.push(hill(far, P.far, .1, 20));
       s.push(hill(mid, P.mid, .22, 30));
       let dots = '';
       for (let i = 0; i < 70; i++) { const x = 560 + R() * 640; dots += `<circle cx="${f2(x)}" cy="${f2(yAt(mid, x) + 6 + R() * 24)}" r="${f2(1.2 + R() * 1.3)}" fill="${P.extra[[0, 1, 2, 3][i % 4]]}"/>`; }
       s.push(`<g class="sc-rise" style="--d:.3s;--rise:30px">${dots}</g>`);
+      H('mid');
       s.push(hill(near, P.near, .34, 40));
       const flower = (x, y, k, t) => t === 0 ? poppy(x, y, k, P.extra[0]) : t === 1 ? daisy(x, y, k) : lavender(x, y, k, P.extra[t === 2 ? 2 : 3]);
-      xsOn(34, 430, 1195).forEach(x => { const fl = flower(x, yAt(near, x) + 8 + R() * 14, .8 + R() * .3, Math.floor(R() * 4)); if (hsh(x, 3) < .35 + p * .65) s.push(pop(sw(fl, 4), .6 + (x - 430) / 765 * .9)); });
+      xsOn(34, 430, 1195).forEach(x => { const fl = flower(x, yAt(near, x) + 8 + R() * 14, .8 + R() * .3, Math.floor(R() * 4)); if (hsh(x, 3) < .35 + p * .65 && ok(x)) s.push(pop(sw(fl, 4), .6 + (x - 430) / 765 * .9)); });
+      H('near');
       s.push(hill(front, P.front, .46, 50));
       xsOn(26, 440, 1195).forEach(x => { const fl = flower(x, yAt(front, x) + 10 + R() * 12, 1.15 + R() * .35, Math.floor(R() * 4)); if (hsh(x, 4) < .3 + p * .7) s.push(pop(sw(fl, 5), .8 + (x - 440) / 755 * .9)); });
       if (!G) [[760, 150, '#F2A23A', '#F2C230'], [930, 196, '#8E5FA3', '#B58AC8'], [1085, 128, '#D8453A', '#F29A8C']]
@@ -627,6 +898,7 @@ function sceneSVG(mi, opts = {}) {
     case 5: { // Messidoro — sea, headland, wheat field in the wind
       sky(sun(1010, 98, 34));
       if (!G) [[780, 70, .9], [850, 96, .7], [1090, 58, 1]].forEach(([x, y, k]) => { const g = gull(x, y, k, '#3B3012', R); if (!NIGHT) s.push(g); });
+      H('sky');
       s.push(`<rect class="sc-rise" style="--d:.1s;--rise:10px" x="0" y="198" width="${SW}" height="${SH}" fill="url(#${u}s)"/>`);
       s.push(`<path class="sc-rise" style="--d:.15s;--rise:14px" d="M-20 206Q120 148 300 168Q470 184 640 206Z" fill="${P.land}"/>`);
       waves([[214, 60, 1.6, .7, 500], [232, 70, 1.8, .55, 500], [252, 80, 2, .45, 480]], '#FFFFFF');
@@ -635,12 +907,15 @@ function sceneSVG(mi, opts = {}) {
         s.push(lit(gl, 1)); }
       s.push(`<g class="sc-fade" style="--d:.8s">${sailboat(870, 208, 1, '#3B3012', '#FFFFFF')}</g>`);
       if (NIGHT) s.push(lit(`<circle cx="870" cy="183" r="1.8" fill="#FFE7A0"/><circle cx="870" cy="183" r="7" fill="url(#${u}l)"/>`, 1));
+      H('mid');
       const field = hillPts(R, 262, 8, 36, .008), field2 = hillPts(R, 302, 6, 22, .011);
+      GY.near = (x) => yAt(field, x);
       const ripe = clamp(p * 1.15, 0, 1);
       P.near = mixHex('#A9C466', PAL[5].near, ripe); P.front = mixHex('#8FB050', PAL[5].front, ripe);
       const st1 = mixHex('#6E9A3A', '#C9A04A', ripe), ea1 = mixHex('#7FA040', P.extra[0], ripe), st2 = mixHex('#5E8A34', '#B98A34', ripe), ea2 = mixHex('#6E9038', '#9C6A1E', ripe);
       s.push(hill(field, P.near, .3, 40));
-      xsOn(40, 430, 1195).forEach(x => s.push(grow(swx(wheat(x, yAt(field, x) + 10 + R() * 14, (34 + R() * 16) * (.75 + ripe * .25), st1, ea1), x, 3), .5 + (x - 430) / 765 * .7)));
+      xsOn(40, 430, 1195).forEach(x => { const t = grow(swx(wheat(x, yAt(field, x) + 10 + R() * 14, (34 + R() * 16) * (.75 + ripe * .25), st1, ea1), x, 3), .5 + (x - 430) / 765 * .7); if (ok(x)) s.push(t); });
+      H('near');
       s.push(hill(field2, P.front, .45, 50));
       xsOn(34, 440, 1195).forEach(x => s.push(grow(swx(wheat(x, yAt(field2, x) + 14 + R() * 12, (48 + R() * 20) * (.75 + ripe * .25), st2, ea2), x, 3.5), .7 + (x - 440) / 755 * .7)));
       xsOn(8, 470, 1180).forEach(x => s.push(pop(poppy(x, yAt(field2, x) + 22, 1.1, P.extra[1]), 1.5 + R() * .5)));
@@ -651,6 +926,7 @@ function sceneSVG(mi, opts = {}) {
       const gx = NIGHT ? 800 : 880;
       sky(NIGHT ? moon(800, 62, 28, .2) : sun(880, f2(130 + p * 62), 44));
       if (!G) { const g = gull(1000, 70, .9, '#3A2E14', R) + gull(740, 96, .7, '#3A2E14', R); if (!NIGHT) s.push(g); }
+      H('sky');
       s.push(`<rect class="sc-rise" style="--d:.05s;--rise:10px" x="0" y="212" width="${SW}" height="${SH}" fill="url(#${u}s)"/>`);
       s.push(`<g class="sc-rise" style="--d:.15s;--rise:12px"><ellipse cx="560" cy="213" rx="54" ry="9" fill="${P.far}"/><ellipse cx="648" cy="213" rx="30" ry="6" fill="${P.far}"/></g>`);
       if (!G) { let gl = ''; for (let i = 0; i < 16; i++) { const y = 222 + i * 5 + R() * 3, w = 10 + R() * 18 - i * .4, x = gx + (R() - .5) * (30 + i * 9);
@@ -660,11 +936,15 @@ function sceneSVG(mi, opts = {}) {
         + `<g class="sc-shoot" style="--sd2:17s;--sdl2:9s"><path d="M1080 22l-50 19" stroke="url(#${u}t)" stroke-width="1.5" stroke-linecap="round"/></g>`, 2));
       waves([[244, 70, 1.6, .5, 380], [266, 80, 1.8, .4, 380], [292, 90, 2, .32, 360]], '#FFFFFF');
       s.push(`<g class="sc-fade" style="--d:.9s">${sailboat(690, 226, 1.1, '#3A2E14', '#FFFFFF')}</g>`);
+      H('mid');
       s.push(`<g class="sc-rise" style="--d:.3s;--rise:40px"><path d="M1000 ${SH + 60}L1018 250Q1040 190 1090 160L1150 148Q1190 140 ${SW + 20} 146L${SW + 20} ${SH + 60}Z" fill="${P.near}"/>`
         + `<path d="M1030 240Q1070 220 1110 214M1050 272Q1100 256 1150 250M1040 300Q1100 290 1180 286" stroke="${P.front}" stroke-opacity=".5" stroke-width="2" fill="none"/></g>`);
       s.push(grow(`<path d="M1142 149L1145 98H1157L1160 149Z" fill="#FFFFFF"/><path d="M1143.4 132H1158.6L1158.1 120H1144Z M1144.6 110H1157.4L1157 101H1145Z" fill="${P.extra[0]}"/>`
         + `<rect x="1143" y="89" width="16" height="9" fill="#3A2E14"/><path d="M1141 89L1151 80L1161 89Z" fill="${P.extra[0]}"/><rect class="sc-beam" x="1146" y="91" width="10" height="5" fill="#FFE9A8"/>`, .7));
       if (NIGHT) s.push(lit(`<path class="sc-cone" d="M1151 93L690 48L690 142Z" fill="url(#${u}b)"/><rect class="sc-beam" x="1146" y="91" width="10" height="5" fill="#FFF1BE"/><circle cx="1151" cy="93.5" r="16" fill="url(#${u}l)"/>`, 1.3));
+      GY.near = (x) => { if (x >= 1150) return 148 - (x - 1150) * .04; if (x >= 1090) return 160 - (x - 1090) / 60 * 12;
+        let best = 1e9, by = 250; for (let k = 0; k <= 48; k++) { const t = k / 48, xx = (1 - t) * (1 - t) * 1018 + 2 * t * (1 - t) * 1040 + t * t * 1090; if (Math.abs(xx - x) < best) { best = Math.abs(xx - x); by = (1 - t) * (1 - t) * 250 + 2 * t * (1 - t) * 190 + t * t * 160; } } return by; };
+      H('near');
       const sand = hillPts(R, 318, 5, 18, .01);
       s.push(hill(sand, P.sand, .45, 50));
       const ux = 610, uy = yAt(sand, ux) + 4;
@@ -676,7 +956,8 @@ function sceneSVG(mi, opts = {}) {
     }
   }
   const body = NIGHT ? s.map((x) => x.includes('data-lit') ? x : toneStr(x, NK)) : s;
-  return `<svg class="scene${G ? ' static' : ''}${NIGHT ? ' night' : ''}" viewBox="0 0 ${SW} ${SH}" preserveAspectRatio="${G ? 'xMidYMax' : 'xMaxYMax'} slice" aria-hidden="true" focusable="false">${defs}${body.join('')}</svg>`;
+  H('top');
+  return `<svg class="scene${G ? ' static' : ''}${NIGHT ? ' night' : ''}" viewBox="0 ${-T} ${SW} ${SH + T + B}" preserveAspectRatio="${G ? 'xMidYMax' : 'xMaxYMax'} slice" aria-hidden="true" focusable="false">${defs}${body.join('')}</svg>`;
 }
 
 /* Month pattern tile: scattered seasonal glyphs, used as page texture */
@@ -872,5 +1153,5 @@ function seasonFx(motif, accent, W, H, seed) {
   return { svg, total: end + 150, run() { anims.forEach(([e, kf, o]) => e.animate(kf, Object.assign({ fill: 'both', easing: 'linear' }, o))); } };
 }
 
-window.ORN = { version: '2.3', MONTHS, LETTER_META, metaKeyFor, dayBg, illusFor, sceneSVG, hasVariants, themeFor, patternURI, ornamentSVG, playAll, seasonFx, setToday: (s) => { todayStr = s; } };
+window.ORN = { version: '2.4', MONTHS, LETTER_META, metaKeyFor, dayBg, illusFor, sceneSVG, hasVariants, themeFor, patternURI, ornamentSVG, playAll, seasonFx, setToday: (s) => { todayStr = s; } };
 })();

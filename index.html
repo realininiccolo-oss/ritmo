@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="ornrarv.css?v=2.3">
+<link rel="stylesheet" href="ornrarv.css?v=2.4">
 <style>
 :root {
   /* Ritmo 2.1 · palette «Alba»: carta chiara, inchiostro blu notte al posto del nero, accento corallo vivo; di sera un blu notte al posto del grigio antracite */
@@ -104,9 +104,9 @@ h1, h2, h3 { margin: 0; font-weight: 500; }
 
 /* ---------- testata con il paesaggio del mese ---------- */
 /* il disegno sfuma nel colore della pagina: niente stacco netto tra la testata e il pannello sotto (2.3) */
-.hero { position: relative; height: calc(236px + var(--safe-t)); overflow: hidden; background: var(--bg); color: var(--h-ink, #fff); margin-bottom: -6px; }
-.hero.short { height: calc(190px + var(--safe-t)); }
-.hero .scene, .hero::after, .hero::before { -webkit-mask-image: linear-gradient(180deg, #000 0, #000 calc(100% - 58px), rgba(0,0,0,.55) calc(100% - 26px), transparent 100%); mask-image: linear-gradient(180deg, #000 0, #000 calc(100% - 58px), rgba(0,0,0,.55) calc(100% - 26px), transparent 100%); }
+.hero { position: relative; height: max(calc(280px + var(--safe-t)), 44vh); overflow: hidden; background: var(--bg); color: var(--h-ink, #fff); margin-bottom: -6px; }
+.hero.short { height: max(calc(280px + var(--safe-t)), 44vh); }
+.hero .scene, .hero::after, .hero::before { -webkit-mask-image: linear-gradient(180deg, #000 0, #000 calc(100% - 70px), rgba(0,0,0,.55) calc(100% - 30px), transparent 100%); mask-image: linear-gradient(180deg, #000 0, #000 calc(100% - 70px), rgba(0,0,0,.55) calc(100% - 30px), transparent 100%); }
 .hero::before { content: ''; position: absolute; inset: 0; background: var(--h-bg, #232B3B); }
 .hero .scene { position: absolute; inset: 0; width: 100%; height: 100%; }
 .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, var(--h-scrim) 0%, transparent 62%), linear-gradient(0deg, var(--h-scrim2) 22%, transparent 58%); pointer-events: none; }
@@ -302,7 +302,6 @@ body.dragging #view { touch-action: none; }
 #app.mtheme { background-color: var(--bg); background-image: var(--mpat); background-size: 220px 220px; color: var(--ink); min-height: 100vh; }
 #app.mtheme .mgrid .mh { color: var(--acc); }
 #app.mtheme .mcell:not([aria-pressed="true"]):active { background: var(--sunk); }
-#app.mtheme .mtag { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; color: var(--acc); letter-spacing: .02em; }
 .mgrid { display: grid; grid-template-columns: 22px repeat(7, 1fr); gap: 3px; padding: 10px 8px; }
 .mgrid .mh { text-align: center; font-size: 12px; font-weight: 700; color: var(--ink3); letter-spacing: .04em; padding-bottom: 4px; }
 .mgrid .mw { display: grid; place-items: center; font-size: 11px; font-weight: 700; color: var(--ink3); }
@@ -553,7 +552,7 @@ body.dragging .fab, body.dragging .fab2, body.dragging .tabbar { opacity: .3; po
 <div id="dragLayer"></div><div id="dragHold" aria-hidden="true"></div>
 <div class="edge l" id="edgeL"><span>‹ Giorno prima</span></div><div class="edge r" id="edgeR"><span>Giorno dopo ›</span></div>
 
-<script src="ornrarv-lib.js?v=2.3"></script>
+<script src="ornrarv-lib.js?v=2.4"></script>
 <script>
 (() => {
 'use strict';
@@ -974,14 +973,21 @@ let LP = null, DRAG = null, RS = null, WDRAG = null;
   v.addEventListener('touchend', end); v.addEventListener('touchcancel', end);
 })();
 
+const safeTop = () => { try { return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-t')) || 0; } catch (e) { return 0; } };
+/* nella pagina Settimana il particolare del disegno è del giorno scelto, se è in quella settimana, poi di oggi, altrimenti del primo giorno */
+function weekDayFocus(mon) { const end = addDays(mon, 6), t = nowLogical().date, pick = dayD >= mon && dayD <= end ? dayD : t >= mon && t <= end ? t : mon; const o = settale(pick); return o ? o.di : 0; }
 /* ---------- testata con il paesaggio (resta al suo posto tra un disegno e l'altro: niente animazioni ripetute) ---------- */
 let heroEl = null, heroKey = '';
-function heroFor(d, short, title, kick, subs) {
+function heroFor(d, short, title, kick, subs, scn) {
   const o = settale(d), L = nowLogical();
   const mi = o ? o.mi : 1, variant = variantFor(mi, new Date(), pref().paesaggio);
   const th = window.ORN ? ORN.themeFor(mi, variant) : { bg: '#232B3B', ink: '#E7E9F2' };
   const dark = parseInt(th.bg.slice(1, 3), 16) < 90;
-  const key = [mi, variant, o ? o.wi : 0].join(':');
+  /* 2.4: testata alta poco meno di metà schermo; il disegno mostra ~480 unità di larghezza, con cielo in più sopra */
+  const W = Math.max(320, innerWidth), Hh = Math.max(280 + safeTop(), innerHeight * .44), Wv = Math.min(1200, Math.max(480, W * 1.23)), tot = Hh * Wv / W;
+  const B = Math.max(0, Math.min(40, tot - 340)), top = Math.max(0, tot - 340 - B);
+  const so = Object.assign({ p: o ? o.wi / 6 : 0, variant, top, bot: B }, o ? scn || {} : {});
+  const key = [mi, variant, o ? o.wi : 0, so.prot ? 'm' : '', so.wk ?? '', so.dy ?? '', Math.round(top), Math.round(B)].join(':');
   if (!heroEl) heroEl = h('section', { class: 'hero' });
   heroEl.className = 'hero' + (short ? ' short' : '');
   heroEl.style.setProperty('--h-bg', th.bg); heroEl.style.setProperty('--h-ink', th.ink);
@@ -989,7 +995,7 @@ function heroFor(d, short, title, kick, subs) {
   heroEl.style.setProperty('--h-scrim2', dark ? 'rgba(16,20,30,.45)' : `color-mix(in srgb, ${th.bg} 70%, transparent)`);
   if (key !== heroKey && window.ORN) {
     heroKey = key; $$('.scene', heroEl).forEach((x) => x.remove());
-    heroEl.insertAdjacentHTML('afterbegin', ORN.sceneSVG(mi, { p: o ? o.wi / 6 : 0, variant }));
+    heroEl.insertAdjacentHTML('afterbegin', ORN.sceneSVG(mi, so));
     requestAnimationFrame(() => ORN.playAll(heroEl));
   }
   $$('.bar,.ht', heroEl).forEach((x) => x.remove());
@@ -1032,7 +1038,7 @@ function viewGiorno() {
   const d = dayD, L = nowLogical(), o = settale(d), m = dayModel(d);
   const kick = `${relWord(d, L.date)}${dayDiff(L.date, d) >= -1 && dayDiff(L.date, d) <= 1 ? ' · ' + WD[dowOf(d)] : ''}`;
   const subs = [o ? codeEl(o) : null, h('span', { text: o ? o.fase : '' }), h('span', { class: 'faint', style: { color: 'inherit', opacity: .75 }, text: greg(d) })];
-  const out = [heroFor(d, false, dTitle(d), kick, subs), weekStrip(d)];
+  const out = [heroFor(d, false, dTitle(d), kick, subs, o ? { wk: o.wi, dy: o.di } : null), weekStrip(d)];
   const w = h('div', { class: 'wrap', style: { marginTop: '10px' } });
   w.append(focusCard(d), previewCard(d, m));
   /* agenda */
@@ -1331,7 +1337,7 @@ document.addEventListener('click', (e) => { if (SEL && !e.target.closest('.blk.s
 function viewSettimana() {
   const L = nowLogical(), mon = weekM, o = settale(mon);
   const out = [heroFor(mon, true, o ? o.sett : 'Settimana', o ? `${o.mese} · ${dNum(mon)}–${dNum(addDays(mon, 6))}` : `${greg(mon)} – ${greg(addDays(mon, 6))}`,
-    o ? [codeEl(o, 2), h('span', { text: `${greg(mon)}–${greg(addDays(mon, 6))}` })] : null)];
+    o ? [codeEl(o, 2), h('span', { text: `${greg(mon)}–${greg(addDays(mon, 6))}` })] : null, o ? { wk: o.wi, dy: weekDayFocus(mon) } : null)];
   const days = [...Array(7)].map((_, i) => addDays(mon, i)), models = days.map(dayModel);
   const nEv = models.reduce((a, m) => a + m.timed.length, 0), busy = models.reduce((a, m) => a + m.busy, 0), planned = days.filter(isPlanned).length;
   const w = h('div', { class: 'wrap', style: { marginTop: '14px' } });
@@ -1396,13 +1402,15 @@ function monthVars(mi) {
   return { o, dark, th, vr };
 }
 let MT = null;
+/* 2.4: il tema del mese vale per Giorno, Settimana e Mese, e anche per la barra in basso, i pulsanti e i fogli (variabili su :root) */
 function monthTheme(o) {
-  const app = $('#app'), key = o && window.ORN ? o.mi + ':' + variantFor(o.mi, new Date(), pref().paesaggio) : null;
+  const app = $('#app'), root = document.documentElement, key = o && window.ORN ? o.mi + ':' + variantFor(o.mi, new Date(), pref().paesaggio) : null;
   if (key === MT) return; MT = key;
-  if (!key) { app.classList.remove('mtheme'); MVARS.forEach((k) => app.style.removeProperty(k)); document.documentElement.style.background = ''; document.body.style.background = ''; return; }
-  const { o: vars, th } = monthVars(o.mi);
-  for (const [k, v] of Object.entries(vars)) app.style.setProperty(k, v);
-  app.classList.add('mtheme'); document.documentElement.style.background = th.bg; document.body.style.background = th.bg;
+  if (!key) { app.classList.remove('mtheme'); MVARS.forEach((k) => root.style.removeProperty(k)); root.style.background = ''; document.body.style.background = ''; root.style.colorScheme = ''; return; }
+  const { o: vars, th, dark } = monthVars(o.mi);
+  for (const [k, v] of Object.entries(vars)) root.style.setProperty(k, v);
+  root.style.colorScheme = dark ? 'dark' : 'light';
+  app.classList.add('mtheme'); root.style.background = th.bg; document.body.style.background = th.bg;
 }
 
 /* ---------- vista Mese (mese settale: 7 settimane x 7 giorni) ---------- */
@@ -1410,7 +1418,7 @@ function viewMese() {
   const L = nowLogical(), o = settale(monthSel);
   if (!o) return [heroFor(monthSel, true, 'Fuori dal calendario', '', null), h('div', { class: 'wrap', style: { marginTop: '14px' } }, h('p', { class: 'muted', text: 'Il calendario settale va dal 21 settembre 2026 al 29 agosto 2027.' }))];
   const first = o.first, last = addDays(first, 48);
-  const out = [heroFor(monthSel, true, o.mese, `Mese ${o.mi + 1} di 7 · ${FASI[o.ml]}`, [h('span', { text: `${greg(first)} – ${greg(last)}` })])];
+  const out = [heroFor(monthSel, true, o.mese, `Mese ${o.mi + 1} di 7 · ${FASI[o.ml]}`, [h('span', { text: `${greg(first)} – ${greg(last)}` })], { prot: true })];
   const grid = h('div', { class: 'mgrid' }, h('span'), [...SEQ].map((l) => h('span', { class: 'mh', text: l })));
   for (let wi = 0; wi < 7; wi++) {
     grid.append(h('span', { class: 'mw', text: SEQ[wi] }));
@@ -1431,9 +1439,7 @@ function viewMese() {
     h('div', { class: 'row' }, h('button', { class: 'btn sm', type: 'button', onclick: () => { dayD = monthSel; select('giorno'); } }, 'Apri il giorno'),
       monthSel >= L.date ? h('button', { class: 'btn sm line', type: 'button', onclick: () => openPlan(monthSel) }, isPlanned(monthSel) ? 'Ripianifica' : 'Pianifica') : null,
       h('button', { class: 'btn sm ghost', type: 'button', onclick: () => openEvent(null, { data: monthSel }) }, h('span', { class: 'ih', html: ic('piu') }), 'Impegno')));
-  const vr = variantFor(o.mi, new Date(), pref().paesaggio), [sa, sb] = sunTimes(L.date);
-  const tag = h('div', { class: 'mtag', style: { padding: '0 2px' } }, h('span', { class: 'ih', html: ic(vr === 'notte' ? 'luna' : 'sole') }), `${o.mese} ${vr === 'notte' ? 'di notte' : 'di giorno'} · oggi alba ${fmt(sa)}, tramonto ${fmt(sb)}`);
-  out.push(h('div', { class: 'wrap', style: { marginTop: '4px', gap: '10px' } }, tag, h('div', { class: 'card', style: { padding: '0' } }, grid), panel));
+  out.push(h('div', { class: 'wrap', style: { marginTop: '4px', gap: '10px' } }, h('div', { class: 'card', style: { padding: '0' } }, grid), panel));
   return out;
 }
 
@@ -1446,7 +1452,7 @@ function render() {
 function paint() {
   const v = $('#view'), nodes = tab === 'settimana' ? viewSettimana() : tab === 'mese' ? viewMese() : viewGiorno();
   v.replaceChildren(...nodes.filter(Boolean));
-  monthTheme(tab === 'mese' ? settale(monthSel) : null);
+  monthTheme(settale(tab === 'mese' ? monthSel : tab === 'settimana' ? weekM : dayD));
   requestAnimationFrame(() => { $$('#view .pv.open .lil').forEach((x) => x.classList.add('play')); const f = $('#view .blk.flash'); if (f) { const r = f.getBoundingClientRect(); if (r.top < 60 || r.bottom > innerHeight - 100) scrollBy({ top: r.top - innerHeight / 2.6, behavior: 'smooth' }); } });
 }
 
@@ -2216,7 +2222,7 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden) { if
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => render());
 
 /* se il telefono ha tenuto una grafica vecchia insieme all'app nuova, svuoto la cache e ricarico (una volta) */
-if (window.ORN && ORN.version !== '2.3') { try { if (!sessionStorage.getItem('ritmo:rl')) { sessionStorage.setItem('ritmo:rl', '1'); (window.caches ? caches.keys().then((ks) => Promise.all(ks.map((k) => caches.delete(k)))) : Promise.resolve()).then(() => location.reload()); } } catch (e) { /* niente */ } }
+if (window.ORN && ORN.version !== '2.4') { try { if (!sessionStorage.getItem('ritmo:rl')) { sessionStorage.setItem('ritmo:rl', '1'); (window.caches ? caches.keys().then((ks) => Promise.all(ks.map((k) => caches.delete(k)))) : Promise.resolve()).then(() => location.reload()); } } catch (e) { /* niente */ } }
 loadState(); loadCachedData(); rebuildEvents();
 if (lsGet(LS.pass) === null) showWelcome(); else { showMain(); refresh(true); }
 if ('serviceWorker' in navigator) {

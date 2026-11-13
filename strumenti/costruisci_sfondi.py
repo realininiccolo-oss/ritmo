@@ -1,4 +1,5 @@
 """Rigenera gli sfondi del widget (widget-img/) disegnando i paesaggi di ornrarv-lib.js con Chrome senza testa (playwright).
+Dalla 2.4 ogni sfondo ha anche l'animale della settimana e più cielo sopra (come la testata dell'app).
 Uso: python3 strumenti/costruisci_sfondi.py [cartella] [filtro, es. 1-2-m]. Nomi: <mese>-<settimana>-<l|m|s>.jpg, Brumale di giorno -g, altri mesi di notte -n."""
 import asyncio, sys, os
 from playwright.async_api import async_playwright
@@ -20,7 +21,8 @@ async def main():
                     for wi in range(7):
                         name=f'{mi}-{wi}-{f}{suf}.jpg'
                         if ONLY and ONLY not in name: continue
-                        await pg.evaluate(f"document.getElementById('h').innerHTML = ORN.sceneSVG({mi}, {{p: {wi}/6, variant: '{v}'}}).replace('class=\"scene','class=\"scene static')")
+                        tot=max(380, hh*520/w); B=min(40, tot-340); T=tot-340-B
+                        await pg.evaluate(f"document.getElementById('h').innerHTML = ORN.sceneSVG({mi}, {{p: {wi}/6, variant: '{v}', wk: {wi}, top: {T}, bot: {B}}}).replace('class=\"scene','class=\"scene static')")
                         await pg.screenshot(path=f'{OUT}/{name}', type='jpeg', quality=82)
             await pg.close()
         await b.close()
