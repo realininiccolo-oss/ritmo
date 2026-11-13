@@ -274,9 +274,24 @@ const PAL = [
 const PAL_BRUMALE_GIORNO = { sky: ['#B7C4D4', '#EEE7DB'], sun: '#FFF3D6', far: '#A9B4C3', mid: '#8E9AAB', near: '#6F7B8C', front: '#566171', trunk: '#454B56',
   extra: ['#5C7290', '#E9E2D3'], fog: '#FFFFFF' };
 const THEME_BRUMALE_GIORNO = { bg: '#E6EAEF', bg2: '#D9DFE7', ink: '#1E2733', accent: '#5C7290', line: '#C9D1DB', motif: 'mist' };
-/* Variante del paesaggio: 'giorno' o 'notte' esistono solo per Brumale; gli altri mesi hanno un solo disegno. */
-const hasVariants = (mi) => mi === 1;
-const themeFor = (mi, variant) => (mi === 1 && variant === 'giorno') ? THEME_BRUMALE_GIORNO : THEMES[mi];
+/* Ritmo 2.2: ogni mese ha il giorno e la notte. Brumale ha due disegni a sé (la notte è il disegno originale, il giorno è coperto con la pioggerella);
+   gli altri mesi di notte tengono lo stesso paesaggio, tinto di blu notte, con luna, stelle e luci (finestre, lucciole, il faro). */
+const NIGHT_SKY = [['#1A1830', '#4D3A50'], null, ['#0E1A2E', '#2C4664'], ['#121A2E', '#36425F'], ['#111A2C', '#2E3D5C'], ['#0C1730', '#2A4872'], ['#0B1430', '#36406F']];
+const MOON = ['#F6DBA6', '#E8ECF7', '#F2F5FF', '#EEF0F8', '#F3F1E4', '#F4EFD8', '#F7F2DE'];
+const NIGHT_K = [.62, 0, .46, .6, .6, .58, .58];
+const NIGHT_INK = '#111933';
+const THEMES_N = [
+  { bg: '#221E30', bg2: '#2E2738', ink: '#F1E6DA', accent: '#E0935F', line: '#3A3346', motif: 'leaves' }, null,
+  { bg: '#16223A', bg2: '#1E2D48', ink: '#E8F0F6', accent: '#8FC3DA', line: '#2A3A56', motif: 'frost' },
+  { bg: '#1A2236', bg2: '#232C44', ink: '#E9F1E6', accent: '#A9C98F', line: '#2E3850', motif: 'sprout' },
+  { bg: '#192134', bg2: '#232B42', ink: '#EEF5E8', accent: '#C3A0D6', line: '#2D364E', motif: 'petals' },
+  { bg: '#152038', bg2: '#1C2A48', ink: '#F5EEDB', accent: '#7FC4CE', line: '#283656', motif: 'waves' },
+  { bg: '#151C38', bg2: '#1E2848', ink: '#F6EEDC', accent: '#E2B464', line: '#2A3358', motif: 'horizon' }];
+const hasVariants = () => true;
+const themeFor = (mi, variant) => mi === 1 ? (variant === 'giorno' ? THEME_BRUMALE_GIORNO : THEMES[1]) : (variant === 'notte' ? THEMES_N[mi] : THEMES[mi]);
+const hex6 = (c) => c.length === 4 ? '#' + c[1] + c[1] + c[2] + c[2] + c[3] + c[3] : c;
+const toneHex = (c, k) => mixHex(hex6(c), NIGHT_INK, k);
+const toneStr = (str, k) => str.replace(/#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})(?![0-9a-zA-Z])/g, (m) => toneHex(m, k));
 let sceneUid = 0;
 const hsh = (a, b) => { const v = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453; return v - Math.floor(v); };
 function mixHex(a, b, t) {
@@ -402,7 +417,7 @@ function butterfly(x, y, c1, c2, R) {
     + `<path d="M0 -4L0 5" stroke="#2A1A14" stroke-width="1.4" stroke-linecap="round"/></g></g>`;
 }
 function gull(x, y, s, col, R) {
-  return `<g class="sc-fly" style="--fd:${f2(24 + R() * 10)}s;--fdl:${f2(-R() * 20)}s"><g transform="translate(${x} ${y}) scale(${s})">`
+  return `<g class="sc-hover" style="--hd:${f2(12 + R() * 8)}s;--hdl:${f2(-R() * 12)}s;--hx:${f2(-(26 + R() * 40))}px"><g transform="translate(${x} ${y}) scale(${s})">`
     + `<path class="sc-gull" d="M-12 0Q-6 -7 0 0Q6 -7 12 0" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round"/></g></g>`;
 }
 function sailboat(x, y, s, hull, sail) {
@@ -414,7 +429,9 @@ function sceneSVG(mi, opts = {}) {
   const G = !!opts.ground;               // ground variant: no sky, static
   const p = clamp(opts.p ?? monthP(mi), 0, 1);   // week-by-week progression
   const DAY = mi === 1 && opts.variant === 'giorno';
-  const P = Object.assign({}, DAY ? PAL_BRUMALE_GIORNO : PAL[mi]), R = rng(mi * 131 + 7), u = 'sc' + (++sceneUid);
+  const NIGHT = mi !== 1 && opts.variant === 'notte', NK = NIGHT_K[mi];
+  const P = Object.assign({}, DAY ? PAL_BRUMALE_GIORNO : PAL[mi]), R = rng(mi * 131 + 7), RN = rng(mi * 977 + 3), u = 'sc' + (++sceneUid);
+  if (NIGHT) { P.sky = NIGHT_SKY[mi]; P.sun = MOON[mi]; P.fog = '#A9B8DE'; if (P.sea) P.sea = P.sea.map((c) => toneHex(c, NK - .06)); }
   const s = [];
   const sky = str => { if (!G) s.push(str); };
   const defs = `<defs>
@@ -422,14 +439,36 @@ function sceneSVG(mi, opts = {}) {
     <radialGradient id="${u}g"><stop offset="0" stop-color="${P.sun}" stop-opacity=".85"/><stop offset=".4" stop-color="${P.sun}" stop-opacity=".3"/><stop offset="1" stop-color="${P.sun}" stop-opacity="0"/></radialGradient>
     <linearGradient id="${u}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${P.fog || '#fff'}" stop-opacity="0"/><stop offset=".5" stop-color="${P.fog || '#fff'}" stop-opacity=".5"/><stop offset="1" stop-color="${P.fog || '#fff'}" stop-opacity="0"/></linearGradient>
     <linearGradient id="${u}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${P.sea ? P.sea[0] : '#fff'}"/><stop offset="1" stop-color="${P.sea ? P.sea[1] : '#fff'}"/></linearGradient>
+    <radialGradient id="${u}w"><stop offset="0" stop-color="${P.fog || '#fff'}" stop-opacity=".9"/><stop offset=".6" stop-color="${P.fog || '#fff'}" stop-opacity=".35"/><stop offset="1" stop-color="${P.fog || '#fff'}" stop-opacity="0"/></radialGradient>
+    <radialGradient id="${u}l"><stop offset="0" stop-color="#F7E58A" stop-opacity=".55"/><stop offset="1" stop-color="#F7E58A" stop-opacity="0"/></radialGradient>
+    <linearGradient id="${u}b" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#FFF1BE" stop-opacity=".85"/><stop offset="1" stop-color="#FFF1BE" stop-opacity="0"/></linearGradient>
+    <linearGradient id="${u}t" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF" stop-opacity="1"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>
   </defs>`;
   sky(`<rect width="${SW}" height="${SH}" fill="url(#${u}k)"/>`);
-  if (mi === 6 && p > 0) sky(`<rect width="${SW}" height="${SH}" fill="#F08A4B" fill-opacity="${f2(p * .22)}"/>`);
-  if (mi === 2 && p > 0) sky(`<rect width="${SW}" height="${SH}" fill="#F3E3C0" fill-opacity="${f2(p * .18)}"/>`);
-  const sun = (x, y, r, d = .2) => `<g class="sc-sunrise" style="--d:${d}s"><circle class="sc-glow" cx="${x}" cy="${y}" r="${r * 3}" fill="url(#${u}g)"/><circle cx="${x}" cy="${y}" r="${r}" fill="${P.sun}"/></g>`;
+  if (mi === 6 && p > 0 && !NIGHT) sky(`<rect width="${SW}" height="${SH}" fill="#F08A4B" fill-opacity="${f2(p * .22)}"/>`);
+  if (mi === 2 && p > 0 && !NIGHT) sky(`<rect width="${SW}" height="${SH}" fill="#F3E3C0" fill-opacity="${f2(p * .18)}"/>`);
+  /* di notte: stelle dietro le colline (RN: un caso a parte, così il paesaggio resta uguale tra giorno e notte) */
+  if (NIGHT && !G) { let st = ''; for (let i = 0; i < 40; i++) st += `<circle class="sc-twinkle" style="--td:${f2(2 + RN() * 3)}s;--tdl:${f2(RN() * 3)}s" cx="${f2(440 + RN() * 760)}" cy="${f2(8 + RN() * (mi === 2 ? 110 : 150))}" r="${f2(.6 + RN() * 1.3)}" fill="#E9ECF6"/>`;
+    s.push(`<g data-lit="1" class="sc-fade" style="--d:.3s">${st}</g>`); }
+  const moon = (x, y, r, d) => {
+    const cres = mi === 3, occ = mixHex(P.sky[0], P.sky[1], .28);
+    return `<g data-lit="1" class="sc-sunrise" style="--d:${d}s"><circle class="sc-glow" cx="${x}" cy="${y}" r="${r * 3.2}" fill="url(#${u}g)" opacity=".55"/><circle cx="${x}" cy="${y}" r="${r}" fill="${P.sun}"/>`
+      + (cres ? `<circle cx="${f2(x + r * .45)}" cy="${f2(y - r * .2)}" r="${f2(r * .92)}" fill="${occ}"/>` : `<circle cx="${f2(x - r * .3)}" cy="${f2(y - r * .2)}" r="${f2(r * .17)}" fill="#000" fill-opacity=".07"/><circle cx="${f2(x + r * .28)}" cy="${f2(y + r * .3)}" r="${f2(r * .12)}" fill="#000" fill-opacity=".07"/><circle cx="${f2(x + r * .1)}" cy="${f2(y - r * .45)}" r="${f2(r * .08)}" fill="#000" fill-opacity=".06"/>`) + '</g>';
+  };
+  const sun = (x, y, r, d = .2) => NIGHT ? moon(x, Math.min(Number(y), 104), r * .78, d) : `<g class="sc-sunrise" style="--d:${d}s"><circle class="sc-glow" cx="${x}" cy="${y}" r="${r * 3}" fill="url(#${u}g)"/><circle cx="${x}" cy="${y}" r="${r}" fill="${P.sun}"/></g>`;
+  const lit = (inner, d = 1.1) => `<g data-lit="1" class="sc-fade" style="--d:${f2(d)}s">${inner}</g>`;
+  const glowWin = (x, y, w, hgt, dl = 0) => NIGHT ? lit(`<rect class="sc-window" style="--wdl:${f2(dl)}s" x="${f2(x)}" y="${f2(y)}" width="${w}" height="${hgt}" fill="#F6C76E"/><circle cx="${f2(x + w / 2)}" cy="${f2(y + hgt / 2)}" r="${f2(w * 2.2)}" fill="url(#${u}l)"/>`) : '';
+  const fireflies = (n, x0, x1, yFn, dy) => { if (!NIGHT || G) return; let f = '';
+    for (let i = 0; i < n; i++) { const x = x0 + RN() * (x1 - x0), y = yFn(x) - 6 - RN() * dy;
+      f += `<g transform="translate(${f2(x)} ${f2(y)})"><g class="sc-ffx" style="--fxd:${f2(6 + RN() * 6)}s;--fxl:${f2(-RN() * 6)}s;--fx1:${f2((RN() - .5) * 30)}px;--fy1:${f2(-RN() * 18)}px;--fx2:${f2((RN() - .5) * 30)}px;--fy2:${f2(-RN() * 22)}px;--fx3:${f2((RN() - .5) * 30)}px">`
+        + `<g class="sc-ffly" style="--fbd:${f2(1.8 + RN() * 2.4)}s;--fbl:${f2(-RN() * 3)}s"><circle r="6" fill="url(#${u}l)"/><circle r="1.7" fill="#F4FFB4"/></g></g></g>`; }
+    s.push(lit(f, 1.6)); };
+  const house = (hx, hy, wall, roof, k = 1) => `<g transform="translate(${hx} ${f2(hy)}) scale(${k})"><rect x="-17" y="-22" width="34" height="22" fill="${wall}"/><path d="M-21 -21L0 -38L21 -21Z" fill="${roof}"/><rect x="8" y="-40" width="5" height="12" fill="${mixHex(roof, '#000000', .25)}"/>`
+    + `<rect x="-9" y="-16" width="7" height="7" fill="#5B6573"/><rect x="3" y="-16" width="7" height="7" fill="#5B6573"/><rect x="-3" y="-9" width="6" height="9" fill="${mixHex(roof, '#000000', .3)}"/></g>`;
+  const houseWins = (hx, hy, k = 1, both = true) => glowWin(hx - 9 * k, hy - 16 * k, 7 * k, 7 * k) + (both ? glowWin(hx + 3 * k, hy - 16 * k, 7 * k, 7 * k, 2.4) : '');
   const hill = (pts, fill, d, rise) => `<path class="sc-rise" style="--d:${d}s;--rise:${rise}px" d="${smoothPath(pts)}" fill="${fill}"/>`;
-  const cloud = (x, y, k, d) => `<g class="sc-fade" style="--d:${d}s"><g class="sc-drift" opacity=".62" style="--dd:${f2(30 + R() * 20)}s;--dx:${f2((R() < .5 ? -1 : 1) * (40 + R() * 40))}px">`
-    + `<ellipse cx="${x}" cy="${y}" rx="${40 * k}" ry="${12 * k}" fill="#fff"/><ellipse cx="${x - 18 * k}" cy="${y - 6 * k}" rx="${20 * k}" ry="${12 * k}" fill="#fff"/><ellipse cx="${x + 14 * k}" cy="${y - 9 * k}" rx="${24 * k}" ry="${15 * k}" fill="#fff"/></g></g>`;
+  const cloud = (x, y, k, d, col = '#fff', op = .62) => `<g class="sc-fade" style="--d:${d}s"><g class="sc-drift" opacity="${NIGHT ? f2(op * .55) : op}" style="--dd:${f2(30 + R() * 20)}s;--dx:${f2((R() < .5 ? -1 : 1) * (40 + R() * 40))}px">`
+    + `<ellipse cx="${x}" cy="${y}" rx="${40 * k}" ry="${12 * k}" fill="${col}"/><ellipse cx="${x - 18 * k}" cy="${y - 6 * k}" rx="${20 * k}" ry="${12 * k}" fill="${col}"/><ellipse cx="${x + 14 * k}" cy="${y - 9 * k}" rx="${24 * k}" ry="${15 * k}" fill="${col}"/></g></g>`;
   const sw = (inner, amp = 2.5) => `<g class="sc-sway" style="--sa:${f2(amp * (.6 + R() * .8))}deg;--sd:${f2(2.6 + R() * 1.8)}s;--sdl:${f2(R() * 1.5)}s">${inner}</g>`;
   const swx = (inner, x, amp) => `<g class="sc-sway" style="--sa:${amp}deg;--sd:2.8s;--sdl:${f2(x / SW * 1.4)}s">${inner}</g>`;
   const grow = (inner, d) => `<g class="sc-grow" style="--d:${f2(d)}s">${inner}</g>`;
@@ -450,6 +489,7 @@ function sceneSVG(mi, opts = {}) {
         vines += `<path d="${d}" fill="none" stroke="${mixHex('#5E7A34', P.front, p)}" stroke-opacity=".5" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="1.5 6"/>`; }
       s.push(`<g class="sc-rise" style="--d:.3s;--rise:30px">${vines}</g>`);
       [[826, 1], [848, .82]].forEach(([x, k], i) => { const y = yAt(mid, x) + 6; s.push(grow(`<ellipse cx="${x}" cy="${f2(y - 36 * k)}" rx="${f2(7 * k)}" ry="${f2(38 * k)}" fill="${P.front}"/>`, .5 + i * .1)); });
+      { const hx = 742, hy = yAt(mid, hx) + 9; s.push(pop(house(hx, hy, '#EBD8BC', '#A9502F', .92), .55)); s.push(houseWins(hx, hy, .92)); }
       s.push(hill(near, P.near, .34, 40));
       const crowns = p < .3 ? ['#9FAA3F', '#C9A43A', '#B7B04A', '#D8792E'] : p < .7 ? ['#D8792E', '#E3A33B', '#C9A43A', '#B84A26'] : P.extra;
       xsOn(6, 690, 1170).forEach((x, i) => { const y = yAt(near, x) + 4, k = 1 + R() * .6; s.push(grow(sw(roundTree(x, y, k, crowns, P.trunk, R, 1 - p * .75), 1.6), .6 + i * .08)); });
@@ -463,26 +503,34 @@ function sceneSVG(mi, opts = {}) {
       if (!G) for (let i = 0; i < 3 + Math.round(p * 6); i++) s.push(faller(`<path d="${mapleD(6 + R() * 3)}" fill="${P.extra[i % 4]}"/>`, 620 + R() * 520, 110 + R() * 70, 30 + R() * 50, 120 + R() * 70, (R() < .5 ? -1 : 1) * (200 + R() * 200), 6 + R() * 3, 2 + i * 1.3));
       break;
     }
-    case 1: if (DAY) { // Brumale di giorno — sole basso e velato, nebbia, stormo, casa col camino che fuma
-      sky(sun(930, f2(118 + p * 18), 26, .1));
-      sky(cloud(640, 64, 1.2, .4) + cloud(1110, 46, .9, .6) + cloud(820, 108, .7, .8));
-      if (!G) [[700, 92, .55], [735, 80, .45], [760, 98, .5], [1050, 120, .5], [1078, 110, .4]].forEach(([x, y, k]) => s.push(gull(x, y, k, '#3C4350', R)));
-      const fogD = (y, h, d, dur, dx) => `<g class="sc-fade" style="--d:${d}s"><g class="sc-fog" opacity="${f2(.55 + p * .35)}" style="--fgd:${dur}s;--fgx:${dx}px"><rect x="-140" y="${y}" width="${SW + 280}" height="${h}" fill="url(#${u}f)"/></g></g>`;
+    case 1: if (DAY) { // Brumale di giorno (2.2): cielo coperto, sole velato, pioggerella, nebbia che scorre tra le colline, casa col camino
+      sky(`<g class="sc-sunrise" style="--d:.1s" opacity=".5"><circle class="sc-glow" cx="930" cy="${f2(112 + p * 16)}" r="70" fill="url(#${u}g)"/><circle cx="930" cy="${f2(112 + p * 16)}" r="21" fill="${P.sun}" fill-opacity=".65"/></g>`);
+      sky(cloud(600, 60, 1.3, .3, '#D9DFE8', .85) + cloud(800, 44, 1.5, .4, '#CFD6E0', .85) + cloud(1010, 70, 1.4, .5, '#D6DCE5', .9) + cloud(1170, 40, 1.2, .6, '#CBD2DD', .85) + cloud(880, 104, .9, .7, '#E3E7ED', .8));
+      const fogD = (y, h, d, dur, dx) => `<g class="sc-fade" style="--d:${d}s"><g class="sc-fog" opacity="${f2(.6 + p * .3)}" style="--fgd:${dur}s;--fgx:${dx}px"><rect x="-200" y="${y}" width="${SW + 400}" height="${h}" fill="url(#${u}f)"/></g></g>`;
+      const wisps = (n, y0, y1, d) => { if (G) return; let w = ''; for (let i = 0; i < n; i++) { const x = 380 + R() * 760, y = y0 + R() * (y1 - y0), rx = 140 + R() * 130;
+          w += `<ellipse class="sc-wisp" style="--wsd:${f2(24 + R() * 22)}s;--wsl:${f2(-R() * 30)}s;--wsx:${f2((R() < .5 ? -1 : 1) * (90 + R() * 110))}px;--wo0:${f2(.35 + R() * .2)};--wo1:${f2(.7 + R() * .25)}" cx="${f2(x)}" cy="${f2(y)}" rx="${f2(rx)}" ry="${f2(9 + R() * 9)}" fill="url(#${u}w)"/>`; }
+        s.push(`<g class="sc-fade" style="--d:${d}s">${w}</g>`); };
       s.push(hill(far, P.far, .1, 20));
-      s.push(fogD(160, 70, .5, 18, 50));
+      s.push(fogD(156, 76, .5, 11, 90)); wisps(3, 178, 215, .6);
       s.push(hill(mid, P.mid, .22, 30));
       [[690, .9], [880, 1.1], [1110, 1]].forEach(([x, k], i) => s.push(grow(bareTree(x, yAt(mid, x) + 4, k, P.trunk, R), .4 + i * .1)));
-      s.push(fogD(222, 66, .8, 14, -60));
+      s.push(fogD(218, 70, .8, 9, -110)); wisps(3, 236, 262, .9);
       s.push(hill(near, P.near, .34, 40));
       { const hx = 1010, hy = yAt(near, 1010) + 3;
-        s.push(pop(`<rect x="${hx - 17}" y="${f2(hy - 22)}" width="34" height="22" fill="${P.extra[1]}"/><path d="M${hx - 21} ${f2(hy - 21)}L${hx} ${f2(hy - 38)}L${hx + 21} ${f2(hy - 21)}Z" fill="#8C4B3A"/>`
-          + `<rect x="${hx + 8}" y="${f2(hy - 40)}" width="5" height="12" fill="#6E3B2E"/><rect x="${hx - 9}" y="${f2(hy - 16)}" width="7" height="7" fill="#5B6573"/><rect x="${hx + 3}" y="${f2(hy - 16)}" width="7" height="7" fill="#5B6573"/>`
-          + `<rect x="${hx - 3}" y="${f2(hy - 9)}" width="6" height="9" fill="#6E3B2E"/>`, .7));
-        if (!G) for (let i = 0; i < 4; i++) s.push(faller(`<circle r="${4 + i * 1.6}" fill="#FFFFFF" fill-opacity=".55"/>`, hx + 10, hy - 44, 14 + R() * 14, -50, 0, 5, 1.6 + i * 1.3)); }
+        s.push(pop(house(hx, hy, P.extra[1], '#8C4B3A'), .7));
+        if (!G) for (let i = 0; i < 4; i++) s.push(faller(`<circle r="${4 + i * 1.6}" fill="#FFFFFF" fill-opacity=".5"/>`, hx + 10, hy - 44, -(10 + R() * 12), -46, 0, 5.5, 1.6 + i * 1.4)); }
       [[780, 1.35], [1150, 1.2]].forEach(([x, k], i) => s.push(grow(bareTree(x, yAt(near, x) + 4, k, P.trunk, R), .55 + i * .1)));
       s.push(hill(front, P.front, .46, 50));
       if (p > .7) s.push(`<path class="sc-rise" style="--d:.5s;--rise:50px" d="${smoothPath(front).split('L' + (SW + 24))[0]}" fill="none" stroke="#FFFFFF" stroke-opacity="${f2((p - .7) * 2.6)}" stroke-width="4" stroke-linecap="round"/>`);
-      s.push(fogD(286, 60, 1, 16, 70));
+      /* pozzanghere: piccoli cerchi dove cade la pioggia */
+      if (!G) { let rp = ''; xsOn(9, 560, 1190).forEach((x) => { const y = yAt(front, x) + 10 + R() * 12;
+          rp += `<ellipse class="sc-ripple" style="--rpd:${f2(2 + R() * 1.6)}s;--rpl:${f2(-R() * 3)}s" cx="${f2(x)}" cy="${f2(y)}" rx="7" ry="1.8" fill="none" stroke="#EEF2F7" stroke-width="1.1"/>`; });
+        s.push(`<g class="sc-fade" style="--d:1.2s">${rp}</g>`); }
+      s.push(fogD(282, 64, 1, 10, 120)); wisps(3, 296, 326, 1.1);
+      /* pioggerella fitta e sottile, che non si ferma mai */
+      { let dr = ''; for (let i = 0; i < 90; i++) { const x = 360 + R() * 860, y = -30 + R() * 280, l = 8 + R() * 6;
+          dr += `<path class="sc-rain" style="--rd:${f2(.85 + R() * .6)}s;--rdl:${f2(-R() * 1.6)}s;--ro:${f2(.3 + R() * .3)}" d="M${f2(x)} ${f2(y)}l${f2(-l * .19)} ${f2(l)}" stroke="#65758D" stroke-width="1.05" stroke-linecap="round"/>`; }
+        s.push(`<g class="sc-fade" style="--d:.4s">${dr}</g>`); }
       break;
     } else { // Brumale — night, moon, fog banks, bare trees, lit house
       if (!G) { let st = ''; for (let i = 0; i < 34; i++) st += `<circle class="sc-twinkle" style="--td:${f2(2 + R() * 3)}s;--tdl:${f2(R() * 3)}s" cx="${f2(470 + R() * 730)}" cy="${f2(10 + R() * 160)}" r="${f2(.7 + R() * 1.3)}" fill="#E7E9F2"/>`;
@@ -526,6 +574,8 @@ function sceneSVG(mi, opts = {}) {
       s.push(hill(near, P.near, .36, 40));
       const ly = yAt(near, 860) + 16;
       s.push(`<g class="sc-rise" style="--d:.45s;--rise:40px"><ellipse cx="860" cy="${f2(ly)}" rx="150" ry="8" fill="#BCD6E0"/><path d="M790 ${f2(ly - 1)}h30M870 ${f2(ly + 1)}h46" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></g>`);
+      if (NIGHT) s.push(lit(`<ellipse class="sc-twinkle" style="--td:3.4s" cx="972" cy="${f2(ly)}" rx="16" ry="2.2" fill="${P.sun}" fill-opacity=".75"/><ellipse cx="940" cy="${f2(ly + 2.5)}" rx="9" ry="1.2" fill="${P.sun}" fill-opacity=".45"/>`, .9));
+      { const hx = 704, hy = yAt(near, hx) + 6; s.push(pop(house(hx, hy, '#8A5A3C', '#F2F6F8', .9), .5)); s.push(houseWins(hx, hy, .9)); }
       xsOn(14, 560, 1190).forEach((x, i) => { const k = .75 + R() * .7; s.push(grow(pine(x, yAt(near, x) + 5, k, P.extra[i % 2], p > .75 && hsh(x, 9) < (p - .7) * 2 ? P.extra[i % 2] : '#FFFFFF'), .55 + i * .05)); });
       s.push(hill(front, P.front, .5, 50));
       if (!G) for (let i = 0; i < Math.round(30 - p * 20); i++) s.push(faller(`<circle r="${f2(1.2 + R() * 1.6)}" fill="#fff" stroke="${P.far}" stroke-width=".6"/>`, 460 + R() * 740, 10 + R() * 120, (R() - .5) * 40, 150 + R() * 120, 0, 7 + R() * 5, 1.5 + R() * 8));
@@ -548,6 +598,7 @@ function sceneSVG(mi, opts = {}) {
       [[700, 1], [1015, 1.05]].forEach(([x, k], i) => s.push(grow(sw(blossomTree(x, yAt(mid, x) + 4, k), 1.2), .45 + i * .1)));
       s.push(hill(near, P.near, .34, 40));
       [[860, 1.25], [1150, 1.3]].forEach(([x, k], i) => s.push(grow(sw(blossomTree(x, yAt(near, x) + 4, k), 1.2), .6 + i * .1)));
+      if (NIGHT) s.push(`<g class="sc-fade" style="--d:.9s"><g class="sc-fog" opacity=".45" style="--fgd:22s;--fgx:60px"><rect x="-140" y="250" width="${SW + 280}" height="56" fill="url(#${u}f)"/></g></g>`);
       xsOn(22, 460, 1190).forEach((x, i) => { const y = yAt(near, x) + 8 + R() * 12, h = (14 + R() * 16) * (.35 + p * .65), sp = sprout(x, y, h, P.front, R);
         if (hsh(x, 5) < .4 + p * .6) s.push(grow(sw(sp, 5), .9 + i * .045)); });
       s.push(hill(front, P.front, .5, 50));
@@ -569,16 +620,21 @@ function sceneSVG(mi, opts = {}) {
       s.push(hill(front, P.front, .46, 50));
       xsOn(26, 440, 1195).forEach(x => { const fl = flower(x, yAt(front, x) + 10 + R() * 12, 1.15 + R() * .35, Math.floor(R() * 4)); if (hsh(x, 4) < .3 + p * .7) s.push(pop(sw(fl, 5), .8 + (x - 440) / 755 * .9)); });
       if (!G) [[760, 150, '#F2A23A', '#F2C230'], [930, 196, '#8E5FA3', '#B58AC8'], [1085, 128, '#D8453A', '#F29A8C']]
-        .forEach(([x, y, a, b], i) => { const bf = butterfly(x, y, a, b, R); if (i < 1 + Math.round(p * 2)) s.push(`<g class="sc-fade" style="--d:${f2(1.4 + i * .3)}s">${bf}</g>`); });
+        .forEach(([x, y, a, b], i) => { const bf = butterfly(x, y, a, b, R); if (i < 1 + Math.round(p * 2) && !NIGHT) s.push(`<g class="sc-fade" style="--d:${f2(1.4 + i * .3)}s">${bf}</g>`); });
+      fireflies(28, 520, 1195, (x) => yAt(near, x) + 10, 80);
       break;
     }
     case 5: { // Messidoro — sea, headland, wheat field in the wind
       sky(sun(1010, 98, 34));
-      if (!G) [[780, 70, .9], [850, 96, .7], [1090, 58, 1]].forEach(([x, y, k]) => s.push(gull(x, y, k, '#3B3012', R)));
+      if (!G) [[780, 70, .9], [850, 96, .7], [1090, 58, 1]].forEach(([x, y, k]) => { const g = gull(x, y, k, '#3B3012', R); if (!NIGHT) s.push(g); });
       s.push(`<rect class="sc-rise" style="--d:.1s;--rise:10px" x="0" y="198" width="${SW}" height="${SH}" fill="url(#${u}s)"/>`);
       s.push(`<path class="sc-rise" style="--d:.15s;--rise:14px" d="M-20 206Q120 148 300 168Q470 184 640 206Z" fill="${P.land}"/>`);
       waves([[214, 60, 1.6, .7, 500], [232, 70, 1.8, .55, 500], [252, 80, 2, .45, 480]], '#FFFFFF');
+      if (NIGHT && !G) { let gl = ''; for (let i = 0; i < 12; i++) { const y = 204 + i * 4.2 + RN() * 2, w = 8 + RN() * 14 - i * .3, x = 1010 + (RN() - .5) * (24 + i * 8);
+          gl += `<rect class="sc-twinkle" style="--td:${f2(1.4 + RN() * 1.6)}s;--tdl:${f2(RN() * 2)}s" x="${f2(x - w / 2)}" y="${f2(y)}" width="${f2(w)}" height="1.6" rx=".8" fill="#EEF1F8"/>`; }
+        s.push(lit(gl, 1)); }
       s.push(`<g class="sc-fade" style="--d:.8s">${sailboat(870, 208, 1, '#3B3012', '#FFFFFF')}</g>`);
+      if (NIGHT) s.push(lit(`<circle cx="870" cy="183" r="1.8" fill="#FFE7A0"/><circle cx="870" cy="183" r="7" fill="url(#${u}l)"/>`, 1));
       const field = hillPts(R, 262, 8, 36, .008), field2 = hillPts(R, 302, 6, 22, .011);
       const ripe = clamp(p * 1.15, 0, 1);
       P.near = mixHex('#A9C466', PAL[5].near, ripe); P.front = mixHex('#8FB050', PAL[5].front, ripe);
@@ -588,22 +644,27 @@ function sceneSVG(mi, opts = {}) {
       s.push(hill(field2, P.front, .45, 50));
       xsOn(34, 440, 1195).forEach(x => s.push(grow(swx(wheat(x, yAt(field2, x) + 14 + R() * 12, (48 + R() * 20) * (.75 + ripe * .25), st2, ea2), x, 3.5), .7 + (x - 440) / 755 * .7)));
       xsOn(8, 470, 1180).forEach(x => s.push(pop(poppy(x, yAt(field2, x) + 22, 1.1, P.extra[1]), 1.5 + R() * .5)));
+      fireflies(24, 470, 1195, (x) => yAt(field, x) + 6, 70);
       break;
     }
     case 6: { // Estiario — summer sea, lighthouse on the cliff, beach
-      sky(sun(880, f2(130 + p * 62), 44));
-      if (!G) s.push(gull(1000, 70, .9, '#3A2E14', R) + gull(740, 96, .7, '#3A2E14', R));
+      const gx = NIGHT ? 800 : 880;
+      sky(NIGHT ? moon(800, 62, 28, .2) : sun(880, f2(130 + p * 62), 44));
+      if (!G) { const g = gull(1000, 70, .9, '#3A2E14', R) + gull(740, 96, .7, '#3A2E14', R); if (!NIGHT) s.push(g); }
       s.push(`<rect class="sc-rise" style="--d:.05s;--rise:10px" x="0" y="212" width="${SW}" height="${SH}" fill="url(#${u}s)"/>`);
       s.push(`<g class="sc-rise" style="--d:.15s;--rise:12px"><ellipse cx="560" cy="213" rx="54" ry="9" fill="${P.far}"/><ellipse cx="648" cy="213" rx="30" ry="6" fill="${P.far}"/></g>`);
-      if (!G) { let gl = ''; for (let i = 0; i < 16; i++) { const y = 222 + i * 5 + R() * 3, w = 10 + R() * 18 - i * .4, x = 880 + (R() - .5) * (30 + i * 9);
-          gl += `<rect class="sc-twinkle" style="--td:${f2(1.2 + R() * 1.6)}s;--tdl:${f2(R() * 2)}s" x="${f2(x - w / 2)}" y="${f2(y)}" width="${f2(w)}" height="1.8" rx=".9" fill="#FFF6DC"/>`; }
-        s.push(`<g class="sc-fade" style="--d:1.2s">${gl}</g>`); }
+      if (!G) { let gl = ''; for (let i = 0; i < 16; i++) { const y = 222 + i * 5 + R() * 3, w = 10 + R() * 18 - i * .4, x = gx + (R() - .5) * (30 + i * 9);
+          gl += `<rect class="sc-twinkle" style="--td:${f2(1.2 + R() * 1.6)}s;--tdl:${f2(R() * 2)}s" x="${f2(x - w / 2)}" y="${f2(y)}" width="${f2(w)}" height="1.8" rx=".9" fill="${NIGHT ? '#E9EEF8' : '#FFF6DC'}"/>`; }
+        s.push(NIGHT ? lit(gl, 1.2) : `<g class="sc-fade" style="--d:1.2s">${gl}</g>`); }
+      if (NIGHT && !G) s.push(lit(`<g class="sc-shoot" style="--sd2:13s;--sdl2:3s"><path d="M760 34l-64 24" stroke="url(#${u}t)" stroke-width="1.8" stroke-linecap="round"/></g>`
+        + `<g class="sc-shoot" style="--sd2:17s;--sdl2:9s"><path d="M1080 22l-50 19" stroke="url(#${u}t)" stroke-width="1.5" stroke-linecap="round"/></g>`, 2));
       waves([[244, 70, 1.6, .5, 380], [266, 80, 1.8, .4, 380], [292, 90, 2, .32, 360]], '#FFFFFF');
       s.push(`<g class="sc-fade" style="--d:.9s">${sailboat(690, 226, 1.1, '#3A2E14', '#FFFFFF')}</g>`);
       s.push(`<g class="sc-rise" style="--d:.3s;--rise:40px"><path d="M1000 ${SH + 60}L1018 250Q1040 190 1090 160L1150 148Q1190 140 ${SW + 20} 146L${SW + 20} ${SH + 60}Z" fill="${P.near}"/>`
         + `<path d="M1030 240Q1070 220 1110 214M1050 272Q1100 256 1150 250M1040 300Q1100 290 1180 286" stroke="${P.front}" stroke-opacity=".5" stroke-width="2" fill="none"/></g>`);
       s.push(grow(`<path d="M1142 149L1145 98H1157L1160 149Z" fill="#FFFFFF"/><path d="M1143.4 132H1158.6L1158.1 120H1144Z M1144.6 110H1157.4L1157 101H1145Z" fill="${P.extra[0]}"/>`
         + `<rect x="1143" y="89" width="16" height="9" fill="#3A2E14"/><path d="M1141 89L1151 80L1161 89Z" fill="${P.extra[0]}"/><rect class="sc-beam" x="1146" y="91" width="10" height="5" fill="#FFE9A8"/>`, .7));
+      if (NIGHT) s.push(lit(`<path class="sc-cone" d="M1151 93L690 48L690 142Z" fill="url(#${u}b)"/><rect class="sc-beam" x="1146" y="91" width="10" height="5" fill="#FFF1BE"/><circle cx="1151" cy="93.5" r="16" fill="url(#${u}l)"/>`, 1.3));
       const sand = hillPts(R, 318, 5, 18, .01);
       s.push(hill(sand, P.sand, .45, 50));
       const ux = 610, uy = yAt(sand, ux) + 4;
@@ -614,7 +675,8 @@ function sceneSVG(mi, opts = {}) {
       break;
     }
   }
-  return `<svg class="scene${G ? ' static' : ''}" viewBox="0 0 ${SW} ${SH}" preserveAspectRatio="${G ? 'xMidYMax' : 'xMaxYMax'} slice" aria-hidden="true" focusable="false">${defs}${s.join('')}</svg>`;
+  const body = NIGHT ? s.map((x) => x.includes('data-lit') ? x : toneStr(x, NK)) : s;
+  return `<svg class="scene${G ? ' static' : ''}${NIGHT ? ' night' : ''}" viewBox="0 0 ${SW} ${SH}" preserveAspectRatio="${G ? 'xMidYMax' : 'xMaxYMax'} slice" aria-hidden="true" focusable="false">${defs}${body.join('')}</svg>`;
 }
 
 /* Month pattern tile: scattered seasonal glyphs, used as page texture */

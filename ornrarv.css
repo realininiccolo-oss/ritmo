@@ -2,7 +2,7 @@
 :root{--ease-out:cubic-bezier(.2,.75,.18,1)}
    LANDSCAPE SCENES — entry on .play, then ambient loops
    ===================================================================== */
-.scene :is(.sc-rise, .sc-sunrise, .sc-grow, .sc-pop, .sc-fade, .sc-sway, .sc-drift, .sc-fog, .sc-wave, .sc-twinkle, .sc-glow, .sc-fall, .sc-flap, .sc-gull, .sc-flut, .sc-fly, .sc-bob, .sc-window, .sc-beam, .sc-hang) { transform-box: fill-box; }
+.scene :is(.sc-rise, .sc-sunrise, .sc-grow, .sc-pop, .sc-fade, .sc-sway, .sc-drift, .sc-fog, .sc-wave, .sc-twinkle, .sc-glow, .sc-fall, .sc-flap, .sc-gull, .sc-flut, .sc-fly, .sc-bob, .sc-window, .sc-beam, .sc-hang, .sc-rain, .sc-wisp, .sc-ripple, .sc-ffly, .sc-ffx, .sc-cone, .sc-shoot, .sc-hover) { transform-box: fill-box; }
 .scene .sc-rise { opacity: 0; transform: translateY(var(--rise, 40px)); }
 .scene.play .sc-rise { animation: sc-rise 1.2s var(--ease-out) var(--d, 0s) forwards; }
 .scene .sc-sunrise { opacity: 0; transform: translateY(70px); }
@@ -46,6 +46,34 @@
 @keyframes sc-flut { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(46px, -24px); } 50% { transform: translate(84px, 6px); } 75% { transform: translate(30px, 18px); } }
 .scene.play .sc-fly { animation: sc-fly var(--fd, 26s) linear var(--fdl, 0s) infinite; }
 @keyframes sc-fly { 0% { transform: translate(0, 0); opacity: 0; } 8% { opacity: 1; } 25% { transform: translate(-60px, -10px); } 50% { transform: translate(-120px, 4px); } 75% { transform: translate(-180px, -8px); } 92% { opacity: 1; } 100% { transform: translate(-240px, 0); opacity: 0; } }
+/* Ritmo 2.2: uccelli che planano avanti e indietro senza sparire e ricomparire */
+.scene.play .sc-hover { animation: sc-hover var(--hd, 14s) ease-in-out var(--hdl, 0s) infinite alternate; }
+@keyframes sc-hover { 0% { transform: translate(0, 0); } 35% { transform: translate(calc(var(--hx, -40px) * .45), -7px); } 70% { transform: translate(calc(var(--hx, -40px) * .8), 3px); } 100% { transform: translate(var(--hx, -40px), -3px); } }
+.scene.play .sc-hover .sc-gull { animation-duration: 1.7s; }
+/* pioggerella: gocce sottili che scendono di sbieco, sempre diverse */
+.scene .sc-rain { opacity: 0; }
+.scene.play .sc-rain { animation: sc-rain var(--rd, 1.1s) linear var(--rdl, 0s) infinite; }
+@keyframes sc-rain { 0% { transform: translate(0, 0); opacity: 0; } 15% { opacity: var(--ro, .55); } 85% { opacity: var(--ro, .55); } 100% { transform: translate(-16px, 84px); opacity: 0; } }
+/* banchi di nebbia che scorrono piano */
+.scene.play .sc-wisp { animation: sc-wisp var(--wsd, 30s) ease-in-out var(--wsl, 0s) infinite alternate; }
+@keyframes sc-wisp { 0% { transform: translateX(0); opacity: var(--wo0, .5); } 50% { opacity: var(--wo1, .85); } 100% { transform: translateX(var(--wsx, 160px)); opacity: var(--wo0, .5); } }
+/* cerchi delle gocce nelle pozzanghere */
+.scene .sc-ripple { transform-origin: 50% 50%; opacity: 0; }
+.scene.play .sc-ripple { animation: sc-ripple var(--rpd, 2.6s) ease-out var(--rpl, 0s) infinite; }
+@keyframes sc-ripple { 0% { transform: scale(.2); opacity: 0; } 15% { opacity: .7; } 100% { transform: scale(1.6); opacity: 0; } }
+/* lucciole: si accendono e si spengono mentre vagano */
+.scene.play .sc-ffx { animation: sc-ffx var(--fxd, 9s) ease-in-out var(--fxl, 0s) infinite alternate; }
+@keyframes sc-ffx { 0% { transform: translate(0, 0); } 33% { transform: translate(var(--fx1, 14px), var(--fy1, -10px)); } 66% { transform: translate(var(--fx2, -8px), var(--fy2, -18px)); } 100% { transform: translate(var(--fx3, 10px), 4px); } }
+.scene.play .sc-ffly { animation: sc-ffly var(--fbd, 2.8s) ease-in-out var(--fbl, 0s) infinite; }
+@keyframes sc-ffly { 0%, 100% { opacity: .12; } 45%, 60% { opacity: 1; } }
+/* fascio del faro che spazza il mare */
+.scene .sc-cone { transform-origin: 100% 50%; }
+.scene.play .sc-cone { animation: sc-cone 7s ease-in-out infinite alternate; }
+@keyframes sc-cone { 0% { transform: rotate(-9deg); opacity: .25; } 50% { opacity: .55; } 100% { transform: rotate(7deg); opacity: .3; } }
+/* stelle cadenti d'agosto: brevi, rade */
+.scene .sc-shoot { opacity: 0; }
+.scene.play .sc-shoot { animation: sc-shoot var(--sd2, 11s) ease-in var(--sdl2, 3s) infinite; }
+@keyframes sc-shoot { 0%, 88% { transform: translate(0, 0); opacity: 0; } 90% { opacity: 1; } 97% { opacity: .9; } 100% { transform: translate(-120px, 46px); opacity: 0; } }
 .scene .sc-bob { transform-origin: 50% 100%; }
 .scene.play .sc-bob { animation: sc-bob 4s ease-in-out infinite alternate; }
 @keyframes sc-bob { to { transform: translateY(2px) rotate(3deg); } }
@@ -64,6 +92,7 @@
 /* ground copy and hidden months: fully drawn, no motion */
 .scene.static * { animation: none !important; }
 .scene.static .sc-rise, .scene.static .sc-sunrise, .scene.static .sc-grow, .scene.static .sc-pop, .scene.static .sc-fade { opacity: 1; transform: none; }
+.scene.static .sc-rain { opacity: .3; } .scene.static .sc-cone { opacity: .4; } .scene.static .sc-ffly { opacity: .8; }
 /* while a page is open, freeze everything underneath */
 html.has-layer main * { animation-play-state: paused !important; }
 
@@ -192,5 +221,6 @@ html.has-layer main * { animation-play-state: paused !important; }
   .lil .n-spin { opacity: 1; transform: rotate(40deg); }
   .scene * { animation: none !important; }
   .scene .sc-rise, .scene .sc-sunrise, .scene .sc-grow, .scene .sc-pop, .scene .sc-fade { opacity: 1; transform: none; }
-  .scene .sc-fall, .scene .sc-fly { opacity: 0; }
+  .scene .sc-fall, .scene .sc-fly, .scene .sc-shoot, .scene .sc-ripple { opacity: 0; }
+  .scene .sc-rain { opacity: .3; } .scene .sc-cone { opacity: .4; } .scene .sc-ffly { opacity: .8; }
 }

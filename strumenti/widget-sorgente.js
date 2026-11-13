@@ -121,17 +121,19 @@ async function menu() {
 /* ---------- disegno ---------- */
 function addSym(st, n, size, color) { const s2 = SFSymbol.named(n) || SFSymbol.named('circle'); s2.applyFont(Font.semiboldSystemFont(size)); const i = st.addImage(s2.image); i.imageSize = new Size(size + 2, size + 2); i.tintColor = color; return i; }
 const THEMES = [['#F2E4D5', '#3B2418'], ['#232B3B', '#E7E9F2'], ['#EEF3F5', '#233238'], ['#EAF3E7', '#2A3B29'], ['#F1F8EC', '#2E3B22'], ['#FBF2D9', '#3B3012'], ['#F7E9CE', '#3A2E14']];
+/* di notte (Ritmo 2.2): Brumale ha il suo disegno notturno come base; gli altri mesi hanno la versione blu notte */
+const THEMES_N = [['#221E30', '#F1E6DA'], ['#232B3B', '#E7E9F2'], ['#16223A', '#E8F0F6'], ['#1A2236', '#E9F1E6'], ['#192134', '#EEF5E8'], ['#152038', '#F5EEDB'], ['#151C38', '#F6EEDC']];
 const ACC = '#E2603F', ACC_DARK = '#FF8C6B';
 function look(o) {
-  const mi = o ? o.mi : 1, v = variantFor(mi, new Date().getHours(), pref().paesaggio);
-  const [bg, ink] = mi === 1 && v === 'giorno' ? ['#E6EAEF', '#1E2733'] : THEMES[mi];
+  const mi = o ? o.mi : 1, v = variantFor(mi, new Date(), pref().paesaggio);
+  const [bg, ink] = mi === 1 ? (v === 'giorno' ? ['#E6EAEF', '#1E2733'] : THEMES[1]) : (v === 'notte' ? THEMES_N[mi] : THEMES[mi]);
   const dark = parseInt(bg.slice(1, 3), 16) < 90;
   return { mi, v, bg, ink, dark, acc: dark ? ACC_DARK : ACC, cols: dark ? CAT_COL_DARK : CAT_COL };
 }
 async function background(o, k, fam) {
   if (!o) return null;
-  const f = fam === 'large' ? 'l' : fam === 'small' ? 's' : 'm', name = `${o.mi}-${o.wi}-${f}${k.v === 'giorno' ? '-g' : ''}.jpg`;
-  const path = fm.joinPath(fm.documentsDirectory(), 'ritmo2-img-' + name);
+  const f = fam === 'large' ? 'l' : fam === 'small' ? 's' : 'm', name = `${o.mi}-${o.wi}-${f}${o.mi === 1 ? (k.v === 'giorno' ? '-g' : '') : (k.v === 'notte' ? '-n' : '')}.jpg`;
+  const path = fm.joinPath(fm.documentsDirectory(), 'ritmo3-img-' + name);
   if (fm.fileExists(path)) return fm.readImage(path);
   try { const img = await new Request(BASE + 'widget-img/' + name).loadImage(); fm.writeImage(path, img); return img; } catch (e) { return null; }
 }
@@ -165,7 +167,7 @@ function feedbackBox(w, f, k, size, lines) {
 function evRow(st, t, k, size, L) {
   const r = st.addStack(); r.centerAlignContent(); r.spacing = 7;
   const tc = r.addStack(); tc.size = new Size(size > 13 ? 44 : 38, 0); T(tc, fmt(t.start), size, new Color(k.ink, t.end <= L.min && !t.done ? .55 : .85), 'b'); tc.addSpacer();
-  addSym(r, t.done ? 'checkmark.circle.fill' : (CATS[t.cat] || CATS.altro).sym, size - 1, new Color(t.done ? (k.dark ? '#74B888' : '#4C8A5E') : k.cols[t.cat] || k.cols.altro));
+  addSym(r, t.run ? 'timer' : t.done ? 'checkmark.circle.fill' : (CATS[t.cat] || CATS.altro).sym, size - 1, new Color(t.done ? (k.dark ? '#74B888' : '#4C8A5E') : k.cols[t.cat] || k.cols.altro));
   T(r, t.title, size, new Color(k.ink, t.done ? .6 : 1), 'm');
   r.addSpacer();
   return r;

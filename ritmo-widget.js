@@ -43,8 +43,21 @@ const dNum = (d) => { const o = settale(d); return o ? o.num : parseISO(d).getDa
 const dTitle = (d) => { const o = settale(d); return o ? `${o.num} ${o.mese}` : `${parseISO(d).getDate()} ${MOS[parseISO(d).getMonth()]}`; };
 const greg = (d) => { const x = parseISO(d); return `${pad(x.getDate())}/${pad(x.getMonth() + 1)}`; };
 function relWord(d, today) { const k = dayDiff(today, d); return k === 0 ? 'Oggi' : k === 1 ? 'Domani' : k === -1 ? 'Ieri' : cap(WD[dowOf(d)]); }
-/* Paesaggio di Brumale: di giorno dalle 7 alle 17 (in autunno il sole tramonta presto), di notte il resto. */
-const variantFor = (mi, hour, pref) => mi !== 1 ? null : pref === 'giorno' || pref === 'notte' ? pref : (hour >= 7 && hour < 17 ? 'giorno' : 'notte');
+/* Alba e tramonto a Erbusco (lat 45,6 · lon 10,0) con la formula della NOAA: minuti dalla mezzanotte, ora locale. Errore di qualche minuto. */
+function sunTimes(d, lat = 45.6, lon = 9.97) {
+  const x = parseISO(d), N = Math.round((x - new Date(x.getFullYear(), 0, 0)) / 864e5), g = 2 * Math.PI / 365 * (N - .5);
+  const eq = 229.18 * (.000075 + .001868 * Math.cos(g) - .032077 * Math.sin(g) - .014615 * Math.cos(2 * g) - .040849 * Math.sin(2 * g));
+  const dc = .006918 - .399912 * Math.cos(g) + .070257 * Math.sin(g) - .006758 * Math.cos(2 * g) + .000907 * Math.sin(2 * g) - .002697 * Math.cos(3 * g) + .00148 * Math.sin(3 * g);
+  const la = lat * Math.PI / 180, ha = Math.acos(Math.cos(90.833 * Math.PI / 180) / (Math.cos(la) * Math.cos(dc)) - Math.tan(la) * Math.tan(dc)) * 180 / Math.PI;
+  const tz = -new Date(x.getFullYear(), x.getMonth(), x.getDate(), 12).getTimezoneOffset();
+  return [Math.round(720 - 4 * (lon + ha) - eq + tz), Math.round(720 - 4 * (lon - ha) - eq + tz)];
+}
+/* Paesaggio: di giorno dall'alba al tramonto, di notte il resto (o fisso dalle Impostazioni). Vale per tutti i mesi. */
+function variantFor(mi, when, pr) {
+  if (pr === 'giorno' || pr === 'notte') return pr;
+  const t = when instanceof Date ? when : new Date(), m = t.getHours() * 60 + t.getMinutes(), [a, b] = sunTimes(iso(t));
+  return m >= a && m < b ? 'giorno' : 'notte';
+}
 
 /* Categorie degli impegni */
 const CATS = {
@@ -67,7 +80,7 @@ const catOf = (e) => { const t = LEGACY[e.tipo] || e.tipo; return CATS[t] ? t : 
 const isAllDay = (e) => !e.inizio && !e.flessibile;
 
 /* Stato: S.file = dati del file cifrato, S.miei = impegni aggiunti sul telefono, S.giorni = spunte, piano e umore per giorno */
-const S = { file: [], miei: [], nascosti: [], giorni: {}, nerina: {}, cfg: null, versione: null, eventi: [], pref: {} };
+const S = { file: [], miei: [], nascosti: [], giorni: {}, nerina: {}, cfg: null, versione: null, eventi: [], pref: {}, soldi: { base: 0, mov: [] } };
 const PREF0 = { sveglia: '08:30', letto: '00:00', paesaggio: 'auto', avviso: 10, sera: '21:30' };
 const pref = () => ({ ...PREF0, ...((S.cfg && S.cfg.sonno) || {}), ...S.pref });
 const rebuildEvents = () => { const hid = new Set(S.nascosti); S.eventi = [...S.file.filter((e) => !hid.has(e.id)).map((e) => ({ ...e, src: 'file' })), ...S.miei.map((e) => ({ ...e, src: 'mio' }))]; };
@@ -81,15 +94,21 @@ function dayBounds(d) {
   const wake = toMin(r.sveglia || p.sveglia), bed0 = toMin(r.letto || p.letto);
   return { wake, bed: bed0 <= wake ? bed0 + 1440 : bed0 };
 }
+/* Iniziato / terminato: i tempi veri di un impegno, in S.giorni[d].corso[chiave] = { s: quando è iniziato, e: quando è finito (null = in corso) }.
+   Finché è in corso il blocco parte dall'ora vera e si allunga con l'orologio; quando lo termini resta con la durata vera. */
+const corsoOf = (d, e) => ((dayRec(d).corso || {})[evKey(e)]) || null;
+const msMin = (d, ms) => Math.round((ms - parseISO(d).getTime()) / 60000);
 /* Tutto quello che c'è in un giorno */
 function dayModel(d) {
-  const evs = S.eventi.filter((e) => e.data === d);
-  const timed = evs.filter((e) => e.inizio).map((e) => {
-    const s = toMin(e.inizio), en = e.fine ? toMin(e.fine, s) : s + (Number(e.durata) || 60);
-    return { key: evKey(e), ev: e, cat: catOf(e), title: e.titolo, dove: e.dove || '', start: s, end: en, done: isDone(d, e) };
+  const evs = S.eventi.filter((e) => e.data === d), nowM = msMin(d, Date.now());
+  const timed = evs.filter((e) => e.inizio || (e.flessibile && corsoOf(d, e))).map((e) => {
+    let s = e.inizio ? toMin(e.inizio) : 0, en = e.inizio && e.fine ? toMin(e.fine, s) : s + (Number(e.durata) || 60);
+    const plan = e.inizio ? [s, en] : null, c = corsoOf(d, e), len = Math.max(5, en - s);
+    if (c) { s = msMin(d, c.s); en = c.e ? Math.max(s + 1, msMin(d, c.e)) : Math.max(s + len, Math.min(nowM, 1680)); }
+    return { key: evKey(e), ev: e, cat: catOf(e), title: e.titolo, dove: e.dove || '', start: s, end: en, done: isDone(d, e), run: !!(c && !c.e), real: !!c, plan };
   }).sort((a, b) => a.start - b.start || b.end - a.end);
   const allDay = evs.filter(isAllDay).map((e) => ({ key: evKey(e), ev: e, cat: catOf(e), title: e.titolo }));
-  const todo = evs.filter((e) => !e.inizio && e.flessibile).map((e) => ({ key: evKey(e), ev: e, cat: catOf(e), title: e.titolo, len: Number(e.durata) || 60, done: isDone(d, e) }));
+  const todo = evs.filter((e) => !e.inizio && e.flessibile && !corsoOf(d, e)).map((e) => ({ key: evKey(e), ev: e, cat: catOf(e), title: e.titolo, len: Number(e.durata) || 60, done: isDone(d, e) }));
   const B = dayBounds(d);
   const A0 = Math.min(B.wake, ...timed.map((t) => t.start)), B0 = Math.max(B.bed, ...timed.map((t) => t.end));
   const free = freeWindows(timed, B.wake, B.bed);
@@ -116,10 +135,13 @@ function feedback(d, L) {
     const head = t.length ? `${t.length === 1 ? '1 impegno' : t.length + ' impegni'}, il primo alle ${fmt(t[0].start)}` : 'Nessun impegno fissato';
     return isPlanned(d) ? { sym: 'checkmark.circle', ic: 'check', tone: 'ok', text: head, sub: `Pianificata · ${dur(m.freeMin)} libere` } : { sym: 'square.and.pencil', ic: 'matita', tone: 'acc', text: head, sub: `Da pianificare · ${dur(m.freeMin)} libere`, act: 'pianifica' };
   }
-  const now = t.find((x) => x.start <= L.min && x.end > L.min && !x.done), next = t.find((x) => x.start > L.min && !x.done);
+  const run = t.find((x) => x.run);
+  if (run) { const el = Math.max(1, L.min - run.start), over = run.plan ? el - (run.plan[1] - run.plan[0]) : 0;
+    return { sym: 'timer', ic: 'play', tone: 'acc', text: `In corso: ${run.title}`, sub: `da ${dur(el)} · iniziato alle ${fmt(run.start)}${over >= 5 ? ` · ${dur(over)} oltre il previsto` : ''}`, go: { a: 'termina', key: run.key } }; }
+  const now = t.find((x) => x.start <= L.min && x.end > L.min && !x.done && !x.real), next = t.find((x) => x.start > L.min && !x.done && !x.real);
   const missed = t.filter((x) => x.end <= L.min && !x.done).length;
-  if (now) return { sym: 'play.circle', ic: 'play', tone: 'acc', text: `Adesso: ${now.title}`, sub: `fino alle ${fmt(now.end)}${tail(now)}${next ? ` · poi ${next.title} alle ${fmt(next.start)}` : ''}` };
-  if (next && next.start - L.min <= 90) return { sym: 'clock', ic: 'orologio', tone: 'acc', text: `Tra ${dur(next.start - L.min)}: ${next.title}`, sub: `alle ${fmt(next.start)}${tail(next)}` };
+  if (now) return { sym: 'play.circle', ic: 'play', tone: 'acc', text: `Adesso: ${now.title}`, sub: `fino alle ${fmt(now.end)}${tail(now)}${next ? ` · poi ${next.title} alle ${fmt(next.start)}` : ''}`, go: { a: 'inizia', key: now.key } };
+  if (next && next.start - L.min <= 90) return { sym: 'clock', ic: 'orologio', tone: 'acc', text: `Tra ${dur(next.start - L.min)}: ${next.title}`, sub: `alle ${fmt(next.start)}${tail(next)}`, go: next.start - L.min <= 20 ? { a: 'inizia', key: next.key } : null };
   if (L.min >= 19 * 60 && !isPlanned(tom)) { const mt = dayModel(tom).timed; return { sym: 'square.and.pencil', ic: 'matita', tone: 'acc', text: 'Domani è ancora da pianificare', sub: mt.length ? `Hai già ${mt.length === 1 ? '1 impegno' : mt.length + ' impegni'}, il primo alle ${fmt(mt[0].start)}` : 'Per ora è tutto libero', act: 'pianifica-domani' }; }
   if (missed && L.min >= 17 * 60) return { sym: 'checklist', ic: 'check', tone: 'acc', text: missed === 1 ? '1 impegno da segnare' : `${missed} impegni da segnare`, sub: `Hai fatto ${doneN} di ${t.length}?` };
   if (t.length && doneN === t.length) { const st = planStreak(d); return { sym: 'checkmark.seal', ic: 'check', tone: 'ok', text: 'Tutto fatto per oggi', sub: `${doneN} su ${t.length}${st > 1 ? ` · ${st} giorni pianificati di fila` : ''}` }; }
@@ -136,7 +158,7 @@ function promemoria(nowMs, days, conSera) {
   for (let i = 0; i < (days || 3); i++) {
     const d = addDays(L.date, i), m = dayModel(d), o = settale(d);
     if (av > 0) for (const t of m.timed) {
-      if (t.done) continue;
+      if (t.done || t.real) continue;
       const when = at(d, t.start - av); if (when <= nowMs + 30e3) continue;
       out.push({ id: `ritmo:${d}:${t.ev.id}:${t.start}:${t.end}:${av}:${t.title}`, at: when, title: `${av >= 60 ? 'Tra ' + dur(av) : 'Tra ' + av + ' min'} · ${t.title}`,
         body: `${fmt(t.start)}–${fmt(t.end)}${t.dove ? ' · ' + t.dove : ''}${o ? ' · ' + o.num + ' ' + o.mese : ''}` });
@@ -264,17 +286,19 @@ async function menu() {
 /* ---------- disegno ---------- */
 function addSym(st, n, size, color) { const s2 = SFSymbol.named(n) || SFSymbol.named('circle'); s2.applyFont(Font.semiboldSystemFont(size)); const i = st.addImage(s2.image); i.imageSize = new Size(size + 2, size + 2); i.tintColor = color; return i; }
 const THEMES = [['#F2E4D5', '#3B2418'], ['#232B3B', '#E7E9F2'], ['#EEF3F5', '#233238'], ['#EAF3E7', '#2A3B29'], ['#F1F8EC', '#2E3B22'], ['#FBF2D9', '#3B3012'], ['#F7E9CE', '#3A2E14']];
+/* di notte (Ritmo 2.2): Brumale ha il suo disegno notturno come base; gli altri mesi hanno la versione blu notte */
+const THEMES_N = [['#221E30', '#F1E6DA'], ['#232B3B', '#E7E9F2'], ['#16223A', '#E8F0F6'], ['#1A2236', '#E9F1E6'], ['#192134', '#EEF5E8'], ['#152038', '#F5EEDB'], ['#151C38', '#F6EEDC']];
 const ACC = '#E2603F', ACC_DARK = '#FF8C6B';
 function look(o) {
-  const mi = o ? o.mi : 1, v = variantFor(mi, new Date().getHours(), pref().paesaggio);
-  const [bg, ink] = mi === 1 && v === 'giorno' ? ['#E6EAEF', '#1E2733'] : THEMES[mi];
+  const mi = o ? o.mi : 1, v = variantFor(mi, new Date(), pref().paesaggio);
+  const [bg, ink] = mi === 1 ? (v === 'giorno' ? ['#E6EAEF', '#1E2733'] : THEMES[1]) : (v === 'notte' ? THEMES_N[mi] : THEMES[mi]);
   const dark = parseInt(bg.slice(1, 3), 16) < 90;
   return { mi, v, bg, ink, dark, acc: dark ? ACC_DARK : ACC, cols: dark ? CAT_COL_DARK : CAT_COL };
 }
 async function background(o, k, fam) {
   if (!o) return null;
-  const f = fam === 'large' ? 'l' : fam === 'small' ? 's' : 'm', name = `${o.mi}-${o.wi}-${f}${k.v === 'giorno' ? '-g' : ''}.jpg`;
-  const path = fm.joinPath(fm.documentsDirectory(), 'ritmo2-img-' + name);
+  const f = fam === 'large' ? 'l' : fam === 'small' ? 's' : 'm', name = `${o.mi}-${o.wi}-${f}${o.mi === 1 ? (k.v === 'giorno' ? '-g' : '') : (k.v === 'notte' ? '-n' : '')}.jpg`;
+  const path = fm.joinPath(fm.documentsDirectory(), 'ritmo3-img-' + name);
   if (fm.fileExists(path)) return fm.readImage(path);
   try { const img = await new Request(BASE + 'widget-img/' + name).loadImage(); fm.writeImage(path, img); return img; } catch (e) { return null; }
 }
@@ -308,7 +332,7 @@ function feedbackBox(w, f, k, size, lines) {
 function evRow(st, t, k, size, L) {
   const r = st.addStack(); r.centerAlignContent(); r.spacing = 7;
   const tc = r.addStack(); tc.size = new Size(size > 13 ? 44 : 38, 0); T(tc, fmt(t.start), size, new Color(k.ink, t.end <= L.min && !t.done ? .55 : .85), 'b'); tc.addSpacer();
-  addSym(r, t.done ? 'checkmark.circle.fill' : (CATS[t.cat] || CATS.altro).sym, size - 1, new Color(t.done ? (k.dark ? '#74B888' : '#4C8A5E') : k.cols[t.cat] || k.cols.altro));
+  addSym(r, t.run ? 'timer' : t.done ? 'checkmark.circle.fill' : (CATS[t.cat] || CATS.altro).sym, size - 1, new Color(t.done ? (k.dark ? '#74B888' : '#4C8A5E') : k.cols[t.cat] || k.cols.altro));
   T(r, t.title, size, new Color(k.ink, t.done ? .6 : 1), 'm');
   r.addSpacer();
   return r;
