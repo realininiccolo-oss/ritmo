@@ -583,7 +583,7 @@ const STY = [
     sail: { rig: 'iole', pen: '#E89BB5' },
     town: 'pastello', spire: 'cupola', body: '#EBCFC2', flag: '#5E8A4A', terr: 'glicine' },
   { // Floreale: i campi in fiore
-    wood: ['#6A4A3A', '#8E6A52', '#B48E70'], roof: '#7E5A8E', tower: 'gazebo', box: true,
+    wood: ['#6A4A3A', '#8E6A52', '#B48E70'], roof: '#7E5A8E', tower: 'giardino', box: true,
     boat: { hull: '#3E6E9A', trim: '#F4EFE2', band: '#2A4E70', coat: '#E9DCC4', hat: 'none', cargo: 'lavanda' },
     sail: { rig: 'botter', pen: '#E3A33B' },
     town: 'graticcio', spire: 'guglia', body: '#F2E8D6', flag: '#7E5A8E', terr: 'fioriere' },
@@ -669,6 +669,7 @@ function watchtower(mi, L) {
   if (st.tower === 'palafitta') return stiltHut(L);
   if (st.tower === 'albero') return treeHouse(L, rng(53));
   if (st.tower === 'gazebo') return ironGazebo(L);
+  if (st.tower === 'giardino') return gardenTower(L);
   if (st.tower === 'saracena') {
     const c = '#CDB78F', sd = shade(c, .3);
     let t = `<path d="M-31 0L-25 -32H25L31 0Z" fill="${shade(c, .1)}"/><path d="M-24 -30L-20 -112H20L24 -30Z" fill="${c}"/><path d="M${L > 0 ? 3 : -24} -30L${L > 0 ? 3 : -20} -112H${L > 0 ? 20 : -3}L${L > 0 ? 24 : -3} -30Z" fill="#000" fill-opacity=".14"/><path d="M${L > 0 ? 3 : -31} 0L${L > 0 ? 3 : -25} -32H${L > 0 ? 25 : -3}L${L > 0 ? 31 : -3} 0Z" fill="#000" fill-opacity=".14"/>`;
@@ -744,9 +745,19 @@ function clockTower(mi, L, hr) {
    Gli stili: toscano (tetto a padiglione di coppi, altana), lombardo (cascina col portico ad archi), baite (piano terra di pietra, legno sopra,
    ballatoio, tetto largo carico di neve, ghiaccioli), pastello (villini liberty con le cornici bianche), graticcio (travi a vista, piano di sopra sporgente),
    bianco (cubi a calce con terrazza, cupole blu, scale esterne), ligure (alte e strette, cornici dipinte, persiane verdi, ardesia). */
-function icicles(x0, x1, y, s, R, col = '#DDEBF2') { let o = ''; for (let x = x0; x < x1; x += (2.4 + R() * 3) * s) { const l = (2 + R() * 7) * s; o += `<path d="M${f2(x)} ${f2(y)}l${f2(.9 * s)} ${f2(l)}l${f2(.9 * s)} ${f2(-l)}Z" fill="${col}"/>`; } return o; }
+function icicles(x0, x1, y, s, R, col = '#DDEBF2') { let o = ''; for (let x = x0 + R() * 2 * s; x < x1; x += (2 + R() * 3.4) * s) { const l = (R() < .25 ? 6 + R() * 6 : 1.6 + R() * 4.4) * s, w = (.7 + R() * .6) * s, bend = (R() - .5) * .8 * s;
+  o += `<path d="M${f2(x - w)} ${f2(y)}Q${f2(x - w * .4 + bend)} ${f2(y + l * .55)} ${f2(x + bend)} ${f2(y + l)}Q${f2(x + w * .4 + bend)} ${f2(y + l * .55)} ${f2(x + w)} ${f2(y)}Z" fill="${col}"/><path d="M${f2(x - w * .3)} ${f2(y + .4)}Q${f2(x - w * .1 + bend)} ${f2(y + l * .4)} ${f2(x + bend * .8)} ${f2(y + l * .8)}" stroke="#FFFFFF" stroke-width="${f2(.35 * s)}" fill="none" opacity=".8"/>`; } return o; }
 /* uno strato di neve posato su una superficie orizzontale: spesso, col bordo tondo che sporge un poco */
-function snowLedge(x0, x1, y, t) { return `<path d="M${f2(x0 - 1.5)} ${f2(y + .5)}Q${f2(x0 - 2.5)} ${f2(y - t)} ${f2(x0 + t)} ${f2(y - t)}H${f2(x1 - t)}Q${f2(x1 + 2.5)} ${f2(y - t)} ${f2(x1 + 1.5)} ${f2(y + .5)}Q${f2(x1)} ${f2(y + t * .5)} ${f2(x1 - 2)} ${f2(y + t * .45)}H${f2(x0 + 2)}Q${f2(x0)} ${f2(y + t * .5)} ${f2(x0 - 1.5)} ${f2(y + .5)}Z" fill="#FFFFFF"/><path d="M${f2(x0)} ${f2(y + t * .3)}H${f2(x1)}" stroke="#C9DCE6" stroke-width=".8"/>`; }
+function snowLedge(x0, x1, y, t) {
+  const R = rng(Math.round(Math.abs(x0) * 13 + Math.abs(y) * 7 + Math.abs(x1) * 3)), w = x1 - x0, n = Math.max(2, Math.round(w / 6));
+  const top = []; for (let i = 0; i <= n; i++) top.push([x0 + w * i / n, y - t * (.7 + R() * .55) * (i === 0 || i === n ? .8 : 1)]);
+  let d = `M${f2(x0 - 1.4)} ${f2(y + .4)}C${f2(x0 - 3.4)} ${f2(y - t * .2)} ${f2(x0 - 2.6)} ${f2(top[0][1] - t * .1)} ${f2(top[0][0] + .6)} ${f2(top[0][1])}`;
+  for (let i = 1; i <= n; i++) { const [px, py] = top[i - 1], [x, yy] = top[i]; d += `Q${f2((px + x) / 2)} ${f2(Math.min(py, yy) - t * (.15 + R() * .3))} ${f2(x)} ${f2(yy)}`; }
+  d += `C${f2(x1 + 2.6)} ${f2(top[n][1] - t * .1)} ${f2(x1 + 3.4)} ${f2(y - t * .2)} ${f2(x1 + 1.4)} ${f2(y + .4)}`;
+  let bot = `M${f2(x1 + 1.4)} ${f2(y + .4)}`; const m = Math.max(2, Math.round(w / 5)); let lx = x1 + 1.4;
+  for (let i = 1; i <= m; i++) { const x = x1 + 1.4 - (w + 2.8) * i / m, sag = t * (.25 + R() * .75 * (R() < .6 ? 1 : .3)); bot += `Q${f2((lx + x) / 2)} ${f2(y + sag)} ${f2(x)} ${f2(y + t * .12)}`; lx = x; }
+  return `<path d="${d}${bot.replace(/^M[^Q]*/, '')}Z" fill="#FFFFFF"/><path d="${bot}" stroke="#BFD4E0" stroke-width=".7" fill="none"/><path d="${d.replace(/C[^C]*$/, '')}" stroke="#E6F0F6" stroke-width=".5" fill="none" transform="translate(0 ${f2(t * .35)})" opacity=".8"/>`;
+}
 function townHouse(kind, x, y, s, i, L, R) {
   const P = { toscano: { w: ['#E3C99E', '#D9B98A', '#EAD7B5', '#CFAE84'], r: ['#B05A36', '#A24E30', '#BC6A42'], sh: '#4E6B4A' },
     lombardo: { w: ['#D9C9A8', '#C9BCA4', '#E3D4B6', '#B9B4AA'], r: ['#8E4A36', '#7E4232', '#9A5440'], sh: '#5E4636' },
@@ -938,6 +949,39 @@ function treeHouse(L, R) {
   let cr = ''; for (let i = 0; i < 70; i++) { const a = R() * Math.PI * 2, rr = Math.sqrt(R()), x = Math.cos(a) * rr * 62, y = -104 + Math.sin(a) * rr * 34; if (y > -94 && Math.abs(x) < 34) continue; cr += `<circle cx="${f2(x)}" cy="${f2(y)}" r="${f2(5 + R() * 6)}" fill="${cols[i % 4]}"/>`; }
   return { svg: t + cr + `<path class="sc-flagw" d="M0 -110L0 -126L14 -122L0 -118" fill="#E89BB5" stroke="#3A2E24" stroke-width="1.2"/>`, lamp: [-9, -79], lamp2: null };
 }
+/* Floreale · Osservare: la torre belvedere del giardino. Fusto di mattoni su basamento di pietra, cornici marcapiano, finestre ad arco,
+   in cima la loggia aperta (tre archi su colonnine, balaustra) sotto il tetto a padiglione di ardesia viola con la lanterna e la bandiera.
+   Il glicine sale sullo spigolo e ricade a grappoli dalla loggia; ai piedi le rose rampicanti e i vasi di limoni. */
+function gardenTower(L) {
+  const B = '#C98A62', Bd = shade(B, .25), S = '#E4D8C2', Sd = shade(S, .2), RG = rng(97), sh = L > 0 ? 1 : -1;
+  const arch = (cx, by, w, h, f) => `<path d="M${f2(cx - w / 2)} ${f2(by)}V${f2(by - h + w / 2)}A${f2(w / 2)} ${f2(w / 2)} 0 0 1 ${f2(cx + w / 2)} ${f2(by - h + w / 2)}V${f2(by)}Z" fill="${f}"/>`;
+  let t = `<path d="M-30 0L-27 -16H27L30 0Z" fill="${Sd}"/><path d="M-27 -16H27" stroke="${S}" stroke-width="2"/>`;
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 6; c++) t += `<rect x="${f2(-26 + c * 9 + (r % 2) * 4.5)}" y="${f2(-14 + r * 4.6)}" width="8" height="4" rx="1" fill="#000" fill-opacity="${f2(.05 + RG() * .07)}"/>`;
+  t += `<path d="M-20 -16L-19 -112H19L20 -16Z" fill="${B}"/><path d="M${sh > 0 ? 6 : -20} -16L${sh > 0 ? 6 : -19} -112H${sh > 0 ? 19 : -6}L${sh > 0 ? 20 : -6} -16Z" fill="#000" fill-opacity=".14"/>`;
+  for (let j = 1; j < 24; j++) t += `<path d="M-19.5 ${-16 - j * 4}H19.5" stroke="${Bd}" stroke-opacity=".28" stroke-width=".5"/>`;
+  [-1, 1].forEach((sg) => { for (let j = 0; j < 8; j++) t += `<rect x="${sg > 0 ? 15 : -20}" y="${-22 - j * 11}" width="5" height="${j % 2 ? 5 : 6}" fill="${S}" fill-opacity=".85"/>`; });   // cantonali di pietra
+  t += [-48, -80].map((y) => `<rect x="-22" y="${y}" width="44" height="3.2" fill="${S}"/><rect x="-22" y="${y + 3.2}" width="44" height="1" fill="#000" fill-opacity=".15"/>`).join('');
+  t += arch(0, -16, 12, 24, '#4A3A2E') + `<path d="M-7 -16V-34A7 7 0 0 1 7 -34V-16" stroke="${S}" stroke-width="2" fill="none"/><path d="M-10 -16h20v2h-20z" fill="${Sd}"/>`;
+  t += arch(0, -56, 8, 16, '#3E4652') + `<path d="M-5 -56h10" stroke="${S}" stroke-width="1.6"/>` + arch(-8, -88, 6, 13, '#3E4652') + arch(8, -88, 6, 13, '#3E4652') + `<path d="M-12 -88h24" stroke="${S}" stroke-width="1.4"/>`;
+  /* la loggia */
+  t += `<rect x="-24" y="-116" width="48" height="5" fill="${S}"/><rect x="-24" y="-111" width="48" height="1.4" fill="#000" fill-opacity=".18"/>`;
+  t += `<path d="M-22 -116V-146H22V-116Z" fill="${shade(B, .05)}"/>` + [-14, 0, 14].map((x) => arch(x, -116, 11, 26, '#2E2A30')).join('');
+  t += `<path d="M-22 -122H22" stroke="${S}" stroke-width="1.6"/>` + Array.from({ length: 13 }, (_, j) => `<path d="M${-20 + j * 3.3} -116V-122" stroke="${S}" stroke-width="1.2"/>`).join('');
+  t += [-20.5, -7, 7, 20.5].map((x) => `<rect x="${x - 1.5}" y="-142" width="3" height="26" fill="${S}"/>`).join('') + `<rect x="-24" y="-150" width="48" height="4" fill="${S}"/>`;
+  /* il tetto a padiglione con le falde a sbalzo, la lanterna, la bandiera */
+  t += `<path d="M-32 -149L-14 -170H14L32 -149Z" fill="#5E4A72"/><path d="M0 -170H14L32 -149H0Z" fill="#000" fill-opacity="${sh > 0 ? .2 : .05}"/><path d="M-32 -149H32" stroke="#3E3050" stroke-width="1.6"/>`
+    + Array.from({ length: 5 }, (_, j) => `<path d="M-30 ${-152 - j * 4}H30" stroke="#000" stroke-opacity=".12" stroke-width=".6" transform="scale(${f2(1 - j * .14)} 1)"/>`).join('')
+    + `<rect x="-6" y="-182" width="12" height="12" fill="${S}"/>${arch(0, -172, 5, 9, '#2E2A30')}<path d="M-8 -182L0 -190L8 -182Z" fill="#5E4A72"/><path d="M0 -190V-206" stroke="#3A2E24" stroke-width="1.4"/>`
+    + `<path class="sc-flagw" d="M0 -206L14 -202L0 -198Z" fill="#E3A33B"/>`;
+  /* il glicine: il tronco ritorto sale sullo spigolo, si apre sotto la loggia e ricade a grappoli */
+  const gx = -21 * sh; let gl = `<path d="M${gx} 0Q${gx - 3 * sh} -30 ${gx + 1 * sh} -56Q${gx - 4 * sh} -80 ${gx} -108Q${gx + 10 * sh} -114 ${gx + 26 * sh} -112" stroke="#6A5440" stroke-width="2.4" fill="none"/>`;
+  for (let i = 0; i < 26; i++) { const x = gx + sh * (RG() * 40 - 2), y = -110 + RG() * 6, l = 6 + RG() * 12; gl += `<path d="M${f2(x)} ${f2(y)}q${f2((RG() - .5) * 2)} ${f2(l * .5)} 0 ${f2(l)}" stroke="#A98ACB" stroke-width="${f2(2.4 + RG() * 1.2)}" stroke-linecap="round" fill="none"/><circle cx="${f2(x)}" cy="${f2(y + 1)}" r="1.8" fill="#6E8F55"/>`; }
+  for (let i = 0; i < 14; i++) { const y = -20 - RG() * 86, x = gx + sh * (RG() * 6 - 2); gl += `<path d="M${f2(x)} ${f2(y)}q${f2(-sh * 2)} 4 0 ${f2(6 + RG() * 5)}" stroke="#B79AD6" stroke-width="2.2" stroke-linecap="round" fill="none"/><circle cx="${f2(x + sh)}" cy="${f2(y)}" r="1.5" fill="#5E8A44"/>`; }
+  /* le rose ai piedi, il vaso di limoni accanto alla porta */
+  let fl = ''; for (let i = 0; i < 22; i++) { const x = (RG() < .5 ? -1 : 1) * (12 + RG() * 18), y = -2 - RG() * 14; fl += `<circle cx="${f2(x)}" cy="${f2(y)}" r="${f2(2 + RG() * 1.6)}" fill="${i % 3 ? '#5E8A44' : ['#D8453A', '#F4C9D8', '#C2307A'][i % 3]}"/>`; }
+  fl += `<path d="M${f2(16 * sh)} 0l2 -8h10l2 8z" fill="#B0643F"/><circle cx="${f2(23 * sh)}" cy="-14" r="6" fill="#4E7A3A"/>` + [[20, -15], [25, -12], [23, -17]].map(([x, y]) => `<circle cx="${f2(x * sh)}" cy="${y}" r="1.4" fill="#F2C230"/>`).join('');
+  return { svg: t + gl + fl, lamp: [0, -128], lamp2: null };
+}
 function ironGazebo(L) {
   const G = '#3E5A48', GL = '#5E7E66';
   let t = `<rect x="-26" y="-6" width="52" height="6" fill="#B9B0A0"/>`;
@@ -1096,9 +1140,14 @@ function sceneSVG(mi, opts = {}) {
     return o; };
   const cloud = (x, y, k, col, op) => `<g class="sc-drift" opacity="${f2(NIGHT ? op * .7 : op)}" style="--dd:${f2(50 + R() * 30)}s;--dx:${f2((R() < .5 ? -1 : 1) * (24 + R() * 24))}px">${softPuffs(x, y, k, col)}</g>`;
   const cloudOld = (x, y, k, col, op) => `<g class="sc-drift" opacity="${f2(NIGHT ? op * .45 : op)}" style="--dd:${f2(50 + R() * 30)}s;--dx:${f2((R() < .5 ? -1 : 1) * (24 + R() * 24))}px"><ellipse cx="${f2(x)}" cy="${f2(y)}" rx="${f2(44 * k)}" ry="${f2(10 * k)}" fill="${col}"/><ellipse cx="${f2(x - 16 * k)}" cy="${f2(y - 6 * k)}" rx="${f2(20 * k)}" ry="${f2(11 * k)}" fill="${col}"/><ellipse cx="${f2(x + 14 * k)}" cy="${f2(y - 9 * k)}" rx="${f2(25 * k)}" ry="${f2(14 * k)}" fill="${col}"/></g>`;
+  const OVC = mi === 1 && (opts.prot || opts.wk !== 6), OVN = OVC && NIGHT;
+  if (OVN) { s.push(`<defs><linearGradient id="${u}ovn" x1="0" y1="${-T - 30}" x2="0" y2="220" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2E364A" stop-opacity=".75"/><stop offset=".75" stop-color="#3A4256" stop-opacity=".3"/><stop offset="1" stop-color="#3A4256" stop-opacity="0"/></linearGradient></defs><rect x="-20" y="${-T - 30}" width="${SW + 40}" height="${T + 250}" fill="url(#${u}ovn)"/>`);
+    const far = (x, y) => !cel || Math.hypot(x - cel.x, y - cel.y) > 95;
+    add([[600, 30, 1.5], [780, -10, 1.7], [960, 40, 1.6], [1140, 0, 1.5], [860, 100, 1.1], [680, -70, 1.6], [1060, -80, 1.5], [740, 130, 1.2], [1160, 120, 1.3], [920, -120, 1.7], [1220, 60, 1.3], [520, 90, 1.2]].filter(([x, y]) => far(x, y)).map(([x, y, k], i) => cloud(x, y, k, ['#9AA3B6', '#8A93A8', '#A6AEC0'][i % 3], .9)).join('')
+      + (cel ? `<ellipse cx="${f2(cel.x)}" cy="${f2(cel.y + 40)}" rx="140" ry="16" fill="url(#${cgrad('#B6BED0')})" opacity=".55"/>` : ''), .3); }
   if (DAYB || RAINW) { const sc2 = RAINW ? '#9AA2AE' : '#C9D0DA'; s.push(`<defs><linearGradient id="${u}ov" x1="0" y1="${-T - 30}" x2="0" y2="200" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${sc2}" stop-opacity=".8"/><stop offset=".7" stop-color="${sc2}" stop-opacity=".35"/><stop offset="1" stop-color="${sc2}" stop-opacity="0"/></linearGradient></defs><rect x="-20" y="${-T - 30}" width="${SW + 40}" height="${T + 230}" fill="url(#${u}ov)"/>`); }
-  if (DAYB || RAINW) add([[620, 40, 1.4], [820, 10, 1.6], [1020, 52, 1.5], [1170, 18, 1.3], [900, 96, 1], [700, -40, 1.5], [1080, -70, 1.4], [760, 120, 1.2], [1140, 110, 1.3], [940, -100, 1.6]].map(([x, y, k], i) => cloud(x, y, k, RAINW ? ['#A9B1BC', '#9CA4B0', '#B4BBC5'][i % 3] : ['#D3DAE4', '#C9D1DC', '#DCE1E8'][i % 3], .92)).join(''), .3);
-  else if (mi !== 6 || !NIGHT) add([[700, 70 - T * .3, 1.1], [1080, 40 - T * .5, .8], [880, 130, .6]].map(([x, y, k]) => cloud(x, y, k, '#FFFFFF', mi === 5 || mi === 6 ? .5 : .62)).join(''), .4);
+  if ((DAYB || RAINW) && !OVN) add([[620, 40, 1.4], [820, 10, 1.6], [1020, 52, 1.5], [1170, 18, 1.3], [900, 96, 1], [700, -40, 1.5], [1080, -70, 1.4], [760, 120, 1.2], [1140, 110, 1.3], [940, -100, 1.6]].map(([x, y, k], i) => cloud(x, y, k, RAINW ? ['#A9B1BC', '#9CA4B0', '#B4BBC5'][i % 3] : ['#D3DAE4', '#C9D1DC', '#DCE1E8'][i % 3], .92)).join(''), .3);
+  else if (!OVN && (mi !== 6 || !NIGHT)) add([[700, 70 - T * .3, 1.1], [1080, 40 - T * .5, .8], [880, 130, .6]].map(([x, y, k]) => cloud(x, y, k, '#FFFFFF', mi === 5 || mi === 6 ? .5 : .62)).join(''), .4);
 
   /* il sole o la luna */
   if (cel) {
@@ -1614,18 +1663,27 @@ function sceneSVG(mi, opts = {}) {
       let back = '', front = '', wins = '', smoke = '';
       const WALLC = { toscano: '#BFA27A', lombardo: '#A9A296', baite: '#8E897F', pastello: '#C9B8A0', graticcio: '#A99A86', bianco: '#E9E3D6', ligure: '#B9A68A' }[kind];
       const put = (hx, dy, k, i) => { const hy = hill.y(hx) + dy, H0 = townHouse(kind, hx, hy, k, i, Ls(hx), RH), tw = H0.w + 7 * k, th = 5 * k;
-        let ter = `<path d="M${f2(hx - tw)} ${f2(hy - .5)}H${f2(hx + tw)}L${f2(hx + tw - 1.6 * k)} ${f2(hy + th)}H${f2(hx - tw + 1.6 * k)}Z" fill="${WALLC}"/>`;
-        for (let r = 0; r < 2; r++) for (let c = 0; c < Math.round(tw / (3 * k)); c++) ter += `<rect x="${f2(hx - tw + 1.8 * k + c * 6 * k + (r % 2) * 3 * k)}" y="${f2(hy + .6 * k + r * 2.3 * k)}" width="${f2(5 * k)}" height="${f2(1.8 * k)}" rx="${f2(.6 * k)}" fill="#000" fill-opacity="${f2(.06 + RH() * .08)}"/>`;
-        ter += `<rect x="${f2(hx - tw)}" y="${f2(hy - 1.6 * k)}" width="${f2(2 * tw)}" height="${f2(1.8 * k)}" fill="${snowy ? '#FFFFFF' : shade(landCol(.8), .05)}"/><rect x="${f2(hx - H0.w - 1.5 * k)}" y="${f2(hy - .8 * k)}" width="${f2(2 * H0.w + 3 * k)}" height="${f2(1.4 * k)}" fill="#000" fill-opacity=".22"/>`
+        let ter = mi === 1 ? '' : `<path d="M${f2(hx - tw)} ${f2(hy - .5)}H${f2(hx + tw)}L${f2(hx + tw - 1.6 * k)} ${f2(hy + th)}H${f2(hx - tw + 1.6 * k)}Z" fill="${WALLC}"/>`;
+        if (mi !== 1) for (let r = 0; r < 2; r++) for (let c = 0; c < Math.round(tw / (3 * k)); c++) ter += `<rect x="${f2(hx - tw + 1.8 * k + c * 6 * k + (r % 2) * 3 * k)}" y="${f2(hy + .6 * k + r * 2.3 * k)}" width="${f2(5 * k)}" height="${f2(1.8 * k)}" rx="${f2(.6 * k)}" fill="#000" fill-opacity="${f2(.06 + RH() * .08)}"/>`;
+        if (mi === 1) { const gc = landCol(.78), w0 = H0.w;   // Brumale: niente ripiano, la casa siede nel prato: un poco di terra smossa, l'erba alta contro lo zoccolo, l'ombra morbida
+          ter = `<path d="M${f2(hx - w0 - 7 * k)} ${f2(hy + 2.4 * k)}Q${f2(hx - w0)} ${f2(hy - 1.2 * k)} ${f2(hx)} ${f2(hy - .6 * k)}Q${f2(hx + w0)} ${f2(hy - 1.2 * k)} ${f2(hx + w0 + 7 * k)} ${f2(hy + 2.4 * k)}Z" fill="${shade(gc, .08)}"/>`
+            + `<ellipse cx="${f2(hx + Ls(hx) * 3 * k)}" cy="${f2(hy + .6 * k)}" rx="${f2(w0 + 5 * k)}" ry="${f2(1.8 * k)}" fill="url(#${cgrad('#000000')})" opacity=".35"/>`;
+          H0.after = [-1, -.55, .5, .95].map((q) => grassTuft(hx + q * w0, hy + .4 * k, .5 * k, shade(gc, .3))).join(''); }
+        else ter += `<rect x="${f2(hx - tw)}" y="${f2(hy - 1.6 * k)}" width="${f2(2 * tw)}" height="${f2(1.8 * k)}" fill="${snowy ? '#FFFFFF' : shade(landCol(.8), .05)}"/><rect x="${f2(hx - H0.w - 1.5 * k)}" y="${f2(hy - .8 * k)}" width="${f2(2 * H0.w + 3 * k)}" height="${f2(1.4 * k)}" fill="#000" fill-opacity=".22"/>`
           + (snowy ? snowLedge(hx - tw, hx + tw, hy - 1.4 * k, 1.6 * k) : grassTuft(hx - tw + 3 * k, hy - .8 * k, .6 * k, shade(landCol(.8), .3)) + grassTuft(hx + tw - 3 * k, hy - .8 * k, .6 * k, shade(landCol(.8), .3)));
-        const H1 = { ...H0, svg: ter + H0.svg + (snowy ? `<path d="M${f2(hx - H0.w - 2 * k)} ${f2(hy)}Q${f2(hx - H0.w)} ${f2(hy - 4 * k)} ${f2(hx - H0.w + 6 * k)} ${f2(hy - 2.4 * k)}L${f2(hx - H0.w + 8 * k)} ${f2(hy)}Z" fill="#FFFFFF"/>` : '') };
+        const H1 = { ...H0, svg: ter + H0.svg + (H0.after || '') + (snowy ? `<path d="M${f2(hx - H0.w - 2 * k)} ${f2(hy)}Q${f2(hx - H0.w)} ${f2(hy - 4 * k)} ${f2(hx - H0.w + 6 * k)} ${f2(hy - 2.4 * k)}L${f2(hx - H0.w + 8 * k)} ${f2(hy)}Z" fill="#FFFFFF"/>` : '') };
         wins += H0.wins.map(([wx, wy, ww, wh], j) => (i + j) % 3 === 2 ? '' : win(wx, wy, ww, wh, (i * 7 + j) % 5 * .6)).join('');
         if (H0.chim && !NIGHT && (mi <= 2) && i % 3 === 0) smoke += [0, 1, 2].map((j) => `<circle class="sc-puff2" style="--pfd:7s;--pfl:${f2(-j * 2.3 - i)}s" cx="${f2(H0.chim[0])}" cy="${f2(H0.chim[1])}" r="${f2((3 + j) * k)}" fill="#FFFFFF" fill-opacity=".55"/>`).join('');
         return H1.svg; };
       /* tre file di case: in alto dietro la torre, a metà costa, davanti più grandi; ogni fila più in basso e più grande della precedente */
       [[1026, 4, .92], [1058, 2, .95], [1128, 2, .95], [1160, 4, .92], [1192, 8, .9], [996, 10, .88], [966, 18, .84]].forEach(([hx, dy, k], i) => { back += put(hx, dy, k, i); });
+      const fogBand = (yb, x0, x1, op) => { if (mi !== 1) return ''; const RF = rng(Math.round(yb * 3)), fc = NIGHT ? mixHex('#8E98B0', '#C9D2E6', moonL * .6) : '#E6EAEE', g = cgrad(fc); let o = `<g opacity="${op}">`;
+        for (let x = x0; x < x1; x += 26 + RF() * 18) o += `<ellipse cx="${f2(x)}" cy="${f2(hill.y(Math.min(1220, x)) + yb + (RF() - .5) * 6)}" rx="${f2(46 + RF() * 40)}" ry="${f2(7 + RF() * 6)}" fill="url(#${g})"/>`; return o + '</g>'; };
+      back += fogBand(20, 880, 1260, NIGHT ? .45 : .8);
       [[944, 36, 1.08], [990, 34, 1.16], [1044, 30, 1.2], [1140, 30, 1.2], [1196, 34, 1.16]].forEach(([hx, dy, k], i) => { front += put(hx, dy, k, i + 7); });
+      front += fogBand(48, 840, 1260, NIGHT ? .5 : .85);
       [[910, 62, 1.3], [1000, 66, 1.42], [1100, 62, 1.46], [1190, 66, 1.4]].forEach(([hx, dy, k], i) => { front += put(hx, dy, k, i + 12); });
+      front += fogBand(82, 780, 1260, NIGHT ? .4 : .65);
       let road = `<path d="${ptsD(crSample([[780, BOT], [860, 340], [960, 318], [1000, 298], [1040, 282]], 4))}" stroke="${LD.path}" stroke-width="7" fill="none" stroke-linecap="round" opacity=".8"/>`;
       [[880, 333], [962, 314]].forEach(([lx, ly], i) => { const k = 1.4 - i * .25; road += `<path d="M${lx} ${ly}v${f2(-22 * k)}" stroke="#3A3530" stroke-width="${f2(1.4 * k)}"/><rect x="${f2(lx - 2 * k)}" y="${f2(ly - 26 * k)}" width="${f2(4 * k)}" height="${f2(4.5 * k)}" fill="#3A3530"/>`;
         wins += NIGHT || DAYB ? lit(`<rect x="${f2(lx - 1.3 * k)}" y="${f2(ly - 25.2 * k)}" width="${f2(2.6 * k)}" height="${f2(3 * k)}" fill="#F6C76E"/>` + glow(lx, ly - 23.5 * k, 16 * k), 1.5) : ''; });
@@ -1663,12 +1721,48 @@ function sceneSVG(mi, opts = {}) {
       const farBank = (G, extra = '') => { const ML = G.Mf[G.Mf.length - 1];
         add(grad('fb', 232, 334, landCol(.42), landCol(.74)) + `<path d="${ptsD(G.Mf)}L1240 ${f2(ML[1])}L1240 240Q1040 232 ${f2(G.Mf[0][0])} ${f2(G.Mf[0][1])}Z" fill="url(#${u}fb)"/>` + extra, .25); };
       /* la casa del mulino, nello stile del luogo (origine alla base, al centro) */
-      const millHouse = (style, L) => { if (style === 'toscano') { let h = `<path d="M-34 0V-50H34V0Z" fill="#D9C3A0"/>`; for (let r = 0; r < 7; r++) for (let c = 0; c < 6; c++) h += `<rect x="${-34 + c * 11.4 + (r % 2) * 5}" y="${-7 - r * 7}" width="10" height="6" fill="#000" fill-opacity="${f2(.03 + ((r * 7 + c * 3) % 5) * .012)}"/>`;
-          h += `<path d="M${L > 0 ? 8 : -34} 0V-50H${L > 0 ? 34 : -8}V0Z" fill="#000" fill-opacity=".12"/><path d="M-40 -48L-26 -64H26L40 -48Z" fill="#B05A36"/>` + Array.from({ length: 9 }, (_, j) => `<path d="M${-24 + j * 6} -62v12" stroke="#000" stroke-opacity=".12" stroke-width=".8"/>`).join('')
-            + `<path d="M8 0V-18Q16 -28 24 -18V0ZM-6 -30V-40Q0 -46 6 -40V-30Z" fill="#3A3026"/><rect x="-26" y="-38" width="9" height="10" fill="#4E5866"/><rect x="-27.6" y="-38" width="1.6" height="10" fill="#4E6B4A"/><rect x="-17" y="-38" width="1.6" height="10" fill="#4E6B4A"/><rect x="14" y="-74" width="6" height="12" fill="#8E4A2E"/>`;
+      /* la casa del mulino, nello stile del luogo (origine alla base, al centro). A sinistra l'ala bassa della macina, contro cui gira la ruota */
+      const stoneWall = (x0, x1, y0, y1, c, RS) => { let o = `<rect x="${x0}" y="${y1}" width="${x1 - x0}" height="${y0 - y1}" fill="${c}"/>`;
+        for (let y = y0 - 1; y > y1 + 2;) { const hh = 3.4 + RS() * 3; for (let x = x0 + RS() * 4; x < x1 - 2;) { const ww = 5 + RS() * 9; o += `<rect x="${f2(x)}" y="${f2(y - hh)}" width="${f2(Math.min(ww, x1 - x - .6))}" height="${f2(hh - .8)}" rx="1.2" fill="${shade(c, (RS() - .4) * .16)}"/>`; x += ww + .8; } y -= hh; }
+        return o; };
+      const quoins = (x, y0, y1, c, dir) => { let o = ''; for (let y = y0, j = 0; y > y1 + 4; y -= 6, j++) o += `<rect x="${f2(dir > 0 ? x - (j % 2 ? 6 : 9) : x)}" y="${f2(y - 5.4)}" width="${j % 2 ? 6 : 9}" height="5.4" fill="${c}"/>`; return o; };
+      const winS = (x, y, w, h, sh, frame, open = false) => `<rect x="${f2(x - 1.2)}" y="${f2(y - 1.4)}" width="${f2(w + 2.4)}" height="${f2(h + 2.8)}" fill="${frame}"/><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#3A4250"/><path d="M${f2(x + w / 2)} ${y}V${y + h}M${x} ${f2(y + h * .45)}H${x + w}" stroke="${frame}" stroke-width=".7"/>`
+        + (sh ? (open ? `<rect x="${f2(x - w * .55 - 1)}" y="${y}" width="${f2(w * .5)}" height="${h}" fill="${sh}"/><rect x="${f2(x + w + 1)}" y="${y}" width="${f2(w * .5)}" height="${h}" fill="${sh}"/>` : `<rect x="${f2(x - w * .5 - 1.2)}" y="${y}" width="${f2(w * .5)}" height="${h}" fill="${sh}"/><rect x="${f2(x + w + 1.2)}" y="${y}" width="${f2(w * .5)}" height="${h}" fill="${sh}"/>`)
+          + [0, 1, 2].map((j) => `<path d="M${f2(x - w * .5 - 1.2)} ${f2(y + 2 + j * h / 3.4)}h${f2(w * .5)}M${f2(x + w + 1.2)} ${f2(y + 2 + j * h / 3.4)}h${f2(w * .5)}" stroke="#000" stroke-opacity=".18" stroke-width=".6"/>`).join('') : '')
+        + `<rect x="${f2(x - 2)}" y="${f2(y + h + 1.2)}" width="${f2(w + 4)}" height="2" fill="${frame}"/><rect x="${f2(x - 2)}" y="${f2(y + h + 3.2)}" width="${f2(w + 4)}" height=".8" fill="#000" fill-opacity=".2"/>`;
+      const tileRoof = (x0, x1, yE, yR, inset, c) => { let o = `<path d="M${x0} ${yE}L${x0 + inset} ${yR}H${x1 - inset}L${x1} ${yE}Z" fill="${c}"/>`;
+        for (let x = x0 + 3; x < x1 - 2; x += 3.2) { const t = (x - x0) / (x1 - x0), xt = x0 + inset + t * (x1 - x0 - 2 * inset); o += `<path d="M${f2(x)} ${yE}L${f2(xt)} ${yR}" stroke="#000" stroke-opacity=".13" stroke-width=".8"/>`; }
+        for (let j = 1; j < 4; j++) { const y = yR + (yE - yR) * j / 4, xi = inset * (1 - j / 4); o += `<path d="M${f2(x0 + xi)} ${f2(y)}H${f2(x1 - xi)}" stroke="#FFFFFF" stroke-opacity=".12" stroke-width=".8"/>`; }
+        return o + `<path d="M${x0 - 1} ${yE}H${x1 + 1}" stroke="${shade(c, .35)}" stroke-width="1.6"/><path d="M${x0 + inset} ${yR}H${x1 - inset}" stroke="${shade(c, .3)}" stroke-width="2"/><rect x="${x0 + 2}" y="${yE + .8}" width="${x1 - x0 - 4}" height="2.4" fill="#000" fill-opacity=".22"/>`; };
+      const millHouse = (style, L) => { const RS = rng(style.length * 17 + 5), sh = L > 0 ? 1 : -1;
+        if (style === 'toscano') { const st = '#D3BD98', qn = '#E6D8BC';
+          /* l'ala della macina, bassa, col tetto a una falda */
+          let h = stoneWall(-84, -34, 0, -32, shade(st, .04), RS) + `<path d="M-90 -28L-34 -40V-34L-88 -24Z" fill="#A8553A"/>` + Array.from({ length: 14 }, (_, j) => `<path d="M${-88 + j * 4} ${f2(-25 - j * .9)}l0 -3.6" stroke="#000" stroke-opacity=".15" stroke-width=".7"/>`).join('') + `<rect x="-88" y="-24" width="54" height="2" fill="#000" fill-opacity=".2"/>`
+            + `<rect x="-60" y="-22" width="8" height="6" fill="#3A3026"/><path d="M-62 -15.4h12" stroke="${qn}" stroke-width="1.6"/>`;
+          /* il corpo: scarpa alla base, pietra a corsi irregolari, cantonali, cornice di gronda */
+          h += `<path d="M-38 0L-35 -9H35L38 0Z" fill="${shade(st, .12)}"/>` + stoneWall(-35, 35, -8, -58, st, RS) + quoins(-35, -8, -58, qn, 1) + quoins(35, -8, -58, qn, -1)
+            + `<path d="M${sh > 0 ? 10 : -35} 0V-58H${sh > 0 ? 38 : -10}V0Z" fill="#000" fill-opacity=".12"/>`;
+          /* la loggia in alto a destra con due archi e il parapetto; la scala esterna di pietra che ci sale */
+          h += `<path d="M4 -38V-52A6 6 0 0 1 16 -52V-38ZM18 -38V-52A6 6 0 0 1 30 -52V-38Z" fill="#2E2620"/><rect x="2" y="-40" width="30" height="3.4" fill="${qn}"/><path d="M16 -38V-54" stroke="${qn}" stroke-width="2"/>`
+            + `<path d="M32 0L38 0L38 -8L8 -38H2L32 -8Z" fill="${shade(st, .1)}"/>` + Array.from({ length: 7 }, (_, j) => `<path d="M${36 - j * 4.4} ${-6 - j * 4.4}h-4.4v4.4" stroke="${shade(st, .3)}" stroke-width=".8" fill="none"/>`).join('') + `<path d="M38 -10L8 -40" stroke="${qn}" stroke-width="2.2"/>`
+            + `<path d="M28 -10l2 -6h6l2 6z" fill="#B0643F"/><circle cx="33" cy="-19" r="4" fill="#4E7A3A"/><circle cx="31" cy="-20" r="1.3" fill="#D8453A"/><circle cx="35" cy="-18" r="1.3" fill="#D8453A"/>`;
+          /* porta ad arco con la ghiera, finestre con le persiane verdi */
+          h += `<path d="M-22 0V-18A7 7 0 0 1 -8 -18V0Z" fill="#5A3A26"/><path d="M-23.6 0V-18A8.6 8.6 0 0 1 -6.4 -18V0" stroke="${qn}" stroke-width="2.4" fill="none"/>` + [-19, -15, -11].map((x) => `<path d="M${x} -1V-20" stroke="#3E2618" stroke-width=".6"/>`).join('') + `<rect x="-26" y="-1" width="22" height="2" fill="${shade(st, .25)}"/>`
+            + winS(-25, -48, 8, 10, '#4E6B4A', qn) + winS(-5, -26, 6, 8, null, qn);
+          /* il tetto a padiglione con lo sbalzo, il comignolo col cappello */
+          h += tileRoof(-42, 42, -57, -74, 16, '#B05A36') + `<rect x="18" y="-86" width="7" height="14" fill="${st}"/><path d="M16 -86h11l-2 -3h-7z" fill="#8E4A2E"/>`;
           return h; }
-        if (style === 'mediterraneo') return `<path d="M-32 0V-46H32V0Z" fill="#F6F3EC"/><path d="M${L > 0 ? 8 : -32} 0V-46H${L > 0 ? 32 : -8}V0Z" fill="#000" fill-opacity=".08"/><path d="M-36 -44L0 -66L36 -44Z" fill="#B85A36"/>`
-          + `<path d="M-32 -2L-48 -2L-32 -24" fill="#ECE6DA"/><path d="M-46 -2H-32M-43 -6H-32M-40 -10H-32M-37 -14H-32M-34 -18H-32" stroke="#D9D0C0" stroke-width="1.4"/><rect x="2" y="-24" width="12" height="24" fill="#2F6E9A"/><rect x="-22" y="-36" width="9" height="9" fill="#3E4652"/><rect x="-24" y="-36" width="2" height="9" fill="#2F6E9A"/><rect x="-13" y="-36" width="2" height="9" fill="#2F6E9A"/><rect x="18" y="-36" width="9" height="9" fill="#3E4652"/>`;
+        if (style === 'mediterraneo') { const w = '#F6F3EC', sd = '#E2DACB';
+          let h = `<path d="M-84 0V-30Q-84 -32 -82 -32H-34V0Z" fill="${w}"/><path d="M-86 -32H-32V-36H-86Z" fill="${sd}"/>` + `<rect x="-62" y="-24" width="7" height="7" rx="3.4" fill="#3E4652"/>`;
+          h += `<path d="M-34 0V-50Q-34 -52 -32 -52H32Q34 -52 34 -50V0Z" fill="${w}"/><path d="M${sh > 0 ? 10 : -34} 0V-52H${sh > 0 ? 34 : -10}V0Z" fill="#000" fill-opacity=".07"/><rect x="-36" y="-4" width="72" height="4" fill="${sd}"/>`
+            + tileRoof(-40, 40, -51, -68, 26, '#B85A36') + `<path d="M-24 -66h6v-10h-6z" fill="${w}"/><path d="M-26 -76h10" stroke="${sd}" stroke-width="2"/>`;
+          /* la scala esterna a sinistra contro il muro, il forno del pane a cupola a destra */
+          h += `<path d="M-34 0H-50L-34 -24Z" fill="#ECE6DA"/>` + Array.from({ length: 6 }, (_, j) => `<path d="M${-48 + j * 2.6} ${-2 - j * 4}h${f2(14 - j * 2.6)}" stroke="#D9D0C0" stroke-width="1.4"/>`).join('')
+            + `<path d="M34 0V-12A12 12 0 0 1 58 -12V0Z" fill="#EDE5D6"/><path d="M42 0V-6A4 4 0 0 1 50 -6V0Z" fill="#3A3026"/><path d="M52 -20l2 -6h3l1 6z" fill="#E2DACB"/>`;
+          /* porta blu, finestre col contorno di calce e gli scuri blu, la buganvillea sopra la porta */
+          h += `<path d="M2 0V-22Q8 -28 14 -22V0Z" fill="#2F6E9A"/><path d="M8 0V-25" stroke="#24577A" stroke-width=".6"/><rect x="0" y="-1" width="16" height="1.4" fill="${sd}"/>` + winS(-22, -40, 8, 9, '#2F6E9A', w) + winS(20, -40, 8, 9, '#2F6E9A', w, true);
+          let bg = ''; for (let i = 0; i < 22; i++) { const x = -2 + RS() * 22, y = -30 - RS() * 10; bg += `<circle cx="${f2(x)}" cy="${f2(y)}" r="${f2(1.4 + RS() * 1.4)}" fill="${i % 3 ? '#C2307A' : '#4E7A3A'}"/>`; }
+          return h + bg + `<path d="M-30 0l2 -7h8l2 7z" fill="#B0643F"/><circle cx="-24" cy="-11" r="4.4" fill="#5E8A44"/>`; }
         return ''; };
       if (mi === 0 || mi === 5) { // Foliaio: il mulino di pietra con la loggia, il carro della vendemmia · Messidoro: il mulino bianco tra il grano, coi sacchi di farina e i covoni
         backdrop();
@@ -1685,8 +1779,8 @@ function sceneSVG(mi, opts = {}) {
           + treeRound(1196, G.farAt(1196) - 20, .9, '#D8792E', '#5B4130', Ls(1196)); }
         else { const cx = 1200, cy = G.farAt(1200) - 1; extra = `<path d="M${cx - 14} ${cy}q-2 -12 6 -14q8 2 6 14zM${cx - 2} ${cy}q-2 -10 5 -12q7 2 5 12zM${cx + 8} ${cy}q-2 -11 5 -13q7 2 5 13z" fill="#ECE2C8"/><path d="M${cx - 13} ${cy - 7}h8M${cx - 1} ${cy - 6}h8" stroke="#C9B48A" stroke-width=".8"/>`; }
         add(shadowAt(hx, hy, 40) + at(hx, hy, k, millHouse(mi === 0 ? 'toscano' : 'mediterraneo', L)) + extra + wheel(wx, wy, wr, -1) + frontWater(wx, wl, 84, 20) + `<path d="M${wx + wr - 2} ${f2(wl + 2)}q8 -4 16 0q6 -3 12 1M${wx + wr + 4} ${f2(wl + 7)}q10 -3 20 1" stroke="#FFFFFF" stroke-opacity=".85" stroke-width="1.6" fill="none" stroke-linecap="round"/>` + ripRings(wx + 20, wl + 4, 3, 22), .35);
-        if (NIGHT || DAYB) addLit(win(hx - 26 * k, hy - 38 * k, 9 * k, 10 * k, .4) + win(hx + 18 * k, hy - 36 * k, 9 * k, 9 * k, 2), 1.6);
-        if (!NIGHT && mi === 0) add([0, 1, 2].map((j) => `<circle class="sc-puff2" style="--pfd:7s;--pfl:${f2(-j * 2.3)}s" cx="${f2(hx + 17 * k)}" cy="${f2(hy - 76 * k)}" r="${4 + j}" fill="#FFFFFF" fill-opacity=".6"/>`).join(''), .6);
+        if (NIGHT || DAYB) addLit(mi === 0 ? win(hx - 25 * k, hy - 48 * k, 8 * k, 10 * k, .4) + win(hx + 5 * k, hy - 51 * k, 10 * k, 12 * k, 2) : win(hx - 22 * k, hy - 40 * k, 8 * k, 9 * k, .4) + win(hx + 20 * k, hy - 40 * k, 8 * k, 9 * k, 2), 1.6);
+        if (!NIGHT && mi === 0) add([0, 1, 2].map((j) => `<circle class="sc-puff2" style="--pfd:7s;--pfl:${f2(-j * 2.3)}s" cx="${f2(hx + 21.5 * k)}" cy="${f2(hy - 90 * k)}" r="${4 + j}" fill="#FFFFFF" fill-opacity=".6"/>`).join(''), .6);
         let nbx = ''; if (mi === 5) for (let i = 0; i < 6; i++) { const x = 680 + i * 50 + RM() * 20, yy = BOT - 50 - RM() * 30; nbx += `<path d="M${f2(x - 12)} ${f2(yy)}q12 -40 24 0z" fill="#D8B24A"/><path d="M${f2(x - 8)} ${f2(yy - 12)}h16" stroke="#A9822A" stroke-width="1.6"/>`; }
         nearBank(G, nbx);
       } else if (mi === 1) { // Brumale: il mulino natante sul fiume largo, come sull'Adige: la ruota tra due scafi, nella corrente, legato alla riva con le catene; nebbia sull'acqua
@@ -1698,43 +1792,89 @@ function sceneSVG(mi, opts = {}) {
         add(cur, .3);
         const X = 1060, Y = 304, k = 1.1;
         const hull = (x0, x1, h, c) => `<path d="M${x0} -6Q${x0 + 6} ${h} ${x0 + 20} ${h + 2}H${x1 - 20}Q${x1 - 6} ${h} ${x1} -6Z" fill="${c}"/><path d="M${x0} -6H${x1}" stroke="#7A6450" stroke-width="2"/>`;
-        let fm = hull(-30, 96, 12, '#3A2E26') + `<path d="M-14 -6V-50H80V-6Z" fill="#6A5644"/>` + Array.from({ length: 14 }, (_, j) => `<path d="M${-14 + j * 7} -6V-50" stroke="#4A3A2E" stroke-width="1"/>`).join('')
-          + `<path d="M-22 -48L33 -80L88 -48Z" fill="#4E5662"/><path d="M33 -80L88 -48H33Z" fill="#000" fill-opacity=".15"/><rect x="40" y="-38" width="10" height="10" fill="#2E2218"/><rect x="10" y="-30" width="12" height="24" fill="#2E2218"/><path d="M80 -40h10v6" stroke="#2E2A26" stroke-width="1.4" fill="none"/><rect x="87" y="-34" width="6" height="8" rx="1" fill="#2E2A26"/>`;
+        /* la casetta del mulino sulla chiatta: assito orizzontale a sovrapposizione, tetto di scandole con lo sbalzo, la finestrella col telaio,
+           la stufa col tubo, i sacchi sul ponte, la ringhiera, la lanterna sul palo di prua */
+        let fm = hull(-30, 96, 12, '#3A2E26') + `<path d="M-26 0Q20 4 92 0" stroke="#5A4A3C" stroke-width=".8" fill="none"/><path d="M-24 4Q20 8 88 4" stroke="#5A4A3C" stroke-width=".8" fill="none"/>`
+          + `<path d="M-14 -6V-50H80V-6Z" fill="#6A5644"/>` + Array.from({ length: 11 }, (_, j) => `<path d="M-14 ${-9 - j * 4}H80" stroke="#4A3A2E" stroke-width="1"/><path d="M-14 ${-8 - j * 4}H80" stroke="#8A7460" stroke-width=".5" stroke-opacity=".6"/>`).join('')
+          + `<path d="M-14 -6V-50M80 -6V-50" stroke="#3E3026" stroke-width="2.4"/><path d="M33 -6V-50" stroke="#3E3026" stroke-width="1.4"/><path d="M58 -6V-50H80V-6Z" fill="#000" fill-opacity=".14"/>`
+          + `<path d="M-24 -47L33 -82L90 -47L86 -45L33 -77L-20 -45Z" fill="#3E4650"/><path d="M-20 -45L33 -77L86 -45Z" fill="#4E5662"/>` + Array.from({ length: 6 }, (_, j) => `<path d="M${f2(-16 + j * 4.6)} ${f2(-48 - j * 4.2)}H${f2(82 - j * 4.6)}" stroke="#2E343C" stroke-width=".8" stroke-dasharray="3 1"/>`).join('')
+          + `<path d="M33 -77L86 -45H33Z" fill="#000" fill-opacity=".15"/><rect x="-18" y="-45" width="102" height="2.4" fill="#000" fill-opacity=".25"/><path d="M29 -64h8v-6h-8z" fill="#2E2218"/>`
+          + `<rect x="38.6" y="-39.4" width="12.8" height="12.8" fill="#4A3A2E"/><rect x="40" y="-38" width="10" height="10" fill="#2E2218"/><path d="M45 -38v10M40 -33h10" stroke="#4A3A2E" stroke-width="1"/><path d="M37.6 -26.4h14.8" stroke="#8A7460" stroke-width="1.6"/>`
+          + `<rect x="8.6" y="-31.4" width="14.8" height="25.4" fill="#4A3A2E"/><rect x="10" y="-30" width="12" height="24" fill="#2E2218"/><circle cx="19.6" cy="-17" r=".9" fill="${BRASS}"/>`
+          + `<path d="M64 -80V-60" stroke="#2A2622" stroke-width="2.6"/><path d="M61.6 -80h5" stroke="#2A2622" stroke-width="1.6"/>`
+          + `<path d="M80 -40h10v6" stroke="#2E2A26" stroke-width="1.4" fill="none"/><rect x="87" y="-34" width="6" height="8" rx="1" fill="#2E2A26"/>`
+          + `<path d="M84 -6V-18M92 -6V-16M84 -16H94" stroke="#4A3A2E" stroke-width="1.2"/><path d="M-26 -6V-16M-20 -6V-16M-27 -15H-14" stroke="#4A3A2E" stroke-width="1.2"/>`
+          + `<path d="M-6 -6q0 -9 6 -9q6 0 6 9z" fill="#D9CDB4"/><path d="M-1 -15l1 -2l1 2" stroke="#A89A7E" fill="none"/><path d="M48 -6q0 -8 5 -8q5 0 5 8z" fill="#CFC2A8"/>`;
         const wx = -60, wy = -12, wr = 34;
         fm += `<path d="M-30 -14H-96" stroke="#4A3A2E" stroke-width="3"/>` + wheel(wx, wy, wr, -1, 12) + hull(-110, -76, 8, '#2E2622') + `<path d="M-30 -14L-96 -14" stroke="#4A3A2E" stroke-width="2"/>`;
         const bt = at(X, Y, k, fm);
         add(mirror(bt, Y, .3) + bt + frontWater(X - 30, Y, 280, 18) + ripRings(X + (wx + 20) * k, Y + 2, 4, 30) + `<path d="M${f2(X + 96 * k)} ${f2(Y - 4)}Q${X + 150} ${Y + 6} ${X + 170} ${Y - 30}" stroke="#5E5B56" stroke-width="1.6" fill="none"/><path d="M${X + 170} ${Y + 20}V${Y - 40}" stroke="#3E3128" stroke-width="5"/>`, .45);
         addLit(at(X, Y, k, `<rect x="88" y="-33" width="4" height="6" fill="#F6C76E"/>` + glow(90, -30, NIGHT || DAYB ? 30 : 12)) + (NIGHT || DAYB ? win(X + 40 * k, Y - 38 * k, 10 * k, 10 * k, .8) : ''), 1.6);
         add(mist(Y - 20, 30, DAYB ? .8 : .35, 22, 50), .5);
-      } else if (mi === 2) { // Ianuario: la segheria veneziana nella gola: la cascata mezza gelata, la gora coi ghiaccioli porta l'acqua sopra la ruota, i tronchi sotto la neve
+      } else if (mi === 2) { /* Ianuario: la segheria veneziana sul torrente. La gora di legno, su cavalletti, porta l'acqua da monte (a sinistra)
+           sopra la ruota: l'acqua cade sulle pale di destra e la ruota gira in senso orario; dalla ruota l'acqua torna nel torrente, che lì resta aperto.
+           Lungo le rive il torrente è orlato di ghiaccio; sotto la gora che perde pendono i ghiaccioli. Nel capannone, dalla parte aperta, la lama sale e scende
+           e taglia il tronco steso sul carro; davanti, sulla riva, la catasta di tronchi sotto la neve e la slitta col tronco. */
         backdrop();
-        const rk = '#8E979E', rkd = '#6E777E';
-        const lc = ridge([[-20, 236], [600, 232], [760, 236], [840, 252], [890, 280], [915, 320], [925, BOT]], 6);
-        const rc = ridge([[960, 226], [1020, 210], [1140, 200], [1220, 190]], 4);
-        add(fill(rc, haze(rk, .5)) + snowCap(rc, 230, 14), .2);
-        const fx = 960, ft = 222, fb2 = 288;
-        let fall = `<path d="M${fx - 16} ${ft}Q${fx - 18} ${(ft + fb2) / 2} ${fx - 22} ${fb2}H${fx + 22}Q${fx + 18} ${(ft + fb2) / 2} ${fx + 16} ${ft}Z" fill="#E6F2F6"/>`;
-        for (let i = 0; i < 7; i++) fall += `<path class="sc-flow" style="--fwd:${f2(.9 + RM() * .6)}s;--fwl:${f2(-RM())}s" d="M${f2(fx - 14 + i * 4.6)} ${f2(ft + 10 + RM() * 30)}v${f2(14 + RM() * 10)}" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>`;
-        fall += [-18, -10, 12, 19].map((x) => `<path d="M${fx + x} ${ft + 4}l2 ${f2(16 + RM() * 18)}l2 ${f2(-16 - RM() * 18)}" fill="#CFE4EE"/>`).join('');
-        add(fall, .25);
-        const G = riverGeo([[fx, 290], [970, 304], [990, 330], [960, 370], [900, BOT + 10]], [30, 34, 44, 62, 90]);
-        s.push(water(286, -20, -19)); s.push(`<ellipse cx="${fx}" cy="292" rx="40" ry="8" fill="url(#${wId})"/><path d="${G.riverD}" fill="url(#${wId})"/>`);
-        add(`<path d="${ptsD(G.Pn)}" stroke="#FFFFFF" stroke-width="5" fill="none"/><path d="${ptsD(G.Mf)}" stroke="#FFFFFF" stroke-width="4" fill="none"/>` + flowOn(G.Cs, G.w, 16, 'sc-flowx') + `<ellipse cx="${fx}" cy="290" rx="34" ry="5" fill="#FFFFFF" fill-opacity=".6"/>`, .3);
-        add(fill(lc, '#EEF4F7') + `<path d="M${f2(lc.y(880) > 0 ? 880 : 880)} ${f2(lc.y(880) + 6)}l14 22" stroke="${rkd}" stroke-opacity=".4" stroke-width="2" fill="none"/>` + forest(lc, 700, 900, 7, .8, .7, () => true, 4), .3);
-        const ground = ridge([[1020, BOT], [1040, 330], [1100, 318], [1220, 314]], 2);
-        const hx = 1146, hy = ground.y(hx) + 2, k = 1.08, L = Ls(hx);
-        let saw = `<path d="M-46 0V-14H46V0Z" fill="#9A938A"/><path d="M-42 -14V-48H42V-14Z" fill="#7A5236"/>` + Array.from({ length: 12 }, (_, j) => `<path d="M${-42 + j * 7.6} -14V-48" stroke="#5A3A26" stroke-width="1"/>`).join('')
-          + `<path d="M${L > 0 ? 6 : -42} -14V-48H${L > 0 ? 42 : -6}V-14Z" fill="#000" fill-opacity=".14"/><rect x="-8" y="-42" width="16" height="28" fill="#2E2218"/><path d="M-54 -46L0 -74L54 -46Z" fill="#4E4A48"/><path d="M-58 -45L0 -78L58 -45L48 -41L0 -66L-48 -41Z" fill="#FFFFFF"/>`
-          + Array.from({ length: 12 }, (_, j) => `<path d="M${-48 + j * 8.6} -42l1.4 ${6 + (j % 3) * 3}l1.4 ${-6 - (j % 3) * 3}" fill="#DDEBF2"/>`).join('') + `<path d="M-6 -36h12" stroke="#B9C4CC" stroke-width="2"/><path d="M-6 -34l2 -2l2 2l2 -2l2 2l2 -2" stroke="#B9C4CC" stroke-width="1" fill="none"/>`;
-        const wx = hx - 62 * k - 26, wr = 28, wy = hy - 34, f0 = [fx + 18, ft + 4], f1 = [wx - 4, wy - wr - 6];
-        let fl = ''; [.4, .75].forEach((q) => { const x = f0[0] + (f1[0] - f0[0]) * q, y = f0[1] + (f1[1] - f0[1]) * q; fl += `<path d="M${f2(x - 6)} ${f2(y + 50)}L${f2(x)} ${f2(y + 2)}L${f2(x + 6)} ${f2(y + 50)}" stroke="${WOOD_D}" stroke-width="2" fill="none"/>`; });
-        fl += `<path d="M${f0[0]} ${f0[1]}L${f2(f1[0])} ${f2(f1[1])}" stroke="${WOOD_D}" stroke-width="6"/><path d="M${f0[0]} ${f0[1] - 3}L${f2(f1[0])} ${f2(f1[1] - 3)}" stroke="#FFFFFF" stroke-width="2.4"/>` + [.2, .45, .7, .9].map((q) => `<path d="M${f2(f0[0] + (f1[0] - f0[0]) * q)} ${f2(f0[1] + (f1[1] - f0[1]) * q + 3)}l1.2 7l1.2 -7" fill="#DDEBF2"/>`).join('')
-          + `<path d="M${f2(f1[0])} ${f2(f1[1])}q4 3 5 10" stroke="#DDEEF2" stroke-width="2.6" fill="none"/>`;
-        let logs = ''; for (let r = 0; r < 3; r++) for (let c = 0; c < 4 - r; c++) { const lx = 1196 + c * 9 + r * 4.5 - 18, ly = ground.y(1196) - 4 - r * 8; logs += `<circle cx="${f2(lx)}" cy="${f2(ly)}" r="4.4" fill="#A27A54" stroke="#6A4A34" stroke-width="1"/><circle cx="${f2(lx)}" cy="${f2(ly)}" r="1.4" fill="#C9A27A"/>`; }
-        logs += `<path d="M1176 ${f2(ground.y(1196) - 28)}q22 -8 40 0z" fill="#FFFFFF"/>`;
-        add(fill(ground, '#F4F8FA') + fl + shadowAt(hx, hy, 50) + at(hx, hy, k, saw) + wheel(wx, wy, wr, 1, 12) + logs + `<path d="M${f2(wx - wr)} ${f2(wy + 4)}a${wr} ${wr} 0 0 0 ${2 * wr} 0" stroke="#DDEBF2" stroke-width="2" fill="none" stroke-dasharray="2 3"/>` + forest(ground, 1206, 1220, 1, 1, .9), .35);
-        if (NIGHT || DAYB) addLit(win(hx - 8 * k, hy - 42 * k, 16 * k, 10 * k, .6), 1.6);
-        add(groundDetail({ y: () => BOT - 50 }, 640, 1000, 12, 1.4, 1), .5);
+        const cTop = 300, cBot = 336;
+        const far = ridge([[-20, 262], [600, 258], [860, 262], [1000, 256], [1220, 260]], 3);
+        add(fill(far, '#EEF3F6') + forest(far, 640, 1220, 22, .55, .5, (x) => x < 1000 || x > 1190, 3), .25);
+        const bank = ridge([[-20, 286], [700, 284], [1000, 288], [1220, 286]], 2, 30, cTop + 2);
+        add(fill(bank, '#F4F8FA') + `<path d="M-20 ${cTop}H1240" stroke="#D5E2EA" stroke-width="3"/>`, .3);
+        s.push(water(cTop, -20, 1240));
+        add(flowOn(Array.from({ length: 40 }, (_, i) => [-20 + i * 32, cTop + 8 + RM() * (cBot - cTop - 16)]), () => 30, 26), .3);
+        /* l'orlo di ghiaccio lungo le due rive, rotto dove l'acqua della ruota è viva */
+        const wx = 1046, wr = 38, wy = cTop - 18;
+        const shelf = (yEdge, dir, x0, x1) => { let d = `M${x0} ${yEdge}`, pts = []; for (let x = x0; x <= x1; x += 10 + RM() * 14) pts.push([x, yEdge + dir * (3 + RM() * 9)]); pts.push([x1, yEdge]);
+          d += pts.map(([x, y]) => `L${f2(x)} ${f2(y)}`).join('') + 'Z'; return `<path d="${d}" fill="#E9F2F6"/><path d="M${pts.map(([x, y]) => `${f2(x)} ${f2(y)}`).join('L')}" stroke="#A9C3D1" stroke-width="1" fill="none"/>`; };
+        let ice = shelf(cTop, 1, -20, wx - wr - 30) + shelf(cTop, 1, wx + wr + 50, 1240) + shelf(cBot, -1, -20, wx - 60) + shelf(cBot, -1, wx + 90, 1240);
+        for (let i = 0; i < 7; i++) { const x = 760 + RM() * 440, y = cTop + 10 + RM() * (cBot - cTop - 20), w = 5 + RM() * 9; if (Math.abs(x - wx) < 80) continue; ice += `<path d="M${f2(x - w)} ${f2(y)}l${f2(w * .4)} ${f2(-w * .22)}l${f2(w * 1.2)} ${f2(-w * .05)}l${f2(w * .4)} ${f2(w * .22)}l${f2(-w * .6)} ${f2(w * .14)}Z" fill="#F2F7FA" stroke="#B9CEDA" stroke-width=".5"/>`; }
+        add(ice, .3);
+        /* il capannone della sega: zoccolo di pietra sulla riva, assito di larice, a destra la campata aperta con la sega; tetto di scandole sotto la neve */
+        const hx = 1122, hy = cTop - 1, k = 1.36, L = Ls(hx), RS = rng(211);
+        let saw = `<path d="M-60 2V-12H60V2Z" fill="#8E897F"/>` + Array.from({ length: 2 }, (_, r) => Array.from({ length: 8 }, (_, c) => `<rect x="${-59 + c * 15 + (r % 2) * 7}" y="${-11 + r * 6}" width="13" height="5" rx="1.2" fill="#000" fill-opacity="${f2(.05 + RS() * .08)}"/>`).join('')).join('');
+        saw += `<path d="M-56 -12V-50H56V-12Z" fill="#7A5236"/>` + Array.from({ length: 15 }, (_, j) => `<path d="M${-56 + j * 7.5} -12V-50" stroke="#5A3A26" stroke-width="1"/><path d="M${-55 + j * 7.5} -12V-50" stroke="#9A7050" stroke-width=".5" stroke-opacity=".5"/>`).join('')
+          + `<path d="M${L > 0 ? 20 : -56} -12V-50H${L > 0 ? 56 : -20}V-12Z" fill="#000" fill-opacity=".12"/>`;
+        /* la campata aperta: dentro buio, il telaio della sega con la lama che va su e giù, il tronco sul carro, la segatura */
+        saw += `<rect x="6" y="-48" width="46" height="36" fill="#2A2018"/><path d="M6 -48V-12M52 -48V-12" stroke="#4A3220" stroke-width="3"/>`
+          + `<rect x="8" y="-22" width="42" height="3" fill="#6A4A30"/><path d="M8 -19H50" stroke="#3A2A1C" stroke-width="1"/>`
+          + `<rect x="10" y="-30" width="40" height="8" rx="3.6" fill="#A27A54"/><path d="M10 -27H50M10 -24.6H50" stroke="#7E5A3A" stroke-width=".6"/><ellipse cx="10" cy="-26" rx="2.4" ry="4" fill="#E0C49A" stroke="#8A6440" stroke-width=".6"/>`
+          + `<path d="M24 -46V-14M34 -46V-14" stroke="#5A3A26" stroke-width="2"/><g><animateTransform attributeName="transform" type="translate" values="0 -3;0 3;0 -3" dur="1.1s" repeatCount="indefinite"/><rect x="24" y="-42" width="10" height="2.4" fill="#5A3A26"/><path d="M29 -40V-18" stroke="#C9D2DA" stroke-width="1.4"/><rect x="24" y="-18" width="10" height="2.4" fill="#5A3A26"/></g>`
+          + `<path d="M40 -12q4 -5 9 0z" fill="#E6C99A"/><path d="M8 -12q3 -3 7 0z" fill="#E6C99A"/>`;
+        /* la parte chiusa: la porticina, la finestrella con la croce, l'asse della ruota che entra nel muro */
+        saw += `<rect x="-44" y="-40" width="10" height="9" fill="#2E2218"/><path d="M-39 -40v9M-44 -35.5h10" stroke="#7A5236" stroke-width="1"/><path d="M-46 -30.4h14" stroke="#9A7050" stroke-width="1.6"/>`
+          + `<path d="M-18 -12V-36H-4V-12Z" fill="#4A3220"/><path d="M-17 -30h12M-17 -20h12" stroke="#2E2218" stroke-width="1"/><circle cx="-6.5" cy="-24" r=".8" fill="${BRASS}"/>`;
+        /* il tetto: due falde di scandole, lo spesso strato di neve che deborda sulla gronda, i ghiaccioli */
+        saw += `<path d="M-68 -48L0 -82L68 -48L62 -45L0 -76L-62 -45Z" fill="#5A4636"/><path d="M-62 -45L0 -76L62 -45Z" fill="#6E5844"/>` + Array.from({ length: 6 }, (_, j) => `<path d="M${f2(-58 + j * 9.6)} ${f2(-47 - j * 4.8)}H${f2(58 - j * 9.6)}" stroke="#4A3A2E" stroke-width=".8" stroke-dasharray="4 1.4"/>`).join('')
+          + `<path d="M0 -76L62 -45H0Z" fill="#000" fill-opacity=".14"/>`;
+        /* la neve sulle due falde: spessa, col bordo di sopra a cuscini morbidi, che deborda sulla gronda e sul colmo */
+        const roofY = (x) => -82 + Math.abs(x) * 34 / 68, top = [], botP = [];
+        for (let j = 0; j <= 16; j++) { const x = -74 + j * 148 / 16, th = 6 + RS() * 4 - (Math.abs(x) > 64 ? 2 : 0); top.push([x, roofY(Math.max(-68, Math.min(68, x))) - th]); }
+        for (let j = 16; j >= 0; j--) { const x = -72 + j * 144 / 16, sag = Math.abs(x) > 60 ? 2.4 + RS() * 3.6 : .8 + RS() * 1.2; botP.push([x, roofY(Math.max(-68, Math.min(68, x))) + 2 + sag]); }
+        let sn = `M${f2(top[0][0])} ${f2(top[0][1] + 6)}Q${f2(top[0][0] - 3)} ${f2(top[0][1])} ${f2(top[0][0] + 2)} ${f2(top[0][1])}`;
+        for (let j = 1; j < top.length; j++) { const [px, py] = top[j - 1], [x, y] = top[j]; sn += `Q${f2((px + x) / 2)} ${f2(Math.min(py, y) - 2.4 - RS() * 1.6)} ${f2(x)} ${f2(y)}`; }
+        sn += `Q${f2(top[16][0] + 3)} ${f2(top[16][1] + 3)} ${f2(botP[0][0])} ${f2(botP[0][1])}`;
+        for (let j = 1; j < botP.length; j++) { const [px, py] = botP[j - 1], [x, y] = botP[j]; sn += `Q${f2((px + x) / 2)} ${f2(Math.max(py, y) + 1.2)} ${f2(x)} ${f2(y)}`; }
+        sn += 'Z';
+        saw += `<path d="${sn}" fill="#FFFFFF"/><path d="${ptsD(botP)}" stroke="#C3D7E2" stroke-width=".9" fill="none"/>` + icicles(-70, -52, -42, 1.3, RS) + icicles(52, 70, -42, 1.3, RS);
+        /* la gora sui cavalletti: da sinistra (monte) fin sopra la ruota; la neve sul bordo, i ghiaccioli dove perde */
+        const g0 = [700, 238], g1 = [wx + 6, wy - wr - 6], gy = (x) => g0[1] + (g1[1] - g0[1]) * (x - g0[0]) / (g1[0] - g0[0]);
+        let gora = '';
+        for (let x = 740; x < g1[0] - 10; x += 64) { const y = gy(x), yb = bank.y(x) + 8; gora += `<path d="M${x - 9} ${f2(yb)}L${x} ${f2(y + 4)}L${x + 9} ${f2(yb)}M${x - 5} ${f2((y + yb) / 2 + 4)}H${x + 5}" stroke="${WOOD_D}" stroke-width="2.4" fill="none"/>` + snowLedge(x - 4, x + 4, y + 5, 1.4); }
+        gora += `<path d="M${g0[0]} ${g0[1]}L${g1[0]} ${g1[1]}L${g1[0]} ${g1[1] + 7}L${g0[0]} ${g0[1] + 7}Z" fill="${WOOD_D}"/><path d="M${g0[0]} ${g0[1] + 2}L${g1[0]} ${g1[1] + 2}" stroke="${mixHex(WTh[0], '#FFFFFF', .4)}" stroke-width="2.4"/>`
+          + `<path d="M${g0[0]} ${g0[1] - .6}L${g1[0]} ${g1[1] - .6}" stroke="#FFFFFF" stroke-width="2.6"/>`;
+        for (let x = 760; x < g1[0] - 6; x += 40 + RM() * 30) gora += icicles(x, x + 10 + RM() * 8, gy(x) + 7, 1.2, RM);
+        let pour = ''; for (let j = 0; j < 6; j++) pour += `<path class="sc-rain" style="--rd:${f2(.5 + j * .1)}s;--rdl:${f2(-j * .15)}s;--ro:.85" d="M${f2(g1[0] + 2 + j * 1.6)} ${f2(g1[1] + 6)}l1 8" stroke="#E4F2F6" stroke-width="1.8" stroke-linecap="round"/>`;
+        const foam = `<path d="M${wx - wr} ${cTop + 3}q10 -4 20 0q10 -4 20 0q10 -4 22 0M${wx + 10} ${cTop + 8}q10 -3 18 0q8 -3 16 1" stroke="#FFFFFF" stroke-width="1.6" fill="none" stroke-opacity=".85"/>`;
+        add(gora + shadowAt(hx, hy, 70) + at(hx, hy, k, saw) + wheel(wx, wy, wr, 1, 10) + icicles(wx - wr + 4, wx - 6, wy + 4, 1, RM) + pour + frontWater(wx, cTop + 2, 120, 22) + foam + ripRings(wx + 30, cTop + 8, 3, 22), .35);
+        if (NIGHT || DAYB) addLit(win(hx - 44 * k, hy - 40 * k, 10 * k, 9 * k, .6) + at(hx, hy, k, `<rect x="40" y="-46" width="4" height="5" fill="#F6C76E"/>` + glow(42, -43, 18)), 1.6);
+        /* la riva di qua: neve alta, la catasta di tronchi, la slitta col tronco, le orme */
+        let fr = grad('nb', cBot, BOT, '#EEF4F7', '#DCE8EE') + `<path d="M-20 ${cBot}H1240V${BOT + 40}H-20Z" fill="url(#${u}nb)"/><path d="M-20 ${cBot}H1240" stroke="#FFFFFF" stroke-width="3"/>`;
+        let logs = ''; const lx0 = 1120, ly0 = cBot + 56; for (let r = 0; r < 3; r++) for (let c = 0; c < 5 - r; c++) { const lx = lx0 + c * 15 + r * 7.5, ly = ly0 - r * 13; logs += `<circle cx="${f2(lx)}" cy="${f2(ly)}" r="7.4" fill="#B48A60" stroke="#6A4A34" stroke-width="1.2"/><circle cx="${f2(lx)}" cy="${f2(ly)}" r="2" fill="none" stroke="#8A6440" stroke-width=".6"/>`; }
+        logs += `<path d="M${lx0 - 10} ${ly0 - 28}Q${lx0 + 4} ${ly0 - 40} ${lx0 + 30} ${ly0 - 50}Q${lx0 + 56} ${ly0 - 42} ${lx0 + 72} ${ly0 - 24}Q${lx0 + 50} ${ly0 - 32} ${lx0 + 30} ${ly0 - 40}Q${lx0 + 10} ${ly0 - 30} ${lx0 - 10} ${ly0 - 22}Z" fill="#FFFFFF"/>`;
+        const sl = `<path d="M-30 0Q-38 0 -38 -6M-30 0H34" stroke="#5A3A26" stroke-width="2.2" fill="none"/><path d="M-26 0V-6M-6 0V-6M14 0V-6M30 0V-6M-30 -6H34" stroke="#6E5236" stroke-width="2"/><rect x="-30" y="-15" width="62" height="9" rx="4" fill="#A27A54"/><path d="M-30 -11H32" stroke="#7E5A3A" stroke-width=".6"/><ellipse cx="32" cy="-10.5" rx="2.6" ry="4.5" fill="#E0C49A"/><path d="M-26 -15Q0 -20 30 -15" stroke="#FFFFFF" stroke-width="2.4" fill="none"/>`;
+        let steps = ''; for (let i = 0; i < 10; i++) steps += `<ellipse cx="${f2(860 + i * 22)}" cy="${f2(BOT - 30 - i * 3.6 + (i % 2) * 4)}" rx="3" ry="1.4" fill="#C9DCE6"/>`;
+        add(fr + steps + at(1010, cBot + 52, 1.5, sl) + logs + treePine(1214, cBot + 30, 1.1, '#2F5A63', true, Ls(1214)) + groundDetail({ y: () => BOT - 40 }, 640, 1000, 10, 1.4, 1), .5);
       } else if (mi === 3) { // Germinale: la noria. Il canale scorre davanti, la ruota coi vasi di coccio raccoglie l'acqua e la versa in alto nell'acquedotto che va ai frutteti in fiore
         backdrop();
         const mid = ridge([[-20, 238], [600, 232], [860, 228], [1220, 234]], 3);
@@ -1743,12 +1883,35 @@ function sceneSVG(mi, opts = {}) {
         let orch = ''; for (let r = 0; r < 2; r++) for (let i = 0; i < 9; i++) { const x = 760 + i * 52 + r * 24 + RM() * 10, y = far.y(x) + 10 + r * 18; if (x > 980 && x < 1060) continue; orch += treeBlossom(x, y, .8 + r * .25, ['#F4C9D8', '#FFFFFF', '#E89BB5'], '#6B5040', R, p); }
         add(fill(far, landCol(.7)) + `<path d="M-20 ${cTop - 2}H1240" stroke="${shade(landCol(.8), .3)}" stroke-width="3"/>` + orch, .3);
         s.push(water(cTop, -20, 1240)); add(flowOn([[-20, (cTop + cBot) / 2], [400, (cTop + cBot) / 2], [800, (cTop + cBot) / 2], [1240, (cTop + cBot) / 2]].flatMap((pt, i, A) => i < A.length - 1 ? Array.from({ length: 10 }, (_, j) => [pt[0] + (A[i + 1][0] - pt[0]) * j / 10, pt[1] + (RM() - .5) * 20]) : []), () => 34, 30), .3);
-        const wx = 1010, wr = 52, wy = cTop - 8, ty = wy - wr - 12;
-        let aq = `<path d="M${wx + 14} ${ty}H1240" stroke="#8A5E3B" stroke-width="8"/><path d="M${wx + 14} ${ty - 3}H1240" stroke="${mixHex(WTh[0], '#FFFFFF', .35)}" stroke-width="2.4"/>`;
-        [1070, 1140, 1210].forEach((x) => { aq += `<path d="M${x - 7} ${cTop - 2}L${x - 5} ${ty + 4}H${x + 5}L${x + 7} ${cTop - 2}Z" fill="#B9B0A0"/><path d="M${x - 5} ${ty + 4}H${x + 5}" stroke="#9A938A" stroke-width="2"/>`; });
-        let pour = ''; for (let j = 0; j < 5; j++) pour += `<path class="sc-rain" style="--rd:${f2(.7 + j * .15)}s;--rdl:${f2(-j * .2)}s;--ro:.8" d="M${f2(wx + 10 + j * 2)} ${f2(ty - 10)}l1 6" stroke="#E4F2F6" stroke-width="1.6" stroke-linecap="round"/>`;
-        const post = `<path d="M${wx - 6} ${cBot}L${wx - 2} ${wy}H${wx + 2}L${wx + 6} ${cBot}Z" fill="#6E5236"/>`;
-        add(aq + post + wheel(wx, wy, wr, -1, 18, true) + pour + frontWater(wx, cTop + 2, 130, 26) + ripRings(wx + 30, cTop + 6, 3, 24), .35);
+        /* la noria: la corrente va a destra e spinge i vasi in basso, la ruota gira in senso antiorario; i vasi si riempiono sotto, salgono a destra
+           gocciolando, in cima si rovesciano nella canaletta che porta l'acqua all'acquedotto di pietra ad archi, verso i frutteti */
+        const wx = 1004, wr = 56, wy = cTop - 10, ty = wy - wr - 6, aqC = '#C9BCA6', aqD = shade(aqC, .25), wTop = mixHex(WTh[0], '#FFFFFF', .35);
+        let aq = '';
+        const piers = [1084, 1150, 1216, 1282], pw = 12;
+        aq += `<rect x="${wx + 20}" y="${ty - 6}" width="${1260 - wx}" height="14" fill="${aqC}"/><rect x="${wx + 20}" y="${ty - 7}" width="${1260 - wx}" height="3" fill="${shade(aqC, -.06)}"/><path d="M${wx + 20} ${ty - 3}H1260" stroke="${wTop}" stroke-width="2.6"/>`;
+        piers.forEach((x, i) => { aq += `<path d="M${x - pw / 2 - 2} ${cTop - 1}L${x - pw / 2} ${ty + 8}H${x + pw / 2}L${x + pw / 2 + 2} ${cTop - 1}Z" fill="${aqC}"/><path d="M${x + pw / 2 - 4} ${ty + 8}H${x + pw / 2}L${x + pw / 2 + 2} ${cTop - 1}H${x + pw / 2 - 3}Z" fill="#000" fill-opacity=".14"/>`
+          + Array.from({ length: 6 }, (_, j) => `<path d="M${x - pw / 2} ${f2(ty + 14 + j * 9)}h${pw}" stroke="${aqD}" stroke-opacity=".35" stroke-width=".7"/>`).join('');
+          if (i < piers.length - 1) { const xa = x + pw / 2, xb = piers[i + 1] - pw / 2, r = (xb - xa) / 2, ya = ty + 14 + r;
+            aq += `<path d="M${xa} ${ty + 8}H${xb}V${f2(ya)}A${f2(r)} ${f2(r)} 0 0 0 ${xa} ${f2(ya)}Z" fill="${aqC}"/><path d="M${xb} ${f2(ya)}A${f2(r)} ${f2(r)} 0 0 0 ${xa} ${f2(ya)}" stroke="${aqD}" stroke-width="1.4" fill="none"/>`
+              + Array.from({ length: 7 }, (_, j) => { const an = Math.PI * (j + .5) / 7; return `<path d="M${f2(xa + r - Math.cos(an) * r)} ${f2(ya - Math.sin(an) * r)}l${f2(-Math.cos(an) * 4)} ${f2(-Math.sin(an) * 4)}" stroke="${aqD}" stroke-width=".8"/>`; }).join(''); } });
+        aq += `<path d="M${wx + 20} ${ty - 6}h${1260 - wx}" stroke="#7E6A52" stroke-width="1"/>` + Array.from({ length: 8 }, (_, j) => `<path class="sc-flowx" style="--fwd:${f2(2 + RM())}s;--fwl:${f2(-RM() * 2)}s" d="M${f2(wx + 30 + j * 30)} ${ty - 3}h10" stroke="#FFFFFF" stroke-width="1" stroke-opacity=".7"/>`).join('');
+        /* la pila di pietra che regge l'asse, dietro la ruota */
+        const pile = `<path d="M${wx - 12} ${cBot - 6}L${wx - 7} ${wy - 4}H${wx + 7}L${wx + 12} ${cBot - 6}Z" fill="${aqC}"/><path d="M${wx + 2} ${wy - 4}H${wx + 7}L${wx + 12} ${cBot - 6}H${wx + 4}Z" fill="#000" fill-opacity=".15"/><rect x="${wx - 9}" y="${wy - 8}" width="18" height="5" fill="${aqD}"/>`;
+        /* la ruota: doppio cerchio, raggi a coppie con le traverse, i vasi di coccio legati al cerchio esterno */
+        let nw = `<g><animateTransform attributeName="transform" type="rotate" from="0 ${wx} ${wy}" to="-360 ${wx} ${wy}" dur="20s" repeatCount="indefinite"/>`;
+        nw += `<circle cx="${wx}" cy="${wy}" r="${wr - 2}" stroke="${WOOD_D}" stroke-width="3.4" fill="none"/><circle cx="${wx}" cy="${wy}" r="${wr - 9}" stroke="${WOOD}" stroke-width="2" fill="none"/><circle cx="${wx}" cy="${wy}" r="${f2(wr * .42)}" stroke="${WOOD}" stroke-width="1.4" fill="none"/>`;
+        for (let j = 0; j < 12; j++) { const an = j * Math.PI / 6, c = Math.cos(an), sn = Math.sin(an), px = -sn * 2.2, py = c * 2.2;
+          nw += `<path d="M${f2(wx + px)} ${f2(wy + py)}L${f2(wx + c * (wr - 2) + px)} ${f2(wy + sn * (wr - 2) + py)}M${f2(wx - px)} ${f2(wy - py)}L${f2(wx + c * (wr - 2) - px)} ${f2(wy + sn * (wr - 2) - py)}" stroke="${WOOD}" stroke-width="1.5"/>`; }
+        for (let j = 0; j < 20; j++) { const an = j * Math.PI / 10, c = Math.cos(an), sn = Math.sin(an);
+          nw += `<g transform="translate(${f2(wx + c * (wr + 1))} ${f2(wy + sn * (wr + 1))}) rotate(${f2(an * 180 / Math.PI + 90)})"><path d="M-3.6 -1Q-4.6 4 -2.4 7.4H2.4Q4.6 4 3.6 -1Z" fill="#B0643F"/><ellipse cx="0" cy="-1" rx="3.6" ry="1.2" fill="#7E4426"/><path d="M-3.4 2.4H3.4" stroke="#8E4E2E" stroke-width=".6"/></g>`; }
+        nw += `</g><circle cx="${wx}" cy="${wy}" r="6" fill="#3E2A1A"/><circle cx="${wx}" cy="${wy}" r="2.4" fill="${BRASS}"/>`;
+        /* la canaletta in cima, appena a sinistra del culmine, dove i vasi si rovesciano; porta l'acqua a destra sull'acquedotto */
+        const ch = `<path d="M${wx - 22} ${ty - 2}L${wx + 24} ${ty - 6}V${ty}L${wx - 22} ${ty + 4}Z" fill="#8A5E3B"/><path d="M${wx - 22} ${ty - 1}L${wx + 24} ${ty - 4.6}" stroke="${wTop}" stroke-width="2"/><path d="M${wx - 18} ${ty + 4}V${cTop - 2}M${wx - 22} ${ty + 4}h8" stroke="#6E5236" stroke-width="2.4"/>`;
+        let pour = ''; for (let j = 0; j < 6; j++) pour += `<path class="sc-rain" style="--rd:${f2(.6 + j * .12)}s;--rdl:${f2(-j * .2)}s;--ro:.85" d="M${f2(wx - 14 + j * 3)} ${f2(ty - 14)}l.6 7" stroke="#E4F2F6" stroke-width="1.8" stroke-linecap="round"/>`;
+        for (let j = 0; j < 9; j++) { const an = -Math.PI / 2 + (j + 1) * Math.PI / 10, x = wx + Math.cos(an) * (wr + 6), y = wy + Math.sin(an) * (wr + 6);   // gocce dai vasi che salgono a destra
+          pour += `<path class="sc-rain" style="--rd:${f2(.5 + RM() * .4)}s;--rdl:${f2(-RM())}s;--ro:.7" d="M${f2(x)} ${f2(y)}v4" stroke="#E4F2F6" stroke-width="1.2" stroke-linecap="round"/>`; }
+        const foam = `<path d="M${wx - wr + 6} ${cTop + 3}q8 -4 16 0q8 -4 16 0M${wx + 12} ${cTop + 4}q10 -4 20 0q8 -3 16 1" stroke="#FFFFFF" stroke-width="1.6" fill="none" stroke-opacity=".8"/>`;
+        add(aq + pile + nw + ch + pour + frontWater(wx, cTop + 2, 150, 28) + foam + ripRings(wx + 40, cTop + 8, 3, 24), .35);
         add(grad('nb', cBot, BOT, landCol(.85), landCol(1)) + `<path d="M-20 ${cBot}H1240V${BOT + 40}H-20Z" fill="url(#${u}nb)"/><path d="M-20 ${cBot}H1240" stroke="${shade(landCol(.8), .3)}" stroke-width="3"/>` + groundDetail({ y: () => cBot + 6 }, 640, 1220, 24, 1.2, 1), .45);
       } else if (mi === 4) { // Floreale: il traghetto di Leonardo: la chiatta appesa al cavo attraversa il fiume da sola, la corrente la spinge
         backdrop();
@@ -1775,8 +1938,20 @@ function sceneSVG(mi, opts = {}) {
         add(quay, .25);
         s.push(water(qT, -20, 1240)); add(flowOn(Array.from({ length: 40 }, (_, i) => [-20 + i * 32, qT + 6 + RM() * (qB - qT - 12)]), () => 36, 30), .3);
         const hx = 1110, hy = 290, k = 1.1, L = Ls(hx);
-        let tm = `<path d="M-60 0V-56H60V0Z" fill="#F4F1EA"/><path d="M${L > 0 ? 12 : -60} 0V-56H${L > 0 ? 60 : -12}V0Z" fill="#000" fill-opacity=".08"/><path d="M-66 -54L0 -80L66 -54Z" fill="#C0392B"/><path d="M0 -80L${66 * L} -54H0Z" fill="#000" fill-opacity=".14"/>`
-          + `<path d="M-44 16V-4Q-30 -22 -16 -4V16ZM16 16V-4Q30 -22 44 -4V16Z" fill="#3A3832"/><path d="M-50 16V0H-46M50 16V0H46" stroke="#A8936E" stroke-width="2"/>` + [-36, -12, 12, 36].map((x) => `<rect x="${x - 4}" y="-44" width="8" height="10" fill="#2F6E9A"/>`).join('') + `<rect x="-4" y="-22" width="8" height="22" fill="#2F6E9A"/>`;
+        /* il mulino a marea: piano terra di bugnato con i due archi sul canale (sotto quello di destra gira la ruota), sopra l'intonaco chiaro
+           con la fascia marcapiano, le finestre con gli scuri verdi, il balcone di ferro sopra la porta; il tetto a padiglione col trave del paranco e il sacco */
+        const RT = rng(77), qs = '#CDB78F', pl = '#F1E9DA';
+        let tm = `<rect x="-62" y="-20" width="124" height="20" fill="${qs}"/>`;
+        for (let r = 0; r < 4; r++) for (let x = -62 + (r % 2) * 8; x < 62; x += 16) tm += `<rect x="${f2(x + .6)}" y="${f2(-19.4 + r * 5)}" width="${f2(Math.min(15, 61.4 - x))}" height="4.4" rx="1" fill="${shade(qs, (RT() - .3) * .12)}"/>`;
+        tm += `<path d="M-44 16V-4Q-30 -22 -16 -4V16ZM16 16V-4Q30 -22 44 -4V16Z" fill="#2E2C28"/><path d="M-46 16V-4Q-30 -25 -14 -4V16M14 16V-4Q30 -25 46 -4V16" stroke="#E2D2B0" stroke-width="2.4" fill="none"/>`
+          + [-30, 30].map((x) => `<path d="M${x - 3} -18.4h6l-1 5h-4z" fill="#E2D2B0"/>`).join('') + `<path d="M-50 16V0H-46M50 16V0H46" stroke="#A8936E" stroke-width="2"/>`;
+        tm += `<rect x="-58" y="-58" width="116" height="38" fill="${pl}"/><path d="M${L > 0 ? 14 : -58} -20V-58H${L > 0 ? 58 : -14}V-20Z" fill="#000" fill-opacity=".07"/><rect x="-62" y="-22.4" width="124" height="3" fill="#E2D2B0"/><rect x="-62" y="-19.4" width="124" height="1" fill="#000" fill-opacity=".2"/>`
+          + [-36, -12, 12, 36].map((x) => winS(x - 4, -48, 8, 11, '#4E6B4A', '#E2D2B0', x > 0)).join('');
+        tm += `<path d="M-6.4 0V-12A6.4 6.4 0 0 1 6.4 -12V0" stroke="#E2D2B0" stroke-width="2" fill="none"/><path d="M-5 0V-12A5 5 0 0 1 5 -12V0Z" fill="#5A3A26"/>`;
+        tm += `<path d="M-14 -26H14" stroke="#3A3A3A" stroke-width="1.4"/>` + Array.from({ length: 8 }, (_, j) => `<path d="M${-13 + j * 3.7} -26V-31" stroke="#3A3A3A" stroke-width=".8"/>`).join('') + `<path d="M-14 -31H14" stroke="#3A3A3A" stroke-width="1"/><rect x="-15" y="-26" width="30" height="2" fill="#E2D2B0"/>`
+          + `<path d="M-4 -26V-40A4 4 0 0 1 4 -40V-26Z" fill="#4E6B4A"/>`;
+        tm += tileRoof(-66, 66, -57, -78, 30, '#C0392B') + `<path d="M52 -62H74" stroke="#6E5236" stroke-width="3"/><circle cx="72" cy="-60" r="2.2" fill="#3A3026"/><path d="M72 -58V-36" stroke="#8E7A58" stroke-width=".8"/><path d="M68 -36h8l1 8h-10z" fill="#D9CDB4"/>`
+          + `<rect x="-40" y="-90" width="7" height="14" fill="${pl}"/><path d="M-42 -90h11" stroke="#A8352B" stroke-width="2.4"/>`;
         const wx = hx + 30 * k, wy = hy + 14, wr = 24;
         let boats = ''; [[880, 312, '#3E86B8'], [960, 318, '#C0392B']].forEach(([bx, by, c]) => { boats += at(bx, by, .7, `<path d="M-40 -8Q-36 0 -24 2H28Q38 0 42 -8Q40 4 28 8H-26Q-38 5 -40 -8Z" fill="#F4F1EA"/><path d="M-38 -2Q0 4 40 -2" stroke="${c}" stroke-width="2.4" fill="none"/><path d="M-40 -8l-3 -8M42 -8l2 -7" stroke="#C99A5E" stroke-width="2.4"/>`); });
         add(shadowAt(hx, hy, 60) + at(hx, hy, k, tm) + wheel(wx, wy, wr, -1, 12) + frontWater(wx, qT + 6, 70, 18) + boats + frontWater(920, 314, 160, 10) + ripRings(wx + 18, qT + 8, 3, 20), .35);
@@ -2043,5 +2218,5 @@ function seasonFx(motif, accent, W, H, seed) {
 
 /* fase della luna (0 = nuova, 0,5 = piena) alle 22 del giorno dato, dal novilunio del 6/1/2000 18:14 UTC; errore di qualche ora */
 function moonPhase(iso) { const [y, m, d] = iso.split('-').map(Number), t = Date.UTC(y, m - 1, d, 21, 0) - Date.UTC(2000, 0, 6, 18, 14), f = (t / 864e5) / 29.530588853; return f - Math.floor(f); }
-window.ORN = { version: '3.1', moonPhase, MONTHS, LETTER_META, metaKeyFor, dayBg, illusFor, sceneSVG, hasVariants, themeFor, patternURI, ornamentSVG, playAll, seasonFx, setToday: (s) => { todayStr = s; } };
+window.ORN = { version: '3.2', moonPhase, MONTHS, LETTER_META, metaKeyFor, dayBg, illusFor, sceneSVG, hasVariants, themeFor, patternURI, ornamentSVG, playAll, seasonFx, setToday: (s) => { todayStr = s; } };
 })();
