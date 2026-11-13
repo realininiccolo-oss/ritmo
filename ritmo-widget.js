@@ -1,4 +1,4 @@
-// RITMO-WIDGET v2.6 · widget e notifiche di Ritmo per Scriptable (iPhone). Generato da strumenti/costruisci_widget.py: non modificare ritmo-widget.js a mano.
+// RITMO-WIDGET v2.6.1 · widget e notifiche di Ritmo per Scriptable (iPhone). Generato da strumenti/costruisci_widget.py: non modificare ritmo-widget.js a mano.
 // Mostra gli impegni del giorno, la data settale e il messaggio di feedback, calcolati con lo stesso nucleo dell'app.
 // Senza «Andamento nel widget» vede solo gli impegni del file dei dati; collegato, vede anche quelli messi nell'app, le spunte e i piani.
 const BASE = 'https://realininiccolo-oss.github.io/ritmo/';
@@ -316,7 +316,7 @@ function look(o) {
 async function background(o, k, fam) {
   if (!o) return null;
   const f = fam === 'large' ? 'l' : fam === 'small' ? 's' : 'm', name = `${o.mi}-${o.wi}-${f}${o.mi === 1 ? (k.v === 'giorno' ? '-g' : '') : (k.v === 'notte' ? '-n' : '')}.jpg`;
-  const path = fm.joinPath(fm.documentsDirectory(), 'ritmo6-img-' + name);
+  const path = fm.joinPath(fm.documentsDirectory(), 'ritmo7-img-' + name);
   if (fm.fileExists(path)) return fm.readImage(path);
   try { const img = await new Request(BASE + 'widget-img/' + name).loadImage(); fm.writeImage(path, img); return img; } catch (e) { return null; }
 }
