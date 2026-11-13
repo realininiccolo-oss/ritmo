@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="ornrarv.css?v=2.4">
+<link rel="stylesheet" href="ornrarv.css?v=2.5">
 <style>
 :root {
   /* Ritmo 2.1 · palette «Alba»: carta chiara, inchiostro blu notte al posto del nero, accento corallo vivo; di sera un blu notte al posto del grigio antracite */
@@ -552,7 +552,7 @@ body.dragging .fab, body.dragging .fab2, body.dragging .tabbar { opacity: .3; po
 <div id="dragLayer"></div><div id="dragHold" aria-hidden="true"></div>
 <div class="edge l" id="edgeL"><span>‹ Giorno prima</span></div><div class="edge r" id="edgeR"><span>Giorno dopo ›</span></div>
 
-<script src="ornrarv-lib.js?v=2.4"></script>
+<script src="ornrarv-lib.js?v=2.5"></script>
 <script>
 (() => {
 'use strict';
@@ -987,7 +987,7 @@ function heroFor(d, short, title, kick, subs, scn) {
   const W = Math.max(320, innerWidth), Hh = Math.max(280 + safeTop(), innerHeight * .44), Wv = Math.min(1200, Math.max(480, W * 1.23)), tot = Hh * Wv / W;
   const B = Math.max(0, Math.min(40, tot - 340)), top = Math.max(0, tot - 340 - B);
   const so = Object.assign({ p: o ? o.wi / 6 : 0, variant, top, bot: B }, o ? scn || {} : {});
-  const key = [mi, variant, o ? o.wi : 0, so.prot ? 'm' : '', so.wk ?? '', so.dy ?? '', Math.round(top), Math.round(B)].join(':');
+  const key = [mi, variant, o ? o.wi : 0, so.prot ? 'm' : '', so.wk ?? '', so.dy ?? '', so.moon == null ? '' : so.moon.toFixed(2), Math.round(top), Math.round(B)].join(':');
   if (!heroEl) heroEl = h('section', { class: 'hero' });
   heroEl.className = 'hero' + (short ? ' short' : '');
   heroEl.style.setProperty('--h-bg', th.bg); heroEl.style.setProperty('--h-ink', th.ink);
@@ -1038,7 +1038,7 @@ function viewGiorno() {
   const d = dayD, L = nowLogical(), o = settale(d), m = dayModel(d);
   const kick = `${relWord(d, L.date)}${dayDiff(L.date, d) >= -1 && dayDiff(L.date, d) <= 1 ? ' · ' + WD[dowOf(d)] : ''}`;
   const subs = [o ? codeEl(o) : null, h('span', { text: o ? o.fase : '' }), h('span', { class: 'faint', style: { color: 'inherit', opacity: .75 }, text: greg(d) })];
-  const out = [heroFor(d, false, dTitle(d), kick, subs, o ? { wk: o.wi, dy: o.di } : null), weekStrip(d)];
+  const out = [heroFor(d, false, dTitle(d), kick, subs, o ? { wk: o.wi, dy: o.di, moon: ORN.moonPhase(d) } : null), weekStrip(d)];
   const w = h('div', { class: 'wrap', style: { marginTop: '10px' } });
   w.append(focusCard(d), previewCard(d, m));
   /* agenda */
@@ -1337,7 +1337,7 @@ document.addEventListener('click', (e) => { if (SEL && !e.target.closest('.blk.s
 function viewSettimana() {
   const L = nowLogical(), mon = weekM, o = settale(mon);
   const out = [heroFor(mon, true, o ? o.sett : 'Settimana', o ? `${o.mese} · ${dNum(mon)}–${dNum(addDays(mon, 6))}` : `${greg(mon)} – ${greg(addDays(mon, 6))}`,
-    o ? [codeEl(o, 2), h('span', { text: `${greg(mon)}–${greg(addDays(mon, 6))}` })] : null, o ? { wk: o.wi, dy: weekDayFocus(mon) } : null)];
+    o ? [codeEl(o, 2), h('span', { text: `${greg(mon)}–${greg(addDays(mon, 6))}` })] : null, o ? { wk: o.wi, dy: weekDayFocus(mon), moon: ORN.moonPhase(addDays(mon, weekDayFocus(mon))) } : null)];
   const days = [...Array(7)].map((_, i) => addDays(mon, i)), models = days.map(dayModel);
   const nEv = models.reduce((a, m) => a + m.timed.length, 0), busy = models.reduce((a, m) => a + m.busy, 0), planned = days.filter(isPlanned).length;
   const w = h('div', { class: 'wrap', style: { marginTop: '14px' } });
@@ -2222,7 +2222,7 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden) { if
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => render());
 
 /* se il telefono ha tenuto una grafica vecchia insieme all'app nuova, svuoto la cache e ricarico (una volta) */
-if (window.ORN && ORN.version !== '2.4') { try { if (!sessionStorage.getItem('ritmo:rl')) { sessionStorage.setItem('ritmo:rl', '1'); (window.caches ? caches.keys().then((ks) => Promise.all(ks.map((k) => caches.delete(k)))) : Promise.resolve()).then(() => location.reload()); } } catch (e) { /* niente */ } }
+if (window.ORN && ORN.version !== '2.5') { try { if (!sessionStorage.getItem('ritmo:rl')) { sessionStorage.setItem('ritmo:rl', '1'); (window.caches ? caches.keys().then((ks) => Promise.all(ks.map((k) => caches.delete(k)))) : Promise.resolve()).then(() => location.reload()); } } catch (e) { /* niente */ } }
 loadState(); loadCachedData(); rebuildEvents();
 if (lsGet(LS.pass) === null) showWelcome(); else { showMain(); refresh(true); }
 if ('serviceWorker' in navigator) {

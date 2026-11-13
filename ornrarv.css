@@ -255,3 +255,11 @@ html.has-layer main * { animation-play-state: paused !important; }
 .scene.play .sc-tick { animation: sc-tick 1.1s ease-in-out infinite alternate; }
 @keyframes sc-tick { from { transform: rotate(-24deg); } to { transform: rotate(24deg); } }
 .scene.static .sc-puff { opacity: .6; }
+
+/* ---------- Ritmo 2.5: entrata unica (le colline non salgono più da sole: niente oggetti che galleggiano o sfasano) ---------- */
+.scene .sc-rise { transform: none; }
+.scene.play .sc-rise { animation: lil-fade 1.1s ease var(--d, 0s) forwards; }
+.scene .sc-enter { transform: translateY(14px); }
+.scene.play .sc-enter { animation: sc-enter 1.6s var(--ease-out) forwards; }
+@keyframes sc-enter { to { transform: none; } }
+.scene.static .sc-enter { transform: none; }

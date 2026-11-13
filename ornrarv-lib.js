@@ -431,11 +431,18 @@ function sailboat(x, y, s, hull, sail) {
    Giorno → un piccolo particolare accanto all'animale, con il verbo del giorno.
    O Osservare · R Remare (osservativo) · N Navigare · R Remare (orientato) · A Automatizzare · R Remare (automatizzato) · V Validare */
 const WOOD = '#8A5E3B', WOOD_D = '#5E3D25', WOOD_L = '#B98A5C', BRASS = '#C9973A', BRASS_L = '#EBC77A', BRASS_D = '#7A5520';
-const MONTH_OBJ = ['Il cannocchiale', 'Il pontile con la barca e la lanterna', 'Il segnavia e la stella polare', 'La canoa sul torrente, tra le boe', 'Il mulino a vento', 'Il battello a ruota', 'Il forziere trovato'];
-const WEEK_OBJ = ['La civetta sul paletto', 'L\'anatra che si guarda intorno', 'Lo stormo di oche in formazione', 'Il cigno con i piccoli in fila', 'L\'alveare con le api', 'La coccinella sulla foglia, portata dalla corrente', 'Lo stambecco in cima alla roccia'];
+const MONTH_OBJ = ['Il cannocchiale', 'Il pontile con la barca e la lanterna', 'Il segnavia e la stella polare', 'La barca a vela col capitano, tra le boe', 'Il mulino a vento', 'Il battello a ruota', 'Il forziere trovato'];
+const WEEK_OBJ = ['La vedetta di legno', 'L\'anatra che si guarda intorno', 'Lo stormo di oche in formazione', 'La barca a vela col capitano', 'L\'alveare con le api', 'La coccinella sulla foglia, portata dalla corrente', 'Lo stambecco in cima alla roccia'];
 const DAY_OBJ = ['il binocolo', 'i remi incrociati', 'la bussola', 'la manica a vento', 'la girandola', 'il metronomo', 'la bandierina con la spunta'];
 /* dove stanno: W = protagonista o animale, D = particolare del giorno, ACQ = acqua per le settimane di Remare */
 const SLOT = [{ W: 1108, D: 1016 }, { W: 1122, D: 1058 }, { W: 1110, D: 1022 }, { W: 1104, D: 1022 }, { W: 1092, D: 1018 }, { W: 1102, D: 1016 }, { W: 1084, D: 1036 }];
+const sailBoat = (pen) => `<path d="M-1 -90V-4" stroke="#4A3A2A" stroke-width="2.2"/>`
+  + `<path d="M-3 -86L-3 -34L-38 -34Z" fill="#FBF7EE"/><path d="M-3 -86L-3 -34L-14 -34Z" fill="#E9E1CF"/><path d="M-3 -34H-40" stroke="#4A3A2A" stroke-width="2"/>`
+  + `<path d="M2 -82L34 -9L2 -12Z" fill="#F3EBD9"/><path class="sc-flagw" d="M-1 -90L13 -87L-1 -84Z" fill="${pen}"/>`
+  + `<g transform="translate(-24 -6)"><path d="M-5 0L-4 -12Q0 -15 4 -12L5 0Z" fill="#2B3E5E"/><path d="M-1 -12V-3M1 -12V-3" stroke="#F2C230" stroke-width=".8"/>`
+  + `<circle cx="0" cy="-17" r="4.6" fill="#E3B48C"/><path d="M-5.4 -19.6Q0 -25 5.4 -19.6Z" fill="#FFFFFF"/><path d="M-5.8 -19.6H6.8" stroke="#1E2230" stroke-width="1.8" stroke-linecap="round"/><path d="M-1.6 -22.4H1.6" stroke="#F2C230" stroke-width="1"/>`
+  + `<path d="M4 -9L12 -5" stroke="#2B3E5E" stroke-width="2.4" stroke-linecap="round"/></g><path d="M-30 -4L-12 -1" stroke="#4A3A2A" stroke-width="1.6"/>`
+  + `<path d="M-34 -6L36 -8Q31 5 16 7L-22 7Q-32 5 -34 -6Z" fill="#2F5A7A"/><path d="M-34 -6L36 -8L35 -4.6L-33 -2.8Z" fill="#FFFFFF"/><circle cx="20" cy="0" r="1.6" fill="#F2C230"/>`;
 const at = (x, y, k, inner, cls) => `<g transform="translate(${f2(x)} ${f2(y)}) scale(${k})"${cls ? ` class="${cls}"` : ''}>${inner}</g>`;
 
 function decorFor(mi, o, C) {
@@ -495,11 +502,11 @@ function decorFor(mi, o, C) {
           jet += `<path d="M-9 -4V-60h-13" stroke="${WOOD_D}" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
           jet += `<g class="sc-hang" style="--sd:4s"><path d="M-22 -60v5" stroke="#3A3A3A" stroke-width="1"/><g transform="translate(-22 -45)"><path d="M-6 -10L6 -10L3.5 -13.5L-3.5 -13.5Z" fill="#3A3A3A"/><rect x="-5" y="-10" width="10" height="12" rx="1.2" fill="#3A3A3A"/><rect x="-3.4" y="-8.4" width="6.8" height="8.6" fill="#F6C76E"/><path d="M-6 2H6" stroke="#3A3A3A" stroke-width="1.8"/></g></g>`;
           const boat = `<g class="sc-bob"><g transform="translate(14 13)"><path d="M-26 -8L24 -8Q22 2 13 3L-18 3Q-24 1 -26 -8Z" fill="#7C4A34"/><path d="M-26 -8L24 -8L23 -5.6L-25 -5.6Z" fill="#E9E2D3"/>`
-            + `<path d="M-6 -7L-22 5M5 -7L22 6" stroke="${WOOD_L}" stroke-width="2" stroke-linecap="round"/><ellipse cx="-23" cy="5.5" rx="3.4" ry="1.5" fill="${WOOD_L}"/><ellipse cx="23" cy="6.5" rx="3.4" ry="1.5" fill="${WOOD_L}"/>`
+            + `<path d="M-18 -10.5L16 -12.5" stroke="${WOOD_L}" stroke-width="1.8" stroke-linecap="round"/><ellipse cx="18" cy="-12.6" rx="5" ry="1.6" fill="${WOOD_L}"/><path d="M-14 -8.5V-6M10 -8.5V-6" stroke="${WOOD_D}" stroke-width="1.4"/>`
             + `<path d="M24 -7Q30 -12 37 -4" stroke="#C9B48A" stroke-width="1" fill="none"/></g></g>`;
           return dark(at(X, y, K, jet + boat) + ripples(X + 14 * K, y + 18 * K, 3, 30)); });
         push('near', (g) => { const y = ly(g), on = DARK1 || NIGHT, lx = X - 22 * K, lyy = y - 49 * K;
-          return `<g data-lit="1"><circle class="sc-glow" cx="${f2(lx)}" cy="${f2(lyy)}" r="${on ? 56 : 36}" fill="url(#${u}l)"/><ellipse class="sc-twinkle" style="--td:3.2s" cx="${f2(lx)}" cy="${f2(y + 9 * K)}" rx="${on ? 16 : 10}" ry="2.4" fill="#F6C76E" fill-opacity="${on ? .7 : .45}"/></g>`; });
+          return lit(`<circle class="sc-glow" cx="${f2(lx)}" cy="${f2(lyy)}" r="${on ? 56 : 36}" fill="url(#${u}l)"/><ellipse class="sc-twinkle" style="--td:3.2s" cx="${f2(lx)}" cy="${f2(y + 9 * K)}" rx="${on ? 16 : 10}" ry="2.4" fill="#F6C76E" fill-opacity="${on ? .7 : .45}"/>`, 1.7); });
         break;
       }
       case 2: { // Navigare: il segnavia nella neve con la rosa dei venti, e di notte la stella polare
@@ -518,29 +525,26 @@ function decorFor(mi, o, C) {
           + `<path d="M944 26L892 48L856 56L832 78L794 82L806 108L844 104L832 78" stroke="#E9ECF6" stroke-opacity=".25" stroke-width="1" fill="none" stroke-dasharray="3 4"/>`, 1.2));
         break;
       }
-      case 3: { // Remare orientato: il torrente di primavera, la canoa che rema verso le boe del percorso
-        excl.push([1030, 1200]);
-        push('mid', (g) => { const y0 = g.mid(1100) + 4;
-          return `<path class="sc-rise" style="--d:.28s;--rise:30px" d="M930 ${f2(y0 + 12)}Q1060 ${f2(y0 - 2)} 1210 ${f2(y0 + 2)}L1210 ${f2(y0 + 46)}L930 ${f2(y0 + 46)}Z" fill="#9CCFD0"/>`
-            + `<path d="M980 ${f2(y0 + 12)}h30M1090 ${f2(y0 + 8)}h44M1150 ${f2(y0 + 16)}h30" stroke="#FFFFFF" stroke-opacity=".7" stroke-width="1.5" stroke-linecap="round"/>`; });
-        push('near', (g) => { const y = g.mid(1100) + 17;
+      case 3: { // Remare orientato: il lago di primavera, la barca a vela col capitano che segue le boe del percorso
+        excl.push([1000, 1200]);
+        push('mid', (g) => { const y0 = g.mid(1100) + 2;
+          return `<path d="M900 ${f2(y0 + 10)}Q1050 ${f2(y0 - 6)} 1210 ${f2(y0 - 2)}L1210 ${f2(y0 + 50)}L900 ${f2(y0 + 50)}Z" fill="#9CCFD0"/><path d="M900 ${f2(y0 + 10)}Q1050 ${f2(y0 - 6)} 1210 ${f2(y0 - 2)}" stroke="#7DB5B8" stroke-width="2" fill="none"/>`
+            + `<path d="M960 ${f2(y0 + 12)}h30M1060 ${f2(y0 + 8)}h44M1150 ${f2(y0 + 14)}h34" stroke="#FFFFFF" stroke-opacity=".7" stroke-width="1.5" stroke-linecap="round"/>`; });
+        push('near', (g) => { const y = g.mid(1100) + 22;
           const buoy = (x, col) => `<g class="sc-bob"><g transform="translate(${x} ${f2(y - 2)}) scale(1.4)"><path d="M-6 2L-4 -14L4 -14L6 2Z" fill="${col}"/><rect x="-4.4" y="-9" width="8.8" height="3.5" fill="#FFFFFF"/><path d="M0 -14V-22" stroke="#3A3A3A" stroke-width="1.6"/><circle cx="0" cy="-23" r="2.4" fill="${col}"/></g></g>`;
-          const rower = `<circle cx="2" cy="-30" r="5.2" fill="#E0B48A"/><path d="M-5 -33Q2 -42 9 -33Z" fill="#E3C25A"/><path d="M-6 -12L-4 -26Q2 -30 8 -26L8 -12Z" fill="#3E6FA0"/>`;
-          const oar = (s) => `<g class="sc-row" style="--rwd:1.6s;--rwl:${s > 0 ? 0 : -.8}s"><path d="M2 -20L${-26} ${f2(4 * s + 6)}" stroke="${WOOD_L}" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="-27" cy="${f2(4 * s + 7)}" rx="5" ry="2" fill="${WOOD_L}"/></g>`;
-          const canoe = `<g class="sc-glide" style="--gd:7s;--gx:-18px"><g class="sc-bob"><g transform="translate(1084 ${f2(y + 2)}) scale(1.7)">${oar(1)}${rower}${oar(-1)}<path d="M-34 -12Q0 -8 36 -14Q32 0 16 2L-22 2Q-32 0 -34 -12Z" fill="#C0563A"/><path d="M-34 -12Q0 -8 36 -14L35 -11Q0 -5 -33 -9Z" fill="#F2D9B0"/>`
-            + `<path d="M-30 -12V-34" stroke="${WOOD_D}" stroke-width="1.4"/><path class="sc-flagw" d="M-30 -34L-16 -31L-30 -27Z" fill="#E3A33B"/></g></g></g>`;
-          return buoy(990, '#D8453A') + buoy(1178, '#3E8F5A') + `<path d="M1112 ${f2(y + 1)}l26 4M1112 ${f2(y + 4)}l22 7" stroke="#FFFFFF" stroke-opacity=".7" stroke-width="1.2"/>` + canoe; });
+          return buoy(984, '#D8453A') + buoy(1182, '#3E8F5A') + `<path d="M1040 ${f2(y + 3)}l-30 3M1040 ${f2(y + 6)}l-24 6" stroke="#FFFFFF" stroke-opacity=".75" stroke-width="1.3"/>`
+            + `<g class="sc-glide" style="--gd:9s;--gx:14px"><g class="sc-bob">${at(1084, y, 1.55, sailBoat('#E3A33B'))}</g></g>`; });
         break;
       }
       case 4: { // Automatizzare: il mulino a vento che gira da solo tra i fiori
         excl.push([1060, 1150]);
         push('near', (g) => { const y = g.near(X) + 4;
           let blades = '';
-          for (let k = 0; k < 4; k++) blades += `<g transform="rotate(${k * 90})"><path d="M0 0L0 -84" stroke="${WOOD_D}" stroke-width="3"/><path d="M2 -18L19 -18L19 -84L2 -84Z" fill="#F4ECDD" fill-opacity=".92" stroke="${WOOD_D}" stroke-width="1.4"/>`
-            + `<path d="M2 -34H19M2 -51H19M2 -68H19M10.5 -18V-84" stroke="${WOOD_D}" stroke-width="1" stroke-opacity=".7"/></g>`;
+          for (let k = 0; k < 4; k++) blades += `<g transform="rotate(${k * 90 + 20})"><path d="M0 0L0 -82" stroke="${WOOD_D}" stroke-width="3.2" stroke-linecap="round"/><path d="M-8 -16L8 -16L9 -80L-9 -80Z" fill="#F4ECDD" stroke="${WOOD_D}" stroke-width="1.3" stroke-linejoin="round"/>`
+            + `<path d="M-8.3 -32H8.4M-8.6 -48H8.6M-8.8 -64H8.8" stroke="${WOOD_D}" stroke-width="1" stroke-opacity=".6"/></g>`;
           const tower = `<path d="M-32 0L-19 -140L19 -140L32 0Z" fill="#EFE6D6"/><path d="M0 0L0 -140L19 -140L32 0Z" fill="#DCCFB8"/><path d="M-26 -140Q0 -182 26 -140Z" fill="#A9502F"/>`
             + `<rect x="-8" y="-26" width="16" height="26" rx="8" fill="${WOOD_D}"/><rect x="-6" y="-92" width="11" height="13" rx="1" fill="#5B6573"/><rect x="-5" y="-56" width="9" height="11" rx="1" fill="#5B6573"/><path d="M-33 0H33" stroke="#6E8F55" stroke-width="3"/>`;
-          return at(X, y, 1.06, base(-40, 0, 20) + tower + `<g transform="translate(0 -148)"><g class="sc-rot" style="--rtd:9s">${blades}<circle r="0.1" fill="none"/></g><circle r="6" fill="${WOOD_D}"/></g>`); });
+          return at(X, y, 1.06, base(-40, 0, 20) + tower + `<g transform="translate(0 -148)"><g class="sc-rot" style="--rtd:12s">${blades}<circle r="84" fill="none"/></g><circle r="7" fill="${WOOD_D}"/><circle r="2.6" fill="#C9A04A"/></g>`); });
         if (NIGHT) push('near', (g) => { const y = g.near(X) + 4, k = 1.06; return lit(`<rect class="sc-window" x="${f2(X - 6 * k)}" y="${f2(y - 92 * k)}" width="${f2(11 * k)}" height="${f2(13 * k)}" fill="#F6C76E"/><circle cx="${f2(X)}" cy="${f2(y - 86 * k)}" r="22" fill="url(#${u}l)"/>`); });
         break;
       }
@@ -556,7 +560,7 @@ function decorFor(mi, o, C) {
             + `<rect x="-14" y="-56" width="10" height="24" fill="#B23A2E"/><rect x="-14" y="-56" width="10" height="5" fill="#2A2418"/><rect x="6" y="-52" width="10" height="20" fill="#B23A2E"/><rect x="6" y="-52" width="10" height="5" fill="#2A2418"/>`
             + `<path d="M50 -16V-48" stroke="#3B3012" stroke-width="1.6"/><path class="sc-flagw" d="M50 -48L66 -44L50 -40Z" fill="#E3A33B"/>`
             + `<path d="M-10 -12A24 24 0 0 1 38 -12Z" fill="#7A2620"/><g transform="translate(14 -4)"><g class="sc-rot" style="--rtd:3.2s">${wheel}<circle r="20" fill="none"/></g><circle r="3" fill="#3B3012"/></g></g></g>`;
-          return [puffs + boat, `<g data-lit="1"><path d="M${x - 80} ${y + 4}H${x + 84}V${y + 30}H${x - 80}Z" fill="${wc}"/></g>`,
+          return [puffs + boat, lit(`<path d="M${x - 80} ${y + 4}H${x + 84}V${y + 30}H${x - 80}Z" fill="${wc}"/>`, .5),
             `<path d="M${x + 40} ${y + 5}q20 2 40 -1M${x + 46} ${y + 10}q24 2 50 -2M${x - 74} ${y + 6}q-14 1 -26 -1" stroke="#FFFFFF" stroke-opacity=".8" stroke-width="1.5" fill="none" stroke-linecap="round"/>`,
             (NIGHT ? lit([-40, -28, -16, -4, 8, 20].map((wx) => `<rect x="${x + wx}" y="${y - 28}" width="6" height="6" rx="1" fill="#F6C76E"/>`).join('') + `<circle cx="${x - 6}" cy="${y - 24}" r="40" fill="url(#${u}l)"/>`) : '')]; });
         break;
@@ -585,19 +589,19 @@ function decorFor(mi, o, C) {
     if (wk !== 2) excl.push([X - 60, X + 60]);
     const layer = water && sea ? 'mid' : 'near';
     switch (wk) {
-      case 0: // Osservare: la civetta sul paletto, occhi grandi che sbattono (di notte si accendono)
-        push(layer, (g) => { const y = g.near(X) + 3;
-          const owl = `<path d="M-15 -78Q-19 -64 -12 -60L12 -60Q19 -64 15 -78Q12 -96 0 -97Q-12 -96 -15 -78Z" fill="#8A6A4A"/><path d="M-8 -62Q-10 -76 0 -80Q10 -76 8 -62Z" fill="#D9BE96"/>`
-            + `<path d="M-5 -72l2 2l2 -2M1 -67l2 2l2 -2M-5 -64l2 2l2 -2" stroke="#8A6A4A" stroke-width="1" fill="none"/>`
-            + `<path d="M-15 -80Q-20 -68 -13 -62Q-11 -72 -15 -80ZM15 -80Q20 -68 13 -62Q11 -72 15 -80Z" fill="#6E5236"/>`
-            + `<circle cx="0" cy="-104" r="13.5" fill="#8A6A4A"/><path d="M-12 -112L-15 -124L-6 -116ZM12 -112L15 -124L6 -116Z" fill="#6E5236"/>`
-            + `<circle cx="-6" cy="-104" r="7" fill="#E8D6B5"/><circle cx="6" cy="-104" r="7" fill="#E8D6B5"/>`
-            + `<g class="sc-blink"><circle cx="-6" cy="-104" r="4.2" fill="#F2C230"/><circle cx="6" cy="-104" r="4.2" fill="#F2C230"/><circle cx="-6" cy="-104" r="2.2" fill="#1E1A14"/><circle cx="6" cy="-104" r="2.2" fill="#1E1A14"/></g>`
-            + `<path d="M-2 -99L0 -95L2 -99Z" fill="#4A3A2E"/><path d="M-6 -60v3M-3 -60v3M3 -60v3M6 -60v3" stroke="#C9A04A" stroke-width="1.4" stroke-linecap="round"/>`;
-          const post = `<rect x="-6" y="-60" width="12" height="62" fill="${WOOD_D}"/><path d="M-6 -46H6M-6 -24H6" stroke="#3E2A1A" stroke-width="1"/><path d="M6 -40L40 -34M6 -18L40 -12" stroke="${WOOD_D}" stroke-width="3" stroke-linecap="round"/>`
-            + cap(0, -60, 12) + (mi === 4 || mi === 3 ? `<path d="M-6 -6Q-12 -18 -4 -30Q4 -38 -2 -48" stroke="#5E9446" stroke-width="1.6" fill="none"/>${daisy(-8, -22, .6)}` : '');
-          const eyes = NIGHT || DARK1 ? lit(at(X, y, 1.3, `<g class="sc-blink"><circle cx="-6" cy="-104" r="4.2" fill="#FFE07A"/><circle cx="6" cy="-104" r="4.2" fill="#FFE07A"/><circle cx="-6" cy="-104" r="2" fill="#1E1A14"/><circle cx="6" cy="-104" r="2" fill="#1E1A14"/></g>`), 1.2) : '';
-          return [dark(at(X, y, 1.3, base(0, 0, 40) + post + owl + (snowy ? cap(0, -116, 26) : ''))), eyes]; });
+      case 0: // Osservare: la vedetta di legno sulla collina, con la bandierina (di notte una lanterna dentro)
+        push(layer, (g) => { const y = g.near(X) + 3, roof = mi === 2 ? '#5E6F7A' : mi === 4 ? '#8E5FA3' : '#A9502F';
+          let tw = `<path d="M-21 2L-13 -96M21 2L13 -96" stroke="${WOOD_D}" stroke-width="4.4" stroke-linecap="round"/>`
+            + `<path d="M-19 -8L15 -48M19 -8L-15 -48M-15 -48L13 -90M15 -48L-13 -90" stroke="${WOOD}" stroke-width="2"/><path d="M-19 -8H19M-15 -48H15" stroke="${WOOD}" stroke-width="2.4"/>`;
+          tw += `<path d="M-5 2L-3 -96M6 2L4 -96" stroke="${WOOD_L}" stroke-width="1.6"/>`;
+          for (let k = 0; k < 9; k++) tw += `<path d="M-4.6 ${-6 - k * 10}H5.6" stroke="${WOOD_L}" stroke-width="1.4"/>`;
+          tw += `<path d="M-18 -100V-122M18 -100V-122" stroke="${WOOD_D}" stroke-width="3"/><rect x="-17" y="-122" width="34" height="12" fill="#3A2A1C" fill-opacity=".55"/>`
+            + `<rect x="-25" y="-102" width="50" height="6" rx="1" fill="${WOOD_D}"/><rect x="-22" y="-112" width="44" height="11" fill="${WOOD}"/><path d="M-14 -112V-101M-6 -112V-101M2 -112V-101M10 -112V-101M18 -112V-101" stroke="${WOOD_D}" stroke-width="1.2"/>`
+            + `<path d="M-28 -120L0 -142L28 -120Z" fill="${roof}"/><path d="M-28 -120H28" stroke="${mixHex(roof, '#000000', .3)}" stroke-width="2"/>`
+            + (snowy ? `<path d="M-26 -121L0 -141L26 -121L18 -123L0 -136L-18 -123Z" fill="#FFFFFF"/>` : '')
+            + `<path d="M0 -142V-158" stroke="#3A2E24" stroke-width="1.6"/><path class="sc-flagw" d="M0 -158L15 -155L0 -151Z" fill="#D8453A"/>`;
+          const lamp = NIGHT || DARK1 ? lit(at(X, y, 1.2, `<rect x="-4" y="-120" width="8" height="8" rx="1.5" fill="#F6C76E"/><circle cx="0" cy="-116" r="26" fill="url(#${u}l)"/>`), 1.7) : '';
+          return [dark(at(X, y, 1.2, base(0, 0, 50) + tw)), lamp]; });
         break;
       case 1: // Remare osservativo: l'anatra sulla pozza, gira la testa a guardarsi intorno
         push(layer, (g) => { const x = sea ? WX : X, y = wy(g) - 1;
@@ -607,17 +611,15 @@ function decorFor(mi, o, C) {
         break;
       case 2: // Navigare: lo stormo di oche in formazione a V che attraversa il cielo
         push('sky', () => { let b = '';
-          const gc = NIGHT ? '#1A2238' : '#3B3A40', goose = (x, y, k, i) => `<g transform="translate(${f2(x)} ${f2(y)}) scale(${k})"><ellipse cx="0" cy="-1" rx="9" ry="3.4" fill="${gc}"/><path d="M-8 -1L-14 1M7 -2Q12 -3 15 -6" stroke="${gc}" stroke-width="2.4" fill="none" stroke-linecap="round"/><circle cx="16" cy="-6.5" r="2.2" fill="${gc}"/><path class="sc-gull" style="animation-delay:${f2(-i * .13)}s" d="M-16 -9Q-6 -12 0 -1Q6 -12 16 -9" fill="none" stroke="${NIGHT ? '#1A2238' : '#3B3A40'}" stroke-width="2.4" stroke-linecap="round"/></g>`;
+          const gc = NIGHT ? '#1A2238' : '#4A4A55', goose = (x, y, k, i) => `<g transform="translate(${f2(x)} ${f2(y)}) scale(${k})"><g class="sc-gull" style="animation-delay:${f2(-i * .17)}s"><path d="M-3 -1Q-9 -9 -19 -11Q-11 -5 -4 1.5ZM3 -1Q9 -8 17 -10Q10 -4 4 1.5Z" fill="${gc}"/></g><path d="M-12 1Q0 -4 10 -2Q14 -2 17 -6" stroke="${gc}" stroke-width="2.8" fill="none" stroke-linecap="round"/><path d="M18 -6.5L22 -5.5" stroke="${gc}" stroke-width="1.6" stroke-linecap="round"/><path d="M-12 1L-17 3" stroke="${gc}" stroke-width="2.4" stroke-linecap="round"/></g>`;
           const lead = [868, 66];
-          for (let i = 0; i < 7; i++) { const r = Math.ceil(i / 2), side = i % 2 ? -1 : 1; b += goose(lead[0] + r * 30, lead[1] + side * r * 15, 1.35 - r * .06, i); }
+          for (let i = 0; i < 5; i++) { const r = Math.ceil(i / 2), side = i % 2 ? -1 : 1; b += goose(lead[0] + r * 50, lead[1] + side * r * 26, 1.3 - r * .06, i); }
           return `<g class="sc-fade" style="--d:.8s"><g class="sc-hover" style="--hd:16s;--hdl:-3s;--hx:-60px">${b}</g></g>`; });
         break;
-      case 3: // Remare orientato: la cigna davanti, i piccoli in fila dietro, tutti nella stessa direzione
-        push(layer, (g) => { const x = (sea ? WX : X) - 40, y = wy(g) - 1;
-          const swan = `<path d="M-22 0Q-30 -8 -26 -16Q-14 -12 -6 -14Q8 -18 14 -10Q18 -4 14 1L-14 2Q-20 2 -22 0Z" fill="#FFFFFF"/><path d="M-20 -6Q-4 -12 10 -6" stroke="#DCDCDC" stroke-width="2" fill="none"/>`
-            + `<path d="M8 -12Q16 -24 8 -32Q2 -40 10 -44" stroke="#FFFFFF" stroke-width="5.4" fill="none" stroke-linecap="round"/><ellipse cx="13" cy="-45" rx="5.5" ry="4" fill="#FFFFFF"/><path d="M17 -46L26 -43L17 -42Z" fill="#E98A3A"/><circle cx="16.5" cy="-44.5" r="1.6" fill="#222"/><circle cx="13" cy="-46" r=".9" fill="#222"/>`;
-          const cyg = (cx, i) => `<g class="sc-bob" style="animation-delay:${f2(-i * .7)}s"><g transform="translate(${cx} 0)"><path d="M-8 0Q-10 -7 -2 -7Q6 -8 7 -2Q7 1 4 1Z" fill="#B8B2A8"/><circle cx="5" cy="-10" r="3.6" fill="#B8B2A8"/><path d="M8 -10.5L11 -9.5L8 -8.5Z" fill="#5A5048"/></g></g>`;
-          return dark(`<g class="sc-glide" style="--gd:9s;--gx:-16px">${at(x, y, 1.65, swan + cyg(32, 0) + cyg(50, 1) + cyg(68, 2) + `<path d="M-24 3L-48 8M-24 5L-44 12" stroke="#FFFFFF" stroke-opacity=".7" stroke-width="1"/>`)}</g>`); });
+      case 3: // Remare orientato: la barca a vela col capitano al timone, che tiene la rotta
+        push(layer, (g) => { const x = (sea ? WX : X) - 4, y = wy(g) + 1;
+          return dark(`<path d="M${f2(x - 52)} ${f2(y + 4)}l-26 3M${f2(x - 50)} ${f2(y + 8)}l-20 6" stroke="#FFFFFF" stroke-opacity=".75" stroke-width="1.2"/>`
+            + `<g class="sc-glide" style="--gd:9s;--gx:12px"><g class="sc-bob">${at(x, y, 1.35, sailBoat('#D8453A'))}</g></g>`); });
         break;
       case 4: // Automatizzare: l'alveare di paglia, le api lavorano da sole (d'inverno quasi tutte dentro)
         push(layer, (g) => { const y = g.near(X) + 3;
@@ -693,22 +695,35 @@ function sceneSVG(mi, opts = {}) {
   const sky = str => { if (!G) s.push(str); };
   const defs = `<defs>
     <linearGradient id="${u}k" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${P.sky[0]}"/><stop offset="1" stop-color="${P.sky[1]}"/></linearGradient>
-    <radialGradient id="${u}g"><stop offset="0" stop-color="${P.sun}" stop-opacity=".85"/><stop offset=".4" stop-color="${P.sun}" stop-opacity=".3"/><stop offset="1" stop-color="${P.sun}" stop-opacity="0"/></radialGradient>
+    <radialGradient id="${u}g"><stop offset="0" stop-color="${P.sun}" stop-opacity=".8"/><stop offset=".22" stop-color="${P.sun}" stop-opacity=".5"/><stop offset=".45" stop-color="${P.sun}" stop-opacity=".22"/><stop offset=".7" stop-color="${P.sun}" stop-opacity=".07"/><stop offset="1" stop-color="${P.sun}" stop-opacity="0"/></radialGradient>
     <linearGradient id="${u}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${P.fog || '#fff'}" stop-opacity="0"/><stop offset=".5" stop-color="${P.fog || '#fff'}" stop-opacity=".5"/><stop offset="1" stop-color="${P.fog || '#fff'}" stop-opacity="0"/></linearGradient>
     <linearGradient id="${u}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${P.sea ? P.sea[0] : '#fff'}"/><stop offset="1" stop-color="${P.sea ? P.sea[1] : '#fff'}"/></linearGradient>
     <radialGradient id="${u}w"><stop offset="0" stop-color="${P.fog || '#fff'}" stop-opacity=".9"/><stop offset=".6" stop-color="${P.fog || '#fff'}" stop-opacity=".35"/><stop offset="1" stop-color="${P.fog || '#fff'}" stop-opacity="0"/></radialGradient>
-    <radialGradient id="${u}l"><stop offset="0" stop-color="#F7E58A" stop-opacity=".55"/><stop offset="1" stop-color="#F7E58A" stop-opacity="0"/></radialGradient>
+    <radialGradient id="${u}l"><stop offset="0" stop-color="#FBE6A0" stop-opacity=".6"/><stop offset=".2" stop-color="#F7DC86" stop-opacity=".38"/><stop offset=".45" stop-color="#F5D57A" stop-opacity=".15"/><stop offset=".72" stop-color="#F5D57A" stop-opacity=".04"/><stop offset="1" stop-color="#F5D57A" stop-opacity="0"/></radialGradient>
     <linearGradient id="${u}b" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#FFF1BE" stop-opacity=".85"/><stop offset="1" stop-color="#FFF1BE" stop-opacity="0"/></linearGradient>
     <linearGradient id="${u}t" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF" stop-opacity="1"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>
   </defs>`;
-  sky(`<rect y="${-T}" width="${SW}" height="${SH + T + B}" fill="url(#${u}k)"/>`);
+  sky(`<rect y="${-T - 30}" width="${SW}" height="${SH + T + B + 30}" fill="url(#${u}k)"/>`);
   if (mi === 6 && p > 0 && !NIGHT) sky(`<rect y="${-T}" width="${SW}" height="${SH + T}" fill="#F08A4B" fill-opacity="${f2(p * .22)}"/>`);
   if (mi === 2 && p > 0 && !NIGHT) sky(`<rect y="${-T}" width="${SW}" height="${SH + T}" fill="#F3E3C0" fill-opacity="${f2(p * .18)}"/>`);
   /* di notte: stelle dietro le colline (RN: un caso a parte, così il paesaggio resta uguale tra giorno e notte) */
   if (NIGHT && !G) { let st = ''; for (let i = 0; i < 40 + Math.round(T / 6); i++) st += `<circle class="sc-twinkle" style="--td:${f2(2 + RN() * 3)}s;--tdl:${f2(RN() * 3)}s" cx="${f2(440 + RN() * 760)}" cy="${f2(8 - T + RN() * ((mi === 2 ? 110 : 150) + T))}" r="${f2(.6 + RN() * 1.3)}" fill="#E9ECF6"/>`;
     s.push(`<g data-lit="1" class="sc-fade" style="--d:.3s">${st}</g>`); }
+  const MP = opts.moon, MI = MP == null ? 1 : (1 - Math.cos(2 * Math.PI * MP)) / 2;   // 2.4: fase della luna del giorno (0 nuova, .5 piena)
+  if ((NIGHT || (mi === 1 && !DAY)) && !G && MP != null && MI < .97) { const RS = rng(mi * 313 + 29), n = Math.round((1 - MI) * (70 + T / 4)); let st = '';
+    for (let i = 0; i < n; i++) { const big = RS() < .12; st += `<circle class="sc-twinkle" style="--td:${f2(2.2 + RS() * 3.4)}s;--tdl:${f2(RS() * 4)}s" cx="${f2(420 + RS() * 790)}" cy="${f2(-T + RS() * (T + 170))}" r="${f2(big ? 1.3 + RS() * .7 : .45 + RS() * .7)}" fill="#E9ECF6" fill-opacity="${f2(.45 + RS() * .5)}"/>`; }
+    s.push(`<g data-lit="1" class="sc-fade" style="--d:.5s">${st}</g>`); }
   const moon = (x, y, r, d) => {
-    const cres = mi === 3, occ = mixHex(P.sky[0], P.sky[1], .28);
+    if (MP != null) {
+      const k = Math.cos(2 * Math.PI * MP), rx = f2(Math.abs(k) * r), wax = MP < .5, T0 = `${x} ${f2(y - r)}`, B0 = `${x} ${f2(y + r)}`;
+      const litD = wax ? `M${T0}A${r} ${r} 0 0 1 ${B0}A${rx} ${r} 0 0 ${k > 0 ? 0 : 1} ${T0}Z` : `M${T0}A${r} ${r} 0 0 0 ${B0}A${rx} ${r} 0 0 ${k > 0 ? 1 : 0} ${T0}Z`;
+      const shade = mixHex(mixHex(P.sky[0], P.sky[1], .3), P.sun, .16);
+      return `<g data-lit="1" class="sc-sunrise" style="--d:${d}s"><defs><clipPath id="${u}m"><path d="${litD}"/></clipPath></defs>`
+        + `<circle class="sc-glow" cx="${x}" cy="${y}" r="${f2(r * (2.2 + MI * 1.2))}" fill="url(#${u}g)" opacity="${f2(.12 + MI * .48)}"/><circle cx="${x}" cy="${y}" r="${r}" fill="${shade}" fill-opacity=".85"/>`
+        + (MI > .015 ? `<path d="${litD}" fill="${P.sun}"/><g clip-path="url(#${u}m)"><circle cx="${f2(x - r * .3)}" cy="${f2(y - r * .2)}" r="${f2(r * .17)}" fill="#000" fill-opacity=".07"/><circle cx="${f2(x + r * .28)}" cy="${f2(y + r * .3)}" r="${f2(r * .12)}" fill="#000" fill-opacity=".07"/><circle cx="${f2(x + r * .1)}" cy="${f2(y - r * .45)}" r="${f2(r * .08)}" fill="#000" fill-opacity=".06"/></g>` : '')
+        + '</g>';
+    }
+    const cres = false, occ = mixHex(P.sky[0], P.sky[1], .28);
     return `<g data-lit="1" class="sc-sunrise" style="--d:${d}s"><circle class="sc-glow" cx="${x}" cy="${y}" r="${r * 3.2}" fill="url(#${u}g)" opacity=".55"/><circle cx="${x}" cy="${y}" r="${r}" fill="${P.sun}"/>`
       + (cres ? `<circle cx="${f2(x + r * .45)}" cy="${f2(y - r * .2)}" r="${f2(r * .92)}" fill="${occ}"/>` : `<circle cx="${f2(x - r * .3)}" cy="${f2(y - r * .2)}" r="${f2(r * .17)}" fill="#000" fill-opacity=".07"/><circle cx="${f2(x + r * .28)}" cy="${f2(y + r * .3)}" r="${f2(r * .12)}" fill="#000" fill-opacity=".07"/><circle cx="${f2(x + r * .1)}" cy="${f2(y - r * .45)}" r="${f2(r * .08)}" fill="#000" fill-opacity=".06"/>`) + '</g>';
   };
@@ -735,7 +750,7 @@ function sceneSVG(mi, opts = {}) {
   const far = hillPts(R, 222, 10, 70, .0055), mid = hillPts(R, 252, 12, 60, .007), near = hillPts(R, 284, 9, 45, .009), front = hillPts(R, 316, 6, 25, .012);
   const DEC = decorFor(mi, { prot: !!opts.prot, wk: opts.wk, dy: opts.dy }, { P, NIGHT, DARK1: mi === 1 && !DAY, lit, u });
   const GY = { mid: (x) => yAt(mid, x), near: (x) => yAt(near, x) };
-  const H = (layer) => DEC.L[layer].forEach((fn) => { const r = fn(GY); (Array.isArray(r) ? r : [r]).forEach((x) => { if (x) s.push(x); }); });
+  const H = (layer) => DEC.L[layer].forEach((fn) => { const r = fn(GY); (Array.isArray(r) ? r : [r]).forEach((x) => { if (x) s.push(x.includes('data-lit') ? x : `<g class="sc-fade" style="--d:.55s">${x}</g>`); }); });
   const ok = (x) => !DEC.excl.some(([a, b]) => x > a && x < b);
   const waves = (rows, col) => rows.forEach(([y, wl, w, o, x0], i) => s.push(`<g class="sc-fade" style="--d:${f2(.4 + i * .1)}s"><path class="sc-wave" style="--wl:${-wl}px;--wd:${3 + i}s" d="${waveD(x0, SW + wl * 2, y, wl, 3)}" fill="none" stroke="${col}" stroke-opacity="${o}" stroke-width="${w}" stroke-linecap="round"/></g>`));
 
@@ -799,7 +814,7 @@ function sceneSVG(mi, opts = {}) {
     } else { // Brumale — night, moon, fog banks, bare trees, lit house
       if (!G) { let st = ''; for (let i = 0; i < 34; i++) st += `<circle class="sc-twinkle" style="--td:${f2(2 + R() * 3)}s;--tdl:${f2(R() * 3)}s" cx="${f2(470 + R() * 730)}" cy="${f2(10 - T + R() * (160 + T))}" r="${f2(.7 + R() * 1.3)}" fill="#E7E9F2"/>`;
         s.push(`<g class="sc-fade" style="--d:.4s">${st}</g>`); }
-      sky(sun(960, 84, 24, .1) + `<g class="sc-fade" style="--d:.9s"><circle cx="953" cy="78" r="4" fill="#C9D2EE"/><circle cx="968" cy="93" r="3" fill="#C9D2EE"/><circle cx="962" cy="72" r="2" fill="#C9D2EE"/></g>`); H('sky');
+      sky(MP != null ? moon(960, 84, 24, .1) : sun(960, 84, 24, .1) + `<g class="sc-fade" style="--d:.9s"><circle cx="953" cy="78" r="4" fill="#C9D2EE"/><circle cx="968" cy="93" r="3" fill="#C9D2EE"/><circle cx="962" cy="72" r="2" fill="#C9D2EE"/></g>`); H('sky');
       const fog = (y, h, d, dur, dx) => `<g class="sc-fade" style="--d:${d}s"><g class="sc-fog" opacity="${f2(.4 + p * .6)}" style="--fgd:${dur}s;--fgx:${dx}px"><rect x="-140" y="${y}" width="${SW + 280}" height="${h}" fill="url(#${u}f)"/></g></g>`;
       s.push(hill(far, P.far, .1, 20));
       if (p > .25) s.push(fog(150, 70, .6, 18, 50));
@@ -957,7 +972,7 @@ function sceneSVG(mi, opts = {}) {
   }
   const body = NIGHT ? s.map((x) => x.includes('data-lit') ? x : toneStr(x, NK)) : s;
   H('top');
-  return `<svg class="scene${G ? ' static' : ''}${NIGHT ? ' night' : ''}" viewBox="0 ${-T} ${SW} ${SH + T + B}" preserveAspectRatio="${G ? 'xMidYMax' : 'xMaxYMax'} slice" aria-hidden="true" focusable="false">${defs}${body.join('')}</svg>`;
+  return `<svg class="scene${G ? ' static' : ''}${NIGHT ? ' night' : ''}" viewBox="0 ${-T} ${SW} ${SH + T + B}" preserveAspectRatio="${G ? 'xMidYMax' : 'xMaxYMax'} slice" aria-hidden="true" focusable="false">${defs}<g class="sc-enter">${body.join('')}</g></svg>`;
 }
 
 /* Month pattern tile: scattered seasonal glyphs, used as page texture */
@@ -1153,5 +1168,7 @@ function seasonFx(motif, accent, W, H, seed) {
   return { svg, total: end + 150, run() { anims.forEach(([e, kf, o]) => e.animate(kf, Object.assign({ fill: 'both', easing: 'linear' }, o))); } };
 }
 
-window.ORN = { version: '2.4', MONTHS, LETTER_META, metaKeyFor, dayBg, illusFor, sceneSVG, hasVariants, themeFor, patternURI, ornamentSVG, playAll, seasonFx, setToday: (s) => { todayStr = s; } };
+/* fase della luna (0 = nuova, 0,5 = piena) alle 22 del giorno dato, dal novilunio del 6/1/2000 18:14 UTC; errore di qualche ora */
+function moonPhase(iso) { const [y, m, d] = iso.split('-').map(Number), t = Date.UTC(y, m - 1, d, 21, 0) - Date.UTC(2000, 0, 6, 18, 14), f = (t / 864e5) / 29.530588853; return f - Math.floor(f); }
+window.ORN = { version: '2.5', moonPhase, MONTHS, LETTER_META, metaKeyFor, dayBg, illusFor, sceneSVG, hasVariants, themeFor, patternURI, ornamentSVG, playAll, seasonFx, setToday: (s) => { todayStr = s; } };
 })();
