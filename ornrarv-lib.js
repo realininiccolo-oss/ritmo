@@ -450,19 +450,23 @@ const greekShip = () => {
   return s;
 };
 /* 2.7: il battello a ruota laterale (prua a sinistra): scafo nero col bordo rosso, tuga chiara, ciminiera, ruota nella sua cassa */
+const PW = (x) => x > -36 && x < 42;   // dove sta la cassa della ruota: lì le finestre non si vedono
 const paddleSteamer = (u) => {
-  let s = `<defs><clipPath id="${u}pw"><rect x="-30" y="-14" width="68" height="30"/></clipPath></defs>`;
-  s += `<path d="M-74 -18V-58M60 -20V-44" stroke="#2A2420" stroke-width="1.4"/><path class="sc-flagw" d="M60 -44L74 -41L60 -38Z" fill="#B23A2E"/><path class="sc-flagw" d="M-74 -58L-62 -55.6L-74 -53Z" fill="#E3A33B"/>`
-    + `<path d="M2 -38L7 -86H20L17 -38Z" fill="#D9A441"/><path d="M12 -38L14 -86H20L17 -38Z" fill="#000" fill-opacity=".12"/><path d="M6.6 -86H20.2L19.8 -79H7.2Z" fill="#1E1E1E"/><path d="M5.4 -64H18.6" stroke="#B23A2E" stroke-width="2.4"/>`
-    + `<rect x="-44" y="-53" width="24" height="15" rx="1.2" fill="#F4EEE0"/><path d="M-46 -53H-18" stroke="#2A2420" stroke-width="1.6"/><rect x="-40" y="-49" width="5" height="6" fill="#3E6E7A"/><rect x="-32" y="-49" width="5" height="6" fill="#3E6E7A"/>`
+  let s = `<defs><clipPath id="${u}pw"><rect x="-32" y="-12" width="72" height="28"/></clipPath></defs>`;
+  s += `<path d="M-74 -18V-58M60 -20V-44" stroke="#2A2420" stroke-width="1.4"/><path d="M-74 -58L60 -44M-74 -58L-90 -20M60 -44L82 -18" stroke="#2A2420" stroke-opacity=".5" stroke-width=".6"/><path class="sc-flagw" d="M60 -44L74 -41L60 -38Z" fill="#B23A2E"/><path class="sc-flagw" d="M-74 -58L-62 -55.6L-74 -53Z" fill="#E3A33B"/>`
+    + `<path d="M2 -38L6 -88H20L17 -38Z" fill="#D9A441"/><path d="M12 -38L14 -88H20L17 -38Z" fill="#000" fill-opacity=".12"/><path d="M5.6 -88H20.4L20 -81H6.2Z" fill="#1E1E1E"/><path d="M4.8 -66H18.8" stroke="#B23A2E" stroke-width="2.6"/>`
+    + `<rect x="-46" y="-54" width="26" height="16" rx="1.2" fill="#F4EEE0"/><path d="M-48 -54H-18" stroke="#2A2420" stroke-width="1.8"/><rect x="-42" y="-50" width="5" height="7" fill="#3E6E7A"/><rect x="-33" y="-50" width="5" height="7" fill="#3E6E7A"/><path d="M-26 -50h3v7h-3z" fill="#3E6E7A"/>`
     + `<path d="M-68 -38H62" stroke="#2A2420" stroke-width="1.2"/>` + Array.from({ length: 14 }, (_, i) => `<path d="M${-66 + i * 9.4} -38V-34" stroke="#2A2420" stroke-width=".8"/>`).join('')
-    + `<rect x="-64" y="-34" width="120" height="16" rx="1.2" fill="#F4EEE0"/><rect x="20" y="-34" width="36" height="16" fill="#000" fill-opacity=".06"/>`
-    + Array.from({ length: 12 }, (_, i) => `<path d="M${-58 + i * 9} -22V-28Q${-55.5 + i * 9} -31 ${-53 + i * 9} -28V-22Z" fill="#3E6E7A"/>`).join('');
+    + `<rect x="-64" y="-34" width="122" height="16" rx="1.2" fill="#F4EEE0"/><rect x="22" y="-34" width="36" height="16" fill="#000" fill-opacity=".06"/>`
+    + Array.from({ length: 12 }, (_, i) => -58 + i * 9).filter((x) => !PW(x) && !PW(x + 5)).map((x) => `<path d="M${x} -22V-28Q${x + 2.5} -31 ${x + 5} -28V-22Z" fill="#3E6E7A"/>`).join('');
   s += `<path d="M-92 -20L82 -18Q88 -16 90 -12L82 4Q40 9 -60 8Q-82 5 -88 -10Z" fill="#20242A"/><path d="M-92 -20L82 -18L82 -14.6L-90.6 -16Z" fill="#F1ECE0"/><path d="M-84 0Q-20 7 84 0L82 4Q40 9 -60 8Q-78 6 -84 0Z" fill="#A8352B"/>`;
-  let wh = ''; for (let k = 0; k < 10; k++) wh += `<g transform="rotate(${k * 36} 4 -14)"><path d="M4 -14V8" stroke="#3B3012" stroke-width="1.4"/><rect x="0.6" y="6" width="6.8" height="4" fill="#7A2620"/></g>`;
-  s += `<g clip-path="url(#${u}pw)"><g><animateTransform attributeName="transform" type="rotate" from="0 4 -14" to="-360 4 -14" dur="6s" repeatCount="indefinite"/>${wh}</g></g>`
-    + `<path d="M-24 -14A28 28 0 0 1 32 -14Z" fill="#F1ECE0" stroke="#20242A" stroke-width="1.6"/>` + Array.from({ length: 7 }, (_, i) => { const a = Math.PI * (1 + (i + 1) / 8); return `<path d="M4 -14L${f2(4 + Math.cos(a) * 26)} ${f2(-14 + Math.sin(a) * 26)}" stroke="#B9AE98" stroke-width="1.1"/>`; }).join('')
-    + `<path d="M-14 -14A18 18 0 0 1 22 -14" stroke="#B23A2E" stroke-width="2" fill="none"/><circle cx="4" cy="-14" r="3" fill="#20242A"/>`;
+  /* la ruota che gira sotto la cassa, mezza nell'acqua */
+  let wh = ''; for (let k = 0; k < 10; k++) wh += `<g transform="rotate(${k * 36} 4 -16)"><path d="M4 -16V10" stroke="#3B3012" stroke-width="1.4"/><rect x="0.4" y="8" width="7.2" height="4" fill="#7A2620"/></g>`;
+  s += `<g clip-path="url(#${u}pw)"><g><animateTransform attributeName="transform" type="rotate" from="0 4 -16" to="-360 4 -16" dur="6s" repeatCount="indefinite"/>${wh}</g></g>`;
+  /* la cassa: semicerchio scuro con la raggiera di stecche bianche e il bordo dorato, poggiata sulla falchetta */
+  s += `<rect x="-34" y="-17" width="76" height="4" fill="#2A2E36"/><path d="M-28 -16A32 32 0 0 1 36 -16Z" fill="#2A2E36"/>`
+    + Array.from({ length: 9 }, (_, i) => { const a = Math.PI * (1 + (i + .5) / 9); return `<path d="M${f2(4 + Math.cos(a) * 8)} ${f2(-16 + Math.sin(a) * 8)}L${f2(4 + Math.cos(a) * 28)} ${f2(-16 + Math.sin(a) * 28)}" stroke="#E9E2D3" stroke-width="2.2" stroke-linecap="round"/>`; }).join('')
+    + `<path d="M-28 -16A32 32 0 0 1 36 -16" stroke="#C9A04A" stroke-width="2.4" fill="none"/><path d="M-4 -16A8 8 0 0 1 12 -16Z" fill="#C9A04A"/><path d="M-30 -16H38" stroke="#C9A04A" stroke-width="1.6"/>`;
   return s;
 };
 const at = (x, y, k, inner, cls) => `<g transform="translate(${f2(x)} ${f2(y)}) scale(${k})"${cls ? ` class="${cls}"` : ''}>${inner}</g>`;
@@ -570,7 +574,7 @@ const STY = [
     town: 'lombardo', spire: 'cono', body: '#A9A59C', flag: '#5A3A34', terr: 'lampione' },
   { // Ianuario: montagne e neve
     wood: ['#4A3426', '#6A4A34', '#8A6A4E'], roof: '#4E5A64', tower: 'baita',
-    boat: { hull: '#F2F4F6', trim: '#2F5A7A', band: '#2F5A7A', coat: '#7A2E2A', hat: 'pelliccia', cargo: 'neve' },
+    boat: { hull: '#F2F4F6', trim: '#2F5A7A', band: '#2F5A7A', coat: '#7A2E2A', hat: 'pelliccia', cargo: 'neve', ice: true },
     sail: { rig: 'ghiaccio', main: '#FBF7EE', jib: '#F1E8D4', hull: '#2F5A7A', stripe: '#FFFFFF', band: '#B23A2E', pen: '#B23A2E' },
     town: 'baite', spire: 'cipolla', body: '#ECE8E0', flag: '#B23A2E', terr: 'ghiaccioli' },
   { // Germinale: primavera, alberi in fiore
@@ -613,6 +617,8 @@ function rowBoat2(lamp = true, st = STY[0].boat) {
     neve: `<path d="M-54 -15Q-48 -19 -40 -12Q-34 -9 -28 -7L-30 -4Q-44 -6 -54 -15Z" fill="#FFFFFF"/><path d="M28 -4Q36 -8 44 -13L46 -11Q38 -5 30 -2Z" fill="#FFFFFF"/>`,
     ombrellone: `<path d="M-42 -6L-24 -10" stroke="#7A5A3A" stroke-width="1.6"/><path d="M-40 -7L-22 -11L-24 -14L-38 -11Z" fill="#E8C34A"/><path d="M-36 -9.4L-30 -10.6" stroke="#C0392B" stroke-width="2.4"/>` }[st.cargo] || '';
   if (st.gozzo) hull = gozzo(true);
+  if (st.ice) hull += `<path d="M-54 -15Q-48 -4 -36 -2L-34 9Q-46 6 -54 -15Z" fill="#8A949E"/><path d="M-54 -15Q-48 -4 -36 -2" stroke="#C9D2DA" stroke-width="1.2" fill="none"/>` + [[-48, -6], [-44, -2], [-40, 2], [-38, 6]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r=".9" fill="#5E666E"/>`).join('')
+    + `<path d="M-30 -5L30 -5" stroke="#E6F0F5" stroke-width="1.2" stroke-dasharray="1.4 1.8"/><path d="M-22 -8L34 -14" stroke="#6E5236" stroke-width="1.6" stroke-linecap="round"/><path d="M34 -14l3 -2l1 3z" fill="#8A949E"/>`;
   const canopy = st.canopy ? [-46, -36, -26].map((x) => `<path d="M${x} -4Q${x + 4} -22 ${x + 8} -4" stroke="${st.trim}" stroke-width="1.4" fill="none"/>`).join('') + `<path d="M-42 -13Q-32 -15 -18 -13" stroke="${st.trim}" stroke-width=".8" fill="none"/>` : '';
   const hat = { cap: `<path d="M9 -32Q13.5 -38.6 18 -32.2Z" fill="#8E3A2E"/><path d="M8.8 -32.2H18.4" stroke="#6E2A20" stroke-width="1.2"/>`,
     pelliccia: `<path d="M8.6 -32Q13.5 -41 18.4 -32Z" fill="#6B5240"/><rect x="8.2" y="-33.6" width="10.6" height="3" rx="1.4" fill="#E9E2D6"/>`,
@@ -703,6 +709,7 @@ function watchtower(mi, L) {
 }
 /* la torre dell'orologio: le lancette segnano l'ora vera e vanno avanti da sole. spire: merli (ghibellini) · piramide · cipolla (le Alpi) · campanile (bianco, cella aperta) */
 function clockTower(mi, L, hr) {
+  if (mi === 2) return gothicTower(L, hr);
   const st = STY[mi], body = st.body, sd = shade(body, .22), snowy = mi === 2;
   let t = `<rect x="-25" y="-8" width="50" height="8" rx="1" fill="${shade(body, .3)}"/><rect x="-19" y="-100" width="38" height="92" fill="${body}"/><rect x="${L > 0 ? 5 : -19}" y="-100" width="14" height="92" fill="#000" fill-opacity=".12"/>`;
   if (mi === 0) for (let j = 1; j < 18; j++) t += `<path d="M-19 ${-8 - j * 5.2}H19" stroke="${sd}" stroke-opacity=".35" stroke-width=".6"/>`;
@@ -732,38 +739,83 @@ function clockTower(mi, L, hr) {
   return t;
 }
 /* una casa del borgo, nello stile del luogo. Restituisce il disegno e le finestre (per accenderle la sera) */
+/* ===== 3.1: case vere, ben piantate a terra =====
+   Ogni casa ha lo zoccolo di pietra, il cornicione sotto il tetto, finestre con cornici, davanzali e persiane, la porta col gradino.
+   Gli stili: toscano (tetto a padiglione di coppi, altana), lombardo (cascina col portico ad archi), baite (piano terra di pietra, legno sopra,
+   ballatoio, tetto largo carico di neve, ghiaccioli), pastello (villini liberty con le cornici bianche), graticcio (travi a vista, piano di sopra sporgente),
+   bianco (cubi a calce con terrazza, cupole blu, scale esterne), ligure (alte e strette, cornici dipinte, persiane verdi, ardesia). */
+function icicles(x0, x1, y, s, R, col = '#DDEBF2') { let o = ''; for (let x = x0; x < x1; x += (2.4 + R() * 3) * s) { const l = (2 + R() * 7) * s; o += `<path d="M${f2(x)} ${f2(y)}l${f2(.9 * s)} ${f2(l)}l${f2(.9 * s)} ${f2(-l)}Z" fill="${col}"/>`; } return o; }
+/* uno strato di neve posato su una superficie orizzontale: spesso, col bordo tondo che sporge un poco */
+function snowLedge(x0, x1, y, t) { return `<path d="M${f2(x0 - 1.5)} ${f2(y + .5)}Q${f2(x0 - 2.5)} ${f2(y - t)} ${f2(x0 + t)} ${f2(y - t)}H${f2(x1 - t)}Q${f2(x1 + 2.5)} ${f2(y - t)} ${f2(x1 + 1.5)} ${f2(y + .5)}Q${f2(x1)} ${f2(y + t * .5)} ${f2(x1 - 2)} ${f2(y + t * .45)}H${f2(x0 + 2)}Q${f2(x0)} ${f2(y + t * .5)} ${f2(x0 - 1.5)} ${f2(y + .5)}Z" fill="#FFFFFF"/><path d="M${f2(x0)} ${f2(y + t * .3)}H${f2(x1)}" stroke="#C9DCE6" stroke-width=".8"/>`; }
 function townHouse(kind, x, y, s, i, L, R) {
   const P = { toscano: { w: ['#E3C99E', '#D9B98A', '#EAD7B5', '#CFAE84'], r: ['#B05A36', '#A24E30', '#BC6A42'], sh: '#4E6B4A' },
-    lombardo: { w: ['#B9B4AA', '#A9A59C', '#C7C2B8', '#9E9A92'], r: ['#5A4E4A', '#4E4844', '#665A54'], sh: '#5E4636' },
-    baite: { w: ['#EEEAE2', '#E6E0D6'], r: ['#4E4A48', '#5A5450'], sh: '#7A2E2A' },
+    lombardo: { w: ['#D9C9A8', '#C9BCA4', '#E3D4B6', '#B9B4AA'], r: ['#8E4A36', '#7E4232', '#9A5440'], sh: '#5E4636' },
+    baite: { w: ['#B9B4AA', '#ABA69C'], r: ['#4E4A48', '#5A5450'], sh: '#9A2E26' },
     pastello: { w: ['#F0C9C0', '#F3E0A8', '#CFE0C8', '#F6E7D8', '#E6D2EC'], r: ['#B5643A', '#A9583A'], sh: '#5E8A5A' },
     graticcio: { w: ['#F2E8D6', '#EFE2CC', '#F4ECDF'], r: ['#8A4A3A', '#7A4236', '#94523E'], sh: '#4E3A5E' },
     bianco: { w: ['#F6F3EC', '#F1EDE4', '#FAF8F3'], r: ['#F1EDE4'], sh: '#2F6E9A' },
     ligure: { w: ['#E7A65C', '#D9644A', '#F2D27A', '#E8B4A6', '#C97B52', '#E9C9A0'], r: ['#6E6A66', '#7A746E'], sh: '#3E6E46' } }[kind];
-  const wall = P.w[i % P.w.length], roof = P.r[i % P.r.length], tall = kind === 'ligure' ? 2 + (i % 2) : 1 + (i % 3 === 0 ? 1 : 0);
-  const w = (kind === 'ligure' ? 11 : 13 + (i % 3) * 2.5) * s, fh = 11 * s, h = fh * tall + 3 * s, gable = kind === 'baite' || kind === 'graticcio' || (kind === 'lombardo' && i % 2);
-  let o = `<rect x="${f2(x - w)}" y="${f2(y - h)}" width="${f2(2 * w)}" height="${f2(h)}" fill="${wall}"/><rect x="${f2(L > 0 ? x + w * .35 : x - w)}" y="${f2(y - h)}" width="${f2(w * .65)}" height="${f2(h)}" fill="#000" fill-opacity=".1"/>`;
-  if (kind === 'baite') o += `<rect x="${f2(x - w)}" y="${f2(y - h)}" width="${f2(2 * w)}" height="${f2(h * .55)}" fill="#7A5236"/><path d="M${f2(x - w)} ${f2(y - h * .45)}H${f2(x + w)}" stroke="#5A3A26" stroke-width="${f2(1.6 * s)}"/>`
-    + Array.from({ length: 6 }, (_, j) => `<path d="M${f2(x - w + (j + .5) * w / 3)} ${f2(y - h * .45)}v${f2(-3 * s)}" stroke="#5A3A26" stroke-width="${f2(.8 * s)}"/>`).join('');
-  if (kind === 'graticcio') o += `<path d="M${f2(x - w)} ${f2(y - h * .5)}H${f2(x + w)}M${f2(x - w * .34)} ${f2(y - h)}V${f2(y)}M${f2(x + w * .34)} ${f2(y - h)}V${f2(y)}M${f2(x - w)} ${f2(y - h)}L${f2(x - w * .34)} ${f2(y - h * .5)}M${f2(x + w)} ${f2(y - h)}L${f2(x + w * .34)} ${f2(y - h * .5)}" stroke="#5A3A2E" stroke-width="${f2(1.3 * s)}"/>`;
-  /* il tetto */
-  if (kind === 'bianco') { o += `<rect x="${f2(x - w - s)}" y="${f2(y - h - 2 * s)}" width="${f2(2 * w + 2 * s)}" height="${f2(2.4 * s)}" fill="${shade(wall, .06)}"/>`; if (i % 3 === 1) o += `<path d="M${f2(x - w * .5)} ${f2(y - h - 2 * s)}A${f2(w * .5)} ${f2(w * .5)} 0 0 1 ${f2(x + w * .5)} ${f2(y - h - 2 * s)}Z" fill="#2F6E9A"/>`; }
-  else if (gable) { const rh = (kind === 'baite' ? 14 : 11) * s; o += `<path d="M${f2(x - w - 3 * s)} ${f2(y - h + .5)}L${f2(x)} ${f2(y - h - rh)}L${f2(x + w + 3 * s)} ${f2(y - h + .5)}Z" fill="${roof}"/><path d="M${f2(x)} ${f2(y - h - rh)}L${f2(x + L * (w + 3 * s))} ${f2(y - h + .5)}H${f2(x)}Z" fill="#000" fill-opacity=".16"/>`;
-    if (kind === 'baite') o += `<path d="M${f2(x - w - 4 * s)} ${f2(y - h + 1)}L${f2(x)} ${f2(y - h - rh - 1.5 * s)}L${f2(x + w + 4 * s)} ${f2(y - h + 1)}L${f2(x + w)} ${f2(y - h + 2.6 * s)}L${f2(x)} ${f2(y - h - rh + 4 * s)}L${f2(x - w)} ${f2(y - h + 2.6 * s)}Z" fill="#FFFFFF"/>`; }
-  else { const rh = (kind === 'ligure' ? 4 : 6) * s; o += `<path d="M${f2(x - w - 2.4 * s)} ${f2(y - h + .5)}L${f2(x - w * .55)} ${f2(y - h - rh)}H${f2(x + w * .55)}L${f2(x + w + 2.4 * s)} ${f2(y - h + .5)}Z" fill="${roof}"/>`
-    + Array.from({ length: 4 }, (_, j) => `<path d="M${f2(x - w * .7 + j * w * .45)} ${f2(y - h - rh * .7)}v${f2(rh * .6)}" stroke="#000" stroke-opacity=".12" stroke-width="${f2(.6 * s)}"/>`).join('') + `<path d="M${f2(x - w - 2.4 * s)} ${f2(y - h + .5)}H${f2(x + w + 2.4 * s)}" stroke="${shade(roof, .3)}" stroke-width="${f2(.9 * s)}"/>`; }
-  if (kind !== 'bianco' && kind !== 'ligure' && i % 2 === 0) o += `<rect x="${f2(x + w * .45)}" y="${f2(y - h - 12 * s)}" width="${f2(3.6 * s)}" height="${f2(8 * s)}" fill="${shade(roof, .3)}"/>`;
-  /* finestre con le persiane, porta */
-  const wins = [], cols = kind === 'ligure' ? 2 : w > 15 * s ? 3 : 2, ww = 3 * s, wh = 4 * s;
-  for (let r = 0; r < tall; r++) for (let c = 0; c < cols; c++) { const wx = x - w + (c + .5) * (2 * w / cols) - ww / 2, wy = y - 3 * s - (r + 1) * fh + 3.5 * s; if (r === 0 && c === Math.floor(cols / 2) && kind !== 'ligure') continue;
-    o += `<rect x="${f2(wx)}" y="${f2(wy)}" width="${f2(ww)}" height="${f2(wh)}" fill="${kind === 'bianco' ? '#2F6E9A' : '#3E4652'}"/>`;
+  const wall = P.w[i % P.w.length], roof = P.r[i % P.r.length], tall = kind === 'ligure' ? 3 + (i % 2) : kind === 'bianco' ? 1 + (i % 2) : 1 + (i % 3 === 0 ? 0 : 1);
+  const w = (kind === 'ligure' ? 10 : kind === 'baite' ? 16 + (i % 2) * 2 : 12 + (i % 3) * 2.5) * s, fh = 10.5 * s, zh = 2.6 * s, h = fh * tall + zh + 1.5 * s;
+  const sideX = L > 0 ? x + w * .38 : x - w, sideW = w * .62, top = y - h;
+  let o = `<rect x="${f2(x - w)}" y="${f2(top)}" width="${f2(2 * w)}" height="${f2(h)}" fill="${wall}"/>`;
+  /* lo zoccolo di pietra */
+  const zc = kind === 'bianco' ? '#E2DCCF' : kind === 'baite' ? '#8E897F' : shade(wall, .28);
+  o += `<rect x="${f2(x - w - .6 * s)}" y="${f2(y - zh)}" width="${f2(2 * w + 1.2 * s)}" height="${f2(zh + .5)}" fill="${zc}"/>`;
+  const R2 = rng(Math.round(x * 3 + i * 17));
+  if (kind === 'baite') { // piano terra di pietra a corsi irregolari, sopra legno a doghe, ballatoio
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 6; c++) o += `<rect x="${f2(x - w + c * w / 3 + (r % 2) * w / 6 + R2() * s)}" y="${f2(y - zh - (r + 1) * 3 * s)}" width="${f2(w / 3 - 1.2 * s)}" height="${f2(2.4 * s)}" rx="${f2(.8 * s)}" fill="#000" fill-opacity="${f2(.05 + R2() * .07)}"/>`;
+    const wy0 = top, wy1 = y - zh - fh; o += `<rect x="${f2(x - w)}" y="${f2(wy0)}" width="${f2(2 * w)}" height="${f2(wy1 - wy0)}" fill="#7A5236"/>` + Array.from({ length: Math.round(2 * w / (2.6 * s)) }, (_, j) => `<path d="M${f2(x - w + j * 2.6 * s)} ${f2(wy0)}V${f2(wy1)}" stroke="#5A3A26" stroke-width="${f2(.5 * s)}"/>`).join('');
+    o += `<rect x="${f2(x - w - 2 * s)}" y="${f2(wy1 - .5 * s)}" width="${f2(2 * w + 4 * s)}" height="${f2(1.6 * s)}" fill="#5A3A26"/>` + Array.from({ length: Math.round((2 * w + 4 * s) / (2.2 * s)) }, (_, j) => `<path d="M${f2(x - w - 2 * s + j * 2.2 * s)} ${f2(wy1 - .5 * s)}v${f2(-4.4 * s)}" stroke="#5A3A26" stroke-width="${f2(.6 * s)}"/>`).join('')
+      + `<path d="M${f2(x - w - 2 * s)} ${f2(wy1 - 4.9 * s)}H${f2(x + w + 2 * s)}" stroke="#5A3A26" stroke-width="${f2(1 * s)}"/>` + snowLedge(x - w - 2 * s, x + w + 2 * s, wy1 - 5 * s, 1.4 * s);
+  }
+  if (kind === 'graticcio') { const jt = top + (h - zh) * .5; o += `<rect x="${f2(x - w - 1.2 * s)}" y="${f2(top)}" width="${f2(2 * w + 2.4 * s)}" height="${f2(jt - top)}" fill="${wall}"/>`
+    + `<path d="M${f2(x - w - 1.2 * s)} ${f2(jt)}H${f2(x + w + 1.2 * s)}M${f2(x - w)} ${f2(y - zh)}H${f2(x + w)}" stroke="#5A3A2E" stroke-width="${f2(1.4 * s)}"/>`
+    + [-1, -.34, .34, 1].map((k) => `<path d="M${f2(x + k * w)} ${f2(top)}V${f2(y - zh)}" stroke="#5A3A2E" stroke-width="${f2(1.2 * s)}"/>`).join('')
+    + `<path d="M${f2(x - w)} ${f2(jt)}L${f2(x - w * .34)} ${f2(top)}M${f2(x + w)} ${f2(jt)}L${f2(x + w * .34)} ${f2(top)}M${f2(x - w)} ${f2(jt)}L${f2(x - w * .34)} ${f2(y - zh)}M${f2(x + w)} ${f2(jt)}L${f2(x + w * .34)} ${f2(y - zh)}" stroke="#5A3A2E" stroke-width="${f2(1 * s)}"/>`; }
+  if (kind === 'lombardo' && i % 2 === 0) { const ah = fh * .9; o += [0, 1, 2].map((c) => { const ax = x - w + (c + .5) * (2 * w / 3); return `<path d="M${f2(ax - w / 3 + 1.4 * s)} ${f2(y - zh)}V${f2(y - zh - ah * .6)}Q${f2(ax)} ${f2(y - zh - ah * 1.05)} ${f2(ax + w / 3 - 1.4 * s)} ${f2(y - zh - ah * .6)}V${f2(y - zh)}Z" fill="#3A3026"/>`; }).join(''); }
+  if (kind === 'pastello' || kind === 'ligure') o += Array.from({ length: tall }, (_, r) => `<path d="M${f2(x - w)} ${f2(y - zh - r * fh)}H${f2(x + w)}" stroke="${light(wall, .5)}" stroke-width="${f2(.9 * s)}"/>`).join('') + `<path d="M${f2(x - w)} ${f2(top)}V${f2(y)}M${f2(x + w)} ${f2(top)}V${f2(y)}" stroke="${light(wall, .45)}" stroke-width="${f2(1.4 * s)}"/>`;
+  o += `<rect x="${f2(sideX)}" y="${f2(top)}" width="${f2(sideW)}" height="${f2(h)}" fill="#000" fill-opacity=".1"/>`;
+  /* finestre: cornici, davanzali, persiane; porta col gradino */
+  const wins = [], cols = kind === 'ligure' ? 2 : w > 16 * s ? 3 : 2, ww = (kind === 'baite' ? 3.4 : 3) * s, wh = (kind === 'ligure' ? 5 : 4.4) * s;
+  const dc = kind === 'lombardo' && i % 2 === 0 ? -1 : Math.floor(cols / 2), skipDoor = (r, c) => r === 0 && c === dc;
+  for (let r = 0; r < tall; r++) for (let c = 0; c < cols; c++) { if (skipDoor(r, c) || (kind === 'lombardo' && i % 2 === 0 && r === 0)) continue;
+    const wx = x - w + (c + .5) * (2 * w / cols) - ww / 2, wy = y - zh - (r + 1) * fh + 3 * s;
+    if (kind === 'pastello' || kind === 'ligure') o += `<rect x="${f2(wx - 1.2 * s)}" y="${f2(wy - 1.4 * s)}" width="${f2(ww + 2.4 * s)}" height="${f2(wh + 2.6 * s)}" fill="${light(wall, .55)}"/>`;
+    if (kind === 'toscano' && r === tall - 1 && c === 0 && i % 2) o += `<path d="M${f2(wx)} ${f2(wy + wh)}V${f2(wy + 1.4 * s)}Q${f2(wx + ww / 2)} ${f2(wy - 1.2 * s)} ${f2(wx + ww)} ${f2(wy + 1.4 * s)}V${f2(wy + wh)}Z" fill="#3E4652"/>`;
+    else o += `<rect x="${f2(wx)}" y="${f2(wy)}" width="${f2(ww)}" height="${f2(wh)}" fill="${kind === 'bianco' ? '#2F6E9A' : '#3E4652'}"/>`;
+    if (kind === 'baite') o += `<rect x="${f2(wx - .6 * s)}" y="${f2(wy - .6 * s)}" width="${f2(ww + 1.2 * s)}" height="${f2(wh + 1.2 * s)}" fill="none" stroke="#FFFFFF" stroke-width="${f2(.6 * s)}"/>`;
     if (kind !== 'bianco') o += `<rect x="${f2(wx - 1.6 * s)}" y="${f2(wy)}" width="${f2(1.4 * s)}" height="${f2(wh)}" fill="${P.sh}"/><rect x="${f2(wx + ww + .2 * s)}" y="${f2(wy)}" width="${f2(1.4 * s)}" height="${f2(wh)}" fill="${P.sh}"/>`;
-    if (kind === 'graticcio') o += `<rect x="${f2(wx - 1)}" y="${f2(wy + wh)}" width="${f2(ww + 2)}" height="${f2(1.6 * s)}" fill="#D8453A"/>`;
+    o += `<rect x="${f2(wx - .8 * s)}" y="${f2(wy + wh)}" width="${f2(ww + 1.6 * s)}" height="${f2(.9 * s)}" fill="${kind === 'graticcio' ? '#D8453A' : light(zc, .2)}"/>`;
+    if (kind === 'baite') o += snowLedge(wx - 1, wx + ww + 1, wy + wh, .9 * s);
     wins.push([wx, wy, ww, wh]); }
-  const dc = Math.floor(cols / 2), dx = x - w + (dc + .5) * (2 * w / cols);
-  o += `<path d="M${f2(dx - 2.6 * s)} ${f2(y)}V${f2(y - 6.4 * s)}Q${f2(dx)} ${f2(y - 8.6 * s)} ${f2(dx + 2.6 * s)} ${f2(y - 6.4 * s)}V${f2(y)}Z" fill="${shade(roof === '#F1EDE4' ? '#2F6E9A' : roof, .35)}"/>`;
+  if (dc >= 0) { const dx = x - w + (dc + .5) * (2 * w / cols), doorC = kind === 'bianco' ? '#2F6E9A' : kind === 'baite' ? '#5A3A26' : shade(roof, .4);
+    o += `<path d="M${f2(dx - 2.6 * s)} ${f2(y - .6 * s)}V${f2(y - 6.6 * s)}Q${f2(dx)} ${f2(y - 9 * s)} ${f2(dx + 2.6 * s)} ${f2(y - 6.6 * s)}V${f2(y - .6 * s)}Z" fill="${doorC}"/><rect x="${f2(dx - 3.8 * s)}" y="${f2(y - .8 * s)}" width="${f2(7.6 * s)}" height="${f2(1.2 * s)}" fill="${light(zc, .25)}"/>`; }
+  /* il tetto */
+  let chim = null;
+  if (kind === 'bianco') { o += `<rect x="${f2(x - w - .6 * s)}" y="${f2(top - 2.4 * s)}" width="${f2(2 * w + 1.2 * s)}" height="${f2(2.6 * s)}" rx="${f2(.8 * s)}" fill="${shade(wall, .04)}"/>`;
+    if (i % 3 === 1) o += `<rect x="${f2(x - w * .42)}" y="${f2(top - 6 * s)}" width="${f2(w * .84)}" height="${f2(4 * s)}" fill="${wall}"/><path d="M${f2(x - w * .48)} ${f2(top - 6 * s)}A${f2(w * .48)} ${f2(w * .5)} 0 0 1 ${f2(x + w * .48)} ${f2(top - 6 * s)}Z" fill="#2F6E9A"/><path d="M${f2(x)} ${f2(top - 6 * s - w * .5)}v${f2(-3 * s)}" stroke="#2F6E9A" stroke-width="${f2(.8 * s)}"/>`;
+    if (i % 3 === 2) o += `<path d="M${f2(x + w)} ${f2(y - zh)}L${f2(x + w + 7 * s)} ${f2(y - zh)}L${f2(x + w)} ${f2(top + 2 * s)}Z" fill="${shade(wall, .05)}"/><path d="M${f2(x + w)} ${f2(top + 2 * s)}L${f2(x + w + 7 * s)} ${f2(y - zh)}" stroke="${shade(wall, .15)}" stroke-width="${f2(.8 * s)}"/>`; }
+  else if (kind === 'baite' || kind === 'graticcio' || (kind === 'lombardo')) { const ov = kind === 'baite' ? 6 : 3, rh = (kind === 'baite' ? 10 : kind === 'graticcio' ? 15 : 9) * s, ex = w + ov * s;
+    o += `<path d="M${f2(x - ex)} ${f2(top + .5)}L${f2(x)} ${f2(top - rh)}L${f2(x + ex)} ${f2(top + .5)}Z" fill="${roof}"/><path d="M${f2(x)} ${f2(top - rh)}L${f2(x + L * ex)} ${f2(top + .5)}H${f2(x)}Z" fill="#000" fill-opacity=".16"/><path d="M${f2(x - ex)} ${f2(top + .5)}H${f2(x + ex)}" stroke="${shade(roof, .3)}" stroke-width="${f2(1 * s)}"/>`;
+    if (kind === 'baite') { const t = 3.4 * s;   // la neve sul tetto: spessa, col labbro che sporge, i ghiaccioli sotto la gronda
+      o += `<path d="M${f2(x - ex - 1.6 * s)} ${f2(top + 1)}Q${f2(x - ex - 2 * s)} ${f2(top - t * .8)} ${f2(x - ex + 2 * s)} ${f2(top - t * .9)}L${f2(x)} ${f2(top - rh - t)}L${f2(x + ex - 2 * s)} ${f2(top - t * .9)}Q${f2(x + ex + 2 * s)} ${f2(top - t * .8)} ${f2(x + ex + 1.6 * s)} ${f2(top + 1)}Q${f2(x + ex)} ${f2(top + t * .4)} ${f2(x + ex - 2 * s)} ${f2(top + t * .3)}L${f2(x)} ${f2(top - rh + t * .2)}L${f2(x - ex + 2 * s)} ${f2(top + t * .3)}Q${f2(x - ex)} ${f2(top + t * .4)} ${f2(x - ex - 1.6 * s)} ${f2(top + 1)}Z" fill="#FFFFFF"/>`
+        + `<path d="M${f2(x)} ${f2(top - rh - t)}L${f2(x + L * (ex - 2 * s))} ${f2(top - t * .9)}" stroke="#D6E4EC" stroke-width="${f2(1.2 * s)}"/>` + icicles(x - ex, x + ex, top + t * .3, s, R2); }
+    else if (kind === 'graticcio') o += `<path d="M${f2(x - 3 * s)} ${f2(top - rh * .55)}h${f2(6 * s)}v${f2(4 * s)}h${f2(-6 * s)}Z" fill="#3E4652"/>`;
+    if (i % 2 === 0) chim = [x + w * .45, top - rh * .45]; }
+  else { const rh = (kind === 'ligure' ? 4.4 : 6.4) * s, ex = w + 2.6 * s;   // tetto a padiglione (coppi o ardesia) col cornicione
+    o += `<rect x="${f2(x - w - 1 * s)}" y="${f2(top - 1 * s)}" width="${f2(2 * w + 2 * s)}" height="${f2(1.4 * s)}" fill="${light(wall, .3)}"/>`
+      + `<path d="M${f2(x - ex)} ${f2(top - .6 * s)}L${f2(x - w * .5)} ${f2(top - rh)}H${f2(x + w * .5)}L${f2(x + ex)} ${f2(top - .6 * s)}Z" fill="${roof}"/>`
+      + Array.from({ length: Math.round(2 * ex / (2 * s)) }, (_, j) => `<path d="M${f2(x - ex + (j + .5) * 2 * s)} ${f2(top - .8 * s)}L${f2(x - w * .5 + (j + .5) * (w / Math.round(2 * ex / (2 * s))))} ${f2(top - rh + .4)}" stroke="#000" stroke-opacity="${kind === 'ligure' ? .1 : .16}" stroke-width="${f2(.6 * s)}"/>`).join('')
+      + `<path d="M${f2(x - ex)} ${f2(top - .6 * s)}H${f2(x + ex)}" stroke="${shade(roof, .3)}" stroke-width="${f2(1 * s)}"/>`;
+    if (kind === 'toscano' && i % 4 === 1) o += `<rect x="${f2(x - 5 * s)}" y="${f2(top - rh - 7 * s)}" width="${f2(10 * s)}" height="${f2(7 * s)}" fill="${wall}"/><path d="M${f2(x - 3.6 * s)} ${f2(top - rh)}V${f2(top - rh - 4 * s)}Q${f2(x - 2 * s)} ${f2(top - rh - 6 * s)} ${f2(x - .4 * s)} ${f2(top - rh - 4 * s)}V${f2(top - rh)}ZM${f2(x + .4 * s)} ${f2(top - rh)}V${f2(top - rh - 4 * s)}Q${f2(x + 2 * s)} ${f2(top - rh - 6 * s)} ${f2(x + 3.6 * s)} ${f2(top - rh - 4 * s)}V${f2(top - rh)}Z" fill="#3A3026"/><path d="M${f2(x - 7 * s)} ${f2(top - rh - 7 * s)}L${f2(x)} ${f2(top - rh - 10 * s)}L${f2(x + 7 * s)} ${f2(top - rh - 7 * s)}Z" fill="${roof}"/>`;
+    if (kind === 'pastello' && i % 3 === 1) o += `<rect x="${f2(x + w * .4)}" y="${f2(top - rh - 8 * s)}" width="${f2(7 * s)}" height="${f2(10 * s)}" fill="${wall}"/><path d="M${f2(x + w * .4 - 1 * s)} ${f2(top - rh - 8 * s)}L${f2(x + w * .4 + 3.5 * s)} ${f2(top - rh - 15 * s)}L${f2(x + w * .4 + 8 * s)} ${f2(top - rh - 8 * s)}Z" fill="#6E9C7E"/><rect x="${f2(x + w * .4 + 2 * s)}" y="${f2(top - rh - 6 * s)}" width="${f2(3 * s)}" height="${f2(4 * s)}" fill="#3E4652"/>`;
+    if (kind !== 'ligure' && i % 2 === 0) chim = [x + w * .3, top - rh]; }
+  if (chim) o += `<rect x="${f2(chim[0] - 1.8 * s)}" y="${f2(chim[1] - 7 * s)}" width="${f2(3.6 * s)}" height="${f2(8 * s)}" fill="${shade(roof, .3)}"/><rect x="${f2(chim[0] - 2.4 * s)}" y="${f2(chim[1] - 8 * s)}" width="${f2(4.8 * s)}" height="${f2(1.4 * s)}" fill="${shade(roof, .4)}"/>` + (kind === 'baite' ? snowLedge(chim[0] - 2.4 * s, chim[0] + 2.4 * s, chim[1] - 8 * s, 1.2 * s) : '');
+  if (kind === 'baite') o += `<path d="M${f2(x + w)} ${f2(y)}h${f2(5 * s)}v${f2(-8 * s)}h${f2(-5 * s)}Z" fill="#8A6A48"/>` + [0, 1, 2].map((r) => [0, 1].map((c) => `<circle cx="${f2(x + w + 1.3 * s + c * 2.5 * s)}" cy="${f2(y - 1.3 * s - r * 2.6 * s)}" r="${f2(1.2 * s)}" fill="#C9A27A" stroke="#6A4A34" stroke-width="${f2(.3 * s)}"/>`).join('')).join('') + snowLedge(x + w, x + w + 5 * s, y - 8 * s, 1.2 * s);
+  if (kind === 'bianco' && i % 2) o += Array.from({ length: 9 }, () => `<circle cx="${f2(x - w + R2() * 6 * s)}" cy="${f2(y - zh - R2() * fh)}" r="${f2(1.2 * s + R2() * s)}" fill="${R2() < .6 ? '#C2307A' : '#5E8A44'}"/>`).join('');
   void R;
-  return { svg: o, wins, top: y - h, chim: kind !== 'bianco' && kind !== 'ligure' && i % 2 === 0 ? [x + w * .45 + 1.8 * s, y - h - 12 * s] : null };
+  return { svg: o, wins, top: top, chim: chim ? [chim[0], chim[1] - 8 * s] : null, w };
 }
 /* la sfera armillare sulla colonnina; l'asse del mondo (inclinato come la latitudine) indica la stella polare */
 const ARM_AX = [-.42, -.91];   // direzione dell'asse (verso l'alto a sinistra)
@@ -897,6 +949,85 @@ function ironGazebo(L) {
   return { svg: t + roses + `<path class="sc-flagw" d="M0 -146V-160L14 -156L0 -152" fill="#7E5A8E" stroke="#3A2E24" stroke-width="1"/>`, lamp: null, lamp2: null };
 }
 
+/* il campanile gotico alpino di Ianuario: contrafforti a gradoni, finestre a sesto acuto, cella campanaria a bifore, guglia ottagonale a scaglie
+   coi pinnacoli agli angoli. La neve si posa su ogni ripiano (contrafforti, cornici, cappello dell'orologio, base della guglia), i ghiaccioli pendono sotto. */
+function gothicTower(L, hr) {
+  const st = '#D2CDC3', sd = shade(st, .28), R = rng(23);
+  const lancet = (cx, by, w, h, fill = '#2E2A26') => `<path d="M${f2(cx - w / 2)} ${f2(by)}V${f2(by - h + w * .7)}Q${f2(cx - w / 2)} ${f2(by - h + w * .1)} ${f2(cx)} ${f2(by - h)}Q${f2(cx + w / 2)} ${f2(by - h + w * .1)} ${f2(cx + w / 2)} ${f2(by - h + w * .7)}V${f2(by)}Z" fill="${fill}"/>`;
+  let t = `<rect x="-27" y="-9" width="54" height="9" fill="#8E897F"/><rect x="-27" y="-9" width="54" height="2" fill="#A9A49A"/>`;
+  t += `<rect x="-18" y="-114" width="36" height="105" fill="${st}"/><rect x="${L > 0 ? 4 : -18}" y="-114" width="14" height="105" fill="#000" fill-opacity=".12"/>`;
+  for (let j = 1; j < 14; j++) t += `<path d="M-18 ${-9 - j * 7.5}H18" stroke="${sd}" stroke-opacity=".35" stroke-width=".7"/>`;
+  [-1, 1].forEach((sg) => { const x = sg * 20; t += `<path d="M${x - 4} -9V-52L${x - 2} -56V-82L${x} -86L${x + 2} -82V-56L${x + 4} -52V-9Z" fill="${shade(st, .1)}"/><path d="M${x - 4} -9V-52L${x - 2} -56V-82L${x} -86" stroke="${sd}" stroke-width=".8" fill="none"/>`
+    + snowLedge(x - 5, x + 5, -52, 2.2) + snowLedge(x - 3, x + 3, -82, 1.8) + icicles(x - 4, x + 4, -50.5, .8, R); });
+  t += lancet(0, -24, 7, 20) + `<path d="M-6 -9V-24Q0 -32 6 -24V-9Z" fill="#5A3A26"/>` + lancet(0, -44, 5, 14, '#3E4652') + lancet(-9, -96, 4, 12, '#3E4652') + lancet(9, -96, 4, 12, '#3E4652');
+  t += `<rect x="-20" y="-118" width="40" height="5" fill="${shade(st, .06)}"/>` + [-15, -9, -3, 3, 9, 15].map((x) => `<path d="M${x - 3} -113q3 4 6 0" stroke="${sd}" stroke-width=".9" fill="none"/>`).join('') + snowLedge(-21, 21, -118, 2.8) + icicles(-20, 20, -112.5, 1, R);
+  /* la cella campanaria con le bifore e la campana */
+  t += `<rect x="-17" y="-142" width="34" height="24" fill="${st}"/><rect x="${L > 0 ? 4 : -17}" y="-142" width="13" height="24" fill="#000" fill-opacity=".12"/>` + lancet(-7, -120, 7, 18) + lancet(7, -120, 7, 18)
+    + `<g><animateTransform attributeName="transform" type="rotate" values="-6 -7 -136;6 -7 -136;-6 -7 -136" dur="4s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/><path d="M-11 -124Q-11 -134 -7 -134Q-3 -134 -3 -124Z" fill="#B8863B"/></g>`
+    + `<rect x="-20" y="-146" width="40" height="4" fill="${shade(st, .06)}"/>` + snowLedge(-21, 21, -146, 3) + icicles(-20, 20, -141.5, 1, R);
+  /* la guglia ottagonale a scaglie, coi pinnacoli */
+  let sc = ''; for (let r = 0; r < 9; r++) { const y = -150 - r * 9, hw = 15 * (1 - (r + .5) / 10); for (let x = -hw + 2; x < hw - 1; x += 4) sc += `<path d="M${f2(x)} ${f2(y)}q2 2.6 4 0" stroke="#000" stroke-opacity=".16" stroke-width=".6" fill="none"/>`; }
+  t += `<path d="M-16 -146L0 -236L16 -146Z" fill="#4E5A64"/><path d="M0 -236L${16 * L} -146H${6 * L}Z" fill="#000" fill-opacity=".18"/><path d="M-6 -146L0 -236L6 -146" stroke="#3E4852" stroke-width=".8" fill="none"/>` + sc;
+  [-1, 1].forEach((sg) => { const x = sg * 18; t += `<path d="M${x - 3} -146L${x} -170L${x + 3} -146Z" fill="#B9B4AA"/><circle cx="${x}" cy="-171" r="1.4" fill="#B9B4AA"/>` + [-158, -164].map((y) => `<circle cx="${x + sg * -1.6}" cy="${y}" r=".9" fill="#9A958A"/>`).join('') + `<path d="M${x - 2.4} -168Q${x} -174 ${x + 2.4} -168L${x} -172Z" fill="#FFFFFF"/>`; });
+  /* la neve trattenuta dalle scaglie, a strisce sul lato del vento, più fitta in basso dove la pendenza cala; il ghiaccio vetroso sotto la cella */
+  for (let r = 0; r < 8; r++) { const y = -152 - r * 10, hw = 15 * (1 - (r + .6) / 10); for (let j = 0; j < 3 - (r > 4); j++) { const x0 = -hw + 1 + R() * hw * .9, w = 2 + R() * 3.4 * (1 - r / 9); t += `<path d="M${f2(x0)} ${f2(y)}q${f2(w / 2)} ${f2(-1.6)} ${f2(w)} 0q${f2(-w / 2)} ${f2(.8)} ${f2(-w)} 0z" fill="#FFFFFF" fill-opacity=".92"/>`; } }
+  t += `<path d="M-16 -146L-15 -150L0 -236L-12 -150Z" fill="#FFFFFF" fill-opacity=".55"/><path d="M-14 -142H14" stroke="#CFE3EE" stroke-width="1.4" stroke-opacity=".8"/>` + icicles(-16, 16, -140, 1.4, R);
+  t += `<path d="M-16 -146Q-10 -154 -12 -160L-4 -158Q-2 -170 0 -172Q4 -164 6 -168Q10 -156 16 -146Z" fill="#FFFFFF" fill-opacity=".95"/><path d="M-6 -190Q-3 -196 -1 -200L0 -186Z" fill="#FFFFFF" fill-opacity=".85"/><path d="M2 -206l1.4 -6l1 5z" fill="#FFFFFF" fill-opacity=".8"/>`
+    + `<path d="M0 -236V-250M-4 -245H4" stroke="#3A3226" stroke-width="1.4"/><circle cx="0" cy="-237" r="1.8" fill="${BRASS}"/>`;
+  /* l'orologio col cappello */
+  t += `<circle cx="0" cy="-68" r="11.5" fill="#F4EFE0" stroke="#3A3226" stroke-width="2"/><path d="M-14 -81L0 -88L14 -81Z" fill="#4E5A64"/>` + snowLedge(-14, 14, -82, 2);
+  for (let j = 0; j < 12; j++) { const a = j * Math.PI / 6, r0 = j % 3 ? 9 : 7.6; t += `<path d="M${f2(Math.sin(a) * r0)} ${f2(-68 - Math.cos(a) * r0)}L${f2(Math.sin(a) * 10.2)} ${f2(-68 - Math.cos(a) * 10.2)}" stroke="#3A3226" stroke-width="${j % 3 ? .7 : 1.2}"/>`; }
+  const ha = ((hr % 12) / 12) * 360, ma = ((hr * 60) % 60) / 60 * 360;
+  t += `<g><animateTransform attributeName="transform" type="rotate" from="${f2(ha)} 0 -68" to="${f2(ha + 360)} 0 -68" dur="43200s" repeatCount="indefinite"/><path d="M0 -68V-74" stroke="#2A221A" stroke-width="2" stroke-linecap="round"/></g>`
+    + `<g><animateTransform attributeName="transform" type="rotate" from="${f2(ma)} 0 -68" to="${f2(ma + 360)} 0 -68" dur="3600s" repeatCount="indefinite"/><path d="M0 -68V-77" stroke="#2A221A" stroke-width="1.3" stroke-linecap="round"/></g><circle cx="0" cy="-68" r="1.3" fill="#2A221A"/>`;
+  /* la neve accumulata alla base, contro i muri */
+  t += `<path d="M-34 1Q-30 -8 -20 -6Q0 -12 20 -6Q30 -8 34 1Z" fill="#FFFFFF"/>`;
+  return t;
+}
+/* il segno della vetta, diverso per ogni mese (origine alla base, al centro) */
+function summitMark(mi, L) {
+  const R = rng(61 + mi);
+  switch (mi) {
+    case 0: { // Foliaio: la cappelletta di pietra in cima al colle, coi due cipressi; dentro il lume acceso
+      let c = treeCypress(-34, 2, 1.1, '#3F5A34', L) + treeCypress(36, 2, 1.25, '#3F5A34', L);
+      c += `<rect x="-20" y="-2" width="40" height="4" fill="#9A8C74"/><path d="M-16 -2V-44H16V-2Z" fill="#D9C3A0"/><path d="M${L > 0 ? 4 : -16} -2V-44H${L > 0 ? 16 : -4}V-2Z" fill="#000" fill-opacity=".12"/>`
+        + Array.from({ length: 6 }, (_, j) => `<path d="M-16 ${-6 - j * 7}H16" stroke="#B9A27A" stroke-width=".7"/>`).join('')
+        + `<path d="M-8 -2V-24Q0 -34 8 -24V-2Z" fill="#3A3026"/><path d="M-22 -42L0 -58L22 -42Z" fill="#B05A36"/><path d="M0 -58L${22 * L} -42H0Z" fill="#000" fill-opacity=".15"/>`
+        + `<rect x="-4" y="-70" width="8" height="12" fill="#D9C3A0"/><path d="M-2 -60V-66Q0 -68 2 -66V-60Z" fill="#3A3026"/><path d="M0 -70V-78M-3 -75H3" stroke="#3A3226" stroke-width="1.2"/>`
+        + `<rect x="-3" y="-16" width="6" height="8" fill="#E8CF86"/><path d="M0 -16v-3" stroke="#F6C76E" stroke-width="1.4"/>`;
+      return { svg: c, lamp: [0, -18] }; }
+    case 1: { // Brumale: l'ometto con la lanterna accesa sul palo e la cassetta del libro di vetta
+      return { svg: cairn(1) + `<path d="M-28 4V-60h10" stroke="#3E3128" stroke-width="2.4" fill="none"/><path d="M-18 -60v6" stroke="#2E2A26" stroke-width="1"/><rect x="-22" y="-54" width="8" height="10" rx="1.4" fill="#2E2A26"/>`
+        + `<path d="M24 4V-22" stroke="#5A4636" stroke-width="2.4"/><rect x="17" y="-34" width="14" height="12" rx="1.4" fill="#8A8F96"/><path d="M17 -30h14" stroke="#5E636A" stroke-width="1"/>`, lamp: [-18, -49] }; }
+    case 2: { // Ianuario: la croce di vetta coperta di galaverna (gli aghi di ghiaccio crescono contro vento), la cornice di neve, la piccozza
+      let c = `<path d="M-2 4V-108M-26 -80H22" stroke="#4A3A2E" stroke-width="5" stroke-linecap="square"/>`;
+      const rime = (x0, y0, x1, y1, n) => { let o = ''; for (let j = 0; j < n; j++) { const t = j / (n - 1), x = x0 + (x1 - x0) * t, y = y0 + (y1 - y0) * t, l = 4 + R() * 6; o += `<path d="M${f2(x)} ${f2(y - 1.6)}l${f2(-l)} ${f2(-1 - R() * 2)}l${f2(l * .3)} ${f2(2.4)}l${f2(-l * .7)} ${f2(1.6)}l${f2(l)} ${f2(.6)}Z" fill="#F4F9FC"/>`; } return o; };
+      c += rime(-4.5, 2, -4.5, -108, 26) + rime(-26, -82.5, 22, -82.5, 12) + `<path d="M-28 -83H24" stroke="#FFFFFF" stroke-width="2.4"/><path d="M-5 -110H1" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>`;
+      c += `<path d="M30 4L36 -40" stroke="#6E4A2C" stroke-width="2.6" stroke-linecap="round"/><path d="M28 -40Q35 -45 45 -40L36 -38Z" fill="#8A949E"/><path d="M34 -36l2 -4" stroke="#B23A2E" stroke-width="2"/>`
+        + `<path d="M-48 6Q-40 -6 -20 -4Q10 -8 40 -2Q54 0 58 8Q40 4 10 6Q-20 4 -48 6Z" fill="#FFFFFF"/><path d="M40 -2Q54 0 58 8L62 6Q56 -4 40 -4Z" fill="#E6F0F5"/>` + icicles(-40, 50, 6, 1, R);
+      return { svg: c, lamp: null }; }
+    case 3: { // Germinale: il pilastrino del vertice geodetico col disco di bronzo, la palina bianca e rossa: qui si misura e si verifica
+      return { svg: `<path d="M-14 2L-10 -36H10L14 2Z" fill="#D8D2C6"/><path d="M${L > 0 ? 2 : -14} 2L${L > 0 ? 2 : -10} -36H${L > 0 ? 10 : -2}L${L > 0 ? 14 : -2} 2Z" fill="#000" fill-opacity=".1"/><rect x="-12" y="-40" width="24" height="5" fill="#C9C2B4"/>`
+        + `<ellipse cx="0" cy="-41" rx="6" ry="2" fill="${BRASS}"/><circle cx="0" cy="-41.4" r="1" fill="${BRASS_D}"/><path d="M-8 -20h16M-8 -14h16" stroke="#9A958A" stroke-width=".7"/><rect x="-6" y="-28" width="12" height="5" fill="#B9B4AA"/>`
+        + `<path d="M26 4V-74" stroke="#F4F1EA" stroke-width="3"/>` + [0, 1, 2, 3].map((j) => `<path d="M26 ${-8 - j * 18}v-9" stroke="#C0392B" stroke-width="3"/>`).join('') + `<path class="sc-flagw" d="M27 -74L40 -71L27 -67Z" fill="#5E8A4A"/>`
+        + [[-26, 2], [-20, 4], [36, 3], [44, 1], [-34, 3]].map(([x, y]) => `<path d="M${x} ${y}v-7" stroke="#4E7A3A" stroke-width="1.2"/><path d="M${x - 2.4} ${y - 7}L${x} ${y - 12}L${x + 2.4} ${y - 7}Z" fill="#2E4FA8"/>`).join(''), lamp: null }; }
+    case 4: { // Floreale: la campana di vetta sotto il suo telaio di legno; chi arriva la suona (dondola piano), intorno le stelle alpine
+      return { svg: `<path d="M-22 4L-16 -78M22 4L16 -78M-22 -78H22" stroke="#6E5236" stroke-width="4" stroke-linecap="round"/><path d="M-20 -30H20" stroke="#6E5236" stroke-width="2"/><path d="M-24 -80L0 -94L24 -80Z" fill="#6E5236"/>`
+        + `<g><animateTransform attributeName="transform" type="rotate" values="-10 0 -76;10 0 -76;-10 0 -76" dur="3.6s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/><path d="M0 -78V-72" stroke="#3A3226" stroke-width="1.4"/><path d="M-10 -48Q-10 -72 0 -72Q10 -72 10 -48L13 -45H-13Z" fill="${BRASS}"/><path d="M-10 -52H10" stroke="${BRASS_D}" stroke-width="1.2"/><circle cx="0" cy="-44" r="2.4" fill="${BRASS_D}"/><path d="M0 -44V-20" stroke="#C9B48A" stroke-width="1"/></g>`
+        + [[-30, 2], [-38, 4], [30, 3], [38, 1]].map(([x, y]) => `<path d="M${x} ${y}v-6" stroke="#7E8F6A" stroke-width="1.2"/><g transform="translate(${x} ${y - 7})">${[0, 1, 2, 3, 4].map((k) => `<ellipse rx="1.2" ry="3" transform="rotate(${k * 72}) translate(0 -2.4)" fill="#F4F1EA"/>`).join('')}<circle r="1.2" fill="#E3C34A"/></g>`).join(''), lamp: null }; }
+    case 5: { // Messidoro: la croce di legno sopra la piana del grano, con la cassetta di latta del libro di vetta e la bandiera
+      return { svg: `<path d="M0 4V-104M-20 -78H20" stroke="#6E4A2C" stroke-width="5"/><path d="M-1.6 4V-104" stroke="#000" stroke-opacity=".15" stroke-width="1.6"/><rect x="-6" y="-56" width="12" height="10" rx="1.2" fill="#9AA0A6"/><path d="M-6 -52h12" stroke="#6E747A" stroke-width=".8"/>`
+        + `<path d="M24 4V-60" stroke="#3A2E24" stroke-width="2"/><path class="sc-flagw" d="M25 -59Q36 -62 46 -57Q36 -52 25 -48Z" fill="${STY[5].flag}"/>` + [[-26, 2], [32, 3]].map(([x, y]) => wheat(x, y, 30, '#B98A34', '#C9A04A') + wheat(x + 4, y + 1, 26, '#B98A34', '#C9A04A')).join(''), lamp: null }; }
+    default: { // Estiario: il capo, la fine della terra: l'obelisco di pietra con la sfera, la rosa dei venti incisa nella roccia, la bandiera al vento di mare
+      let c = `<ellipse cx="-6" cy="4" rx="46" ry="9" fill="#B39A76"/><ellipse cx="-6" cy="4" rx="40" ry="7" fill="none" stroke="#8E7A58" stroke-width="1"/>`;
+      for (let j = 0; j < 8; j++) { const a = j * Math.PI / 4; c += `<path d="M-6 4L${f2(-6 + Math.cos(a) * (j % 2 ? 22 : 38))} ${f2(4 + Math.sin(a) * (j % 2 ? 4 : 7))}" stroke="#8E7A58" stroke-width="${j % 2 ? .8 : 1.6}"/>`; }
+      c += `<path d="M-11 2L-8 -86H8L11 2Z" fill="#E2D6BC"/><path d="M${L > 0 ? 0 : -11} 2L${L > 0 ? 0 : -8} -86H${L > 0 ? 8 : 0}L${L > 0 ? 11 : 0} 2Z" fill="#000" fill-opacity=".12"/><path d="M-8 -86L0 -98L8 -86Z" fill="#CFC2A6"/><circle cx="0" cy="-102" r="4.4" fill="${BRASS}"/>`
+        + `<rect x="-14" y="-4" width="28" height="6" fill="#CFC2A6"/><path d="M-4 -40h8M-3 -34h6" stroke="#B39A76" stroke-width=".8"/>`
+        + `<path d="M28 4V-78" stroke="#3A2E14" stroke-width="2.2"/><path class="sc-flagw" d="M29 -77Q42 -80 54 -74Q42 -68 29 -64Z" fill="#C0392B"/>`;
+      return { svg: c, lamp: null }; }
+  }
+}
+
 function sceneSVG(mi, opts = {}) {
   const p = clamp(opts.p ?? monthP(mi), 0, 1);
   const DAYB = mi === 1 && opts.variant === 'giorno';
@@ -950,7 +1081,22 @@ function sceneSVG(mi, opts = {}) {
       st += `<circle class="sc-twinkle" style="--td:${f2(2 + RN() * 3.4)}s;--tdl:${f2(RN() * 4)}s" cx="${f2(x)}" cy="${f2(y)}" r="${f2(big ? 1.2 + RN() * .8 : .45 + RN() * .8)}" fill="#E9ECF6" fill-opacity="${f2(.4 + RN() * .55)}"/>`; }
     s.push(lit(st, .3)); }
   /* nuvole (Brumale di giorno: cielo coperto) */
-  const cloud = (x, y, k, col, op) => `<g class="sc-drift" opacity="${f2(NIGHT ? op * .45 : op)}" style="--dd:${f2(50 + R() * 30)}s;--dx:${f2((R() < .5 ? -1 : 1) * (24 + R() * 24))}px"><ellipse cx="${f2(x)}" cy="${f2(y)}" rx="${f2(44 * k)}" ry="${f2(10 * k)}" fill="${col}"/><ellipse cx="${f2(x - 16 * k)}" cy="${f2(y - 6 * k)}" rx="${f2(20 * k)}" ry="${f2(11 * k)}" fill="${col}"/><ellipse cx="${f2(x + 14 * k)}" cy="${f2(y - 9 * k)}" rx="${f2(25 * k)}" ry="${f2(14 * k)}" fill="${col}"/></g>`;
+  const extraDefs = [], cgCache = {};
+  const cgrad = (col) => { if (cgCache[col]) return cgCache[col]; const id = u + 'cg' + Object.keys(cgCache).length;
+    extraDefs.push(`<radialGradient id="${id}"><stop offset="0" stop-color="${col}" stop-opacity=".95"/><stop offset=".45" stop-color="${col}" stop-opacity=".78"/><stop offset=".75" stop-color="${col}" stop-opacity=".3"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></radialGradient>`); return (cgCache[col] = id); };
+  const softPuffs = (x, y, k, col, tall = 1, wide = 1) => { const RC = rng(Math.round(Math.abs(x) * 7 + Math.abs(y) * 13 + k * 100)), c = NIGHT ? mixHex(toneHex(col, NK + .05), sky[1], .25) : col, lt = cgrad(c), dk = cgrad(shade(c, NIGHT ? .1 : .16)); let o = '';
+    for (let i = 0; i < 7; i++) { const t = i / 6 - .5, r = (15 + RC() * 9) * k; o += `<ellipse cx="${f2(x + t * 96 * k * wide)}" cy="${f2(y + 5 * k + (RC() - .5) * 3 * k)}" rx="${f2(r * 1.7)}" ry="${f2(r * .7)}" fill="url(#${dk})"/>`; }
+    for (let i = 0; i < 7; i++) { const t = (i / 6 - .5) * .85, r = (17 + RC() * 13) * k * (1 - Math.abs(t) * .7); o += `<circle cx="${f2(x + t * 86 * k * wide + (RC() - .5) * 8 * k)}" cy="${f2(y - r * .5 * tall - RC() * 5 * k * tall)}" r="${f2(r)}" fill="url(#${lt})"/>`; }
+    if (tall > 1.3) for (let i = 0; i < 4; i++) { const r = (16 + RC() * 10) * k; o += `<circle cx="${f2(x + (RC() - .5) * 40 * k)}" cy="${f2(y - (30 + i * 16) * k * tall * .6)}" r="${f2(r)}" fill="url(#${lt})"/>`; }
+    return o; };
+  const cumulus = (x, by, w, h, col, n = 16) => { const RC = rng(Math.round(x * 3 + by * 7 + w)), c = NIGHT ? mixHex(toneHex(col, NK + .05), sky[1], .25) : col, gL = cgrad(c), gM = cgrad(shade(c, NIGHT ? .08 : .1)), gD = cgrad(shade(c, NIGHT ? .16 : .24)); let o = '';
+    for (let i = 0; i < 6; i++) { const t = i / 5 - .5; o += `<ellipse cx="${f2(x + t * w * 1.3)}" cy="${f2(by - h * .05)}" rx="${f2(w * .42)}" ry="${f2(h * .1)}" fill="url(#${gD})"/>`; }
+    const P = []; for (let i = 0; i < n; i++) { const uu = (RC() * 2 - 1) * .92, env = Math.sqrt(1 - uu * uu), r = w * (.2 + RC() * .12) * (.55 + .45 * env), cy = by - h * .12 - RC() * env * (h - r * .9); P.push([x + uu * w * .8, cy, r]); }
+    P.sort((a, b) => b[1] - a[1]).forEach(([px, py, r]) => { const f = (by - py) / h; o += `<circle cx="${f2(px)}" cy="${f2(py)}" r="${f2(r)}" fill="url(#${f < .3 ? gD : f < .6 ? gM : gL})"/>`; });
+    return o; };
+  const cloud = (x, y, k, col, op) => `<g class="sc-drift" opacity="${f2(NIGHT ? op * .7 : op)}" style="--dd:${f2(50 + R() * 30)}s;--dx:${f2((R() < .5 ? -1 : 1) * (24 + R() * 24))}px">${softPuffs(x, y, k, col)}</g>`;
+  const cloudOld = (x, y, k, col, op) => `<g class="sc-drift" opacity="${f2(NIGHT ? op * .45 : op)}" style="--dd:${f2(50 + R() * 30)}s;--dx:${f2((R() < .5 ? -1 : 1) * (24 + R() * 24))}px"><ellipse cx="${f2(x)}" cy="${f2(y)}" rx="${f2(44 * k)}" ry="${f2(10 * k)}" fill="${col}"/><ellipse cx="${f2(x - 16 * k)}" cy="${f2(y - 6 * k)}" rx="${f2(20 * k)}" ry="${f2(11 * k)}" fill="${col}"/><ellipse cx="${f2(x + 14 * k)}" cy="${f2(y - 9 * k)}" rx="${f2(25 * k)}" ry="${f2(14 * k)}" fill="${col}"/></g>`;
+  if (DAYB || RAINW) { const sc2 = RAINW ? '#9AA2AE' : '#C9D0DA'; s.push(`<defs><linearGradient id="${u}ov" x1="0" y1="${-T - 30}" x2="0" y2="200" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${sc2}" stop-opacity=".8"/><stop offset=".7" stop-color="${sc2}" stop-opacity=".35"/><stop offset="1" stop-color="${sc2}" stop-opacity="0"/></linearGradient></defs><rect x="-20" y="${-T - 30}" width="${SW + 40}" height="${T + 230}" fill="url(#${u}ov)"/>`); }
   if (DAYB || RAINW) add([[620, 40, 1.4], [820, 10, 1.6], [1020, 52, 1.5], [1170, 18, 1.3], [900, 96, 1], [700, -40, 1.5], [1080, -70, 1.4], [760, 120, 1.2], [1140, 110, 1.3], [940, -100, 1.6]].map(([x, y, k], i) => cloud(x, y, k, RAINW ? ['#A9B1BC', '#9CA4B0', '#B4BBC5'][i % 3] : ['#D3DAE4', '#C9D1DC', '#DCE1E8'][i % 3], .92)).join(''), .3);
   else if (mi !== 6 || !NIGHT) add([[700, 70 - T * .3, 1.1], [1080, 40 - T * .5, .8], [880, 130, .6]].map(([x, y, k]) => cloud(x, y, k, '#FFFFFF', mi === 5 || mi === 6 ? .5 : .62)).join(''), .4);
 
@@ -972,14 +1118,15 @@ function sceneSVG(mi, opts = {}) {
     const cx = cel.x < 960 ? 1100 : 820, cy = HZ + 60, r0 = 210;
     s.push(`<g class="sc-fade" style="--d:1.4s"><g opacity=".32">${['#E25B4A', '#F0A04A', '#F2D45A', '#7DBE6A', '#5A9AD6', '#8A6ACB'].map((c, i) => `<path d="M${cx - (r0 - i * 5)} ${cy}A${r0 - i * 5} ${r0 - i * 5} 0 0 1 ${cx + (r0 - i * 5)} ${cy}" stroke="${c}" stroke-width="5.4" fill="none"/>`).join('')}</g></g>`); }
   if (mi === 5) {   // Messidoro: di giorno i cumuli alti sul mare; di notte i lampi di calore lontani, dentro le nuvole all'orizzonte
-    const bank = wkx % 2 ? [[820, 200, 22], [846, 192, 30], [872, 200, 20], [1090, 200, 26], [1120, 190, 36], [1150, 200, 22]] : [[900, 200, 24], [930, 188, 36], [962, 200, 22], [1160, 202, 18]];
+    const bank = wkx % 2 ? [[846, 206, 62, 66], [1124, 206, 74, 86]] : [[932, 206, 76, 80], [1162, 206, 40, 40]];
     if (NIGHT) s.push(lit(`<ellipse class="sc-flash" style="--fld:9s;--fll:-3s" cx="1010" cy="176" rx="130" ry="56" fill="url(#${u}g)"/><ellipse class="sc-flash" style="--fld:13s;--fll:-8s" cx="860" cy="186" rx="100" ry="44" fill="url(#${u}g)"/>`, .5));
-    add(`<g opacity="${NIGHT ? .9 : .85}">` + bank.map(([x, y, r]) => `<circle cx="${x}" cy="${y - r * .5}" r="${r}" fill="${NIGHT ? '#7E88A6' : '#FFFFFF'}"/><circle cx="${x + r * .5}" cy="${y - r * 1.1}" r="${r * .62}" fill="${NIGHT ? '#8892AE' : '#FFFFFF'}"/><ellipse cx="${x}" cy="${y - r * .2}" rx="${r * 1.1}" ry="${r * .35}" fill="${NIGHT ? '#6E7896' : '#E4EAEF'}"/>`).join('') + '</g>', .3); }
+    add(bank.map(([x, y, w, h]) => cumulus(x, y, w, h, NIGHT ? '#8A94B0' : '#FFFFFF', 18)).join(''), .3); }
   if (STORM && !NIGHT) { const cx = 870; s.push('<g transform="translate(348 86) scale(.6)">');   // il temporale lontano sul mare: la torre di nuvole con l'incudine, la cortina di pioggia sfumata che tocca l'acqua, il fulmine
     s.push(`<g class="sc-fade" style="--d:.6s"><defs><linearGradient id="${u}cur" x1="0" y1="150" x2="0" y2="214" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#6E7888" stop-opacity=".7"/><stop offset="1" stop-color="#8A94A2" stop-opacity=".15"/></linearGradient><linearGradient id="${u}cb" x1="0" y1="20" x2="0" y2="160" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#D9DEE5"/><stop offset=".6" stop-color="#9AA3B0"/><stop offset="1" stop-color="#6E7888"/></linearGradient></defs>`
       + `<path d="M${cx - 60} 150L${cx - 78} 214H${cx + 96}L${cx + 76} 150Z" fill="url(#${u}cur)"/>` + Array.from({ length: 10 }, (_, i) => `<path d="M${cx - 50 + i * 13} 152l-8 60" stroke="#6E7888" stroke-opacity=".18" stroke-width="5"/>`).join('')
-      + `<path d="M${cx - 150} 44Q${cx - 60} 22 ${cx} 30Q${cx + 90} 20 ${cx + 170} 40Q${cx + 80} 52 ${cx + 40} 60Q${cx + 70} 90 ${cx + 80} 120Q${cx + 100} 136 ${cx + 76} 152H${cx - 62}Q${cx - 86} 136 ${cx - 64} 118Q${cx - 70} 86 ${cx - 40} 62Q${cx - 90} 54 ${cx - 150} 44Z" fill="url(#${u}cb)"/>`
-      + `<path d="M${cx - 40} 62Q${cx - 10} 80 ${cx + 40} 60" stroke="#FFFFFF" stroke-opacity=".3" stroke-width="6" fill="none"/></g>`
+      + `<path d="M${cx - 40} 100Q${cx - 130} 50 ${cx - 190} 46Q${cx - 60} 22 ${cx + 20} 26Q${cx + 130} 22 ${cx + 200} 44Q${cx + 120} 50 ${cx + 54} 100Z" fill="url(#${cgrad('#C3CAD4')})"/>`
+      + [[-150, 44, 36], [-90, 34, 42], [-20, 28, 46], [50, 28, 44], [120, 34, 40], [170, 42, 30]].map(([dx, y, r]) => `<ellipse cx="${cx + dx}" cy="${y}" rx="${r * 1.5}" ry="${r * .5}" fill="url(#${cgrad('#C9D0D9')})"/>`).join('')
+      + cumulus(cx + 6, 150, 96, 120, '#B0B8C4', 26) + `<ellipse cx="${cx + 6}" cy="148" rx="120" ry="12" fill="url(#${cgrad('#6E7888')})"/>` + '</g>'
       + `<g data-lit="1"><path class="sc-flash" style="--fld:7s;--fll:-2s" d="M${cx + 20} 152l-8 20l7 0l-12 26l18 -30l-8 0l8 -16z" fill="#FFF8D0"/><ellipse class="sc-flash" style="--fld:7s;--fll:-2s" cx="${cx + 10}" cy="110" rx="80" ry="50" fill="url(#${u}g)"/></g>`); s.push('</g>'); }
   if (mi === 6 && NIGHT) s.push(lit([[760, 30, 13, 3], [1100, -20, 17, 9], [920, -60, 21, 15]].map(([x, y, d, l]) => `<g class="sc-shoot" style="--sd2:${d}s;--sdl2:${l}s"><path d="M${x} ${y - T * .3}l-64 24" stroke="url(#${u}t)" stroke-width="1.6" stroke-linecap="round"/></g>`).join(''), 2));
 
@@ -1189,7 +1336,7 @@ function sceneSVG(mi, opts = {}) {
       const x = 1040, y = 284, k = 1.02, boat = at(x, y, k, paddleSteamer(u));
       let puffs = ''; for (let i = 0; i < 5; i++) puffs += `<g transform="translate(${f2(x + 13 * k + (i % 2) * 4)} ${f2(y - 90 * k)})"><g class="sc-puff2" style="--pfd:6s;--pfl:${f2(-i * 1.2)}s"><circle r="${5 + (i % 2) * 2}" fill="#FFFFFF" fill-opacity=".8"/></g></g>`;
       add(mirror(boat, y, .3) + puffs + `<g class="sc-bob2">${boat}</g>` + frontWater(x, y, 210 * k, 18) + `<path d="M${f2(x + 92 * k)} ${y + 4}q24 2 48 -1M${f2(x + 96 * k)} ${y + 9}q28 2 54 -2" stroke="#FFFFFF" stroke-opacity=".75" stroke-width="1.4" fill="none" stroke-linecap="round"/>`, .4);
-      if (NIGHT) addLit(Array.from({ length: 12 }, (_, i) => `<path d="M${f2(x + (-58 + i * 9) * k)} ${f2(y - 22 * k)}v${f2(-6 * k)}q${f2(2.5 * k)} ${f2(-3 * k)} ${f2(5 * k)} 0v${f2(6 * k)}z" fill="#F6C76E"/>`).join('') + glow(x, y - 26 * k, 60, .7), 1.4);
+      if (NIGHT) addLit(Array.from({ length: 12 }, (_, i) => PW(-58 + i * 9) || PW(-53 + i * 9) ? '' : `<path d="M${f2(x + (-58 + i * 9) * k)} ${f2(y - 22 * k)}v${f2(-6 * k)}q${f2(2.5 * k)} ${f2(-3 * k)} ${f2(5 * k)} 0v${f2(6 * k)}z" fill="#F6C76E"/>`).join('') + glow(x, y - 26 * k, 60, .7), 1.4);
       if (!NIGHT) add([[820, 120, .9], [890, 90, .7], [1150, 70, 1]].map(([gx, gy, gk]) => gull(gx, gy, gk, '#3B3012', R)).join(''), 1);
       const fr = ridge([[1110, BOT], [1150, 330], [1190, 316], [1220, 312]], 2);
       add(fill(fr, LD.front) + groundDetail(fr, 1140, 1220, 8, 1.6, 1), .5);
@@ -1273,9 +1420,32 @@ function sceneSVG(mi, opts = {}) {
         let deco = '';
         if (mi === 4) for (let i2 = 0; i2 < 14; i2++) { const x = 760 + R() * 460, y = 300 + Math.pow(R(), .7) * (BOT - 300), w = 6 + (y - 290) * .12; if (Math.abs(x - bx) < 90 && Math.abs(y - by) < 20) continue; deco += `<ellipse cx="${f2(x)}" cy="${f2(y)}" rx="${f2(w)}" ry="${f2(w * .3)}" fill="#5E8A44"/><path d="M${f2(x)} ${f2(y)}l${f2(w * .6)} ${f2(-w * .1)}" stroke="#4A6E36" stroke-width="1"/>` + (i2 % 3 ? '' : `<circle cx="${f2(x - w * .3)}" cy="${f2(y - w * .15)}" r="${f2(w * .3)}" fill="#F4C9D8"/>`); }
         if (mi === 0) for (let i2 = 0; i2 < 16; i2++) { const x = 740 + R() * 480, y = 250 + Math.pow(R(), .7) * (BOT - 250), w = 2 + (y - 240) * .03; deco += `<ellipse cx="${f2(x)}" cy="${f2(y)}" rx="${f2(w)}" ry="${f2(w * .4)}" fill="${AUT[i2 % 4]}"/>`; }
+        let iceFront = '';
+        if (mi === 2) {   // il lago è gelato: la barca (prua rivestita di lamiera) avanza rompendo la lastra; dietro resta il canale d'acqua nera coi lastroni rotti
+          const ice2 = `<defs><linearGradient id="${u}ic2" x1="0" y1="${WL}" x2="0" y2="${BOT}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#E4EDF2"/><stop offset="1" stop-color="#C3D5DF"/></linearGradient><linearGradient id="${u}chw" x1="0" y1="${by - 10}" x2="0" y2="${BOT}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2E4656"/><stop offset="1" stop-color="#4A6676"/></linearGradient></defs>`;
+          const ch = [[bx - 92, by + 1], [bx - 20, by + 2], [bx + 80, by + 6], [bx + 150, by + 26], [bx + 190, by + 70], [1250, BOT + 30]], cw = [3, 12, 14, 18, 30, 60];
+          const L2 = ch.map(([x, y], i) => [x, y - cw[i] * .55]), R2 = ch.map(([x, y], i) => [x, y + cw[i]]);
+          const chD = ptsD(crSample(L2, 5)) + crSample(R2, 5).reverse().map(([x, y]) => `L${f2(x)} ${f2(y)}`).join('') + 'Z';
+          /* la superficie: lastra liscia con la neve portata dal vento in strisce, qualche crepa lunga */
+          let dr = ''; for (let i2 = 0; i2 < 16; i2++) { const x = 300 + R() * 920, y = WL + 6 + Math.pow(R(), .6) * (BOT - WL - 10), w = 18 + (y - WL) * .5 + R() * 40; if (Math.abs(y - by) < 30 && x > bx - 120) continue; dr += `<ellipse cx="${f2(x)}" cy="${f2(y)}" rx="${f2(w)}" ry="${f2(w * .07)}" fill="url(#${cgrad('#FFFFFF')})"/>`; }
+          let cr = ''; for (let i2 = 0; i2 < 7; i2++) { let x = 320 + R() * 600, y = WL + 12 + Math.pow(R(), .7) * (BOT - WL - 20), d = `M${f2(x)} ${f2(y)}`; for (let k2 = 0; k2 < 5; k2++) { x += 14 + R() * 30; y += (R() - .5) * 5; d += `L${f2(x)} ${f2(y)}`; } cr += `<path d="${d}" stroke="#9FB8C6" stroke-width=".8" fill="none" stroke-opacity=".7"/>`; }
+          /* davanti alla prua le crepe a raggiera nella lastra ancora intera */
+          for (let i2 = 0; i2 < 3; i2++) { let x = bx - 92, y = by + 1, d = `M${f2(x)} ${f2(y)}`, a2 = Math.PI + (i2 - 1) * .3; for (let k2 = 0; k2 < 3; k2++) { x += Math.cos(a2) * (8 + R() * 12); y += Math.sin(a2) * (2 + R() * 3) + (R() - .5) * 2; d += `L${f2(x)} ${f2(y)}`; } cr += `<path d="${d}" stroke="#9FB8C6" stroke-width=".7" fill="none"/>`; }
+          /* il canale: il bordo lontano mostra lo spessore della lastra, quello vicino il labbro bianco; dentro i lastroni rotti che galleggiano */
+          let fl = ''; for (let i2 = 0; i2 < 18; i2++) { const t = .15 + R() * .85, j = Math.min(ch.length - 2, Math.floor(t * (ch.length - 1))), q = t * (ch.length - 1) - j, x = ch[j][0] + (ch[j + 1][0] - ch[j][0]) * q, y = ch[j][1] + (ch[j + 1][1] - ch[j][1]) * q, w = cw[j] + (cw[j + 1] - cw[j]) * q, sz = 2.4 + w * .22 + R() * 3, yy = y + (R() - .3) * w * .6;
+            if (Math.abs(x - bx) < 80 && Math.abs(yy - by) < 8) continue;
+            fl += `<path d="M${f2(x - sz)} ${f2(yy)}l${f2(sz * .5)} ${f2(-sz * .26)}l${f2(sz * 1.1)} ${f2(-sz * .04)}l${f2(sz * .5)} ${f2(sz * .24)}l${f2(-sz * .6)} ${f2(sz * .16)}Z" fill="#F2F7FA"/><path d="M${f2(x - sz)} ${f2(yy)}l${f2(sz * 1.5)} ${f2(sz * .06)}l${f2(sz * .5)} ${f2(-sz * .06)}v${f2(sz * .16)}h${f2(-sz * 2)}Z" fill="#9DB9C8"/>`; }
+          const edge = ptsD(crSample(L2, 5));
+          add(ice2 + `<rect x="-20" y="${WL}" width="${SW + 40}" height="${BOT - WL + 40}" fill="url(#${u}ic2)"/>` + dr + cr + `<path d="${chD}" fill="url(#${u}chw)"/><path d="${edge}" stroke="#A9C3D1" stroke-width="2.2" fill="none" transform="translate(0 1.2)"/><path d="${edge}" stroke="#FFFFFF" stroke-width="1" fill="none"/>`
+            + `<path d="${ptsD(crSample(R2, 5))}" stroke="#FFFFFF" stroke-width="1.8" fill="none"/>` + fl, .3);
+          /* la lastra spezzata davanti allo scafo e i frammenti accavallati alla prua: tengono la barca dentro il ghiaccio */
+          iceFront = `<path d="M${bx - 86} ${by + 1}L${bx + 76} ${by + 2.4}L${bx + 80} ${by + 15}L${bx - 80} ${by + 12}Z" fill="url(#${u}chw)"/><path d="M${bx - 60} ${by + 5}h30M${bx + 4} ${by + 7}h40" stroke="#7E98A8" stroke-width=".8"/>`
+            + `<path d="M${bx - 96} ${by + 12}L${bx - 80} ${by + 11.4}L${bx + 82} ${by + 14.4}Q${bx + 96} ${by + 16} ${bx + 104} ${by + 24}V${by + 30}H${bx - 96}Z" fill="url(#${u}ic2)"/><path d="M${bx - 96} ${by + 12}L${bx - 80} ${by + 11.4}L${bx + 82} ${by + 14.4}Q${bx + 96} ${by + 16} ${bx + 104} ${by + 24}" stroke="#FFFFFF" stroke-width="1.8" fill="none"/><path d="M${bx - 80} ${by + 13.4}L${bx + 82} ${by + 16.4}" stroke="#A9C3D1" stroke-width="1.2"/>` + [[bx - 70, by + 3, 7], [bx - 48, by + 4.4, 5], [bx - 10, by + 5, 6], [bx + 30, by + 5.4, 5], [bx + 64, by + 6, 6], [bx - 84, by + .5, 6]].map(([x, y, sz]) => `<path d="M${x - sz} ${y}l${f2(sz * .6)} ${f2(-sz * .45)}l${f2(sz * 1)} ${f2(-sz * .1)}l${f2(sz * .6)} ${f2(sz * .5)}l${f2(-sz * .5)} ${f2(sz * .2)}Z" fill="#F4F9FC" stroke="#AFC6D3" stroke-width=".6"/>`).join('')
+            + `<path d="M${bx - 96} ${by - 1}l6 -5l5 4l-3 3z" fill="#F4F9FC" stroke="#AFC6D3" stroke-width=".6"/><path d="M${bx - 86} ${by - 3}l7 -7l4 7z" fill="#E9F2F6" stroke="#AFC6D3" stroke-width=".6"/>`; }
         add(deco, .4);
-        add(mirror(boat, by, .32) + boat + frontWater(bx, by, 150 * k, 18) + ripRings(bx - 30 * k, by + 1, 3, 24) + `<path d="M${f2(bx + 50 * k)} ${by + 3}l34 2M${f2(bx + 46 * k)} ${by + 7}l26 5" stroke="#FFFFFF" stroke-opacity=".55" stroke-width="1.2"/>`, .45);
-        if (kind === 'remi' && mi !== 5) addLit(glow(bx - 58 * k, by - 34 * k, NIGHT || DAYB ? 34 : 16) + mirror(glow(bx - 58 * k, by - 34 * k, 22), by, .6), 1.6);
+        if (mi === 2) add(boat + `<path d="M${bx - 70} ${by + 1.6}H${bx + 74}" stroke="#2E4656" stroke-width="2.4" stroke-opacity=".7"/>` + iceFront, .45);
+        else add(mirror(boat, by, .32) + boat + frontWater(bx, by, 150 * k, 18) + ripRings(bx - 30 * k, by + 1, 3, 24) + `<path d="M${f2(bx + 50 * k)} ${by + 3}l34 2M${f2(bx + 46 * k)} ${by + 7}l26 5" stroke="#FFFFFF" stroke-opacity=".55" stroke-width="1.2"/>`, .45);
+        if (kind === 'remi' && mi !== 5) addLit(glow(bx - 58 * k, by - 34 * k, NIGHT || DAYB ? 34 : 16) + (mi === 2 ? '' : mirror(glow(bx - 58 * k, by - 34 * k, 22), by, .6)), 1.6);
         if (mi === 5 && NIGHT) addLit(glow(bx + 49 * k, by - 47 * k, 70) + mirror(glow(bx + 49 * k, by - 47 * k, 50), by, .8) + Array.from({ length: 8 }, (_, i2) => `<rect class="sc-twinkle" style="--td:${f2(1.6 + i2 * .3)}s" x="${f2(bx + 49 * k - 14 - i2 * 3)}" y="${f2(by + 10 + i2 * 10)}" width="${f2(28 + i2 * 6)}" height="1.8" rx=".9" fill="#FFF1BE" fill-opacity=".7"/>`).join(''), 1.6); }
       else { const st = STY[mi].sail, bx = 1070, by = ice ? 300 : 296, k = 1.3, boat = at(bx, by, k, sailBoat2(st));
         if (ice) add(`<ellipse cx="${bx}" cy="${by + 2}" rx="${70 * k}" ry="5" fill="#5A6E7E" fill-opacity=".2"/>` + boat + `<path d="M${f2(bx + 50 * k)} ${by + 1}q40 -1 90 1M${f2(bx + 46 * k)} ${by + 4}q30 0 70 3" stroke="#FFFFFF" stroke-width="1.6" fill="none" stroke-linecap="round"/>`, .45);
@@ -1442,10 +1612,16 @@ function sceneSVG(mi, opts = {}) {
       const hill = ridge([[700, BOT], [780, 320], [900, 286], [1010, 262], [1090, 254], [1160, 258], [1220, 268]], 2);
       const X = 1092, y = hill.y(X) + 2, L = Ls(X), kind = STY[mi].town, RH = rng(seed + 17);
       let back = '', front = '', wins = '', smoke = '';
-      const put = (hx, dy, k, i) => { const hy = hill.y(hx) + dy, H0 = townHouse(kind, hx, hy, k, i, Ls(hx), RH);
+      const WALLC = { toscano: '#BFA27A', lombardo: '#A9A296', baite: '#8E897F', pastello: '#C9B8A0', graticcio: '#A99A86', bianco: '#E9E3D6', ligure: '#B9A68A' }[kind];
+      const put = (hx, dy, k, i) => { const hy = hill.y(hx) + dy, H0 = townHouse(kind, hx, hy, k, i, Ls(hx), RH), tw = H0.w + 7 * k, th = 5 * k;
+        let ter = `<path d="M${f2(hx - tw)} ${f2(hy - .5)}H${f2(hx + tw)}L${f2(hx + tw - 1.6 * k)} ${f2(hy + th)}H${f2(hx - tw + 1.6 * k)}Z" fill="${WALLC}"/>`;
+        for (let r = 0; r < 2; r++) for (let c = 0; c < Math.round(tw / (3 * k)); c++) ter += `<rect x="${f2(hx - tw + 1.8 * k + c * 6 * k + (r % 2) * 3 * k)}" y="${f2(hy + .6 * k + r * 2.3 * k)}" width="${f2(5 * k)}" height="${f2(1.8 * k)}" rx="${f2(.6 * k)}" fill="#000" fill-opacity="${f2(.06 + RH() * .08)}"/>`;
+        ter += `<rect x="${f2(hx - tw)}" y="${f2(hy - 1.6 * k)}" width="${f2(2 * tw)}" height="${f2(1.8 * k)}" fill="${snowy ? '#FFFFFF' : shade(landCol(.8), .05)}"/><rect x="${f2(hx - H0.w - 1.5 * k)}" y="${f2(hy - .8 * k)}" width="${f2(2 * H0.w + 3 * k)}" height="${f2(1.4 * k)}" fill="#000" fill-opacity=".22"/>`
+          + (snowy ? snowLedge(hx - tw, hx + tw, hy - 1.4 * k, 1.6 * k) : grassTuft(hx - tw + 3 * k, hy - .8 * k, .6 * k, shade(landCol(.8), .3)) + grassTuft(hx + tw - 3 * k, hy - .8 * k, .6 * k, shade(landCol(.8), .3)));
+        const H1 = { ...H0, svg: ter + H0.svg + (snowy ? `<path d="M${f2(hx - H0.w - 2 * k)} ${f2(hy)}Q${f2(hx - H0.w)} ${f2(hy - 4 * k)} ${f2(hx - H0.w + 6 * k)} ${f2(hy - 2.4 * k)}L${f2(hx - H0.w + 8 * k)} ${f2(hy)}Z" fill="#FFFFFF"/>` : '') };
         wins += H0.wins.map(([wx, wy, ww, wh], j) => (i + j) % 3 === 2 ? '' : win(wx, wy, ww, wh, (i * 7 + j) % 5 * .6)).join('');
         if (H0.chim && !NIGHT && (mi <= 2) && i % 3 === 0) smoke += [0, 1, 2].map((j) => `<circle class="sc-puff2" style="--pfd:7s;--pfl:${f2(-j * 2.3 - i)}s" cx="${f2(H0.chim[0])}" cy="${f2(H0.chim[1])}" r="${f2((3 + j) * k)}" fill="#FFFFFF" fill-opacity=".55"/>`).join('');
-        return H0.svg; };
+        return H1.svg; };
       /* tre file di case: in alto dietro la torre, a metà costa, davanti più grandi; ogni fila più in basso e più grande della precedente */
       [[1026, 4, .92], [1058, 2, .95], [1128, 2, .95], [1160, 4, .92], [1192, 8, .9], [996, 10, .88], [966, 18, .84]].forEach(([hx, dy, k], i) => { back += put(hx, dy, k, i); });
       [[944, 36, 1.08], [990, 34, 1.16], [1044, 30, 1.2], [1140, 30, 1.2], [1196, 34, 1.16]].forEach(([hx, dy, k], i) => { front += put(hx, dy, k, i + 7); });
@@ -1614,11 +1790,10 @@ function sceneSVG(mi, opts = {}) {
       const fr0 = ridge([[-20, 190], [400, 170], [640, 140], [760, 104], [860, 150], [980, 122], [1100, 160], [1220, 140]], 8);
       add(fill(fr0, haze(LD.far, 0)) + (mi >= 1 && mi <= 4 ? snowCap(fr0, snowy ? 168 : 132, 24) : ''), .1);
       const cl = NIGHT ? mixHex('#4A5672', '#C9D2E6', moonL) : low > .3 ? mixHex('#FFFFFF', '#F7D3A8', .35) : '#FBFCFD', cs = NIGHT ? mixHex('#2E3750', '#8E9AB8', moonL) : low > .3 ? '#E4BC94' : '#D5DCE5';
-      const layer = (y0, r, d, gid) => { const RB = rng(seed + Math.round(y0)); let dd = `M-20 ${f2(y0 + r)}`, x = -20;
-        while (x < SW + 20) { const rr = r * (.6 + RB() * .8), h = rr * (.55 + RB() * .5); dd += `Q${f2(x + rr * .1)} ${f2(y0 - h)} ${f2(x + rr)} ${f2(y0 - h)}Q${f2(x + rr * 1.9)} ${f2(y0 - h)} ${f2(x + rr * 2)} ${f2(y0 + RB() * r * .3)}`; x += rr * 2; }
-        dd += `L${SW + 20} ${BOT + 40}L-20 ${BOT + 40}Z`;
-        const c0 = mixHex(cl, hzC, (1 - d) * .35), c1 = mixHex(cs, hzC, (1 - d) * .35);
-        return `<defs><linearGradient id="${u}${gid}" x1="0" y1="${f2(y0 - r)}" x2="0" y2="${f2(y0 + r * 2.2)}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${rgb(c0)}"/><stop offset=".55" stop-color="${rgb(c0)}"/><stop offset="1" stop-color="${rgb(c1)}"/></linearGradient></defs><path d="${dd}" fill="url(#${u}${gid})"/>`; };
+      const layer = (y0, r, d, gid) => { const RB = rng(seed + Math.round(y0)), c0 = mixHex(cl, hzC, (1 - d) * .35), c1 = mixHex(cs, hzC, (1 - d) * .35), g0 = cgrad(c0), g1 = cgrad(mixHex(c0, c1, .5));
+        let o = `<defs><linearGradient id="${u}${gid}" x1="0" y1="${f2(y0)}" x2="0" y2="${f2(y0 + r * 3)}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${rgb(c0)}"/><stop offset="1" stop-color="${rgb(c1)}"/></linearGradient></defs><rect x="-20" y="${f2(y0 + r * .25)}" width="${SW + 40}" height="${f2(BOT - y0 + 40)}" fill="url(#${u}${gid})"/>`;
+        for (let x = -20; x < SW + 20;) { const rr = r * (1 + RB() * 1.1); o += `<ellipse cx="${f2(x + rr * .6)}" cy="${f2(y0 + rr * .35)}" rx="${f2(rr * 1.6)}" ry="${f2(rr * .8)}" fill="url(#${g1})"/><circle cx="${f2(x + rr * .6)}" cy="${f2(y0 - rr * .1 + RB() * r * .2)}" r="${f2(rr)}" fill="url(#${g0})"/>`; x += rr * 1.15; }
+        return o; };
       const pk = (cx, top, w, d) => { const r = ridge([[cx - w, 250], [cx - w * .5, top + 30], [cx - w * .12, top + 6], [cx, top], [cx + w * .2, top + 10], [cx + w * .55, top + 34], [cx + w, 250]], 2, 12); return fill(r, haze(LD.rock, d)) + (snowy || top < 210 ? snowCap(r, top + 16, 12) : ''); };
       const below = mi === 0 ? 'colli' : mi === 5 ? 'piana' : mi === 6 ? 'mare' : 'nuvole';
       if (below === 'nuvole') { add(layer(204, 10, .1, 'c1'), .15); add(pk(780, 168, 64, .25) + pk(900, 196, 44, .3) + layer(228, 16, .35, 'c2'), .2); add(layer(256, 26, .6, 'c3'), .25); }
@@ -1628,10 +1803,11 @@ function sceneSVG(mi, opts = {}) {
           add(fill(rg2, landCol(d)) + patches(rg2, 300, 1220, d, 3) + (below === 'colli' ? forest(rg2, 600, 1200, 10, .3 + d * .4, d) : hedge(rg2, 300, 1200, 18, d)) + mist(y0 + 4, 22, below === 'colli' ? .7 : .35, 28 + i * 4, 40), .15 + i * .05); }); }
       const rock = ridge([[860, BOT], [920, 340], [990, 300], [1050, 278], [1100, 270], [1150, 276], [1220, 300]], 3);
       const rc = mi === 2 ? '#E9F0F4' : mixHex(LD.rock, LD.near, .3);
-      const X = 1100, y = rock.y(X) + 3;
+      const X = 1100, y = rock.y(X) + 3, SM = summitMark(mi, Ls(X));
       const cracks = `<path d="M1000 300l20 14l-6 18M1060 286l-10 22l14 20M1140 282l12 26" stroke="${shade(rc, .25)}" stroke-width="2" fill="none" stroke-linecap="round"/>`;
       const path = `<path d="${ptsD(crSample([[920, BOT], [980, 360], [930, 340], [1010, 318], [1050, 300], [X - 20, y]], 4))}" stroke="${LD.path}" stroke-opacity=".7" stroke-width="2.6" fill="none" stroke-dasharray="1 5" stroke-linecap="round"/>`;
-      add(fill(rock, rc) + `<path d="M1100 270L1220 300V${BOT + 40}H1100Z" fill="#000" fill-opacity="${Ls(1150) > 0 ? .1 : 0}"/>` + cracks + path + (snowy ? '' : groundDetail(rock, 960, 1220, 10, .9, .9)) + shadowAt(X, y, 36) + at(X, y, 1.25, cairn(mi)), .35);
+      add(fill(rock, rc) + `<defs><linearGradient id="${u}rsh" x1="1080" y1="0" x2="1200" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-opacity="0"/><stop offset=".5" stop-opacity=".1"/><stop offset="1" stop-opacity=".16"/></linearGradient></defs><path d="M1100 ${f2(rock.y(1100))}${[1120, 1140, 1160, 1180, 1200, 1220].map((x) => `L${x} ${f2(rock.y(x))}`).join('')}V${BOT + 40}H1040Z" fill="url(#${u}rsh)" opacity="${Ls(1150) > 0 ? 1 : 0}"/>` + cracks + path + (snowy ? '' : groundDetail(rock, 960, 1220, 10, .9, .9)) + shadowAt(X, y, 36) + at(X, y, 1.25, SM.svg), .35);
+      if (SM.lamp && (NIGHT || DAYB || mi === 1)) addLit(at(X, y, 1.25, glow(SM.lamp[0], SM.lamp[1], 26)), 1.6);
       if (below === 'nuvole') s.push(`<g class="sc-fade" style="--d:.5s"><g class="sc-fog" opacity=".9" style="--fgd:40s;--fgx:20px">${layer(BOT - 34, 58, 1, 'c4')}</g></g>`);
       break;
     }
@@ -1669,7 +1845,7 @@ function sceneSVG(mi, opts = {}) {
     for (let i = 0; i < 70 + Math.round(T / 4); i++) { const layer = RS() < .45 ? 0 : RS() < .7 ? 1 : 2, r = [.7, 1.4, 2.6][layer] + RS() * [.4, .6, 1.2][layer];
       sn += `<circle class="sc-fall2" style="--fd:${f2([16, 11, 8][layer] + RS() * 4)}s;--fdl:${f2(-RS() * 16)}s;--fx:${f2((RS() - .3) * [30, 50, 80][layer])}px" cx="${f2(700 + RS() * 540)}" cy="${f2(-T - 20 + RS() * (T + 120))}" r="${f2(r)}" fill="#FFFFFF" fill-opacity="${[.6, .85, .95][layer]}"/>`; }
     s.push(tone(`<g class="sc-fade" style="--d:.8s">${sn}</g>`)); }
-  return `<svg class="scene${NIGHT ? ' night' : ''}" viewBox="0 ${-T} ${SW} ${SH + T + B}" preserveAspectRatio="xMaxYMax slice" aria-hidden="true" focusable="false">${defs}<g class="sc-enter">${s.join('')}</g></svg>`;
+  return `<svg class="scene${NIGHT ? ' night' : ''}" viewBox="0 ${-T} ${SW} ${SH + T + B}" preserveAspectRatio="xMaxYMax slice" aria-hidden="true" focusable="false">${defs}<defs>${extraDefs.join('')}</defs><g class="sc-enter">${s.join('')}</g></svg>`;
 }
 
 /* Month pattern tile: scattered seasonal glyphs, used as page texture */
@@ -1867,5 +2043,5 @@ function seasonFx(motif, accent, W, H, seed) {
 
 /* fase della luna (0 = nuova, 0,5 = piena) alle 22 del giorno dato, dal novilunio del 6/1/2000 18:14 UTC; errore di qualche ora */
 function moonPhase(iso) { const [y, m, d] = iso.split('-').map(Number), t = Date.UTC(y, m - 1, d, 21, 0) - Date.UTC(2000, 0, 6, 18, 14), f = (t / 864e5) / 29.530588853; return f - Math.floor(f); }
-window.ORN = { version: '3.0', moonPhase, MONTHS, LETTER_META, metaKeyFor, dayBg, illusFor, sceneSVG, hasVariants, themeFor, patternURI, ornamentSVG, playAll, seasonFx, setToday: (s) => { todayStr = s; } };
+window.ORN = { version: '3.1', moonPhase, MONTHS, LETTER_META, metaKeyFor, dayBg, illusFor, sceneSVG, hasVariants, themeFor, patternURI, ornamentSVG, playAll, seasonFx, setToday: (s) => { todayStr = s; } };
 })();
