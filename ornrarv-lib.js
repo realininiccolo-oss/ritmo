@@ -1081,7 +1081,7 @@ function sceneSVG(mi, opts = {}) {
   const T = Math.max(0, Math.round(opts.top || 0)), B = Math.max(0, Math.round(opts.bot || 0)), BOT = SH + B + 4;
   const sky = NIGHT ? NIGHT_SKY2[mi] : LD.sky.slice();
   /* 3.0: le settimane di pioggia (Foliaio 2 e 6, Germinale 2 e 5, Floreale 7) e il temporale lontano sul mare (Messidoro 4); Brumale di giorno pioviggina sempre */
-  const RAINW = !opts.prot && (({ 0: [1, 5], 3: [1, 4], 4: [6] })[mi] || []).includes(opts.wk ?? -1), RAIN = RAINW || DAYB, STORM = !opts.prot && mi === 5 && opts.wk === 3;
+  const RAINW = !opts.prot && (({ 0: [1, 5], 3: [1, 4], 4: [6] })[mi] || []).includes(opts.wk ?? -1), RAIN = (RAINW || DAYB) && !(opts.festa === 'avvento' && (opts.fk ?? 0) >= 6) && !(opts.festa === 'capodanno'), STORM = !opts.prot && mi === 5 && opts.wk === 3;
   if (RAINW && !NIGHT) { sky[0] = mixHex(sky[0], '#8A94A2', .55); sky[1] = mixHex(sky[1], '#B6BEC8', .5); }
   if (RAINW && NIGHT) { sky[0] = mixHex(sky[0], '#1A2030', .4); sky[1] = mixHex(sky[1], '#2A3040', .4); }
   const waterTops = [];
@@ -1268,7 +1268,41 @@ function sceneSVG(mi, opts = {}) {
   const wk = opts.wk ?? 0;
 
   /* ================= MESE: il protagonista ================= */
-  if (opts.prot) switch (mi) {
+  if (opts.resa) { /* 20 luglio · la resa dei conti. Sul promontorio, davanti al mare d'Estiario, la grande bilancia di bronzo è ferma in pari:
+       da una parte i sacchetti e le monete, dall'altra i pesi. Accanto, sulla tavola di pietra, il libro dei conti aperto all'ultima pagina, la penna nel calamaio
+       e la clessidra con tutta la sabbia giù: il tempo dato è finito, adesso si conta. Lontano il faro sullo scoglio; la nave rientra in porto. Di notte la lucerna accesa. */
+    const SY = 220; backdrop(SY);
+    const hd = ridge([[620, 233], [690, 218], [740, 212], [800, 220], [850, 233]], 3, 30, 233), lx = 742, ly = hd.y(742);
+    add(fill(hd, landCol(.3)) + `<path d="M${lx - 5} ${f2(ly)}L${lx - 3} ${f2(ly - 30)}H${lx + 3}L${lx + 5} ${f2(ly)}Z" fill="${haze('#FFFFFF', .3)}"/><path d="M${lx - 4} ${f2(ly - 18)}h8" stroke="${haze('#C0392B', .3)}" stroke-width="3"/><rect x="${lx - 5}" y="${f2(ly - 36)}" width="10" height="6" fill="${haze('#3A2E14', .3)}"/>`, .2);
+    if (NIGHT) addLit(`<path class="sc-cone2" d="M${lx} ${f2(ly - 33)}L1080 ${f2(ly - 60)}L1080 ${f2(ly - 10)}Z" fill="url(#${u}b2)" opacity=".3"/>` + glow(lx, ly - 33, 16), 1.3);
+    add(mirror(fill(hd, landCol(.3)), 232, .3));
+    waves(SY);
+    add(at(900, 246, .5, greekShip()), .3);
+    const cliff = ridge([[880, BOT], [920, 300], [970, 268], [1030, 252], [1120, 246], [1220, 250]], 2);
+    add(fill(cliff, LD.near) + `<path d="M960 300Q1040 280 1120 276M980 330Q1070 316 1170 312" stroke="${LD.front}" stroke-opacity=".5" stroke-width="2" fill="none"/>`, .3);
+    /* il lastricato della terrazza */
+    let pav = `<path d="M990 ${f2(cliff.y(990) + 2)}L1230 ${f2(cliff.y(1220) + 2)}L1230 ${f2(cliff.y(1220) + 14)}L996 ${f2(cliff.y(996) + 14)}Z" fill="#D8C8A8"/>`;
+    for (let i = 0; i < 12; i++) pav += `<path d="M${1000 + i * 20} ${f2(cliff.y(1000 + i * 20) + 2)}l-3 12" stroke="#B8A888" stroke-width=".8"/>`;
+    pav += `<path d="M993 ${f2(cliff.y(993) + 8)}L1230 ${f2(cliff.y(1220) + 8)}" stroke="#B8A888" stroke-width=".8"/>`;
+    /* la bilancia: colonna, giogo in pari, catene, piatti */
+    const bx = 1130, by = cliff.y(1130) + 4, BZ = '#9C7A3C', BZd = '#6E5226', BZl = '#C9A45E';
+    let bil = `<rect x="-14" y="-8" width="28" height="8" fill="#CBB892"/><rect x="-10" y="-14" width="20" height="6" fill="#D8C8A8"/><path d="M-4 -14L-3 -112H3L4 -14Z" fill="${BZ}"/><path d="M1 -14L1.6 -112H3L4 -14Z" fill="${BZd}"/>`
+      + `<circle cx="0" cy="-116" r="5" fill="${BZl}"/><path d="M0 -122V-130" stroke="${BZ}" stroke-width="2"/><path d="M-3 -130h6l-3 -6z" fill="${BZl}"/>`
+      + `<path d="M-56 -114H56" stroke="${BZ}" stroke-width="3.4" stroke-linecap="round"/><path d="M-56 -114H56" stroke="${BZl}" stroke-width="1" stroke-opacity=".6" transform="translate(0 -1)"/><path d="M0 -112l-4 8h8z" fill="${BZd}"/>`;
+    [-52, 52].forEach((px, i) => { bil += `<path d="M${px} -113L${px - 14} -66M${px} -113L${px + 14} -66M${px} -113V-66" stroke="${BZd}" stroke-width=".7"/><path d="M${px - 18} -66Q${px} -56 ${px + 18} -66Z" fill="${BZ}"/><path d="M${px - 18} -66H${px + 18}" stroke="${BZl}" stroke-width="1.2"/>`;
+      bil += i === 0 ? `<path d="M${px - 12} -66q2 -9 6 -9q4 0 4 9z" fill="#C9B48A"/><path d="M${px - 9} -75l3 -2" stroke="#8A6A3A" stroke-width=".8"/><path d="M${px - 1} -66q1 -7 5 -7q4 0 5 7z" fill="#BFA67A"/>` + [[px + 10, -67], [px + 13, -67], [px + 11.6, -69]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="2.6" ry="1" fill="#E9C46A" stroke="#B88A2E" stroke-width=".4"/>`).join('')
+        : `<path d="M${px - 12} -66h10v-6h-10z" fill="#5A5048"/><path d="M${px - 10} -72h6v-3h-6z" fill="#6A6058"/><path d="M${px + 2} -66h9v-4h-9z" fill="#5A5048"/><path d="M${px + 4} -70h5v-3h-5z" fill="#6A6058"/>`; });
+    /* la tavola col libro dei conti, la penna, la clessidra finita */
+    const tx = 1030, ty = cliff.y(1030) + 22;
+    let tav = `<rect x="-26" y="-22" width="52" height="5" fill="#CBB892"/><path d="M-20 -17V0H-12V-17M12 -17V0H20V-17" fill="#B8A57E"/><rect x="-22" y="-17" width="8" height="17" fill="#B8A57E"/><rect x="14" y="-17" width="8" height="17" fill="#B8A57E"/>`
+      + `<path d="M-20 -22L-1 -24L-1 -33L-20 -31Z" fill="#F4EEE0"/><path d="M1 -24L20 -22L20 -31L1 -33Z" fill="#EFE7D6"/><path d="M-1 -24L1 -24L1 -33L-1 -33Z" fill="#8A3A2E"/>`
+      + Array.from({ length: 5 }, (_, j) => `<path d="M-17 ${f2(-30.4 + j * 1.5)}L-4 ${f2(-31.6 + j * 1.5)}M4 ${f2(-31.6 + j * 1.5)}L17 ${f2(-30.4 + j * 1.5)}" stroke="#8A8070" stroke-width=".4"/>`).join('') + `<path d="M4 -25.6L17 -24.4" stroke="#B8322A" stroke-width=".8"/>`
+      + `<path d="M9 -22h6v-4h-6z" fill="#2A2420"/><path d="M12 -26Q16 -38 24 -44Q18 -34 13 -26Z" fill="#F4F2EC" stroke="#C9C2B4" stroke-width=".4"/>`
+      + `<path d="M-16 -22h10v-1.6h-10zM-16 -40.4h10V-42h-10z" fill="#6E5236"/><path d="M-15 -40.4H-7L-11 -32L-7 -23.6H-15L-11 -32Z" fill="#E4EEF2" fill-opacity=".7" stroke="#B9CEDA" stroke-width=".5"/><path d="M-14 -23.6H-8L-11 -28Z" fill="#E6C98A"/><path d="M-15.4 -23 V-41M-6.6 -23V-41" stroke="#6E5236" stroke-width="1"/>`;
+    add(pav + shadowAt(bx, by, 60) + at(bx, by, 1.25, bil) + shadowAt(tx, ty, 50) + at(tx, ty, 2, tav) + groundDetail(cliff, 960, 1220, 10, 1.4, 1), .35);
+    if (NIGHT || DAYB) addLit(at(tx, ty, 2, `<path d="M-24 -22q-2 -4 2 -5h6q3 1 1 5z" fill="#B0643F"/>` + `<path d="M-22 -27q1 -4 0 -6q-1 2 0 6z" fill="#FFD36E"/>` + glow(-22, -30, 30)), 1.5);
+  }
+  else if (opts.prot) switch (mi) {
     case 0: { // Foliaio · Osservare: dal poggio tra le vigne il cannocchiale guarda lontano (di notte una costellazione, di giorno il borgo sul colle)
       backdrop();
       const far3 = ridge([[-20, 226], [600, 218], [800, 214], [900, 206], [980, 214], [1220, 224]], 4);
@@ -2030,36 +2064,156 @@ function sceneSVG(mi, opts = {}) {
   /* 3.3: i giorni di festa. Il disegno resta quello del giorno; davanti, a destra, una proda di terra (o di neve) regge le cose della festa,
      che stanno appoggiate: l'abete addobbato coi regali e la cometa (Natale), la tavola col brindisi e i fuochi d'artificio (Capodanno),
      il cesto delle uova dipinte sotto il ramo fiorito (Pasqua), la tavola con la torta e le candeline sotto la fila di lanterne (compleanno). */
-  if (opts.festa) { const F = opts.festa, RF = rng(seed + 31), gy = BOT - 46, snowB = snowy || F === 'natale', gc = snowB ? '#F2F6F8' : shade(landCol(1), .06);
+  if (opts.festa) { const F = opts.festa, RF = rng(seed + 31), gy = BOT - 30 - Math.min(110, B * .7), snowB = snowy || F === 'natale', gc = snowB ? '#F2F6F8' : shade(landCol(1), .06);
     const bank = `<path d="M1020 ${BOT + 40}Q1060 ${gy - 6} 1140 ${gy - 10}Q1200 ${gy - 12} 1240 ${gy}V${BOT + 40}Z" fill="${gc}"/><path d="M1040 ${gy + 12}Q1080 ${gy - 4} 1140 ${gy - 8}Q1200 ${gy - 10} 1240 ${gy + 2}" stroke="${snowB ? '#D2E0E8' : shade(gc, .2)}" stroke-width="1.4" fill="none"/>`
       + (snowB ? '' : Array.from({ length: 8 }, () => grassTuft(1060 + RF() * 170, gy - 6 + RF() * 10, .9, shade(gc, .3))).join(''));
     let fx = '', lt = '';
     const SC = (str, cx = 1150) => `<g transform="translate(${cx} ${gy - 9}) scale(1.45) translate(${-cx} ${-(gy - 9)})">${str}</g>`;
-    if (F === 'natale') {
-      /* l'abete: palchi di rami con la neve sulle punte, le palline rosse e d'oro, la fila di lucine e la stella in cima; i regali sotto */
-      const tx = 1150, ty = gy - 9; let tr = `<rect x="${tx - 3}" y="${ty - 12}" width="6" height="13" fill="#5A3A26"/>`;
-      [[0, 46, 34], [26, 40, 30], [48, 32, 26], [66, 24, 22], [82, 16, 18]].forEach(([dy, w, h]) => { const y = ty - 10 - dy; tr += `<path d="M${tx - w} ${y}Q${tx} ${y - 6} ${tx + w} ${y}L${tx + 3} ${y - h}H${tx - 3}Z" fill="#2E5A3E"/><path d="M${tx} ${y - h}L${tx + w} ${y}Q${tx + w * .5} ${y - 3} ${tx} ${y - 2}Z" fill="#000" fill-opacity=".14"/><path d="M${tx - w} ${y}q6 -4 12 -1q6 -4 12 0q6 -3 12 -1" stroke="#FFFFFF" stroke-width="2.4" fill="none" stroke-linecap="round"/>`; });
-      for (let i = 0; i < 14; i++) { const lv = RF(), y = ty - 16 - lv * 80, w = 42 * (1 - lv * .7), x = tx + (RF() - .5) * w * 1.4; tr += `<circle cx="${f2(x)}" cy="${f2(y)}" r="2.6" fill="${i % 2 ? '#B8322A' : '#D9A441'}"/><circle cx="${f2(x - .8)}" cy="${f2(y - .8)}" r=".8" fill="#FFFFFF" fill-opacity=".7"/>`; }
-      const gifts = `<rect x="${tx - 44}" y="${ty - 13}" width="20" height="14" fill="#B8322A"/><path d="M${tx - 34} ${ty - 13}V${ty + 1}M${tx - 44} ${ty - 6}H${tx - 24}" stroke="#E9C46A" stroke-width="2"/><path d="M${tx - 34} ${ty - 13}q-5 -6 -7 -1q3 2 7 1q5 -6 7 -1q-3 2 -7 1" stroke="#E9C46A" stroke-width="1.4" fill="none"/>`
-        + `<rect x="${tx + 22}" y="${ty - 10}" width="16" height="11" fill="#2F5A7A"/><path d="M${tx + 30} ${ty - 10}V${ty + 1}M${tx + 22} ${ty - 4.6}H${tx + 38}" stroke="#F4EEE0" stroke-width="1.8"/><rect x="${tx - 22}" y="${ty - 7}" width="12" height="8" fill="#3E7A4E"/><path d="M${tx - 16} ${ty - 7}V${ty + 1}" stroke="#D9A441" stroke-width="1.6"/>`;
-      fx += bank + shadowAt(tx, ty + 1, 70) + SC(tr + gifts);
-      let bulbs = ''; for (let k = 0; k < 4; k++) for (let j = 0; j < 7; j++) { const t = j / 6, lv = (k + t * .9) / 4.2, y = ty - 14 - lv * 84 + Math.sin(t * Math.PI) * 4, w = 44 * (1 - lv * .78); bulbs += `<circle class="sc-twinkle" style="--td:${f2(1.4 + RF() * 1.6)}s;--tdl:${f2(-RF() * 2)}s" cx="${f2(tx - w + t * 2 * w)}" cy="${f2(y)}" r="1.7" fill="${['#FFE6A0', '#FFB07A', '#FFF6D8'][j % 3]}"/>`; }
-      lt += SC(bulbs + `<path d="M${tx} ${ty - 110}l2.6 6.4l6.8 .5l-5.2 4.4l1.7 6.6l-5.9 -3.6l-5.9 3.6l1.7 -6.6l-5.2 -4.4l6.8 -.5z" fill="#F2C94C"/>` + glow(tx, ty - 102, NIGHT || DAYB ? 30 : 14));
-      if (NIGHT) { const sx = 880, sy = Math.max(-T + 40, -40); lt += glow(sx, sy, 60) + `<path d="M${sx} ${sy - 16}L${sx + 2.4} ${sy - 2.4}L${sx + 16} ${sy}L${sx + 2.4} ${sy + 2.4}L${sx} ${sy + 16}L${sx - 2.4} ${sy + 2.4}L${sx - 16} ${sy}L${sx - 2.4} ${sy - 2.4}Z" fill="#FFF6D8"/><path d="M${sx - 3} ${sy + 3}L${sx - 120} ${sy + 70}" stroke="#FFF6D8" stroke-opacity=".35" stroke-width="2.4" stroke-linecap="round"/><path d="M${sx - 3} ${sy + 3}L${sx - 90} ${sy + 66}" stroke="#FFF6D8" stroke-opacity=".2" stroke-width="1.4"/>`; }
+    const fireworks = (list, big = 1) => { const cols = ['#FFD36E', '#FF6B5A', '#FFFFFF', '#7FE0A8', '#C9A2FF', '#6EC6FF', '#FFB07A']; let o = '';
+      list.forEach(([cx, cy, r], i) => { const c = cols[i % cols.length], c2 = cols[(i + 3) % cols.length], dur = 2.4 + (i % 4) * .45, beg = -(i * .77); let rays = '';
+        const n = r > 40 ? 24 : 16; for (let j = 0; j < n; j++) { const a = j * 2 * Math.PI / n + RF() * .1, rr = r * (.85 + RF() * .3); rays += `<path d="M${f2(Math.cos(a) * rr * .22)} ${f2(Math.sin(a) * rr * .22)}Q${f2(Math.cos(a) * rr * .7)} ${f2(Math.sin(a) * rr * .7)} ${f2(Math.cos(a) * rr)} ${f2(Math.sin(a) * rr + rr * .14)}" stroke="${j % 2 ? c : c2}" stroke-width="${f2(1.2 * big + .4)}" stroke-linecap="round" fill="none"/><circle cx="${f2(Math.cos(a) * rr)}" cy="${f2(Math.sin(a) * rr + rr * .16)}" r="${f2(1.6 * big)}" fill="${c}"/>`; }
+        const op = NIGHT ? 1 : .5;
+        o += `<g transform="translate(${f2(cx)} ${f2(cy)})"><g opacity="0"><animate attributeName="opacity" values="0;${op};${f2(op * .8)};0;0" keyTimes="0;.08;.45;.75;1" dur="${dur}s" begin="${beg}s" repeatCount="indefinite"/><animateTransform attributeName="transform" type="scale" values=".15;1;1.08;1.08" keyTimes="0;.3;.75;1" dur="${dur}s" begin="${beg}s" repeatCount="indefinite"/>${rays}${NIGHT ? glow(0, 0, r * .9, .45) : ''}</g></g>`; }); return o; };
+    const flame = (x, y, s = 1, cls = true) => `<path ${cls ? `class="sc-twinkle" style="--td:${f2(.5 + RF() * .5)}s;--tdl:${f2(-RF())}s"` : ''} d="M${f2(x)} ${f2(y - 4.6 * s)}Q${f2(x + 2 * s)} ${f2(y - 1.4 * s)} ${f2(x)} ${f2(y)}Q${f2(x - 2 * s)} ${f2(y - 1.4 * s)} ${f2(x)} ${f2(y - 4.6 * s)}Z" fill="#FFD36E"/>`;
+    const fig = (x, y, h, robe, head = '#E8C7A4', mantle = null, extra = '') => `<path d="M${f2(x - h * .2)} ${y}L${f2(x - h * .12)} ${f2(y - h * .72)}Q${x} ${f2(y - h * .8)} ${f2(x + h * .12)} ${f2(y - h * .72)}L${f2(x + h * .2)} ${y}Z" fill="${robe}"/>`
+      + (mantle ? `<path d="M${f2(x - h * .16)} ${f2(y - h * .74)}Q${f2(x - h * .3)} ${f2(y - h * .3)} ${f2(x - h * .22)} ${y}H${f2(x - h * .05)}L${f2(x - h * .02)} ${f2(y - h * .8)}Z" fill="${mantle}"/>` : '') + `<circle cx="${x}" cy="${f2(y - h * .86)}" r="${f2(h * .12)}" fill="${head}"/>` + extra;
+    if (F === 'avvento') {
+      /* Dall'Immacolata alla fine di Brumale: ogni giorno il presepe sulla proda cresce. L'8 si monta la capanna; poi arrivano il bue e l'asinello,
+         i pastori e le pecore, dal 16 (la novena) Maria e Giuseppe; i Magi vengono avanti un poco ogni giorno; la notte di Natale l'angelo sul tetto,
+         la cometa sopra la capanna e dal 25 il Bambino nella mangiatoia. Sul ceppo la corona d'Avvento con le candele accese secondo la domenica;
+         accanto l'abete vero, con le candeline, le mele rosse e le stelle di paglia. Santa Lucia (12-13) lascia il piattino e il fieno per l'asinello. */
+      const k = Math.max(0, Math.min(19, opts.fk ?? 0)), cx = 1094, ty = gy - 9, RK = rng(600 + k), PS = 1.45, LC = (str) => `<g transform="translate(${cx} ${ty}) scale(${PS})">${str}</g>`;
+      let pr = '';
+      /* la proda innevata, più larga a sinistra per la strada dei Magi */
+      fx += `<path d="M690 ${BOT + 40}Q730 ${gy + 4} 860 ${gy}Q1060 ${gy - 10} 1240 ${gy - 4}V${BOT + 40}Z" fill="#F2F6F8"/><path d="M720 ${gy + 22}Q1010 ${gy - 2} 1080 ${gy - 6}Q1180 ${gy - 12} 1240 ${gy - 2}" stroke="#D2E0E8" stroke-width="1.4" fill="none"/>`;
+      if (k >= 18) for (let i = 0; i < 10; i++) fx += `<ellipse cx="${f2(1020 + i * 12)}" cy="${f2(gy + 18 - i * 2.2 + (i % 2) * 3)}" rx="2.6" ry="1.1" fill="#C9DCE6"/>`;
+      /* a sinistra della capanna il palo storto con la lanterna, il rametto d'agrifoglio e il nastro rosso; dal 16 (la novena) gli zampognari */
+      const ax = -62;
+      pr += `<path d="M${ax} 2Q${ax - 2} -40 ${ax + 2} -78" stroke="#5A3A26" stroke-width="3" fill="none"/><path d="M${ax + 2} -76h12" stroke="#5A3A26" stroke-width="2"/><path d="M${ax + 12} -76v4" stroke="#3A2A1C" stroke-width=".8"/>`
+        + `<path d="M${ax + 8} -72h8l-1 12h-6z" fill="#2E2A26"/><path d="M${ax + 7} -72h10l-2 -3h-6z" fill="#2E2A26"/><rect x="${ax + 9.4}" y="-70" width="5.2" height="8" fill="${NIGHT ? '#3A3020' : '#C9D2DA'}"/>`
+        + `<path d="M${ax - 1} -64q-6 2 -8 8M${ax + 3} -64q6 3 6 9" stroke="#B8322A" stroke-width="1.8" fill="none"/><path d="M${ax - 2} -66l3 -2l3 2l-3 2z" fill="#B8322A"/>`
+        + [[-7, -68], [6, -69], [-3, -71], [3, -66]].map(([dx, dy]) => `<path d="M${ax + dx} ${dy}q3 -3 6 0q-3 3 -6 0z" fill="#2E5A3E"/>`).join('') + [[-1, -67], [1, -68.4], [0, -66]].map(([dx, dy]) => `<circle cx="${ax + dx}" cy="${dy}" r="1.1" fill="#C0392B"/>`).join('')
+        + snowLedge(ax - 1, ax + 16, -76.4, 1.6);
+      lt += LC(`<rect x="${ax + 9.4}" y="-70" width="5.2" height="8" fill="#FFD98A"/>` + (NIGHT || DAYB ? glow(ax + 12, -66, 22) : ''), cx);
+      if (k >= 8) pr += fig(-50, -1, 16, '#7A5A3E', '#D9B48E', '#4A5A3A', `<path d="M-46 -11q4 -2 5 3l-2 4q-3 -1 -3 -7z" fill="#8A6A48"/><path d="M-43 -8l6 8M-45 -9l3 9" stroke="#3A2A1C" stroke-width="1"/>`)
+        + fig(-41, -3, 14, '#5A4A3A', '#D9B48E', '#7A3A2E', `<path d="M-40 -13l7 5" stroke="#3A2A1C" stroke-width="1.2"/><circle cx="-33" cy="-8" r="1.2" fill="#3A2A1C"/>`);
+      /* la capanna: pali grezzi, l'assito dietro, il tetto di paglia a una falda con la neve sopra; dentro la mangiatoia con la paglia */
+      pr += `<path d="M-36 0V-40H36V0Z" fill="#5A4030"/>` + Array.from({ length: 8 }, (_, j) => `<path d="M${-34 + j * 9.6} 0V-40" stroke="#3E2A1C" stroke-width="1"/>`).join('') + `<path d="M-36 0V-40H36V0Z" fill="#000" fill-opacity="${NIGHT ? .1 : .25}"/>`
+        + `<path d="M-34 0V-44M34 0V-50" stroke="#6E5236" stroke-width="3.4" stroke-linecap="round"/><path d="M-44 -42L44 -54L46 -48L-42 -36Z" fill="#C9A45E"/>` + Array.from({ length: 16 }, (_, j) => `<path d="M${-42 + j * 5.6} ${f2(-36 - j * .75)}l1 -6" stroke="#A07E40" stroke-width=".8"/>`).join('')
+        + snowLedge(-44, 44, -48, 3.2).replace('<path', `<path transform="rotate(-7.6 0 -48)"`)
+        + Array.from({ length: 9 }, (_, j) => { const x = -40 + j * 10, y = -36 - j * 1.34; return `<path d="M${x} ${f2(y + 1)}q5 4 10 -1" stroke="#2E5A3E" stroke-width="2.6" fill="none"/><circle cx="${x + 5}" cy="${f2(y + 3)}" r="1" fill="#C0392B"/>`; }).join('')
+        + Array.from({ length: 9 }, (_, j) => `<ellipse cx="${-36 + j * 9}" cy="1" rx="5" ry="2.6" fill="${shade('#9A948C', (j % 3) * .06)}"/>`).join('');
+      pr += `<path d="M-10 0L-6 -8M10 0L6 -8M-10 -8L6 0M10 -8L-6 0" stroke="#6E5236" stroke-width="1.6"/><path d="M-11 -8H11L9 -13H-9Z" fill="#7E5A3A"/><path d="M-10 -13q3 -3 6 0q3 -3 6 0q3 -3 6 0" stroke="#E6C98A" stroke-width="1.6" fill="none"/>`;
+      /* gli animali e le figure, secondo il giorno */
+      if (k >= 2) pr += `<ellipse cx="22" cy="-6" rx="10" ry="5.4" fill="#8E7A68"/><circle cx="31" cy="-10" r="3.6" fill="#7A6656"/><path d="M33 -13l3 -2M29 -13l-1 -3" stroke="#D9CDB4" stroke-width="1"/>`
+        + `<ellipse cx="-22" cy="-7" rx="9" ry="5" fill="#8A8480"/><path d="M-30 -9l-4 -6l2 -1M-29 -10l-1 -7" stroke="#6E6864" stroke-width="2" stroke-linecap="round"/><circle cx="-31" cy="-9" r="3" fill="#7A7470"/>`;
+      if (k >= 17) pr += `<ellipse cx="0" cy="-14.6" rx="4.2" ry="2.4" fill="#F4EEE0"/><circle cx="-2.6" cy="-15.6" r="1.6" fill="#E8C7A4"/>`;
+      if (k >= 8) pr += fig(-14, 0, 17, '#3E5E8E', '#E8C7A4', '#2E4A7A') + fig(15, 0, 20, '#7A5236', '#E8C7A4', '#5A3A26', `<path d="M21 0V-20q0 -2 2 -2" stroke="#4A3220" stroke-width="1.2" fill="none"/>`);
+      if (k >= 17) lt += LC(glow(0, -16, 14, .9) + `<circle cx="-2.6" cy="-15.6" r="2.6" fill="none" stroke="#F2C94C" stroke-width=".8"/>`, cx);
+      if (k >= 16) pr += `<g transform="translate(-6 -45)"><path d="M-4 0L-2 -12H2L4 0Z" fill="#F4F2EC"/><circle cx="0" cy="-14" r="2.4" fill="#E8C7A4"/><path d="M-2 -10Q-12 -16 -10 -4M2 -10Q12 -16 10 -4" stroke="#E6E0D4" stroke-width="2.4" fill="none"/></g>`;
+      /* pastori e pecore, a destra fuori dalla capanna */
+      if (k >= 1) pr += fig(48, 0, 18, '#6E7A4A', '#D9B48E', null, `<path d="M53 0V-20q0 -3 3 -3" stroke="#4A3220" stroke-width="1.2" fill="none"/>`);
+      if (k >= 4) pr += fig(62, 0, 16, '#8A5A3A', '#D9B48E', '#5A6A7A');
+      for (let i = 0; i < Math.min(5, Math.max(0, k - 2)); i++) { const x = 38 + i * 9 + (i % 2) * 3, y = 6 + (i % 2) * 3; pr += `<ellipse cx="${x}" cy="${y - 3}" rx="4.6" ry="3.2" fill="#F1ECE2"/><circle cx="${x + 4}" cy="${y - 4.6}" r="1.8" fill="#3A3430"/>`; }
+      /* i Magi: dal 18 dicembre sulla strada a sinistra, ogni giorno un poco più vicini */
+      if (k >= 10) { const mx = -170 + (k - 10) * 8; [['#8E2A2A', '#D9A441'], ['#2E6A4A', '#E6C98A'], ['#5A3A7A', '#C9A04A']].forEach(([c, g], i) => { const x = mx + i * 15, y = 8 + i;
+        pr += fig(x, y, 19, c, i === 2 ? '#7A5236' : '#D9B48E', shade(c, .3), `<path d="M${x - 2.4} ${f2(y - 19)}l1 -3l1.4 2l1.4 -2l1 3z" fill="${g}"/><rect x="${x + 3}" y="${f2(y - 12)}" width="4" height="3.4" fill="${g}"/>`); }); }
+      /* la corona d'Avvento sul ceppo davanti: quattro candele, accese secondo la domenica (2 dall'8, 3 dal 13, 4 dal 20, la bianca a Natale) */
+      const lit = k < 5 ? 2 : k < 12 ? 3 : 4, wx0 = -30, wy0 = 8;
+      pr += `<path d="M${wx0 - 12} ${wy0}V${wy0 - 8}H${wx0 + 12}V${wy0}Z" fill="#7A5A3E"/><ellipse cx="${wx0}" cy="${wy0 - 8}" rx="12" ry="3" fill="#B08A62"/><ellipse cx="${wx0}" cy="${wy0 - 8}" rx="8" ry="2" fill="none" stroke="#8A6A48" stroke-width=".6"/>`
+        + `<ellipse cx="${wx0}" cy="${wy0 - 10}" rx="11" ry="3.4" fill="none" stroke="#2E5A3E" stroke-width="3"/>` + [[-8, -10], [-2, -12.6], [6, -12.4], [9, -9.4], [-5, -8], [3, -8]].map(([x, y]) => `<circle cx="${wx0 + x}" cy="${wy0 + y}" r=".9" fill="#B8322A"/>`).join('');
+      const CP = [[-7, '#6A3E8A'], [-2.4, '#6A3E8A'], [2.4, '#D98AB0'], [7, '#6A3E8A']], order = [0, 1, 2, 3];
+      CP.forEach(([x, c]) => { pr += `<rect x="${wx0 + x - 1.1}" y="${wy0 - 19}" width="2.2" height="8" fill="${c}"/>`; });
+      if (k >= 17) pr += `<rect x="${wx0 - 1.3}" y="${wy0 - 22}" width="2.6" height="11" fill="#F4F0E6"/>`;
+      let wl = order.slice(0, lit).map((i) => flame(wx0 + CP[i][0], wy0 - 19, .8)).join('') + (k >= 17 ? flame(wx0, wy0 - 22, .9) : '');
+      lt += LC(wl + (NIGHT || DAYB ? glow(wx0, wy0 - 18, 16, .8) : ''), cx);
+      /* Santa Lucia: la sera del 12 il piattino coi biscotti, il fieno per l'asinello e la ciotola d'acqua; il 13 mattina i doni e il fieno mangiato a metà */
+      if (k === 4 || k === 5) pr += `<ellipse cx="-50" cy="12" rx="7" ry="2" fill="#E6E0D4"/>` + [[-53, 10.6], [-50, 10], [-47, 10.8]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="1.8" ry="1" fill="#C9A06A"/>`).join('')
+        + `<path d="M-64 12q4 ${k === 4 ? -9 : -5} 10 0z" fill="#D9B86A"/>` + Array.from({ length: 6 }, (_, j) => `<path d="M${-63 + j * 1.6} 12l${f2(-1 + j * .4)} ${k === 4 ? -7 : -4}" stroke="#B89A4E" stroke-width=".6"/>`).join('') + `<ellipse cx="-40" cy="12" rx="3.4" ry="1.2" fill="#8AA6B6"/>`
+        + (k === 5 ? `<rect x="-76" y="2" width="10" height="9" fill="#B8322A"/><path d="M-71 2V11M-76 6.4H-66" stroke="#E9C46A" stroke-width="1.2"/><rect x="-86" y="5" width="8" height="6" fill="#2F5A7A"/><path d="M-82 5V11" stroke="#F4EEE0" stroke-width="1"/>` : '');
+      /* la notte di Natale e il giorno: i lumini lungo la proda */
+      if (k >= 16 && k <= 18) for (let i = 0; i < 7; i++) { const x = -100 + i * 22, y = 14 + (i % 2); pr += `<path d="M${x - 2} ${y}h4l-.6 -4h-2.8z" fill="#C9DCE6" fill-opacity=".8"/>`; lt += LC(flame(x, y - 4, .6) + (NIGHT || DAYB ? glow(x, y - 4, 7, .9) : ''), cx); }
+      fx += shadowAt(cx, ty + 2, 70) + LC(pr);
+      /* la cometa sopra la capanna, dalla Vigilia */
+      if (k >= 16) { const sx = cx - 14, sy = Math.max(-T + 60, gy - 210), br = k === 17 ? 1.3 : 1; lt += glow(sx, sy, 50 * br) + `<path d="M${sx} ${sy - 14 * br}L${sx + 2.2} ${sy - 2.2}L${sx + 14 * br} ${sy}L${sx + 2.2} ${sy + 2.2}L${sx} ${sy + 14 * br}L${sx - 2.2} ${sy + 2.2}L${sx - 14 * br} ${sy}L${sx - 2.2} ${sy - 2.2}Z" fill="#FFF6D8"/><path d="M${sx - 3} ${sy - 2}Q${sx - 70} ${sy - 30} ${sx - 150} ${sy - 36}" stroke="#FFF6D8" stroke-opacity=".35" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M${sx - 3} ${sy}Q${sx - 60} ${sy - 18} ${sx - 120} ${sy - 18}" stroke="#FFF6D8" stroke-opacity=".2" stroke-width="1.4" fill="none"/>`; }
+      /* la neve: comincia il 14, fitta la Vigilia e Natale */
+      const nF = k < 6 ? 0 : k === 16 || k === 17 ? 130 : 26 + k * 3; let sn = '';
+      for (let i = 0; i < nF; i++) { const layer = RF() < .5 ? 0 : RF() < .7 ? 1 : 2, r = [.8, 1.5, 2.6][layer]; sn += `<circle class="sc-fall2" style="--fd:${f2([16, 11, 8][layer] + RF() * 4)}s;--fdl:${f2(-RF() * 16)}s;--fx:${f2((RF() - .3) * [30, 50, 80][layer])}px" cx="${f2(700 + RF() * 540)}" cy="${f2(-T - 20 + RF() * (T + 140))}" r="${f2(r)}" fill="#FFFFFF" fill-opacity="${[.6, .8, .95][layer]}"/>`; }
+      if (sn) s.push(`<g class="sc-fade" style="--d:.8s">${sn}</g>`);
     } else if (F === 'capodanno') {
-      /* la tavola del brindisi: la bottiglia, i due calici, la lanterna; nel cielo i fuochi che si aprono uno dopo l'altro */
-      const tx = 1150, ty = gy - 9;
-      fx += bank + shadowAt(tx, ty + 1, 56) + SC(`<rect x="${tx - 30}" y="${ty - 30}" width="60" height="4" fill="#6E5236"/><path d="M${tx - 26} ${ty - 26}V${ty}M${tx + 26} ${ty - 26}V${ty}" stroke="#5A3A26" stroke-width="3"/><path d="M${tx - 32} ${ty - 30}H${tx + 32}V${ty - 22}Q${tx} ${ty - 18} ${tx - 32} ${ty - 22}Z" fill="#F4EEE0"/>`
-        + `<path d="M${tx - 6} ${ty - 30}V${ty - 50}Q${tx - 6} ${ty - 56} ${tx - 3} ${ty - 58}V${ty - 64}H${tx + 1}V${ty - 58}Q${tx + 4} ${ty - 56} ${tx + 4} ${ty - 50}V${ty - 30}Z" fill="#2E4A34"/><path d="M${tx - 3} ${ty - 64}h4v4h-4z" fill="#D9A441"/><rect x="${tx - 5}" y="${ty - 46}" width="8" height="7" fill="#F4EEE0"/>`
-        + [[tx + 14, 0], [tx + 24, 1]].map(([x]) => `<path d="M${x - 3} ${ty - 50}H${x + 3}L${x + 1} ${ty - 38}V${ty - 32}H${x + 3}M${x - 3} ${ty - 32}H${x - 1}V${ty - 38}Z" fill="#E4EEF2" fill-opacity=".75" stroke="#B9CEDA" stroke-width=".5"/><path d="M${x - 2.4} ${ty - 47}H${x + 2.4}L${x + .8} ${ty - 39}H${x - .8}Z" fill="#F2D27A"/>`).join('')
+      /* Dal 28 dicembre all'1 gennaio, in montagna: il 28 i falò sulle creste, il 29 le fiaccole piantate lungo la pista, il 30 la catasta per il falò e le prime prove
+         di fuochi giù in valle, il 31 la fiaccolata che scende, il falò acceso, il brindisi e il cielo pieno di fuochi; l'1 l'alba del primo giorno: fumo, coriandoli, i calici vuoti. */
+      const k = Math.max(0, Math.min(4, opts.fk ?? 3)), tx = 1150, ty = gy - 9;
+      fx += bank;
+      if (k === 0) { [[800, 236, 1], [930, 226, .8], [1060, 232, .9]].forEach(([x, y, s2]) => { if (NIGHT || DAYB) lt += glow(x, y - 4, 26 * s2) + flame(x, y, 2.2 * s2) + flame(x - 2, y + 1, 1.4 * s2); else fx += `<path d="M${x} ${y}q-6 -20 4 -40q10 -20 -2 -44" stroke="#C9D2DA" stroke-width="${f2(5 * s2)}" stroke-opacity=".6" fill="none" stroke-linecap="round"/>`; }); }
+      const path = [[760, BOT - 20], [880, BOT - 60], [800, BOT - 110], [930, BOT - 150], [860, 300], [980, 284]];
+      const along = (n) => { const P = []; for (let i = 0; i < n; i++) { const t = i / (n - 1) * (path.length - 1), j = Math.min(path.length - 2, Math.floor(t)), q = t - j; P.push([path[j][0] + (path[j + 1][0] - path[j][0]) * q, path[j][1] + (path[j + 1][1] - path[j][1]) * q]); } return P; };
+      if (k === 1 || k === 2) along(14).forEach(([x, y], i) => { const s2 = .6 + (y - 280) / (BOT - 280) * .6; fx += `<path d="M${f2(x)} ${f2(y)}v${f2(-12 * s2)}" stroke="#5A3A26" stroke-width="${f2(1.4 * s2)}"/>`; if (NIGHT || DAYB) lt += flame(x, y - 12 * s2, 1.1 * s2) + glow(x, y - 13 * s2, 10 * s2, .8); });
+      if (k === 3) along(26).forEach(([x, y], i) => { const s2 = .5 + (y - 280) / (BOT - 280) * .6; fx += `<path d="M${f2(x - 2 * s2)} ${f2(y)}l${f2(2 * s2)} ${f2(-9 * s2)}l${f2(2 * s2)} ${f2(9 * s2)}z" fill="#2A2E36"/><circle cx="${f2(x)}" cy="${f2(y - 10 * s2)}" r="${f2(1.4 * s2)}" fill="#2A2E36"/>`; lt += flame(x + 3 * s2, y - 13 * s2, 1.2 * s2) + glow(x + 3 * s2, y - 14 * s2, 12 * s2, NIGHT ? .9 : .4); });
+      /* la catasta (30) e il falò (31, braci l'1) */
+      const fxp = 1080, fyp = gy - 4;
+      if (k >= 2) { fx += `<path d="M${fxp - 18} ${fyp}L${fxp} ${fyp - (k === 2 ? 30 : 10)}L${fxp + 18} ${fyp}Z" fill="${k === 4 ? '#3A3430' : '#7A5236'}"/>` + (k === 2 ? Array.from({ length: 7 }, (_, j) => `<path d="M${fxp - 16 + j * 5} ${fyp}L${fxp - 4 + j * 1.4} ${fyp - 26 + Math.abs(j - 3) * 4}" stroke="#5A3A26" stroke-width="1.6"/>`).join('') : `<path d="M${fxp - 18} ${fyp}l14 -8M${fxp + 18} ${fyp}l-14 -8M${fxp - 10} ${fyp}l20 -6" stroke="#3E2A1A" stroke-width="2.4"/>`);
+        if (k === 3) { let fl = '';
+          const tongue = (x, w, h, c, d) => `<path class="sc-twinkle" style="--td:${f2(d)}s;--tdl:${f2(-RF())}s" d="M${f2(x - w)} ${fyp - 6}Q${f2(x - w * 1.1)} ${f2(fyp - 6 - h * .5)} ${f2(x + (RF() - .5) * w)} ${f2(fyp - 6 - h)}Q${f2(x + w * 1.1)} ${f2(fyp - 6 - h * .45)} ${f2(x + w)} ${fyp - 6}Z" fill="${c}"/>`;
+          [[-8, 8, 34], [6, 9, 40], [0, 11, 52], [-14, 6, 24], [14, 6, 26]].forEach(([dx, w, h]) => { fl += tongue(fxp + dx, w, h, '#E8552E', .7 + RF() * .4); });
+          [[-5, 6, 26], [5, 6, 30], [0, 7, 38]].forEach(([dx, w, h]) => { fl += tongue(fxp + dx, w, h, '#FF9A3C', .5 + RF() * .3); });
+          [[0, 4, 22], [-3, 3, 14], [4, 3, 16]].forEach(([dx, w, h]) => { fl += tongue(fxp + dx, w, h, '#FFE08A', .4 + RF() * .3); });
+          for (let j = 0; j < 12; j++) fl += `<circle class="sc-fall2" style="--fd:${f2(1.6 + RF())}s;--fdl:${f2(-RF() * 2)}s;--fx:${f2((RF() - .5) * 26)}px;--fy:-100px" cx="${f2(fxp + (RF() - .5) * 18)}" cy="${fyp - 50}" r="${f2(.8 + RF() * .6)}" fill="#FFD36E"/>`;
+          fl += `<ellipse cx="${fxp}" cy="${fyp - 3}" rx="18" ry="3" fill="#FF7A2E" opacity=".7"/>`;
+          lt += fl + glow(fxp, fyp - 24, 60); }
+        if (k === 4) fx += `<path d="M${fxp} ${fyp - 12}q-8 -24 6 -48q12 -24 -4 -52" stroke="#C9D2DA" stroke-width="5" stroke-opacity=".5" fill="none" stroke-linecap="round"/>`; }
+      /* la tavola: apparecchiata il 30, il brindisi il 31, l'1 i calici vuoti */
+      if (k >= 2) { const full = k === 3; fx += shadowAt(tx, ty + 1, 56) + SC(`<rect x="${tx - 30}" y="${ty - 30}" width="60" height="4" fill="#6E5236"/><path d="M${tx - 26} ${ty - 26}V${ty}M${tx + 26} ${ty - 26}V${ty}" stroke="#5A3A26" stroke-width="3"/><path d="M${tx - 32} ${ty - 30}H${tx + 32}V${ty - 22}Q${tx} ${ty - 18} ${tx - 32} ${ty - 22}Z" fill="#F4EEE0"/>`
+        + (k >= 3 ? `<path d="M${tx - 6} ${ty - 30}V${ty - 50}Q${tx - 6} ${ty - 56} ${tx - 3} ${ty - 58}V${ty - 64}H${tx + 1}V${ty - 58}Q${tx + 4} ${ty - 56} ${tx + 4} ${ty - 50}V${ty - 30}Z" fill="#2E4A34"/><path d="M${tx - 3} ${ty - 64}h4v4h-4z" fill="#D9A441"/><rect x="${tx - 5}" y="${ty - 46}" width="8" height="7" fill="#F4EEE0"/>` : '')
+        + [tx + 14, tx + 24].map((x) => `<path d="M${x - 3} ${ty - 50}H${x + 3}L${x + 1} ${ty - 38}V${ty - 32}H${x + 3}M${x - 3} ${ty - 32}H${x - 1}V${ty - 38}Z" fill="#E4EEF2" fill-opacity=".75" stroke="#B9CEDA" stroke-width=".5"/>` + (full ? `<path d="M${x - 2.4} ${ty - 47}H${x + 2.4}L${x + .8} ${ty - 39}H${x - .8}Z" fill="#F2D27A"/>` : '')).join('')
         + `<path d="M${tx - 22} ${ty - 30}v-12h8v12z" fill="#2A2420"/><path d="M${tx - 24} ${ty - 42}h12l-2 -3h-8z" fill="#2A2420"/>`);
-      lt += SC(`<rect x="${tx - 20.6}" y="${ty - 40}" width="5.2" height="8" fill="#FFD98A"/>` + glow(tx - 18, ty - 36, NIGHT || DAYB ? 26 : 10));
-      const cols = ['#FFD36E', '#FF6B5A', '#FFFFFF', '#7FE0A8', '#C9A2FF', '#6EC6FF'];
-      [[820, 40, 46], [960, -30, 56], [1100, 60, 40], [880, 150, 30], [1050, -100, 50], [1170, -20, 34]].forEach(([cx, cy, r], i) => { const c = cols[i % cols.length], c2 = cols[(i + 2) % cols.length], dur = 2.6 + (i % 3) * .5, beg = -(i * .9); let rays = '';
-        for (let j = 0; j < 18; j++) { const a = j * Math.PI / 9 + RF() * .1, rr = r * (.85 + RF() * .3); rays += `<path d="M${f2(Math.cos(a) * rr * .25)} ${f2(Math.sin(a) * rr * .25)}L${f2(Math.cos(a) * rr)} ${f2(Math.sin(a) * rr + rr * .08)}" stroke="${j % 2 ? c : c2}" stroke-width="1.6" stroke-linecap="round"/><circle cx="${f2(Math.cos(a) * rr)}" cy="${f2(Math.sin(a) * rr + rr * .1)}" r="1.8" fill="${c}"/>`; }
-        const yy = cy - T * .3, op = NIGHT ? 1 : .55;
-        lt += `<g transform="translate(${cx} ${f2(yy)})"><g opacity="0"><animate attributeName="opacity" values="0;${op};${op * .8};0;0" keyTimes="0;.08;.45;.75;1" dur="${dur}s" begin="${beg}s" repeatCount="indefinite"/><animateTransform attributeName="transform" type="scale" values=".15;1;1.08;1.08" keyTimes="0;.3;.75;1" dur="${dur}s" begin="${beg}s" repeatCount="indefinite"/>${rays}${NIGHT ? glow(0, 0, r * .9, .5) : ''}</g></g>`; });
-    } else if (F === 'pasqua') {
+        lt += SC(`<rect x="${tx - 20.6}" y="${ty - 40}" width="5.2" height="8" fill="#FFD98A"/>` + glow(tx - 18, ty - 36, NIGHT || DAYB ? 26 : 10)); }
+      /* i fuochi */
+      const Y = (y) => y - T * .3;
+      if (k === 2 && (NIGHT || DAYB)) lt += fireworks([[860, Y(150), 22], [1010, Y(170), 18]], .7);
+      if (k === 3) { lt += fireworks([[800, Y(40), 50], [940, Y(-40), 64], [1090, Y(30), 48], [870, Y(150), 32], [1040, Y(-120), 56], [1170, Y(-30), 40], [760, Y(-90), 44], [1000, Y(100), 30], [1160, Y(110), 34], [900, Y(-160), 40]], 1.2);
+        lt += `<path class="sc-twinkle" style="--td:.3s" d="M${tx + 40} ${ty - 40}l3 -14M${tx + 43} ${ty - 54}l-6 -2l8 -3l-3 7l5 -1" stroke="#FFE6A0" stroke-width="1.2" fill="none"/>` + glow(tx + 42, ty - 54, 14); }
+      if (k === 4) { if (NIGHT) lt += fireworks([[880, Y(60), 34], [1080, Y(-20), 40]], .9);
+        else { fx += `<path d="M-20 ${-T}H1240V200H-20Z" fill="url(#${cgrad('#FFC9A0')})" opacity=".0"/>` + [[820, 120], [950, 60], [1100, 100], [1010, 170]].map(([x, y]) => `<ellipse cx="${x}" cy="${Y(y)}" rx="60" ry="14" fill="url(#${cgrad('#D9DEE4')})" opacity=".7"/>`).join(''); }
+        for (let i = 0; i < 40; i++) fx += `<rect x="${f2(1030 + RF() * 200)}" y="${f2(gy - 6 + RF() * 30)}" width="2" height="1.2" fill="${['#E3603F', '#F2C230', '#7FB3D5', '#C2307A', '#7FE0A8'][i % 5]}" transform="rotate(${Math.round(RF() * 180)} ${f2(1030 + RF() * 200)} ${f2(gy)})"/>`; }
+    } else if (F === 'giovedi') {
+      /* Giovedì santo: la mensa di pietra con la tovaglia, i due pani, il calice, la brocca e il catino con l'asciugamano; i piatti di grano germogliato al buio per i sepolcri; di sera due candele */
+      const tx = 1150, ty = gy - 9;
+      fx += bank + shadowAt(tx, ty + 1, 60) + SC(`<rect x="${tx - 34}" y="${ty - 26}" width="68" height="26" fill="#BFB4A0"/><rect x="${tx - 38}" y="${ty - 30}" width="76" height="5" fill="#D2C8B4"/><path d="M${tx - 38} ${ty - 30}H${tx + 38}V${ty - 20}L${tx + 30} ${ty - 18}V${ty - 25}H${tx - 30}V${ty - 18}L${tx - 38} ${ty - 20}Z" fill="#F7F3EA"/>`
+        + `<ellipse cx="${tx - 18}" cy="${ty - 33}" rx="8" ry="4.4" fill="#C9934E"/><path d="M${tx - 23} ${ty - 34}l3 -2M${tx - 18} ${ty - 35}l3 -2M${tx - 13} ${ty - 34}l2 -2" stroke="#A8743A" stroke-width=".8"/><ellipse cx="${tx - 6}" cy="${ty - 32.4}" rx="6" ry="3.4" fill="#D4A060"/>`
+        + `<path d="M${tx + 6} ${ty - 30}h6l-1 -1.6h-1.2v-5q4 -1 4 -6h-10q0 5 4 6v5h-1.2z" fill="#D9A441"/><path d="M${tx + 18} ${ty - 30}q-4 -6 0 -12h2l2 -3h3l-1 3q3 6 -1 12z" fill="#B0643F"/>`
+        + [[tx - 30, '#E9E6C8'], [tx + 30, '#E9E6C8']].map(([x, c]) => `<ellipse cx="${x}" cy="${ty - 31}" rx="7" ry="2" fill="#E6E0D4"/>` + Array.from({ length: 9 }, (_, j) => `<path d="M${x - 5 + j * 1.2} ${ty - 31}q.4 -5 ${f2((j - 4) * .3)} -8" stroke="${c}" stroke-width=".9" fill="none"/>`).join('') + `<path d="M${x - 5} ${ty - 34}h10" stroke="#B8322A" stroke-width="1"/>`).join('')
+        + `<rect x="${tx - 34}" y="${ty - 40}" width="2.4" height="9" fill="#F4F0E6"/><rect x="${tx + 31.6}" y="${ty - 40}" width="2.4" height="9" fill="#F4F0E6"/>`
+        + `<ellipse cx="${tx + 46}" cy="${ty - 2}" rx="11" ry="3.4" fill="#B0643F"/><path d="M${tx + 35} ${ty - 2}q11 6 22 0" fill="#9A5434"/><ellipse cx="${tx + 46}" cy="${ty - 2.6}" rx="8" ry="2" fill="#8AA6B6"/><path d="M${tx + 52} ${ty - 6}q4 2 2 8" stroke="#F4EEE0" stroke-width="3" fill="none"/>`);
+      lt += SC(flame(tx - 32.8, ty - 40, .8) + flame(tx + 32.8, ty - 40, .8) + (NIGHT || DAYB ? glow(tx - 33, ty - 42, 16) + glow(tx + 33, ty - 42, 16) : ''));
+    } else if (F === 'venerdi') {
+      /* Venerdì santo: il cielo grigio e basso; la croce di legno sulla proda col lenzuolo bianco; lungo la riva lontana la processione coi lumi della Via Crucis */
+      s.push(`<defs><linearGradient id="${u}vs" x1="0" y1="${-T - 30}" x2="0" y2="240" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${NIGHT ? '#20222E' : '#7E7A86'}" stop-opacity=".85"/><stop offset=".8" stop-color="${NIGHT ? '#2A2C38' : '#9C98A2'}" stop-opacity=".45"/><stop offset="1" stop-color="#9C98A2" stop-opacity="0"/></linearGradient></defs><rect x="-20" y="${-T - 30}" width="${SW + 40}" height="${T + 270}" fill="url(#${u}vs)"/>`);
+      const tx = 1160, ty = gy - 9;
+      fx += bank + shadowAt(tx, ty + 1, 40) + SC(`<path d="M${tx - 3} ${ty}V${ty - 92}h6V${ty}z" fill="#6E5236"/><path d="M${tx - 26} ${ty - 70}h52v6h-52z" fill="#6E5236"/><path d="M${tx} ${ty - 92}v92" stroke="#000" stroke-opacity=".15" stroke-width="2" transform="translate(2 0)"/>`
+        + `<path d="M${tx - 24} ${ty - 66}Q${tx - 14} ${ty - 58} ${tx - 4} ${ty - 64}Q${tx - 2} ${ty - 40} ${tx - 10} ${ty - 26}Q${tx - 4} ${ty - 30} ${tx + 2} ${ty - 28}Q${tx + 4} ${ty - 46} ${tx + 4} ${ty - 64}Q${tx + 14} ${ty - 58} ${tx + 24} ${ty - 66}" fill="#F4F2EC" stroke="#D9D4C8" stroke-width=".6"/>`
+        + `<ellipse cx="${tx}" cy="${ty - 2}" rx="8" ry="2.4" fill="none" stroke="#5A4A2E" stroke-width="1.6" stroke-dasharray="1.4 1"/><path d="M${tx - 12} ${ty}l24 0" stroke="#8A7A5A" stroke-width=".6"/>`);
+      /* la processione della Via Crucis risale il prato verso la croce: figure incappucciate, ognuna col suo lume */
+      let pr = ''; for (let i = 0; i < 12; i++) { const t = i / 11, x = 760 + t * 300, y = gy + 8 - t * 10 + Math.sin(i * 1.7) * 2, h = 15 + t * 3;
+        pr += `<path d="M${f2(x - h * .22)} ${f2(y)}L${f2(x - h * .12)} ${f2(y - h * .78)}Q${f2(x)} ${f2(y - h * 1.02)} ${f2(x + h * .12)} ${f2(y - h * .78)}L${f2(x + h * .22)} ${f2(y)}Z" fill="${i % 3 ? '#5A4E66' : '#F2EEE6'}"/><path d="M${f2(x + h * .1)} ${f2(y - h * .5)}l${f2(h * .2)} ${f2(-h * .08)}" stroke="#4A3A2E" stroke-width="1"/>`;
+        lt += flame(x + h * .32, y - h * .58, .8) + (NIGHT || DAYB ? glow(x + h * .32, y - h * .62, 10, .9) : glow(x + h * .32, y - h * .62, 5, .6)); }
+      fx += pr;
+    } else if (F === 'sabato') {
+      /* Sabato santo: l'attesa. Il braciere del fuoco nuovo, il cero pasquale col chiodi d'incenso sul suo candeliere; sul tavolino le ciotole dei colori, le uova già tinte ad asciugare, il cesto d'ulivo per domani */
+      const tx = 1150, ty = gy - 9;
+      fx += bank + shadowAt(tx, ty + 1, 60) + SC(`<path d="M${tx - 52} ${ty}l5 -12h12l5 12" stroke="#3A3430" stroke-width="1.8" fill="none"/><path d="M${tx - 50} ${ty - 12}h18l-2 -6h-14z" fill="#3A3430"/>`
+        + `<path d="M${tx - 22} ${ty}l4 -6h8l4 6M${tx - 14} ${ty - 6}V${ty - 34}" stroke="#4A4440" stroke-width="2" fill="none"/><rect x="${tx - 18}" y="${ty - 38}" width="8" height="4" fill="#4A4440"/><rect x="${tx - 16.6}" y="${ty - 80}" width="5.2" height="42" fill="#F6F2E6"/><path d="M${tx - 14} ${ty - 70}v10M${tx - 16.6} ${ty - 66}h5.2" stroke="#B8322A" stroke-width="1"/>`
+        + [[-14, -70], [-16, -66], [-12, -66], [-14, -62], [-14, -66]].map(([x, y]) => `<circle cx="${tx + x}" cy="${ty + y}" r=".7" fill="#C9A04A"/>`).join('') + `<path d="M${tx - 16} ${ty - 56}h4" stroke="#B8322A" stroke-width=".8"/>`
+        + `<rect x="${tx + 2}" y="${ty - 22}" width="44" height="3.4" fill="#6E5236"/><path d="M${tx + 6} ${ty - 19}V${ty}M${tx + 42} ${ty - 19}V${ty}" stroke="#5A3A26" stroke-width="2.4"/>`
+        + [['#B8322A', 8], ['#D9A441', 18], ['#2F5A7A', 28]].map(([c, x]) => `<path d="M${tx + x - 4} ${ty - 22}q4 4 8 0z" fill="#E6E0D4"/><ellipse cx="${tx + x}" cy="${ty - 22}" rx="3.4" ry="1" fill="${c}"/>`).join('')
+        + `<rect x="${tx + 34}" y="${ty - 23}" width="12" height="1.4" fill="#F4EEE0"/>` + [['#E88FA8', 36], ['#7FB3D5', 41], ['#E9C46A', 45]].map(([c, x]) => `<ellipse cx="${tx + x}" cy="${ty - 26}" rx="2.2" ry="2.9" fill="${c}"/>`).join('')
+        + `<path d="M${tx + 50} ${ty}h16l-2 -9h-12z" fill="#B8894E"/>` + Array.from({ length: 6 }, (_, j) => `<path d="M${tx + 54 + j * 1.6} ${ty - 9}q${f2(-2 + j * .8)} -8 ${f2(-4 + j * 1.6)} -14" stroke="#6E7A4A" stroke-width=".9" fill="none"/>`).join('') + [[52, -18], [56, -22], [60, -20], [64, -16], [58, -14]].map(([x, y]) => `<ellipse cx="${tx + x}" cy="${ty + y}" rx="2.6" ry="1" fill="#8EA06A" transform="rotate(-30 ${tx + x} ${ty + y})"/>`).join(''));
+      let br = ''; const tg = (x, w, h, c) => `<path class="sc-twinkle" style="--td:${f2(.4 + RF() * .4)}s;--tdl:${f2(-RF())}s" d="M${f2(x - w)} ${ty - 18}Q${f2(x - w * 1.1)} ${f2(ty - 18 - h * .5)} ${f2(x + (RF() - .5) * w)} ${f2(ty - 18 - h)}Q${f2(x + w * 1.1)} ${f2(ty - 18 - h * .45)} ${f2(x + w)} ${ty - 18}Z" fill="${c}"/>`;
+      [[-4, 4, 14], [4, 4, 16], [0, 6, 22]].forEach(([dx, w, h]) => { br += tg(tx - 41 + dx, w, h, '#E8552E'); }); [[-2, 3, 11], [2, 3, 13]].forEach(([dx, w, h]) => { br += tg(tx - 41 + dx, w, h, '#FF9A3C'); }); br += tg(tx - 41, 2.4, 9, '#FFE08A');
+      lt += SC(br + glow(tx - 41, ty - 26, NIGHT || DAYB ? 40 : 18) + flame(tx - 14, ty - 80, .9) + (NIGHT || DAYB ? glow(tx - 14, ty - 83, 14) : ''));
+    }
+    else if (F === 'natale') {}
+    else if (F === 'pasqua') {
       /* il ramo di pesco fiorito che entra dall'alto a destra (l'albero è fuori dal quadro), i petali che cadono; sulla proda il cesto delle uova dipinte con l'ulivo */
       let br = `<path d="M1250 ${-T - 10}Q1180 ${-T + 40} 1150 ${-T + 90}Q1130 ${-T + 120} 1100 ${-T + 130}M1176 ${-T + 48}Q1200 ${-T + 90} 1196 ${-T + 130}M1150 ${-T + 92}Q1120 ${-T + 96} 1090 ${-T + 84}" stroke="#5A4034" stroke-width="5" fill="none" stroke-linecap="round"/>`;
       for (let i = 0; i < 46; i++) { const t = RF(), path = RF() < .5 ? [[1250, -T - 10], [1150, -T + 90], [1100, -T + 130]] : RF() < .5 ? [[1176, -T + 48], [1196, -T + 130]] : [[1150, -T + 92], [1090, -T + 84]], j = Math.min(path.length - 2, Math.floor(t * (path.length - 1))), q = t * (path.length - 1) - j, x = path[j][0] + (path[j + 1][0] - path[j][0]) * q + (RF() - .5) * 14, y = path[j][1] + (path[j + 1][1] - path[j][1]) * q + (RF() - .5) * 12;
@@ -2286,5 +2440,5 @@ function seasonFx(motif, accent, W, H, seed) {
 
 /* fase della luna (0 = nuova, 0,5 = piena) alle 22 del giorno dato, dal novilunio del 6/1/2000 18:14 UTC; errore di qualche ora */
 function moonPhase(iso) { const [y, m, d] = iso.split('-').map(Number), t = Date.UTC(y, m - 1, d, 21, 0) - Date.UTC(2000, 0, 6, 18, 14), f = (t / 864e5) / 29.530588853; return f - Math.floor(f); }
-window.ORN = { version: '3.3', moonPhase, MONTHS, LETTER_META, metaKeyFor, dayBg, illusFor, sceneSVG, hasVariants, themeFor, patternURI, ornamentSVG, playAll, seasonFx, setToday: (s) => { todayStr = s; } };
+window.ORN = { version: '3.4', moonPhase, MONTHS, LETTER_META, metaKeyFor, dayBg, illusFor, sceneSVG, hasVariants, themeFor, patternURI, ornamentSVG, playAll, seasonFx, setToday: (s) => { todayStr = s; } };
 })();
