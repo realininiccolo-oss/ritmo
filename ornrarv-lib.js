@@ -1879,13 +1879,13 @@ function sceneSVG(mi, opts = {}) {
         backdrop();
         const mid = ridge([[-20, 238], [600, 232], [860, 228], [1220, 234]], 3);
         add(fill(mid, landCol(.42)) + patches(mid, 300, 1200, .42, 3) + forest(mid, 560, 1200, 18, .3, .42), .25);
-        const far = ridge([[-20, 270], [700, 266], [1000, 268], [1220, 266]], 2), cTop = 316, cBot = 352;
+        const far = ridge([[-20, 262], [700, 258], [1000, 260], [1220, 258]], 2), cTop = 300, cBot = 378;
         let orch = ''; for (let r = 0; r < 2; r++) for (let i = 0; i < 9; i++) { const x = 760 + i * 52 + r * 24 + RM() * 10, y = far.y(x) + 10 + r * 18; if (x > 980 && x < 1060) continue; orch += treeBlossom(x, y, .8 + r * .25, ['#F4C9D8', '#FFFFFF', '#E89BB5'], '#6B5040', R, p); }
         add(fill(far, landCol(.7)) + `<path d="M-20 ${cTop - 2}H1240" stroke="${shade(landCol(.8), .3)}" stroke-width="3"/>` + orch, .3);
         s.push(water(cTop, -20, 1240)); add(flowOn([[-20, (cTop + cBot) / 2], [400, (cTop + cBot) / 2], [800, (cTop + cBot) / 2], [1240, (cTop + cBot) / 2]].flatMap((pt, i, A) => i < A.length - 1 ? Array.from({ length: 10 }, (_, j) => [pt[0] + (A[i + 1][0] - pt[0]) * j / 10, pt[1] + (RM() - .5) * 20]) : []), () => 34, 30), .3);
         /* la noria: la corrente va a destra e spinge i vasi in basso, la ruota gira in senso antiorario; i vasi si riempiono sotto, salgono a destra
            gocciolando, in cima si rovesciano nella canaletta che porta l'acqua all'acquedotto di pietra ad archi, verso i frutteti */
-        const wx = 1004, wr = 56, wy = cTop - 10, ty = wy - wr - 6, aqC = '#C9BCA6', aqD = shade(aqC, .25), wTop = mixHex(WTh[0], '#FFFFFF', .35);
+        const wx = 1004, wr = 60, wy = cTop - 2, ty = wy - wr - 6, aqC = '#C9BCA6', aqD = shade(aqC, .25), wTop = mixHex(WTh[0], '#FFFFFF', .35);
         let aq = '';
         const piers = [1084, 1150, 1216, 1282], pw = 12;
         aq += `<rect x="${wx + 20}" y="${ty - 6}" width="${1260 - wx}" height="14" fill="${aqC}"/><rect x="${wx + 20}" y="${ty - 7}" width="${1260 - wx}" height="3" fill="${shade(aqC, -.06)}"/><path d="M${wx + 20} ${ty - 3}H1260" stroke="${wTop}" stroke-width="2.6"/>`;
@@ -1911,8 +1911,15 @@ function sceneSVG(mi, opts = {}) {
         for (let j = 0; j < 9; j++) { const an = -Math.PI / 2 + (j + 1) * Math.PI / 10, x = wx + Math.cos(an) * (wr + 6), y = wy + Math.sin(an) * (wr + 6);   // gocce dai vasi che salgono a destra
           pour += `<path class="sc-rain" style="--rd:${f2(.5 + RM() * .4)}s;--rdl:${f2(-RM())}s;--ro:.7" d="M${f2(x)} ${f2(y)}v4" stroke="#E4F2F6" stroke-width="1.2" stroke-linecap="round"/>`; }
         const foam = `<path d="M${wx - wr + 6} ${cTop + 3}q8 -4 16 0q8 -4 16 0M${wx + 12} ${cTop + 4}q10 -4 20 0q8 -3 16 1" stroke="#FFFFFF" stroke-width="1.6" fill="none" stroke-opacity=".8"/>`;
-        add(aq + pile + nw + ch + pour + frontWater(wx, cTop + 2, 150, 28) + foam + ripRings(wx + 40, cTop + 8, 3, 24), .35);
-        add(grad('nb', cBot, BOT, landCol(.85), landCol(1)) + `<path d="M-20 ${cBot}H1240V${BOT + 40}H-20Z" fill="url(#${u}nb)"/><path d="M-20 ${cBot}H1240" stroke="${shade(landCol(.8), .3)}" stroke-width="3"/>` + groundDetail({ y: () => cBot + 6 }, 640, 1220, 24, 1.2, 1), .45);
+        /* la parte bassa della ruota è sott'acqua: la copre l'acqua del canale, con la linea chiara della superficie */
+        const sub = `<rect x="${wx - wr - 8}" y="${cTop + 1}" width="${2 * wr + 16}" height="${wr + 6}" fill="url(#${wId})" opacity=".72"/><path d="M${wx - wr - 8} ${cTop + 1}H${wx + wr + 8}" stroke="${wTop}" stroke-width="1.4"/>`;
+        add(aq + pile + nw + sub + ch + pour + frontWater(wx, cTop + 2, 150, 28) + foam + ripRings(wx + 40, cTop + 10, 3, 24) + ripRings(wx - 40, cTop + 14, 2, 18), .35);
+        /* la riva di qua: l'argine di pietra lungo il canale, il prato coi fiori, un pesco in fiore che incornicia a sinistra */
+        let emb = `<path d="M-20 ${cBot - 2}H1240V${cBot + 12}H-20Z" fill="${aqC}"/>`;
+        for (let r = 0; r < 2; r++) for (let x = -20 + r * 9; x < 1240; x += 18) emb += `<rect x="${f2(700 > x ? x : x + .5)}" y="${f2(cBot - 1 + r * 6.4)}" width="17" height="5.6" rx="1.2" fill="${shade(aqC, (RM() - .3) * .16)}"/>`;
+        emb += `<path d="M-20 ${cBot - 2}H1240" stroke="${shade(aqC, -.08)}" stroke-width="2"/><path d="M-20 ${cBot + 12}H1240" stroke="#000" stroke-opacity=".15" stroke-width="1.4"/>`;
+        add(grad('nb', cBot + 12, BOT, landCol(.85), landCol(1)) + `<path d="M-20 ${cBot + 12}H1240V${BOT + 40}H-20Z" fill="url(#${u}nb)"/>` + emb + groundDetail({ y: () => cBot + 20 }, 640, 1220, 24, 1.2, 1)
+          + treeBlossom(1190, cBot + 70, 1.7, ['#F4C9D8', '#FFFFFF', '#E89BB5'], '#6B5040', R, p), .45);
       } else if (mi === 4) { // Floreale: il traghetto di Leonardo: la chiatta appesa al cavo attraversa il fiume da sola, la corrente la spinge
         backdrop();
         const mid = ridge([[-20, 238], [600, 232], [860, 228], [1220, 234]], 3);
@@ -2020,6 +2027,67 @@ function sceneSVG(mi, opts = {}) {
     for (let i = 0; i < 70 + Math.round(T / 4); i++) { const layer = RS() < .45 ? 0 : RS() < .7 ? 1 : 2, r = [.7, 1.4, 2.6][layer] + RS() * [.4, .6, 1.2][layer];
       sn += `<circle class="sc-fall2" style="--fd:${f2([16, 11, 8][layer] + RS() * 4)}s;--fdl:${f2(-RS() * 16)}s;--fx:${f2((RS() - .3) * [30, 50, 80][layer])}px" cx="${f2(700 + RS() * 540)}" cy="${f2(-T - 20 + RS() * (T + 120))}" r="${f2(r)}" fill="#FFFFFF" fill-opacity="${[.6, .85, .95][layer]}"/>`; }
     s.push(tone(`<g class="sc-fade" style="--d:.8s">${sn}</g>`)); }
+  /* 3.3: i giorni di festa. Il disegno resta quello del giorno; davanti, a destra, una proda di terra (o di neve) regge le cose della festa,
+     che stanno appoggiate: l'abete addobbato coi regali e la cometa (Natale), la tavola col brindisi e i fuochi d'artificio (Capodanno),
+     il cesto delle uova dipinte sotto il ramo fiorito (Pasqua), la tavola con la torta e le candeline sotto la fila di lanterne (compleanno). */
+  if (opts.festa) { const F = opts.festa, RF = rng(seed + 31), gy = BOT - 46, snowB = snowy || F === 'natale', gc = snowB ? '#F2F6F8' : shade(landCol(1), .06);
+    const bank = `<path d="M1020 ${BOT + 40}Q1060 ${gy - 6} 1140 ${gy - 10}Q1200 ${gy - 12} 1240 ${gy}V${BOT + 40}Z" fill="${gc}"/><path d="M1040 ${gy + 12}Q1080 ${gy - 4} 1140 ${gy - 8}Q1200 ${gy - 10} 1240 ${gy + 2}" stroke="${snowB ? '#D2E0E8' : shade(gc, .2)}" stroke-width="1.4" fill="none"/>`
+      + (snowB ? '' : Array.from({ length: 8 }, () => grassTuft(1060 + RF() * 170, gy - 6 + RF() * 10, .9, shade(gc, .3))).join(''));
+    let fx = '', lt = '';
+    const SC = (str, cx = 1150) => `<g transform="translate(${cx} ${gy - 9}) scale(1.45) translate(${-cx} ${-(gy - 9)})">${str}</g>`;
+    if (F === 'natale') {
+      /* l'abete: palchi di rami con la neve sulle punte, le palline rosse e d'oro, la fila di lucine e la stella in cima; i regali sotto */
+      const tx = 1150, ty = gy - 9; let tr = `<rect x="${tx - 3}" y="${ty - 12}" width="6" height="13" fill="#5A3A26"/>`;
+      [[0, 46, 34], [26, 40, 30], [48, 32, 26], [66, 24, 22], [82, 16, 18]].forEach(([dy, w, h]) => { const y = ty - 10 - dy; tr += `<path d="M${tx - w} ${y}Q${tx} ${y - 6} ${tx + w} ${y}L${tx + 3} ${y - h}H${tx - 3}Z" fill="#2E5A3E"/><path d="M${tx} ${y - h}L${tx + w} ${y}Q${tx + w * .5} ${y - 3} ${tx} ${y - 2}Z" fill="#000" fill-opacity=".14"/><path d="M${tx - w} ${y}q6 -4 12 -1q6 -4 12 0q6 -3 12 -1" stroke="#FFFFFF" stroke-width="2.4" fill="none" stroke-linecap="round"/>`; });
+      for (let i = 0; i < 14; i++) { const lv = RF(), y = ty - 16 - lv * 80, w = 42 * (1 - lv * .7), x = tx + (RF() - .5) * w * 1.4; tr += `<circle cx="${f2(x)}" cy="${f2(y)}" r="2.6" fill="${i % 2 ? '#B8322A' : '#D9A441'}"/><circle cx="${f2(x - .8)}" cy="${f2(y - .8)}" r=".8" fill="#FFFFFF" fill-opacity=".7"/>`; }
+      const gifts = `<rect x="${tx - 44}" y="${ty - 13}" width="20" height="14" fill="#B8322A"/><path d="M${tx - 34} ${ty - 13}V${ty + 1}M${tx - 44} ${ty - 6}H${tx - 24}" stroke="#E9C46A" stroke-width="2"/><path d="M${tx - 34} ${ty - 13}q-5 -6 -7 -1q3 2 7 1q5 -6 7 -1q-3 2 -7 1" stroke="#E9C46A" stroke-width="1.4" fill="none"/>`
+        + `<rect x="${tx + 22}" y="${ty - 10}" width="16" height="11" fill="#2F5A7A"/><path d="M${tx + 30} ${ty - 10}V${ty + 1}M${tx + 22} ${ty - 4.6}H${tx + 38}" stroke="#F4EEE0" stroke-width="1.8"/><rect x="${tx - 22}" y="${ty - 7}" width="12" height="8" fill="#3E7A4E"/><path d="M${tx - 16} ${ty - 7}V${ty + 1}" stroke="#D9A441" stroke-width="1.6"/>`;
+      fx += bank + shadowAt(tx, ty + 1, 70) + SC(tr + gifts);
+      let bulbs = ''; for (let k = 0; k < 4; k++) for (let j = 0; j < 7; j++) { const t = j / 6, lv = (k + t * .9) / 4.2, y = ty - 14 - lv * 84 + Math.sin(t * Math.PI) * 4, w = 44 * (1 - lv * .78); bulbs += `<circle class="sc-twinkle" style="--td:${f2(1.4 + RF() * 1.6)}s;--tdl:${f2(-RF() * 2)}s" cx="${f2(tx - w + t * 2 * w)}" cy="${f2(y)}" r="1.7" fill="${['#FFE6A0', '#FFB07A', '#FFF6D8'][j % 3]}"/>`; }
+      lt += SC(bulbs + `<path d="M${tx} ${ty - 110}l2.6 6.4l6.8 .5l-5.2 4.4l1.7 6.6l-5.9 -3.6l-5.9 3.6l1.7 -6.6l-5.2 -4.4l6.8 -.5z" fill="#F2C94C"/>` + glow(tx, ty - 102, NIGHT || DAYB ? 30 : 14));
+      if (NIGHT) { const sx = 880, sy = Math.max(-T + 40, -40); lt += glow(sx, sy, 60) + `<path d="M${sx} ${sy - 16}L${sx + 2.4} ${sy - 2.4}L${sx + 16} ${sy}L${sx + 2.4} ${sy + 2.4}L${sx} ${sy + 16}L${sx - 2.4} ${sy + 2.4}L${sx - 16} ${sy}L${sx - 2.4} ${sy - 2.4}Z" fill="#FFF6D8"/><path d="M${sx - 3} ${sy + 3}L${sx - 120} ${sy + 70}" stroke="#FFF6D8" stroke-opacity=".35" stroke-width="2.4" stroke-linecap="round"/><path d="M${sx - 3} ${sy + 3}L${sx - 90} ${sy + 66}" stroke="#FFF6D8" stroke-opacity=".2" stroke-width="1.4"/>`; }
+    } else if (F === 'capodanno') {
+      /* la tavola del brindisi: la bottiglia, i due calici, la lanterna; nel cielo i fuochi che si aprono uno dopo l'altro */
+      const tx = 1150, ty = gy - 9;
+      fx += bank + shadowAt(tx, ty + 1, 56) + SC(`<rect x="${tx - 30}" y="${ty - 30}" width="60" height="4" fill="#6E5236"/><path d="M${tx - 26} ${ty - 26}V${ty}M${tx + 26} ${ty - 26}V${ty}" stroke="#5A3A26" stroke-width="3"/><path d="M${tx - 32} ${ty - 30}H${tx + 32}V${ty - 22}Q${tx} ${ty - 18} ${tx - 32} ${ty - 22}Z" fill="#F4EEE0"/>`
+        + `<path d="M${tx - 6} ${ty - 30}V${ty - 50}Q${tx - 6} ${ty - 56} ${tx - 3} ${ty - 58}V${ty - 64}H${tx + 1}V${ty - 58}Q${tx + 4} ${ty - 56} ${tx + 4} ${ty - 50}V${ty - 30}Z" fill="#2E4A34"/><path d="M${tx - 3} ${ty - 64}h4v4h-4z" fill="#D9A441"/><rect x="${tx - 5}" y="${ty - 46}" width="8" height="7" fill="#F4EEE0"/>`
+        + [[tx + 14, 0], [tx + 24, 1]].map(([x]) => `<path d="M${x - 3} ${ty - 50}H${x + 3}L${x + 1} ${ty - 38}V${ty - 32}H${x + 3}M${x - 3} ${ty - 32}H${x - 1}V${ty - 38}Z" fill="#E4EEF2" fill-opacity=".75" stroke="#B9CEDA" stroke-width=".5"/><path d="M${x - 2.4} ${ty - 47}H${x + 2.4}L${x + .8} ${ty - 39}H${x - .8}Z" fill="#F2D27A"/>`).join('')
+        + `<path d="M${tx - 22} ${ty - 30}v-12h8v12z" fill="#2A2420"/><path d="M${tx - 24} ${ty - 42}h12l-2 -3h-8z" fill="#2A2420"/>`);
+      lt += SC(`<rect x="${tx - 20.6}" y="${ty - 40}" width="5.2" height="8" fill="#FFD98A"/>` + glow(tx - 18, ty - 36, NIGHT || DAYB ? 26 : 10));
+      const cols = ['#FFD36E', '#FF6B5A', '#FFFFFF', '#7FE0A8', '#C9A2FF', '#6EC6FF'];
+      [[820, 40, 46], [960, -30, 56], [1100, 60, 40], [880, 150, 30], [1050, -100, 50], [1170, -20, 34]].forEach(([cx, cy, r], i) => { const c = cols[i % cols.length], c2 = cols[(i + 2) % cols.length], dur = 2.6 + (i % 3) * .5, beg = -(i * .9); let rays = '';
+        for (let j = 0; j < 18; j++) { const a = j * Math.PI / 9 + RF() * .1, rr = r * (.85 + RF() * .3); rays += `<path d="M${f2(Math.cos(a) * rr * .25)} ${f2(Math.sin(a) * rr * .25)}L${f2(Math.cos(a) * rr)} ${f2(Math.sin(a) * rr + rr * .08)}" stroke="${j % 2 ? c : c2}" stroke-width="1.6" stroke-linecap="round"/><circle cx="${f2(Math.cos(a) * rr)}" cy="${f2(Math.sin(a) * rr + rr * .1)}" r="1.8" fill="${c}"/>`; }
+        const yy = cy - T * .3, op = NIGHT ? 1 : .55;
+        lt += `<g transform="translate(${cx} ${f2(yy)})"><g opacity="0"><animate attributeName="opacity" values="0;${op};${op * .8};0;0" keyTimes="0;.08;.45;.75;1" dur="${dur}s" begin="${beg}s" repeatCount="indefinite"/><animateTransform attributeName="transform" type="scale" values=".15;1;1.08;1.08" keyTimes="0;.3;.75;1" dur="${dur}s" begin="${beg}s" repeatCount="indefinite"/>${rays}${NIGHT ? glow(0, 0, r * .9, .5) : ''}</g></g>`; });
+    } else if (F === 'pasqua') {
+      /* il ramo di pesco fiorito che entra dall'alto a destra (l'albero è fuori dal quadro), i petali che cadono; sulla proda il cesto delle uova dipinte con l'ulivo */
+      let br = `<path d="M1250 ${-T - 10}Q1180 ${-T + 40} 1150 ${-T + 90}Q1130 ${-T + 120} 1100 ${-T + 130}M1176 ${-T + 48}Q1200 ${-T + 90} 1196 ${-T + 130}M1150 ${-T + 92}Q1120 ${-T + 96} 1090 ${-T + 84}" stroke="#5A4034" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+      for (let i = 0; i < 46; i++) { const t = RF(), path = RF() < .5 ? [[1250, -T - 10], [1150, -T + 90], [1100, -T + 130]] : RF() < .5 ? [[1176, -T + 48], [1196, -T + 130]] : [[1150, -T + 92], [1090, -T + 84]], j = Math.min(path.length - 2, Math.floor(t * (path.length - 1))), q = t * (path.length - 1) - j, x = path[j][0] + (path[j + 1][0] - path[j][0]) * q + (RF() - .5) * 14, y = path[j][1] + (path[j + 1][1] - path[j][1]) * q + (RF() - .5) * 12;
+        br += `<circle cx="${f2(x)}" cy="${f2(y)}" r="${f2(3 + RF() * 2.4)}" fill="${['#F7D4DF', '#FFFFFF', '#EBA4BE'][i % 3]}"/>` + (i % 4 ? '' : `<circle cx="${f2(x)}" cy="${f2(y)}" r="1" fill="#C2307A"/>`) + (i % 5 ? '' : `<path d="M${f2(x)} ${f2(y)}q4 -4 8 -1q-4 3 -8 1z" fill="#7FA35A"/>`); }
+      let pet = ''; for (let i = 0; i < 14; i++) pet += `<ellipse class="sc-fall2" style="--fd:${f2(8 + RF() * 5)}s;--fdl:${f2(-RF() * 12)}s;--fx:${f2(-40 - RF() * 60)}px" cx="${f2(1000 + RF() * 220)}" cy="${f2(-T + 60 + RF() * 160)}" rx="2.6" ry="1.6" fill="#F4C9D8"/>`;
+      const tx = 1150, ty = gy - 9;
+      const basket = `<path d="M${tx - 26} ${ty - 22}Q${tx} ${ty - 66} ${tx + 26} ${ty - 22}" stroke="#A27A4E" stroke-width="3" fill="none"/>` + [['#E9C46A', -14], ['#7FB3D5', -4], ['#E88FA8', 6], ['#9BC47A', 15], ['#C9A2FF', -9], ['#F4A261', 10]].map(([c, x], i) => `<ellipse cx="${tx + x}" cy="${ty - 24 - (i > 3 ? 5 : 0)}" rx="5" ry="6.6" fill="${c}"/><path d="M${tx + x - 4.4} ${ty - 24 - (i > 3 ? 5 : 0)}q4.4 -2.6 8.8 0" stroke="#FFFFFF" stroke-width="1" fill="none" stroke-opacity=".8"/>`).join('')
+        + `<path d="M${tx - 28} ${ty - 22}H${tx + 28}L${tx + 22} ${ty}H${tx - 22}Z" fill="#B8894E"/>` + Array.from({ length: 4 }, (_, j) => `<path d="M${tx - 27 + j * .8} ${ty - 17 + j * 5}H${tx + 27 - j * .8}" stroke="#8A6236" stroke-width="1.2"/>`).join('') + Array.from({ length: 9 }, (_, j) => `<path d="M${tx - 24 + j * 6} ${ty - 22}L${tx - 20 + j * 5} ${ty}" stroke="#8A6236" stroke-width=".8"/>`).join('')
+        + `<path d="M${tx + 18} ${ty - 26}q10 -10 22 -12" stroke="#6E7A4A" stroke-width="1.2" fill="none"/>` + [[24, -32], [30, -35], [36, -37], [28, -30], [34, -33]].map(([x, y]) => `<ellipse cx="${tx + x}" cy="${ty + y}" rx="3.2" ry="1.2" fill="#8EA06A" transform="rotate(-25 ${tx + x} ${ty + y})"/>`).join('');
+      fx += br + pet + bank + shadowAt(tx, ty + 1, 50) + SC(basket) + Array.from({ length: 10 }, () => `<circle cx="${f2(1060 + RF() * 170)}" cy="${f2(gy - 4 + RF() * 14)}" r="1.6" fill="${['#FFFFFF', '#F2C230', '#C2307A'][Math.floor(RF() * 3)]}"/>`).join('');
+    } else if (F === 'compleanno') {
+      /* la tavola apparecchiata con la torta a due piani e le candeline accese, il regalo; un palo regge la fila di lanterne di carta che va fuori dal quadro */
+      const tx = 1150, ty = gy - 9, px = 1072;
+      fx += bank + shadowAt(tx, ty + 1, 44) + `<path d="M${px} ${ty + 1}V${ty - 150}" stroke="#5A3A26" stroke-width="3.4"/><path d="M${px - 4} ${ty + 1}h8" stroke="#3E2A1A" stroke-width="2"/>`
+        + SC(`<rect x="${tx - 34}" y="${ty - 30}" width="68" height="4" fill="#6E5236"/><path d="M${tx - 30} ${ty - 26}V${ty}M${tx + 30} ${ty - 26}V${ty}" stroke="#5A3A26" stroke-width="3"/><path d="M${tx - 36} ${ty - 30}H${tx + 36}V${ty - 20}Q${tx + 24} ${ty - 16} ${tx + 12} ${ty - 20}Q${tx} ${ty - 16} ${tx - 12} ${ty - 20}Q${tx - 24} ${ty - 16} ${tx - 36} ${ty - 20}Z" fill="#F4EEE0"/>`
+        + `<rect x="${tx - 18}" y="${ty - 44}" width="36" height="14" rx="2" fill="#F2E3D0"/><rect x="${tx - 12}" y="${ty - 55}" width="24" height="11" rx="2" fill="#F7EDE0"/><path d="M${tx - 18} ${ty - 41}q4 4 9 0q4 4 9 0q4 4 9 0q4 4 9 0M${tx - 12} ${ty - 52}q4 3 6 0q3 3 6 0q3 3 6 0q3 3 6 0" stroke="#C2307A" stroke-width="1.6" fill="none"/><ellipse cx="${tx}" cy="${ty - 30}" rx="22" ry="2" fill="#D9CDB4"/>`
+        + `<rect x="${tx + 20}" y="${ty - 42}" width="12" height="12" fill="#2F5A7A"/><path d="M${tx + 26} ${ty - 42}V${ty - 30}M${tx + 20} ${ty - 36}H${tx + 32}" stroke="#E9C46A" stroke-width="1.6"/>`, tx);
+      let cand = '', flames = ''; for (let i = 0; i < 9; i++) { const x = tx - 10 + i * 2.5; cand += `<rect x="${f2(x - .6)}" y="${ty - 62}" width="1.2" height="7" fill="${['#7FB3D5', '#E88FA8', '#F2C230'][i % 3]}"/>`; flames += `<ellipse class="sc-twinkle" style="--td:${f2(.6 + RF() * .5)}s;--tdl:${f2(-RF())}s" cx="${f2(x)}" cy="${ty - 64.4}" rx=".9" ry="1.8" fill="#FFD36E"/>`; }
+      fx += SC(cand, tx);
+      lt += SC(flames + glow(tx, ty - 62, NIGHT || DAYB ? 30 : 12), tx);
+      /* la fila di lanterne: dal palo verso destra, fuori dal quadro */
+      const x0 = px, y0 = ty - 146, x1 = 1250, y1 = ty - 170, sag = 22; let wire = `<path d="M${x0} ${y0}Q${(x0 + x1) / 2} ${(y0 + y1) / 2 + sag * 2} ${x1} ${y1}" stroke="#3A3A3A" stroke-width=".9" fill="none"/>`;
+      for (let i = 1; i < 8; i++) { const t = i / 8, x = (1 - t) * (1 - t) * x0 + 2 * (1 - t) * t * (x0 + x1) / 2 + t * t * x1, y = (1 - t) * (1 - t) * y0 + 2 * (1 - t) * t * ((y0 + y1) / 2 + sag * 2) + t * t * y1, c = ['#E3603F', '#F2C230', '#7FB3D5', '#C2307A'][i % 4];
+        wire += `<path d="M${f2(x)} ${f2(y)}v3" stroke="#3A3A3A" stroke-width=".7"/><ellipse cx="${f2(x)}" cy="${f2(y + 9)}" rx="5.4" ry="6.4" fill="${c}"/><path d="M${f2(x - 5)} ${f2(y + 6)}h10M${f2(x - 5)} ${f2(y + 12)}h10" stroke="#000" stroke-opacity=".15" stroke-width=".7"/><rect x="${f2(x - 2.4)}" y="${f2(y + 2.4)}" width="4.8" height="1.6" fill="#3A3A3A"/>`;
+        if (NIGHT || DAYB) lt += glow(x, y + 9, 16, .9); }
+      fx += wire;
+    }
+    add(fx, .5); if (lt) addLit(lt, 1.4); }
   return `<svg class="scene${NIGHT ? ' night' : ''}" viewBox="0 ${-T} ${SW} ${SH + T + B}" preserveAspectRatio="xMaxYMax slice" aria-hidden="true" focusable="false">${defs}<defs>${extraDefs.join('')}</defs><g class="sc-enter">${s.join('')}</g></svg>`;
 }
 
@@ -2218,5 +2286,5 @@ function seasonFx(motif, accent, W, H, seed) {
 
 /* fase della luna (0 = nuova, 0,5 = piena) alle 22 del giorno dato, dal novilunio del 6/1/2000 18:14 UTC; errore di qualche ora */
 function moonPhase(iso) { const [y, m, d] = iso.split('-').map(Number), t = Date.UTC(y, m - 1, d, 21, 0) - Date.UTC(2000, 0, 6, 18, 14), f = (t / 864e5) / 29.530588853; return f - Math.floor(f); }
-window.ORN = { version: '3.2', moonPhase, MONTHS, LETTER_META, metaKeyFor, dayBg, illusFor, sceneSVG, hasVariants, themeFor, patternURI, ornamentSVG, playAll, seasonFx, setToday: (s) => { todayStr = s; } };
+window.ORN = { version: '3.3', moonPhase, MONTHS, LETTER_META, metaKeyFor, dayBg, illusFor, sceneSVG, hasVariants, themeFor, patternURI, ornamentSVG, playAll, seasonFx, setToday: (s) => { todayStr = s; } };
 })();
